@@ -1,0 +1,13 @@
+.dockerignore
+.editorconfig
+.env*
+.git
+.gitignore
+.travis.yml
+.vs
+.vscode
+docker-compose.yml
+docker-compose.*.yml
+*/bin
+*/obj
+*/node_modules

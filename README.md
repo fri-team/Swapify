@@ -20,5 +20,6 @@ Web based application enabling students of [University of Zilina](http://www.uni
 ## Built With
 
 * [ASP .NET Core](https://github.com/aspnet/home) - Cross-platform framework for building modern web apps
+* [Docker](https://www.docker.com) - Container technology for packaging application together with it's dependencies
 * [React](https://github.com/facebook/react) - JavaScript library for building user interfaces
 * [React Slingshot](https://github.com/coryhouse/react-slingshot) - Boilerplate for React + Redux development
