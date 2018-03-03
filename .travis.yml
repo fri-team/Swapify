@@ -1,0 +1,30 @@
+matrix:
+  include:
+    - language: node_js
+      node_js:
+        - node
+      cache:
+        directories:
+          - WebApp/node_modules
+      before_install:
+        - cd WebApp/
+      install:
+       - npm install
+      script:
+        - npm run lint
+        - npm run test:CI
+    - language: csharp
+      mono: none
+      dotnet: 2.1.4
+      install:
+        - dotnet restore
+      script:
+        - echo "Run unit tests..."
+
+notifications:
+  email: false
+  slack:
+    secure: sIlVzWcYHOXf20aeoTCBAV2j7PhUtQu24K3lWtm7K60pEpV8lEyEZTWgEyHk9LihFdyBwQJJvkrsSdSNRtMEPlRwa/AnXghk0yql6I6AwRxpJdG8k4lDPJIvM9enIUAzpPy0NaiqSKW9tufxpBRizTqTNeYCX2dGWg5y/IfRKh944cOG+d8GHD3wS1Cgw4mnE38EKNu2RDJK/0MKolxhUZ9llMBKziw/AUhXBJEw/ID7thjvUnXRvOP2JZhoXbPm9ae0r6rDRZ+9qSnnFFjHnjTWj6STbP5MN0WF2KuyeBDAX7K6NdTT+NUGnihgFp9Yyi3Pkcp5oEZb/iv2ujk4FSwEaNZvTh8opeUi/V4oohgUVIev6xJApANpM2/pTGFu10qeWbEdBeJ/EYRZgtGGz2Fst9CugY3y5FDtkr9MS6Br3LfYuPwQ1XiGo/+5r6I6CXXgkoKoYlaCeFEkV3m/zJNipWQYIWXRO7E7BMTIQvMUuR9AZpBetORwOUkeMk28R9dDtDt3fP6tocE9uwGgZjL8vGUT+AG/I/wXcJVSOg6EXomQ9VBSy5Fkhn6W8fiLliO6S1Pkuo9OAZfcwlxoqhrPDoip0L/l7nJWksbSl3JSoyXBc6qa8andIO+/K54Cf2M29CyanQxeUHmZuweO9QOR+2QSWn3RUoz1O/AcbIo=
+  on_success: always
+  on_failure: always
+  

@@ -1,5 +1,7 @@
 # Swapify
 
+[![Build Status](https://travis-ci.org/fri-team/Swapify.svg?branch=master)](https://travis-ci.org/fri-team/Swapify)
+
 Web based application enabling students of [University of Zilina](http://www.uniza.sk/) to exchange course time blocks.
 
 ### Prerequirements
