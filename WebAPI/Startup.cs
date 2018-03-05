@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using NLog.Web;
 
 namespace WebAPI
 {
@@ -33,6 +28,8 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            env.ConfigureNLog($"nlog.{env.EnvironmentName}.config");
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
