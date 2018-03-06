@@ -8,6 +8,7 @@
 .vscode
 docker-compose.yml
 docker-compose.*.yml
+logs
 */bin
 */obj
 */node_modules

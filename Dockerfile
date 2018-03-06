@@ -23,5 +23,6 @@ RUN dotnet publish -c Release -o /app
 FROM microsoft/aspnetcore:2.0 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
+RUN mkdir -p /app/logs
 EXPOSE 80
 ENTRYPOINT ["dotnet", "WebAPI.dll"]

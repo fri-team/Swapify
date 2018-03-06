@@ -317,3 +317,6 @@ ASALocalRun/
 
 # MSBuild Binary and Structured Log
 *.binlog
+
+# Ignore Docker volumes
+logs/

@@ -5,5 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: app
+    volumes:
+      - ./logs:/app/logs
     ports:
       - '80:80'
