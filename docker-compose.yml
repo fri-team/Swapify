@@ -9,3 +9,4 @@ services:
       - ./logs:/app/logs
     ports:
       - '80:80'
+    restart: unless-stopped

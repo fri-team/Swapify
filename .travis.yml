@@ -1,3 +1,6 @@
+services:
+  - docker
+
 matrix:
   include:
     - language: node_js
@@ -20,6 +23,16 @@ matrix:
         - dotnet restore
       script:
         - echo "Run unit tests..."
+
+deploy:
+  # Do not delete files created in previous phases
+  skip_cleanup: true
+  provider: script
+  script:
+    - cd $TRAVIS_BUILD_DIR/.deploy/
+    - docker-compose run ci
+  on:
+    branch: master
 
 notifications:
   email: false
