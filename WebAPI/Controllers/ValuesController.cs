@@ -11,7 +11,7 @@ namespace WebAPI.Controllers
 
         public ValuesController(ILogger<ValuesController> logger)
         {
-            _logger = logger;
+            _logger = logger; 
         }
 
         // GET api/values
