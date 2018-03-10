@@ -25,5 +25,9 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\APIWrapper\APIWrapper.csproj" />
+  </ItemGroup>
 
 </Project>
