@@ -1,7 +1,7 @@
 
 namespace APIWrapper.Enums
 {
-    public enum eSubjectType
+    public enum ESubjectType
     {
         None = 0,
 
@@ -9,6 +9,6 @@ namespace APIWrapper.Enums
 
         Optional = 2,
 
-        CompulsoryElective = 3
+        Elective = 3
     }
 }

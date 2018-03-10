@@ -4,7 +4,7 @@ using System.Text;
 
 namespace APIWrapper.Enums
 {
-    public enum eLessonType
+    public enum ELessonType
     {
         None = 0,
 

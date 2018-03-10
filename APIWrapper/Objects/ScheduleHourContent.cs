@@ -22,7 +22,7 @@ namespace APIWrapper.Objects
         /// <summary>
         ///         Type of lesson - lecture, laboratory, excersise
         /// </summary>
-        public eLessonType LessonType { get; internal set; }
+        public ELessonType LessonType { get; internal set; }
 
         /// <summary>
         ///         Name of the teacher
@@ -52,7 +52,7 @@ namespace APIWrapper.Objects
         /// <summary>
         ///         Type of subject - compulsory, optional, compulsoryElective
         /// </summary>
-        public eSubjectType SubjectType { get; internal set; }
+        public ESubjectType SubjectType { get; internal set; }
 
         /// <summary>
         ///         Block is empty (free block)

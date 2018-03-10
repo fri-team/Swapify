@@ -86,7 +86,7 @@ namespace APIWrapper
                             sc.SubjectShortcut = blck["s"].ToString();
                             sc.SubjectName = blck["k"].ToString();
                             sc.StudyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            sc.SubjectType = (eSubjectType)Convert.ToInt32(blck["p"].ToString());
+                            sc.SubjectType = (ESubjectType)Convert.ToInt32(blck["p"].ToString());
                             sc.IsEmptyBlock = false;
                         }
                         else
@@ -98,6 +98,7 @@ namespace APIWrapper
                     catch (Exception ex)
                     {
                         //to do logger
+                        
                         Console.WriteLine(ex.ToString());
                     }
                     
@@ -107,13 +108,13 @@ namespace APIWrapper
             return ret;
         }
 
-        private eLessonType ConvertLessonType(char lessonShortcutType)
+        private ELessonType ConvertLessonType(char lessonShortcutType)
         {
             switch (lessonShortcutType)
             {
-                case 'L': return eLessonType.Laboratory;
-                case 'P': return eLessonType.Lecture;
-                case 'C': return eLessonType.Excercise;
+                case 'L': return ELessonType.Laboratory;
+                case 'P': return ELessonType.Lecture;
+                case 'C': return ELessonType.Excercise;
                 default: throw new ArgumentException($"Unexpected lesson type '{lessonShortcutType}'");    
             }
         }
