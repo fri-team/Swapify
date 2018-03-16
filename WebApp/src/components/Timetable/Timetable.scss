@@ -1,0 +1,49 @@
+$background-color: #ffffff;
+$border-color: #e0e0e0;
+$block-color: #fae2a8;
+
+.timetable {
+  display: grid;
+  grid-area: 'timetable';
+  border: 1px solid $border-color;
+}
+
+.day,
+.block,
+.border {
+  border: 1px solid $border-color;
+}
+
+.day,
+.block {
+  padding: 1em;
+  background-color: $background-color;
+}
+
+.block {
+  grid-row: 1;
+  text-align: center;
+}
+
+.day {
+  grid-column: 1;
+}
+
+.lab {
+  padding: 1em;
+  background-size: 1em;
+  background-color: $block-color;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-origin: content-box;
+  // background-image: url('./images/lab.svg');
+  border: 1px solid $border-color;
+  .name {
+    font-weight: bold;
+    font-size: 1em;
+  }
+  .room,
+  .teacher {
+    font-size: 0.8em;
+  }
+}
