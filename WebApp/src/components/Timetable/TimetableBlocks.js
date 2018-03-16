@@ -11,16 +11,23 @@ const TimetableBlocks = (props) => {
   const rowHeight = lcm(map(clusters, size));
   const blocks = [];
   each(clusters, (cluster) => {
-    const blockHeight = rowHeight / size(cluster);
+    const clusterSize = size(cluster)
+    const blockHeight = rowHeight / clusterSize;
     each(cluster, (block, i) => {
       const startLine = ((block.day - 1) * rowHeight) + (i * blockHeight) + 1;
+      const classes = [block.type];
+      if (clusterSize > 3) {
+        classes.push('small');
+      } else if (clusterSize > 2) {
+        classes.push('medium');
+      }
       blocks.push(
         <TimetableBlock
           key={`${block.name}-${block.day}x${block.startBlock}`}
-          type={block.type}
           name={block.name}
           room={block.room}
           teacher={block.tearcher}
+          cssClasses={classes}
           style={{
             gridColumn: `${block.startBlock} / ${block.endBlock}`,
             gridRow: `${startLine} / ${startLine + blockHeight}`,

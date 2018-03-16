@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import './TimetableBlock.scss';
 
 const TimetableBlock = (props) => (
-  <div className={`block ${props.type}`} style={props.style}>
+  <div className={classNames('block', props.cssClasses)} style={props.style}>
     <div className="name">{props.name}</div>
     <div className="room">{props.room}</div>
     <div className="teacher">{props.teacher}</div>
@@ -14,12 +15,12 @@ TimetableBlock.propTypes = {
   name: PropTypes.string.isRequired,
   room: PropTypes.string.isRequired,
   teacher: PropTypes.string.isRequired,
-  type: PropTypes.string,
+  cssClasses: PropTypes.arrayOf(PropTypes.string),
   style: PropTypes.shape({}),
 };
 
 TimetableBlock.defaultProps = {
-  type: '',
+  cssClasses: [],
   style: {},
 };
 

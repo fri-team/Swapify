@@ -31,6 +31,8 @@
   "author": "fri-team",
   "license": "MIT",
   "dependencies": {
+    "classnames": "^2.2.5",
+    "immutable": "^3.8.2",
     "lodash": "^4.17.5",
     "mlcm": "0.0.3",
     "object-assign": "4.1.0",

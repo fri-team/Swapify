@@ -14,6 +14,24 @@
   }
 }
 
+.block.small {
+  padding: 0.7em;
+  .room,
+  .teacher {
+    display: none;
+  }
+}
+
+.block.medium {
+  .room {
+    display: none;
+  }
+}
+
+.block.pale {
+  background-color: #fff7ef;
+}
+
 .block.lecture .name {
   padding-right: 1.8em;
   background: url('../../images/lecture.svg') no-repeat;
