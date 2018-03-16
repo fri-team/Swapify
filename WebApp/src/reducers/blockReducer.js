@@ -9,6 +9,7 @@ const initState = {
       name: 'TI',
       room: 'RA301',
       tearcher: 'Tomáš Majer',
+      type: 'laboratory',
     },
     {
       day: 2,
@@ -17,6 +18,7 @@ const initState = {
       name: 'TI',
       room: 'RC009',
       tearcher: 'Stanislav Palúch',
+      type: 'lecture',
     },
     {
       day: 3,
@@ -25,6 +27,7 @@ const initState = {
       name: 'AIS',
       room: 'RB003',
       tearcher: 'Matilda Drozdová',
+      type: 'laboratory',
     },
     {
       day: 4,
@@ -33,6 +36,7 @@ const initState = {
       name: 'II05',
       room: 'RC009',
       tearcher: 'Vitaly Levashenko',
+      type: 'lecture',
     },
     {
       day: 4,
@@ -41,6 +45,7 @@ const initState = {
       name: 'AIS',
       room: 'RC009',
       tearcher: 'Matilda Drozdová',
+      type: 'lecture',
     },
     {
       day: 4,
@@ -49,6 +54,7 @@ const initState = {
       name: 'TSP',
       room: 'RA201',
       tearcher: 'Elena Zaitseva',
+      type: 'laboratory',
     },
     {
       day: 4,
@@ -57,6 +63,7 @@ const initState = {
       name: 'DISS',
       room: 'AF3A6',
       tearcher: 'Norbert Adamko',
+      type: 'lecture',
     },
     {
       day: 5,
@@ -65,6 +72,7 @@ const initState = {
       name: 'TSP',
       room: 'RA201',
       tearcher: 'Elena Zaitseva',
+      type: 'lecture',
     },
     {
       day: 5,
@@ -73,6 +81,7 @@ const initState = {
       name: 'DISS',
       room: 'RB054',
       tearcher: 'Boris Bučko',
+      type: 'laboratory',
     },
     {
       day: 5,
@@ -81,6 +90,16 @@ const initState = {
       name: 'II05',
       room: 'RB052',
       tearcher: 'Vitaly Levashenko',
+      type: 'laboratory',
+    },
+    {
+      day: 1,
+      startBlock: 7,
+      endBlock: 9,
+      name: 'DISS',
+      room: 'RA301',
+      tearcher: 'Split It',
+      type: 'exercise',
     },
   ],
 };
