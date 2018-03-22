@@ -19,7 +19,7 @@ matrix:
       install:
         - dotnet restore
       script:
-        - echo "Run unit tests..."
+        - dotnet test
 
 notifications:
   email: false

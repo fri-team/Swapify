@@ -14,7 +14,7 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Content Update="nlog.Development.config" CopyToOutputDirectory="Always" />
   </ItemGroup>
@@ -22,13 +22,12 @@
   <ItemGroup>
     <Content Update="nlog.Production.config" CopyToOutputDirectory="Always" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\APIWrapper\APIWrapper.csproj" />
     <ProjectReference Include="..\Backend\Backend.csproj" />
     <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
