@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.0-rc3" />
     <PackageReference Include="NLog" Version="4.5.0-rc06" />
   </ItemGroup>
@@ -24,6 +25,12 @@
   
   <ItemGroup>
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\APIWrapper\APIWrapper.csproj" />
+    <ProjectReference Include="..\Backend\Backend.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 
 </Project>
