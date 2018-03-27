@@ -5,4 +5,9 @@
     <RootNamespace>FRITeam.Swapify.Entities</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Mongo2Go" Version="2.2.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
+  </ItemGroup>
+
 </Project>
