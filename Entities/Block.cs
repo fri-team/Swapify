@@ -13,5 +13,9 @@ namespace FRITeam.Swapify.Entities
 
         public Course Course { get; set; }
 
+        public Block()
+        {
+            TimeSlots = new List<TimeSlot>();
+        }
     }
 }

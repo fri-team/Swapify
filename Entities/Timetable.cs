@@ -7,5 +7,10 @@ namespace FRITeam.Swapify.Entities
     public class Timetable: BaseEntity
     {
         public List<Block> Blocks { get; set; }
+
+        public Timetable()
+        {
+            Blocks = new List<Block>();
+        }
     }
 }

@@ -12,5 +12,9 @@ namespace FRITeam.Swapify.Entities
         public Student Student { get; set; }
         public eStatusType Status { get; set; }
 
+        public BlockChangeRequest()
+        {
+            BlockOpitonsChange = new List<Block>();
+        }
     }
 }

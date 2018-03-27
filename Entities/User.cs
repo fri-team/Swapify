@@ -1,7 +1,9 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace FRITeam.Swapify.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        public int Id { get; set; }
+        
     }
 }

@@ -10,5 +10,10 @@ namespace FRITeam.Swapify.Entities
         public List<BlockChangeRequest> Requests { get; set; }
         public StudyGroup StudyGroup { get; set; }
 
+        public Student()
+        {
+            Timetables = new List<Timetable>();
+            Requests = new List<BlockChangeRequest>();
+        }
     }
 }
