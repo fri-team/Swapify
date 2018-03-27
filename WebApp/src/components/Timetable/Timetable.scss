@@ -1,8 +1,8 @@
 @import '../../styles/globals';
 
 .timetable {
+  width: 100%;
   display: grid;
-  grid-area: 'timetable';
   grid-template-rows: auto 1fr;
   grid-template-columns: auto 1fr;
   grid-template-areas: '. col-head'

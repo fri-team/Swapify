@@ -25,12 +25,13 @@ class SidebarContainer extends Component {
       >{subject}</ImgCheckbox>
     ));
     return (
-      <Sidebar>{checkboxes}</Sidebar>
+      <Sidebar open={this.props.open}>{checkboxes}</Sidebar>
     );
   }
 }
 
 SidebarContainer.propTypes = {
+  open: PropTypes.bool.isRequired,
   subjects: PropTypes.shape({}).isRequired,
   actions: PropTypes.shape({
     showSubject: PropTypes.func,
@@ -38,7 +39,8 @@ SidebarContainer.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, ownProps) => ({
+  ...ownProps,
   ...state.blocks,
 });
 
