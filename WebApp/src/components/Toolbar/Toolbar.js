@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import HamburgerButton from '../HamburgerButton/HamburgerButton';
+import UserButton from '../UserButton/UserButton';
 import './Toolbar.scss';
 
 export default class Toolbar extends Component {
@@ -8,6 +9,7 @@ export default class Toolbar extends Component {
     return (
       <div className="toolbar">
         <HamburgerButton onClick={this.props.toggleSidebar} />
+        <UserButton />
       </div>
     );
   }
