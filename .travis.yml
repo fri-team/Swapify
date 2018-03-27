@@ -19,7 +19,7 @@ matrix:
       install:
         - dotnet restore
       script:
-        - dotnet test
+        - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
 
 notifications:
   email: false
