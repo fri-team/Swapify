@@ -1,0 +1,55 @@
+@import '../../styles/globals';
+
+.block {
+  padding: 1em;
+  background-color: $block-color;
+  border: 1px solid $block-border-color;
+  .name {
+    font-weight: bold;
+    font-size: 1em;
+  }
+  .room,
+  .teacher {
+    font-size: 0.8em;
+  }
+}
+
+.block.small {
+  padding: 0.7em;
+  .room,
+  .teacher {
+    display: none;
+  }
+}
+
+.block.medium {
+  .room {
+    display: none;
+  }
+}
+
+.block.pale {
+  background-color: #fff7ef;
+}
+
+.block.lecture .name {
+  padding-right: 1.8em;
+  background: url('../../images/lecture.svg') no-repeat;
+}
+.block.laboratory .name {
+  padding-right: 1.4em;
+  background: url('../../images/laboratory.svg') no-repeat;
+}
+
+.block.exercise .name {
+  padding-right: 1.6em;
+  background: url('../../images/exercise.svg') no-repeat;
+}
+
+.block.lecture .name,
+.block.laboratory .name,
+.block.exercise .name {
+  display: inline-block;
+  background-position: right top;
+  background-size: auto 1em;
+}
