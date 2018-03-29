@@ -69,12 +69,14 @@ namespace FRITeam.Swapify.APIWrapper
             string report = joResponse["report"].ToString();
             if (!string.IsNullOrWhiteSpace(report))
             {
-                throw new ArgumentException(report);
+                var ex = new ArgumentException(report);
+                _logger.Warn(ex);
+                throw ex;
             }
             
-            JArray array = (JArray)joResponse["ScheduleContent"];
+            JArray scheduleContent = (JArray)joResponse["ScheduleContent"];
             ScheduleWeekContent ret = new ScheduleWeekContent();
-            foreach (var element in array)
+            foreach (var element in scheduleContent)
             {
                 int blockNumber = 1;
                 var daySchedule = new ScheduleDayContent();
