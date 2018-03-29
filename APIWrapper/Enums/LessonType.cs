@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace APIWrapper.Enums
+namespace FRITeam.Swapify.APIWrapper.Enums
 {
-    public enum ELessonType
+    public enum LessonType
     {
         None = 0,
 

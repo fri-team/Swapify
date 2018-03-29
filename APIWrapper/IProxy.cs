@@ -1,34 +1,31 @@
-using APIWrapper.Objects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using FRITeam.Swapify.APIWrapper.Objects;
 
-namespace APIWrapper
+namespace FRITeam.Swapify.APIWrapper
 {
-    public interface IProxy
+    public interface IProxySchedule
     {
         /// <summary>
         ///         Return schedule for whole week by study group
         /// </summary>
         /// <param name="studyGroupNumber">study group</param>
-        ScheduleWeekContent GetScheduleContentByStudyGroup(string studyGroupNumber);
+        ScheduleWeekContent GetByStudyGroup(string studyGroupNumber);
 
         /// <summary>
         ///         Return schedule for whole week by teacher unique number
         /// </summary>
         /// <param name="studyGroupNumber">teacher unique number</param>
-        ScheduleWeekContent GetScheduleContentByTeacherName(string teacherNumber);
+        ScheduleWeekContent GetByTeacherName(string teacherNumber);
 
         /// <summary>
         ///         Return schedule for whole week by room number
         /// </summary>
         /// <param name="studyGroupNumber">room number</param>
-        ScheduleWeekContent GetScheduleContentByRoomNumber(string roomNumber);
+        ScheduleWeekContent GetByRoomNumber(string roomNumber);
 
         /// <summary>
         ///         Return schedule for whole week by subject code
         /// </summary>
         /// <param name="studyGroupNumber">subject code</param>
-        ScheduleWeekContent GetScheduleContentBySubjectCode(string subjectCode);
+        ScheduleWeekContent GetBySubjectCode(string subjectCode);
     }
 }

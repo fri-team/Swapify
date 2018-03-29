@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace APIWrapper.Objects
+namespace FRITeam.Swapify.APIWrapper.Objects
 {
     public class ScheduleWeekContent
     {

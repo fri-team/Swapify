@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using APIWrapper;
+using FRITeam.Swapify.APIWrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,8 +20,8 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            IProxy proxy = new Proxy();
-            proxy.GetScheduleContentByStudyGroup("4ZI42E");
+            IProxySchedule proxy = new ProxySchedule();
+            proxy.GetByStudyGroup("4ZI42E");
 
             _logger.LogInformation("get all values");
             return new string[] { "value1", "value2" };

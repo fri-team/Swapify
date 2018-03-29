@@ -1,34 +1,33 @@
-using APIWrapper.Enums;
-using APIWrapper.Objects;
+using FRITeam.Swapify.APIWrapper.Enums;
+using FRITeam.Swapify.APIWrapper.Objects;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace APIWrapper
+namespace FRITeam.Swapify.APIWrapper
 {
-    public class Proxy : IProxy
+    public class ProxySchedule : IProxySchedule
     {
         private const string __URL__ = "https://nic.uniza.sk/webservices";
         private const string __SCHEDULE_CONTENT_URL__ = "getUnizaScheduleContent.php";
         
-        public ScheduleWeekContent GetScheduleContentByTeacherName(string teacherNumber)
+        public ScheduleWeekContent GetByTeacherName(string teacherNumber)
         {
             return CallScheduleContentApi(1, teacherNumber);
         }
 
-        public ScheduleWeekContent GetScheduleContentByStudyGroup(string studyGroupNumber)
+        public ScheduleWeekContent GetByStudyGroup(string studyGroupNumber)
         {
             return CallScheduleContentApi(2, studyGroupNumber);
         }
 
-        public ScheduleWeekContent GetScheduleContentByRoomNumber(string roomNumber)
+        public ScheduleWeekContent GetByRoomNumber(string roomNumber)
         {
             return CallScheduleContentApi(3, roomNumber);
         }
 
-        public ScheduleWeekContent GetScheduleContentBySubjectCode(string subjectCode)
+        public ScheduleWeekContent GetBySubjectCode(string subjectCode)
         {
             return CallScheduleContentApi(4, subjectCode);
         }
@@ -86,7 +85,7 @@ namespace APIWrapper
                             sc.SubjectShortcut = blck["s"].ToString();
                             sc.SubjectName = blck["k"].ToString();
                             sc.StudyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            sc.SubjectType = (ESubjectType)Convert.ToInt32(blck["p"].ToString());
+                            sc.SubjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
                             sc.IsEmptyBlock = false;
                         }
                         else
@@ -108,13 +107,13 @@ namespace APIWrapper
             return ret;
         }
 
-        private ELessonType ConvertLessonType(char lessonShortcutType)
+        private LessonType ConvertLessonType(char lessonShortcutType)
         {
             switch (lessonShortcutType)
             {
-                case 'L': return ELessonType.Laboratory;
-                case 'P': return ELessonType.Lecture;
-                case 'C': return ELessonType.Excercise;
+                case 'L': return LessonType.Laboratory;
+                case 'P': return LessonType.Lecture;
+                case 'C': return LessonType.Excercise;
                 default: throw new ArgumentException($"Unexpected lesson type '{lessonShortcutType}'");    
             }
         }

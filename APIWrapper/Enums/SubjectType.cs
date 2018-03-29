@@ -1,7 +1,7 @@
 
-namespace APIWrapper.Enums
+namespace FRITeam.Swapify.APIWrapper.Enums
 {
-    public enum ESubjectType
+    public enum SubjectType
     {
         None = 0,
 

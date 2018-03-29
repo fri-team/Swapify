@@ -1,9 +1,8 @@
-using APIWrapper.Enums;
-using System;
+using FRITeam.Swapify.APIWrapper.Enums;
 using System.Collections.Generic;
-using System.Text;
 
-namespace APIWrapper.Objects
+
+namespace FRITeam.Swapify.APIWrapper.Objects
 {
     public class ScheduleHourContent
     {
@@ -22,7 +21,7 @@ namespace APIWrapper.Objects
         /// <summary>
         ///         Type of lesson - lecture, laboratory, excersise
         /// </summary>
-        public ELessonType LessonType { get; internal set; }
+        public LessonType LessonType { get; internal set; }
 
         /// <summary>
         ///         Name of the teacher
@@ -52,7 +51,7 @@ namespace APIWrapper.Objects
         /// <summary>
         ///         Type of subject - compulsory, optional, compulsoryElective
         /// </summary>
-        public ESubjectType SubjectType { get; internal set; }
+        public SubjectType SubjectType { get; internal set; }
 
         /// <summary>
         ///         Block is empty (free block)
