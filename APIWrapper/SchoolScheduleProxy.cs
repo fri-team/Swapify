@@ -7,7 +7,7 @@ using System.Net;
 
 namespace FRITeam.Swapify.APIWrapper
 {
-    public class ProxySchedule : IProxySchedule
+    public class SchoolScheduleProxy : ISchoolScheduleProxy
     {
         private const string __URL__ = "https://nic.uniza.sk/webservices";
         private const string __SCHEDULE_CONTENT_URL__ = "getUnizaScheduleContent.php";
@@ -35,19 +35,25 @@ namespace FRITeam.Swapify.APIWrapper
         private ScheduleWeekContent CallScheduleContentApi(int type, string requestContent)
         {
             string address = $"{__URL__}/{__SCHEDULE_CONTENT_URL__}?m={type}&id={Uri.EscapeUriString(requestContent)}";
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
-            request.Method = "Get";
-            request.KeepAlive = true;
-            request.ContentType = "application/x-www-form-urlencoded";
-
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             string myResponse = "";
-            using (System.IO.StreamReader sr = new System.IO.StreamReader(response.GetResponseStream()))
+            try
             {
-                myResponse = sr.ReadToEnd();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                request.Method = "Get";
+                request.KeepAlive = true;
+                request.ContentType = "application/x-www-form-urlencoded";
+
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(response.GetResponseStream()))
+                {
+                    myResponse = sr.ReadToEnd();
+                }
             }
-            
+            catch (Exception ex)
+            {
+
+            }
             return ParseResponse(myResponse);
         }
 
@@ -57,7 +63,7 @@ namespace FRITeam.Swapify.APIWrapper
             JObject joResponse = JObject.Parse(myResponse);
             //check if error occured
             string report = joResponse["report"].ToString();
-            if (!String.IsNullOrWhiteSpace(report))
+            if (!string.IsNullOrWhiteSpace(report))
             {
                 throw new ArgumentException(report);
             }
@@ -73,25 +79,20 @@ namespace FRITeam.Swapify.APIWrapper
                     ScheduleHourContent sc = null;
                     try
                     {
-                        sc = new ScheduleHourContent();
-                        sc.BlockNumber = blockNumber++;
-                        sc.IsBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
-
-                        if (!String.IsNullOrWhiteSpace(blck["t"].ToString()) && !String.IsNullOrWhiteSpace(blck["p"].ToString()))
-                        {
-                            sc.LessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
-                            sc.TeacherName = blck["u"].ToString();
-                            sc.RoomName = blck["r"].ToString();
-                            sc.SubjectShortcut = blck["s"].ToString();
-                            sc.SubjectName = blck["k"].ToString();
-                            sc.StudyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            sc.SubjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
-                            sc.IsEmptyBlock = false;
+                        
+                        if (!string.IsNullOrWhiteSpace(blck["t"].ToString()) && !string.IsNullOrWhiteSpace(blck["p"].ToString()))
+                        { 
+                            var isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
+                            var lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
+                            var teacherName = blck["u"].ToString();
+                            var roomName = blck["r"].ToString();
+                            var subjectShortcut = blck["s"].ToString();
+                            var subjectName = blck["k"].ToString();
+                            var studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
+                            var subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
+                            sc = new ScheduleHourContent(blockNumber++, isBlocked,lessonType,teacherName,roomName,subjectShortcut,subjectName,subjectType);
                         }
-                        else
-                        {
-                            sc.IsEmptyBlock = true;
-                        }
+                        
                         daySchedule.BlocksInDay.Add(sc);
                     }
                     catch (Exception ex)

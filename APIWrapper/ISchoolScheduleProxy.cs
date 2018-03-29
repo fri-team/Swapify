@@ -2,7 +2,7 @@ using FRITeam.Swapify.APIWrapper.Objects;
 
 namespace FRITeam.Swapify.APIWrapper
 {
-    public interface IProxySchedule
+    public interface ISchoolScheduleProxy
     {
         /// <summary>
         ///         Return schedule for whole week by study group

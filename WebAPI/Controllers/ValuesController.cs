@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            IProxySchedule proxy = new ProxySchedule();
+            ISchoolScheduleProxy proxy = new SchoolScheduleProxy();
             proxy.GetByStudyGroup("4ZI42E");
 
             _logger.LogInformation("get all values");
