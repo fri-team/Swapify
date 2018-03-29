@@ -1,6 +1,8 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Linq;
 using System.Net;
@@ -11,7 +13,9 @@ namespace FRITeam.Swapify.APIWrapper
     {
         private const string __URL__ = "https://nic.uniza.sk/webservices";
         private const string __SCHEDULE_CONTENT_URL__ = "getUnizaScheduleContent.php";
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         
+
         public ScheduleWeekContent GetByTeacherName(string teacherNumber)
         {
             return CallScheduleContentApi(1, teacherNumber);
@@ -52,7 +56,7 @@ namespace FRITeam.Swapify.APIWrapper
             }
             catch (Exception ex)
             {
-
+                _logger.Error(ex);
             }
             return ParseResponse(myResponse);
         }
@@ -78,8 +82,7 @@ namespace FRITeam.Swapify.APIWrapper
                 {
                     ScheduleHourContent sc = null;
                     try
-                    {
-                        
+                    {                        
                         if (!string.IsNullOrWhiteSpace(blck["t"].ToString()) && !string.IsNullOrWhiteSpace(blck["p"].ToString()))
                         { 
                             var isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
@@ -97,9 +100,7 @@ namespace FRITeam.Swapify.APIWrapper
                     }
                     catch (Exception ex)
                     {
-                        //to do logger
-                        
-                        Console.WriteLine(ex.ToString());
+                        _logger.Error(ex);
                     }
                     
                 }
