@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
@@ -70,7 +71,7 @@ namespace FRITeam.Swapify.APIWrapper
             if (!string.IsNullOrWhiteSpace(report))
             {
                 var ex = new ArgumentException(report);
-                _logger.Warn(ex);
+                _logger.Error(ex);
                 throw ex;
             }
             
@@ -87,14 +88,14 @@ namespace FRITeam.Swapify.APIWrapper
                     {                        
                         if (!string.IsNullOrWhiteSpace(blck["t"].ToString()) && !string.IsNullOrWhiteSpace(blck["p"].ToString()))
                         { 
-                            var isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
-                            var lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
-                            var teacherName = blck["u"].ToString();
-                            var roomName = blck["r"].ToString();
-                            var subjectShortcut = blck["s"].ToString();
-                            var subjectName = blck["k"].ToString();
-                            var studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            var subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
+                            bool isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
+                            LessonType lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
+                            string teacherName = blck["u"].ToString();
+                            string roomName = blck["r"].ToString();
+                            string subjectShortcut = blck["s"].ToString();
+                            string subjectName = blck["k"].ToString();
+                            List<string> studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
+                            SubjectType subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
                             sc = new ScheduleHourContent(blockNumber++, isBlocked,lessonType,teacherName,roomName,subjectShortcut,subjectName,subjectType);
                         }
                         
