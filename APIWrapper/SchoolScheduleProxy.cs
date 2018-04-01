@@ -1,10 +1,9 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 
@@ -12,10 +11,9 @@ namespace FRITeam.Swapify.APIWrapper
 {
     public class SchoolScheduleProxy : ISchoolScheduleProxy
     {
-        private const string __URL__ = "https://nic.uniza.sk/webservices";
-        private const string __SCHEDULE_CONTENT_URL__ = "getUnizaScheduleContent.php";
+        private const string URL = "https://nic.uniza.sk/webservices";
+        private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        
 
         public ScheduleWeekContent GetByTeacherName(string teacherNumber)
         {
@@ -39,18 +37,18 @@ namespace FRITeam.Swapify.APIWrapper
 
         private ScheduleWeekContent CallScheduleContentApi(int type, string requestContent)
         {
-            string address = $"{__URL__}/{__SCHEDULE_CONTENT_URL__}?m={type}&id={Uri.EscapeUriString(requestContent)}";
-            string myResponse = "";
+            var address = $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
+            var myResponse = "";
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                var request = (HttpWebRequest)WebRequest.Create(address);
                 request.Method = "Get";
                 request.KeepAlive = true;
                 request.ContentType = "application/x-www-form-urlencoded";
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                
-                using (System.IO.StreamReader sr = new System.IO.StreamReader(response.GetResponseStream()))
+                var response = (HttpWebResponse)request.GetResponse();
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
                 {
                     myResponse = sr.ReadToEnd();
                 }
@@ -58,58 +56,60 @@ namespace FRITeam.Swapify.APIWrapper
             catch (Exception ex)
             {
                 _logger.Error(ex);
+                throw ex;
             }
             return ParseResponse(myResponse);
         }
 
         private ScheduleWeekContent ParseResponse(string myResponse)
         {
-            
-            JObject joResponse = JObject.Parse(myResponse);
-            //check if error occured
-            string report = joResponse["report"].ToString();
+
+            var response = JObject.Parse(myResponse);
+            // check if error occured
+            var report = response["report"].ToString();
             if (!string.IsNullOrWhiteSpace(report))
             {
                 var ex = new ArgumentException(report);
                 _logger.Error(ex);
                 throw ex;
             }
-            
-            JArray scheduleContent = (JArray)joResponse["ScheduleContent"];
-            ScheduleWeekContent ret = new ScheduleWeekContent();
-            foreach (var element in scheduleContent)
+
+            var scheduleContent = (JArray)response["ScheduleContent"];
+            var parsedResponse = new ScheduleWeekContent();
+            foreach (var blocks in scheduleContent)
             {
-                int blockNumber = 1;
+                var blockNumber = 1;
                 var daySchedule = new ScheduleDayContent();
-                foreach (var blck in element)
+                foreach (var b in blocks)
                 {
                     ScheduleHourContent sc = null;
                     try
                     {                        
                         if (!string.IsNullOrWhiteSpace(blck["t"].ToString()) && !string.IsNullOrWhiteSpace(blck["p"].ToString()))
                         { 
-                            bool isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
-                            LessonType lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
-                            string teacherName = blck["u"].ToString();
-                            string roomName = blck["r"].ToString();
-                            string subjectShortcut = blck["s"].ToString();
-                            string subjectName = blck["k"].ToString();
-                            List<string> studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            SubjectType subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
+                            var isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
+                            var lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
+                            var teacherName = blck["u"].ToString();
+                            var roomName = blck["r"].ToString();
+                            var subjectShortcut = blck["s"].ToString();
+                            var subjectName = blck["k"].ToString();
+                            var studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
+                            var subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
                             sc = new ScheduleHourContent(blockNumber++, isBlocked,lessonType,teacherName,roomName,subjectShortcut,subjectName,subjectType);
                         }
-                        
+
                         daySchedule.BlocksInDay.Add(sc);
                     }
                     catch (Exception ex)
                     {
                         _logger.Error(ex);
+                        throw ex;
                     }
-                    
+
                 }
-                ret.DaysInWeek.Add(daySchedule);
+                parsedResponse.DaysInWeek.Add(daySchedule);
             }
-            return ret;
+            return parsedResponse;
         }
 
         private LessonType ConvertLessonType(char lessonShortcutType)
@@ -119,7 +119,7 @@ namespace FRITeam.Swapify.APIWrapper
                 case 'L': return LessonType.Laboratory;
                 case 'P': return LessonType.Lecture;
                 case 'C': return LessonType.Excercise;
-                default: throw new ArgumentException($"Unexpected lesson type '{lessonShortcutType}'");    
+                default: throw new ArgumentException($"Unexpected lesson type '{lessonShortcutType}'");
             }
         }
     }
