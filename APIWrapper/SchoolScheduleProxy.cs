@@ -3,6 +3,7 @@ using FRITeam.Swapify.APIWrapper.Objects;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -85,17 +86,17 @@ namespace FRITeam.Swapify.APIWrapper
                     ScheduleHourContent sc = null;
                     try
                     {                        
-                        if (!string.IsNullOrWhiteSpace(blck["t"].ToString()) && !string.IsNullOrWhiteSpace(blck["p"].ToString()))
-                        { 
-                            var isBlocked = Convert.ToBoolean(int.Parse(blck["b"].ToString()));
-                            var lessonType = this.ConvertLessonType(blck["t"].ToString()[0]);
-                            var teacherName = blck["u"].ToString();
-                            var roomName = blck["r"].ToString();
-                            var subjectShortcut = blck["s"].ToString();
-                            var subjectName = blck["k"].ToString();
-                            var studyGroups = blck["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            var subjectType = (SubjectType)Convert.ToInt32(blck["p"].ToString());
-                            sc = new ScheduleHourContent(blockNumber++, isBlocked,lessonType,teacherName,roomName,subjectShortcut,subjectName,subjectType);
+                        if (!string.IsNullOrWhiteSpace(b["t"].ToString()) && !string.IsNullOrWhiteSpace(b["p"].ToString()))
+                        {
+                            bool isBlocked = Convert.ToBoolean(int.Parse(b["b"].ToString()));
+                            LessonType lessonType = this.ConvertLessonType(b["t"].ToString()[0]);
+                            string teacherName = b["u"].ToString();
+                            string roomName = b["r"].ToString();
+                            string subjectShortcut = b["s"].ToString();
+                            string subjectName = b["k"].ToString();
+                            List<string> studyGroups = b["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
+                            SubjectType subjectType = (SubjectType)Convert.ToInt32(b["p"].ToString());
+                            sc = new ScheduleHourContent(blockNumber++, isBlocked, lessonType, teacherName, roomName, subjectShortcut, subjectName, subjectType,studyGroups);
                         }
 
                         daySchedule.BlocksInDay.Add(sc);
