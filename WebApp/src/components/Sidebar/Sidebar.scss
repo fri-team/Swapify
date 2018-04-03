@@ -1,0 +1,16 @@
+@import '../../styles/globals.scss';
+
+$sidebar-width: 300px;
+$sidebar-padding: 16px;
+
+.sidebar {
+  width: $sidebar-width;
+  padding: $sidebar-padding;
+  border-top: 2px solid $border-color;
+  margin-left: -1 * ($sidebar-width + 2 * $sidebar-padding);
+  transition: margin 0.4s ease-in;
+  &.open {
+    margin-left: 0;
+    transition: margin 0.4s ease-out;
+  }
+}

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FRITeam.Swapify.APIWrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,12 +13,16 @@ namespace WebAPI.Controllers
         public ValuesController(ILogger<ValuesController> logger)
         {
             _logger = logger;
+
         }
 
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            ISchoolScheduleProxy proxy = new SchoolScheduleProxy();
+            proxy.GetByStudyGroup("4ZI42E");
+
             _logger.LogInformation("get all values");
             return new string[] { "value1", "value2" };
         }

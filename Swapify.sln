@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{C6831B1C-F5E4-4FBA-859E-E6A5CC80DA43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWrapper", "APIWrapper\APIWrapper.csproj", "{8145492C-213F-4071-A663-40EEAF5333DC}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.csproj", "{24A811E8-10B5-4CDA-BECD-447E84DEE238}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{80D1B9D3-DBC6-42B8-B2E3-EC59A965E955}"
@@ -35,6 +37,10 @@ Global
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8145492C-213F-4071-A663-40EEAF5333DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8145492C-213F-4071-A663-40EEAF5333DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8145492C-213F-4071-A663-40EEAF5333DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8145492C-213F-4071-A663-40EEAF5333DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

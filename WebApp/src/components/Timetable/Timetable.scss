@@ -1,0 +1,45 @@
+@import '../../styles/globals';
+
+.timetable {
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: '. col-head'
+                       'row-head cells';
+  border: 1px solid $border-color;
+}
+
+.col-head,
+.row-head,
+.cells,
+.blocks {
+  display: grid;
+};
+
+.col-head > div,
+.row-head > div,
+.empty-cell,
+.cell {
+  border: 1px solid $border-color;
+  background-color: $background-color;
+}
+
+.col-head > div,
+.row-head > div {
+  padding: 1em;
+}
+
+.col-head > div {
+  text-align: center;
+}
+
+.cells,
+.blocks {
+  grid-area: cells;
+}
+
+.blocks {
+  grid-gap: 2px;
+  border: 1px solid transparent;
+}
