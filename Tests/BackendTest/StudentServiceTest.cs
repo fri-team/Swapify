@@ -22,11 +22,11 @@ namespace BackendTest
             StudyGroup gr = new StudyGroup() { GroupName = "5ZZS14" };
             Timetable tt = new Timetable();
 
-            TimeSlot ts = new TimeSlot() { Day = eDay.Thursday, StartHour = 15};
-            TimeSlot ts1 = new TimeSlot() { Day = eDay.Thursday, StartHour = 16 };
+            TimeSlot ts = new TimeSlot() { Day = Day.Thursday, StartHour = 15};
+            TimeSlot ts1 = new TimeSlot() { Day = Day.Thursday, StartHour = 16 };
             
             Block bl = new Block();
-            bl.BlockType = eBlockType.Lecture;
+            bl.BlockType = BlockType.Lecture;
             bl.Course = cr;
             bl.TimeSlots.Add(ts);
             bl.TimeSlots.Add(ts1);
@@ -45,8 +45,8 @@ namespace BackendTest
             st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[0].StartHour.Should().Be(15);
             st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[1].StartHour.Should().Be(16);
 
-            st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[1].Day.Should().Be(eDay.Thursday);
-            st.StudyGroup.Timetables.First().Blocks.First().BlockType.Should().Be(eBlockType.Lecture);
+            st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[1].Day.Should().Be(Day.Thursday);
+            st.StudyGroup.Timetables.First().Blocks.First().BlockType.Should().Be(BlockType.Lecture);
             st.StudyGroup.Timetables.First().Blocks.First().Course.CourseName.Should().Be("DISS");
         }
     }

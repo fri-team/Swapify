@@ -4,9 +4,10 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities.Enums
 {
-    public enum eStatusType
+    public enum BlockType
     {
-        Done = 1,
-        Rejected = 2
+        Lecture = 1,
+        Laboratory = 2,
+        Excercise = 3
     }
 }

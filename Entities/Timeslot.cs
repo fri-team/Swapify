@@ -7,7 +7,7 @@ namespace FRITeam.Swapify.Entities
 {
     public class TimeSlot : BaseEntity
     {
-        public eDay Day { get; set; }
+        public Day Day { get; set; }
         public int StartHour { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace FRITeam.Swapify.Entities
 {
     public class Block : BaseEntity
     {
-        public eBlockType BlockType{ get; set; }
+        public BlockType BlockType{ get; set; }
 
         public List<TimeSlot> TimeSlots { get; set; }
 

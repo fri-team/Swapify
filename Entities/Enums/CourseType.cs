@@ -4,10 +4,10 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities.Enums
 {
-    public enum eBlockType
+    public enum CourseType
     {
-        Lecture = 1,
-        Laboratory = 2,
-        Excercise = 3
+        Voluntary = 1,
+        Compulsory = 2,
+        Elective = 3
     }
 }

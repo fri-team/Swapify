@@ -4,10 +4,9 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities.Enums
 {
-    public enum eCourseType
+    public enum StatusType
     {
-        Voluntary = 1,
-        Compulsory = 2,
-        Elective = 3
+        Done = 1,
+        Rejected = 2
     }
 }

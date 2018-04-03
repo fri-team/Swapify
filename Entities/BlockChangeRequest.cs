@@ -10,7 +10,7 @@ namespace FRITeam.Swapify.Entities
         public List<Block> BlockOpitonsChange { get; set; }
         public Block BlockForChange { get; set; }
         public Student Student { get; set; }
-        public eStatusType Status { get; set; }
+        public StatusType Status { get; set; }
 
         public BlockChangeRequest()
         {

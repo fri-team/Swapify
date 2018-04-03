@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities.Enums
 {
-    public enum eDay
+    public enum Day
     {
         Monday = 1,
         Tuesday = 2,
