@@ -37,7 +37,7 @@ namespace BackendTest
             st.StudyGroup = gr;
 
             await stSer.AddStudentAsync(st);
-            st = stSer.FindStudentById(st.Id.ToString());
+            st = await stSer.FindStudentById(st.Id.ToString());
 
             st.Id.Should().NotBeEmpty(); // id was set?
 

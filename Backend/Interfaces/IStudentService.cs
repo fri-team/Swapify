@@ -1,8 +1,4 @@
 using FRITeam.Swapify.Entities;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend.Interfaces
@@ -11,6 +7,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
     {
         Task AddStudentAsync(Student entityToAdd);
 
-        Student FindStudentById(string guid);
+        Task<Student> FindStudentById(string guid);
     }
 }

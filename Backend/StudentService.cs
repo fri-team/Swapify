@@ -1,10 +1,7 @@
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend
@@ -24,10 +21,10 @@ namespace FRITeam.Swapify.Backend
             await _database.GetCollection<Student>(nameof(Student)).InsertOneAsync(entityToAdd);
         }
 
-        public Student FindStudentById(string guid)
+        public async Task<Student> FindStudentById(string guid)
         {
             var collection = _database.GetCollection<Student>(nameof(Student));
-            return collection.Find(x=>x.Id.Equals(guid)).FirstOrDefault();
+            return await collection.Find(x=>x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
     }
 }
