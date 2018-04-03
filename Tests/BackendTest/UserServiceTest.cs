@@ -18,7 +18,7 @@ namespace BackendTest
 
             await userService.AddAsync(userToAdd);
 
-            userToAdd.Id.Should().NotBeNull(); // id was set?
+            userToAdd.Id.Should().NotBeEmpty(); // id was set?
         }
     }
 }

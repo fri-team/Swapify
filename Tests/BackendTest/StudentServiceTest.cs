@@ -2,10 +2,7 @@ using FluentAssertions;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -38,14 +35,9 @@ namespace BackendTest
             st.StudyGroup = gr;
 
             await stSer.AddStudentAsync(st);
-            st = stSer.FindStudentById(st.Id);
+            st = stSer.FindStudentById(st.Id.ToString());
 
-            st.Id.Should().NotBeNull(); // id was set?
-            cr.Id.Should().NotBeNull(); // id was set?
-            ts.Id.Should().NotBeNull(); // id was set?
-            ts1.Id.Should().NotBeNull(); // id was set?
-            bl.Id.Should().NotBeNull(); // id was set?
-            gr.Id.Should().NotBeNull(); // id was set?
+            st.Id.Should().NotBeEmpty(); // id was set?
 
             st.StudyGroup.GroupName.Should().Be("5ZZS14");
             st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[0].StartHour.Should().Be(15);

@@ -11,6 +11,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
     {
         Task AddStudentAsync(Student entityToAdd);
 
-        Student FindStudentById(ObjectId id);
+        Student FindStudentById(string guid);
     }
 }
