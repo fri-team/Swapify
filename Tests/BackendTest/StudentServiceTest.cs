@@ -1,5 +1,6 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
+using FRITeam.Swapify.BackendTest;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BackendTest
         [Fact]
         public async Task AddStudentTest()
         {
+            DBSettings.InitDBSettings(MongoRunnerType.Test);
             StudentService stSer = new StudentService(DBSettings.Database);
             Student st = new Student();
 
