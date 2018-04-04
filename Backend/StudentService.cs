@@ -15,13 +15,13 @@ namespace FRITeam.Swapify.Backend
             _database = database;
         }
 
-        public async Task AddStudentAsync(Student entityToAdd)
+        public async Task AddAsync(Student entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
             await _database.GetCollection<Student>(nameof(Student)).InsertOneAsync(entityToAdd);
         }
 
-        public async Task<Student> FindStudentById(string guid)
+        public async Task<Student> FindById(Guid guid)
         {
             var collection = _database.GetCollection<Student>(nameof(Student));
             return await collection.Find(x=>x.Id.Equals(guid)).FirstOrDefaultAsync();

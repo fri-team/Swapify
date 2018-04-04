@@ -7,15 +7,12 @@ namespace FRITeam.Swapify.Entities
 {
     public class Block : BaseEntity
     {
-        public BlockType BlockType{ get; set; }
-
-        public List<TimeSlot> TimeSlots { get; set; }
-
-        public Course Course { get; set; }
-
-        public Block()
-        {
-            TimeSlots = new List<TimeSlot>();
-        }
+        public BlockType BlockType { get; set; }
+        public Guid CourseId { get; set; }
+        public Day Day { get; set; }
+        public int StartHour { get; set; }
+        public int Duration { get; set; }
+        public string Room { get; set; }
+        public string Teacher { get; set; }
     }
 }

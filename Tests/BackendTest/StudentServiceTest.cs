@@ -1,8 +1,10 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
+using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.BackendTest;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,36 +20,42 @@ namespace BackendTest
             StudentService stSer = new StudentService(DBSettings.Database);
             Student st = new Student();
 
-            Course cr = new Course() { CourseName = "DISS" };
+            StudyGroupService grpsrvc = new StudyGroupService(DBSettings.Database);
+
+            Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
             StudyGroup gr = new StudyGroup() { GroupName = "5ZZS14" };
+
+            
+
             Timetable tt = new Timetable();
 
-            TimeSlot ts = new TimeSlot() { Day = Day.Thursday, StartHour = 15};
-            TimeSlot ts1 = new TimeSlot() { Day = Day.Thursday, StartHour = 16 };
             
             Block bl = new Block();
             bl.BlockType = BlockType.Lecture;
-            bl.Course = cr;
-            bl.TimeSlots.Add(ts);
-            bl.TimeSlots.Add(ts1);
+            bl.CourseId = cr.Id;
+            bl.StartHour = 16;
+            bl.Duration = 2;
+            bl.Day = Day.Thursday;
 
             tt.Blocks.Add(bl);
 
             gr.Timetables.Add(tt);
-            st.StudyGroup = gr;
+            await grpsrvc.AddAsync(gr);
 
-            await stSer.AddStudentAsync(st);
-            st = await stSer.FindStudentById(st.Id.ToString());
+            st.StudyGroupId = gr.Id;
+
+            await stSer.AddAsync(st);
+            st = await stSer.FindById(st.Id);
 
             st.Id.Should().NotBeEmpty(); // id was set?
 
-            st.StudyGroup.GroupName.Should().Be("5ZZS14");
-            st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[0].StartHour.Should().Be(15);
-            st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[1].StartHour.Should().Be(16);
+            var studyGroup = await grpsrvc.FindById(gr.Id);
+            studyGroup.GroupName.Should().Be("5ZZS14");
+            studyGroup.Timetables.First().Blocks.First().Day.Should().Be(Day.Thursday);
+            studyGroup.Timetables.First().Blocks.First().Duration.Should().Be(2);
+            studyGroup.Timetables.First().Blocks.First().StartHour.Should().Be(16);
 
-            st.StudyGroup.Timetables.First().Blocks.First().TimeSlots[1].Day.Should().Be(Day.Thursday);
-            st.StudyGroup.Timetables.First().Blocks.First().BlockType.Should().Be(BlockType.Lecture);
-            st.StudyGroup.Timetables.First().Blocks.First().Course.CourseName.Should().Be("DISS");
+            studyGroup.Timetables.First().Blocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
     }
 }

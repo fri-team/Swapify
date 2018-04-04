@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]User userToAdd)
         {
-            _userService.AddAsync(userToAdd).Wait();
+            
         }
         
         // DELETE: api/ApiWithActions/5

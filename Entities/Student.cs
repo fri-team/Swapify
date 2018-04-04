@@ -6,14 +6,13 @@ namespace FRITeam.Swapify.Entities
 {
     public class Student : BaseEntity
     {
-        public List<Timetable> Timetables { get; set; }
-        public List<BlockChangeRequest> Requests { get; set; }
-        public StudyGroup StudyGroup { get; set; }
+        public Timetable Timetable { get; set; }
+        public List<Guid> Requests { get; set; }
+        public Guid StudyGroupId { get; set; }
 
         public Student()
         {
-            Timetables = new List<Timetable>();
-            Requests = new List<BlockChangeRequest>();
+            Requests = new List<Guid>();
         }
     }
 }

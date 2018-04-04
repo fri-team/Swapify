@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FRITeam.Swapify.Entities.Enums
 {
-    public enum StatusType
+    public enum StatusRequestType
     {
         Done = 1,
         Rejected = 2
