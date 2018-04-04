@@ -10,8 +10,8 @@ namespace FRITeam.Swapify.Entities
         public BlockType BlockType { get; set; }
         public Guid CourseId { get; set; }
         public Day Day { get; set; }
-        public int StartHour { get; set; }
-        public int Duration { get; set; }
+        public byte StartHour { get; set; }
+        public byte Duration { get; set; }
         public string Room { get; set; }
         public string Teacher { get; set; }
     }
