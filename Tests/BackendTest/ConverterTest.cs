@@ -36,7 +36,7 @@ namespace BackendTest
         }
 
         [Fact]
-        public void ConvertTest_ValidStudyGroup1()
+        public async void ConvertTest_ValidStudyGroup1()
         {
             ScheduleDayContent day = new ScheduleDayContent();
             var grps = new List<string>();
@@ -75,7 +75,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = ConverterApiToDomain.GetStudyGroupTimetable(week);
+            var timetable = await ConverterApiToDomain.ConvertTimetable(week);
 
             timetable.Blocks.Count.Should().Be(6);
             var blok = timetable.Blocks.Where(x => x.StartHour == 7).FirstOrDefault();
