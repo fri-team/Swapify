@@ -45,11 +45,11 @@ namespace BackendTest
             st.StudyGroupId = gr.Id;
 
             await stSer.AddAsync(st);
-            st = await stSer.FindById(st.Id);
+            st = await stSer.FindByIdAsync(st.Id);
 
             st.Id.Should().NotBeEmpty(); // id was set?
 
-            var studyGroup = await grpsrvc.FindById(gr.Id);
+            var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
             studyGroup.GroupName.Should().Be("5ZZS14");
             studyGroup.Timetables.First().Blocks.First().Day.Should().Be(Day.Thursday);
             studyGroup.Timetables.First().Blocks.First().Duration.Should().Be(2);

@@ -9,28 +9,23 @@ using Xunit;
 namespace BackendTest
 {
 
-    public class ParserTest
+    public class ResponceParserTest
     {
 
         [Fact]
-        public void ApiParserTestThrowException()
+        public void ParseResponce_BadInputParameter()
         {
-            ResponseParser parser = new ResponseParser();
             string input = "{\"report\":\"Nena\u0161li sa \\u017eiadne bloky pre rozvrh.\",\"ScheduleContent\":[]}";
-
-
-            Action act = () => parser.ParseResponse(input);
-
+            
+            Action act = () => ResponseParser.ParseResponse(input);
             Assert.Throws<ArgumentException>(act);
             
         }
 
         [Fact]
-        public void ApiParserTest()
+        public void ParseResponce_ParseEmptyAndCorrectBlock()
         {
-            ResponseParser parser = new ResponseParser();
-          
-             var input = @"
+            var input = @"
                 {
                 'report': null,
                 'ScheduleContent': [
@@ -59,7 +54,7 @@ namespace BackendTest
                     ]
                 }";
 
-            var parsed = parser.ParseResponse(input);
+            var parsed = ResponseParser.ParseResponse(input);
 
             parsed.DaysInWeek[0].BlocksInDay[0].Should().BeNull();
             parsed.DaysInWeek[0].BlocksInDay[1].BlockNumber.Should().Be(1);

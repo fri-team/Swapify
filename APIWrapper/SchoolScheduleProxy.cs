@@ -14,7 +14,7 @@ namespace FRITeam.Swapify.APIWrapper
     {
         private const string URL = "https://nic.uniza.sk/webservices";
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ScheduleWeekContent GetByTeacherName(string teacherNumber)
         {
@@ -59,7 +59,7 @@ namespace FRITeam.Swapify.APIWrapper
                 _logger.Error(ex);
                 throw ex;
             }
-            return new ResponseParser().ParseResponse(myResponse);
+            return ResponseParser.ParseResponse(myResponse);
         }
        
     }
