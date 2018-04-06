@@ -11,9 +11,9 @@ namespace FRITeam.Swapify.APIWrapper
 {
     public class ResponseParser
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ScheduleWeekContent ParseResponse(string myResponse)
+        public static ScheduleWeekContent ParseResponse(string myResponse)
         {
 
             var response = JObject.Parse(myResponse);
@@ -40,7 +40,7 @@ namespace FRITeam.Swapify.APIWrapper
                         if (!string.IsNullOrWhiteSpace(b["t"].ToString()) && !string.IsNullOrWhiteSpace(b["p"].ToString()))
                         {
                             bool isBlocked = Convert.ToBoolean(int.Parse(b["b"].ToString()));
-                            LessonType lessonType = this.ConvertLessonType(b["t"].ToString()[0]);
+                            LessonType lessonType = ConvertLessonType(b["t"].ToString()[0]);
                             string teacherName = b["u"].ToString();
                             string roomName = b["r"].ToString();
                             string subjectShortcut = b["s"].ToString();
@@ -64,7 +64,7 @@ namespace FRITeam.Swapify.APIWrapper
             return parsedResponse;
         }
 
-        private LessonType ConvertLessonType(char lessonShortcutType)
+        private static LessonType ConvertLessonType(char lessonShortcutType)
         {
             switch (lessonShortcutType)
             {

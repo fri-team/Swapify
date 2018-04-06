@@ -10,6 +10,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
     {
         Task AddAsync(StudyGroup entityToAdd);
 
-        Task<StudyGroup> FindById(Guid guid);
+        Task<StudyGroup> FindByIdAsync(Guid guid);
     }
 }
