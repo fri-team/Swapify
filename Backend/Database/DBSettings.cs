@@ -1,12 +1,12 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using System.Text;
 using FRITeam.Swapify.BackendTest;
 using MongoDB.Driver;
 
-namespace BackendTest
+namespace Backend.Database
 {
-    static class DBSettings
+    public static class DBSettings
     {
         public static string ConnectionString() => MongoRunner.GetRunner().ConnectionString;
 

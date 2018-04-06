@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Backend.Database;
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.BackendTest;
