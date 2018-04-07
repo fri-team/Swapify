@@ -15,7 +15,7 @@ Lecture.propTypes = {
 };
 
 Lecture.defaultProps = {
-  fill: '#000000',
+  fill: '#000',
 };
 
 export default Lecture;

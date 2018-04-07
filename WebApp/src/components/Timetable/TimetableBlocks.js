@@ -25,12 +25,25 @@ const TimetableBlocks = (props) => {
   }
   const rowHeight = lcm(map(groupedBlocks, size));
   const blocks = [];
+  let lastDay = 0;
+  let lastEndBlock = 0;
+  let marginTop = 0;
   each(groupedBlocks, (group) => {
     const groupSize = size(group);
     const blockHeight = rowHeight / groupSize;
     each(group, (block, i) => {
       const startLine = ((block.day - 1) * rowHeight) + (i * blockHeight) + 1;
       const classes = [];
+      if (lastDay != block.day) {
+        lastDay = block.day;
+        lastEndBlock = 0;
+        marginTop = 0;
+      } else if (block.startBlock < lastEndBlock && lastEndBlock < block.endBlock) {
+        marginTop += 5;
+      } else {
+        marginTop = 0;
+      }
+      lastEndBlock = block.endBlock;
       if (groupSize > 3) {
         classes.push('small');
       } else if (groupSize > 2) {
@@ -44,6 +57,7 @@ const TimetableBlocks = (props) => {
           style={{
             gridColumn: `${block.startBlock} / ${block.endBlock}`,
             gridRow: `${startLine} / ${startLine + blockHeight}`,
+            marginTop: `${marginTop}%`,
           }}
         />
       );
