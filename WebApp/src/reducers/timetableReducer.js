@@ -83,5 +83,6 @@ export function mergeTimetables(myTimetable, courseTimetables) {
     return myTimetable;
   }
   const coursesWithoutMyLabs = map(courseTimetables, cTimetable => differenceWith(cTimetable, myTimetable, isEqual));
-  return concat(myTimetable, flatten(coursesWithoutMyLabs));
+  const myFlaggedTimetable = map(myTimetable, b => merge({}, b, { isMine: true }));
+  return concat(myFlaggedTimetable, flatten(coursesWithoutMyLabs));
 }

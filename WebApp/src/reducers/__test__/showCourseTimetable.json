@@ -15,7 +15,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RA301",
-        "tearcher": "Tomáš Majer",
+        "teacher": "Tomáš Majer",
         "type": "laboratory"
       },
       {
@@ -25,7 +25,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
+        "teacher": "Stanislav Palúch",
         "type": "lecture"
       },
       {
@@ -35,7 +35,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RB003",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "laboratory"
       },
       {
@@ -45,7 +45,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "lecture"
       }
     ],
@@ -63,7 +63,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RA301",
-          "tearcher": "Tomáš Majer",
+          "teacher": "Tomáš Majer",
           "type": "laboratory"
         },
         {
@@ -73,7 +73,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RA301",
-          "tearcher": "Tomáš Majer",
+          "teacher": "Tomáš Majer",
           "type": "laboratory"
         },
         {
@@ -83,7 +83,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RC009",
-          "tearcher": "Stanislav Palúch",
+          "teacher": "Stanislav Palúch",
           "type": "lecture"
         }
       ]
@@ -97,7 +97,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RA301",
-        "tearcher": "Tomáš Majer",
+        "teacher": "Tomáš Majer",
         "type": "laboratory"
       },
       {
@@ -107,7 +107,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
+        "teacher": "Stanislav Palúch",
         "type": "lecture"
       },
       {
@@ -117,7 +117,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RB003",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "laboratory"
       },
       {
@@ -127,7 +127,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "lecture"
       }
     ]
@@ -142,7 +142,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RA301",
-        "tearcher": "Tomáš Majer",
+        "teacher": "Tomáš Majer",
         "type": "laboratory"
       },
       {
@@ -152,7 +152,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
+        "teacher": "Stanislav Palúch",
         "type": "lecture"
       },
       {
@@ -162,7 +162,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RB003",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "laboratory"
       },
       {
@@ -172,7 +172,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "lecture"
       }
     ],
@@ -190,7 +190,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RA301",
-          "tearcher": "Tomáš Majer",
+          "teacher": "Tomáš Majer",
           "type": "laboratory"
         },
         {
@@ -200,7 +200,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RA301",
-          "tearcher": "Tomáš Majer",
+          "teacher": "Tomáš Majer",
           "type": "laboratory"
         },
         {
@@ -210,7 +210,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RC009",
-          "tearcher": "Stanislav Palúch",
+          "teacher": "Stanislav Palúch",
           "type": "lecture"
         }
       ]
@@ -226,8 +226,9 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RA301",
-        "tearcher": "Tomáš Majer",
-        "type": "laboratory"
+        "teacher": "Tomáš Majer",
+        "type": "laboratory",
+        "isMine": true
       },
       {
         "day": 2,
@@ -236,8 +237,9 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
-        "type": "lecture"
+        "teacher": "Stanislav Palúch",
+        "type": "lecture",
+        "isMine": true
       },
       {
         "day": 3,
@@ -246,8 +248,9 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RB003",
-        "tearcher": "Matilda Drozdová",
-        "type": "laboratory"
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory",
+        "isMine": true
       },
       {
         "day": 4,
@@ -256,8 +259,9 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
-        "type": "lecture"
+        "teacher": "Matilda Drozdová",
+        "type": "lecture",
+        "isMine": true
       },
       {
         "day": 1,
@@ -266,7 +270,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RA301",
-        "tearcher": "Tomáš Majer",
+        "teacher": "Tomáš Majer",
         "type": "laboratory"
       }
     ]

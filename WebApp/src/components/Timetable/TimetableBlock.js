@@ -7,7 +7,7 @@ import Laboratory from '../svg/Laboratory';
 import './TimetableBlock.scss';
 
 const TimetableBlock = (props) => {
-  const { backgroundColor, color } = toMaterialStyle(props.name);
+  const { backgroundColor, color } = toMaterialStyle(props.courseShortcut);
   const myStyle = {
     ...props.style,
     backgroundColor,
@@ -17,25 +17,28 @@ const TimetableBlock = (props) => {
   return (
     <div className={classNames('block', props.cssClasses)} style={myStyle}>
       <div>
-        <div className="name">{props.name}</div>
+        <div className="name">{props.courseShortcut}</div>
         {icon}
       </div>
       <div className="room">{props.room}</div>
       <div className="teacher">{props.teacher}</div>
+      {!props.isMine && <div className="opacity" />}
     </div>
   );
 };
 
 TimetableBlock.propTypes = {
-  name: PropTypes.string.isRequired,
+  courseShortcut: PropTypes.string.isRequired,
   room: PropTypes.string.isRequired,
   teacher: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  isMine: PropTypes.bool,
   cssClasses: PropTypes.arrayOf(PropTypes.string),
   style: PropTypes.shape({}),
 };
 
 TimetableBlock.defaultProps = {
+  isMine: false,
   cssClasses: [],
   style: {},
 };

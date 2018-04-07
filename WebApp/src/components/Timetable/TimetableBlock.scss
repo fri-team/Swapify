@@ -1,6 +1,8 @@
 .block {
+  position: relative;
   padding: 1em;
   border-radius: .25em;
+  cursor: pointer;
   .name {
     display: inline-block;
     font-weight: bold;
@@ -15,18 +17,26 @@
   .teacher {
     font-size: .8em;
   }
-}
-
-.block.small {
-  padding: .7em;
-  .room,
-  .teacher {
-    display: none;
+  &.small {
+    padding: .7em;
+    .room,
+    .teacher {
+      display: none;
+    }
+  }
+  &.medium {
+    .room {
+      display: none;
+    }
   }
 }
 
-.block.medium {
-  .room {
-    display: none;
-  }
+.opacity {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  opacity: .4;
 }

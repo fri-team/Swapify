@@ -12,7 +12,7 @@
             "courseName": "Databázy a získavanie znalostí",
             "courseShortcut": "II05",
             "room": "RB052",
-            "tearcher": "Vitaly Levashenko",
+            "teacher": "Vitaly Levashenko",
             "type": "laboratory"
           },
           {
@@ -22,7 +22,7 @@
             "courseName": "Databázy a získavanie znalostí",
             "courseShortcut": "II05",
             "room": "RB052",
-            "tearcher": "Vitaly Levashenko",
+            "teacher": "Vitaly Levashenko",
             "type": "laboratory"
           },
           {
@@ -32,7 +32,7 @@
             "courseName": "Databázy a získavanie znalostí",
             "courseShortcut": "II05",
             "room": "RB052",
-            "tearcher": "Vitaly Levashenko",
+            "teacher": "Vitaly Levashenko",
             "type": "laboratory"
           },
           {
@@ -42,7 +42,7 @@
             "courseName": "Databázy a získavanie znalostí",
             "courseShortcut": "II05",
             "room": "RC009",
-            "tearcher": "Vitaly Levashenko",
+            "teacher": "Vitaly Levashenko",
             "type": "lecture"
           },
           {
@@ -52,7 +52,7 @@
             "courseName": "Databázy a získavanie znalostí",
             "courseShortcut": "II05",
             "room": "RB052",
-            "tearcher": "Vitaly Levashenko",
+            "teacher": "Vitaly Levashenko",
             "type": "laboratory"
           }
         ]
@@ -70,7 +70,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -80,7 +80,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -90,7 +90,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -100,7 +100,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -110,7 +110,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -120,7 +120,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RC009",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "lecture"
         }
       ]
@@ -137,7 +137,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -147,7 +147,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -157,7 +157,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -167,7 +167,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -177,7 +177,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RB003",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "laboratory"
         },
         {
@@ -187,7 +187,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RC009",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "lecture"
         }
       ],
@@ -199,7 +199,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RB052",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "laboratory"
         },
         {
@@ -209,7 +209,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RB052",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "laboratory"
         },
         {
@@ -219,7 +219,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RB052",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "laboratory"
         },
         {
@@ -229,7 +229,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RC009",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "lecture"
         },
         {
@@ -239,7 +239,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RB052",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "laboratory"
         }
       ]

@@ -39,10 +39,7 @@ const TimetableBlocks = (props) => {
       blocks.push(
         <TimetableBlock
           key={`${block.courseShortcut}-${block.day}x${block.startBlock}`}
-          name={block.courseShortcut}
-          room={block.room}
-          teacher={block.tearcher}
-          type={block.type}
+          {...block}
           cssClasses={classes}
           style={{
             gridColumn: `${block.startBlock} / ${block.endBlock}`,

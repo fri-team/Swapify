@@ -10,7 +10,7 @@
           "courseName": "Teória informácie",
           "courseShortcut": "TI",
           "room": "RC009",
-          "tearcher": "Stanislav Palúch",
+          "teacher": "Stanislav Palúch",
           "type": "lecture"
         },
         {
@@ -20,7 +20,7 @@
           "courseName": "Databázy a získavanie znalostí",
           "courseShortcut": "II05",
           "room": "RC009",
-          "tearcher": "Vitaly Levashenko",
+          "teacher": "Vitaly Levashenko",
           "type": "lecture"
         },
         {
@@ -30,7 +30,7 @@
           "courseName": "Architektúry informačných systémov",
           "courseShortcut": "AIS",
           "room": "RC009",
-          "tearcher": "Matilda Drozdová",
+          "teacher": "Matilda Drozdová",
           "type": "lecture"
         }
       ]
@@ -55,7 +55,7 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
+        "teacher": "Stanislav Palúch",
         "type": "lecture"
       },
       {
@@ -65,7 +65,7 @@
         "courseName": "Databázy a získavanie znalostí",
         "courseShortcut": "II05",
         "room": "RC009",
-        "tearcher": "Vitaly Levashenko",
+        "teacher": "Vitaly Levashenko",
         "type": "lecture"
       },
       {
@@ -75,7 +75,7 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
+        "teacher": "Matilda Drozdová",
         "type": "lecture"
       }
     ],
@@ -95,8 +95,9 @@
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
-        "tearcher": "Stanislav Palúch",
-        "type": "lecture"
+        "teacher": "Stanislav Palúch",
+        "type": "lecture",
+        "isMine": true
       },
       {
         "day": 4,
@@ -105,8 +106,9 @@
         "courseName": "Databázy a získavanie znalostí",
         "courseShortcut": "II05",
         "room": "RC009",
-        "tearcher": "Vitaly Levashenko",
-        "type": "lecture"
+        "teacher": "Vitaly Levashenko",
+        "type": "lecture",
+        "isMine": true
       },
       {
         "day": 4,
@@ -115,8 +117,9 @@
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
-        "tearcher": "Matilda Drozdová",
-        "type": "lecture"
+        "teacher": "Matilda Drozdová",
+        "type": "lecture",
+        "isMine": true
       }
     ]
   }
