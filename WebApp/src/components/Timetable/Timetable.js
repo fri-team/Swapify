@@ -5,35 +5,32 @@ import TimetableBlocks from './TimetableBlocks';
 import './Timetable.scss';
 
 const Timetable = (props) => {
-  const colHeadings = map(props.colHeadings, (col, idx) => (
-    <div key={idx} className="block">{col}</div>
+  const hours = map(props.colHeadings, (col, idx) => (
+    <div key={idx} className="border-cell">{col}</div>
   ));
-  const rowHeadings = map(props.rowHeadings, (row, idx) => (
-    <div key={idx} className="day">{row}</div>
+  const days = map(props.rowHeadings, (row, idx) => (
+    <div key={idx} className="border-cell">{row}</div>
   ));
-  const blocks = [];
-  for (let i = 1; i <= rowHeadings.length; i++) {
-    for (let j = 1; j <= colHeadings.length; j++) {
-      blocks.push(
-        <div key={`${i}x${j}`} className="cell" style={{
-          gridRow: i,
-          gridColumn: j,
-        }} />
+  const borderCells = [];
+  for (let i = 1; i <= days.length; i++) {
+    for (let j = 1; j <= hours.length; j++) {
+      borderCells.push(
+        <div key={`${i}x${j}`} className="border-cell" style={{ gridRow: i, gridColumn: j }} />
       );
     }
   }
-  const colStyle = { gridTemplateColumns: `repeat(${colHeadings.length}, 1fr)` };
-  const rowStyle = { gridTemplateRows: `repeat(${rowHeadings.length}, 1fr)` };
-  const style = merge({}, colStyle, rowStyle);
+  const hoursStyle = { display: 'grid', gridTemplateColumns: `repeat(${hours.length}, 1fr)` };
+  const daysStyle = { display: 'grid', gridTemplateRows: `repeat(${days.length}, 1fr)` };
+  const style = merge({}, hoursStyle, daysStyle);
   return (
     <div className="timetable">
-      <div className="empty-cell"></div>
-      <div className="col-head" style={colStyle}>{colHeadings}</div>
-      <div className="row-head" style={rowStyle}>{rowHeadings}</div>
-      <div className="cells" style={style}>{blocks}</div>
+      <div className="border-cell" />
+      <div style={hoursStyle}>{hours}</div>
+      <div style={daysStyle}>{days}</div>
+      <div className="border-cells" style={style}>{borderCells}</div>
       <TimetableBlocks
-        columns={colHeadings.length}
-        rows={rowHeadings.length}
+        columns={hours.length}
+        rows={days.length}
         items={props.items}
       />
     </div>

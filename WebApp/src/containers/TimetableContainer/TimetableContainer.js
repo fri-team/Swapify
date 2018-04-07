@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { concat, differenceWith, flatten, isEqual, map, merge, pick } from 'lodash';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/timetableActions';
 import Timetable from '../../components/Timetable/Timetable';
 
 class TimetableContainer extends Component {
+  componentWillMount() {
+    this.props.actions.loadMyTimetable();
+  }
+
   render() {
-    const myBlocks = this.props.blocks;
-    const subjects = map(pick(this.props.subjects, this.props.showSubjects), subject => differenceWith(subject, myBlocks, isEqual));
-    const blocks = map(flatten(subjects), block => merge({}, block, { type: block.type + ' pale' }));
-    const items = concat(myBlocks, blocks);
     return (
       <Timetable
         colHeadings={this.props.colHeadings}
         rowHeadings={this.props.rowHeadings}
-        items={items}
+        items={this.props.displayedTimetable}
       />
     );
   }
@@ -23,13 +24,18 @@ class TimetableContainer extends Component {
 TimetableContainer.propTypes = {
   colHeadings: PropTypes.arrayOf(PropTypes.string).isRequired,
   rowHeadings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  blocks: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  subjects: PropTypes.PropTypes.shape({}).isRequired,
-  showSubjects: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayedTimetable: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  actions: PropTypes.shape({
+    loadMyTimetable: PropTypes.func,
+  }).isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  ...state.blocks,
+  ...state.timetable,
 });
 
-export default connect(mapStateToProps)(TimetableContainer);
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimetableContainer);

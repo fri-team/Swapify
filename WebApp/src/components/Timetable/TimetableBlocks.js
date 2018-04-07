@@ -1,32 +1,48 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { each, flatten, groupBy, map, orderBy, size, values } from 'lodash';
+import {
+  each, flatten, groupBy, isArray, isEmpty,
+  map, orderBy, size, values,
+} from 'lodash';
 import lcm from 'mlcm';
 import TimetableBlock from './TimetableBlock';
 
+export function groupByTimeBlocks(timetable) {
+  if (!isArray(timetable) || isEmpty(timetable)) {
+    return [];
+  }
+  const ordered = orderBy(timetable, ['day', 'startBlock', 'endBlock', 'courseShortcut']);
+  const groupsByDay = groupBy(ordered, 'day');
+  const groupsByDayAndStartBlock = map(groupsByDay, g => groupBy(g, 'startBlock'));
+  const groupsByStartBlock = flatten(map(groupsByDayAndStartBlock, values));
+  return groupsByStartBlock;
+}
+
 const TimetableBlocks = (props) => {
-  const dayGroups = groupBy(orderBy(props.items, ['day', 'startBlock', 'endBlock', 'name']), 'day');
-  const dayStartBlockGroups = map(dayGroups, group => groupBy(group, 'startBlock'));
-  const clusters = flatten(map(dayStartBlockGroups, values));
-  const rowHeight = lcm(map(clusters, size));
+  const groupedBlocks = groupByTimeBlocks(props.items);
+  if (isEmpty(groupedBlocks)) {
+    return null;
+  }
+  const rowHeight = lcm(map(groupedBlocks, size));
   const blocks = [];
-  each(clusters, (cluster) => {
-    const clusterSize = size(cluster)
-    const blockHeight = rowHeight / clusterSize;
-    each(cluster, (block, i) => {
+  each(groupedBlocks, (group) => {
+    const groupSize = size(group);
+    const blockHeight = rowHeight / groupSize;
+    each(group, (block, i) => {
       const startLine = ((block.day - 1) * rowHeight) + (i * blockHeight) + 1;
-      const classes = [block.type];
-      if (clusterSize > 3) {
+      const classes = [];
+      if (groupSize > 3) {
         classes.push('small');
-      } else if (clusterSize > 2) {
+      } else if (groupSize > 2) {
         classes.push('medium');
       }
       blocks.push(
         <TimetableBlock
-          key={`${block.name}-${block.day}x${block.startBlock}`}
-          name={block.name}
+          key={`${block.courseShortcut}-${block.day}x${block.startBlock}`}
+          name={block.courseShortcut}
           room={block.room}
           teacher={block.tearcher}
+          type={block.type}
           cssClasses={classes}
           style={{
             gridColumn: `${block.startBlock} / ${block.endBlock}`,

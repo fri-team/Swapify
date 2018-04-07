@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import blocks from './blockReducer';
+import timetable from './timetableReducer';
 import { routerReducer } from 'react-router-redux';
 
 const rootReducer = combineReducers({
-  blocks,
-  routing: routerReducer
+  routing: routerReducer,
+  timetable,
 });
 
 export default rootReducer;
