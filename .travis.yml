@@ -19,7 +19,7 @@ matrix:
       install:
         - dotnet restore
       script:
-        - echo "Run unit tests..."
+        - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
 
 notifications:
   email: false
