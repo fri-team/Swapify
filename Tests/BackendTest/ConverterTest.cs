@@ -48,8 +48,11 @@ namespace BackendTest
         }
 
         [Fact]
-        public void ConvertTest_ValidStudyGroup1()
+        public async void ConvertTest_ValidStudyGroup1()
         {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            var serviceCourse = new CourseService(database);
+
             ScheduleDayContent day = new ScheduleDayContent();
             var grps = new List<string>();
             grps.Add("5ZZS12");
@@ -87,7 +90,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = ConverterApiToDomain.ConvertTimetable(week).Item1;
+            var timetable = await ConverterApiToDomain.ConvertTimetableForGroup(week, serviceCourse,new FakeProxy());
 
             timetable.Blocks.Count.Should().Be(6);
             var blok = timetable.Blocks.Where(x => x.StartHour == 7).FirstOrDefault();

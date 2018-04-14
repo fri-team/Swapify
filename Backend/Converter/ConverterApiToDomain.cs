@@ -13,14 +13,22 @@ namespace FRITeam.Swapify.Backend.Converter
     public class ConverterApiToDomain
     {
 
-        /// <summary>
-        /// Return timetable and list of courses numbers
-        /// </summary>
-        public static Tuple<Timetable,List<string>> ConvertTimetable(ScheduleWeekContent schedule)
+        public async static Task<Timetable> ConvertTimetableForGroup(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        {
+            return await ConvertTimetable(schedule, courseServ, proxy, false);
+        }
+
+        public async static Task<Timetable> ConvertTimetableForCourse(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        {
+            return await ConvertTimetable(schedule, courseServ, proxy, true);
+        }
+
+
+        private async static Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy,bool isTimetableForCourse)
         {
             
             Timetable timetable = new Timetable();
-            List<string> coursesNumbers = new List<string>();
+            
             for (int idxDay = 0;idxDay < schedule.DaysInWeek.Count;idxDay++)
             {
                 var maxBlocks = schedule.DaysInWeek[idxDay].BlocksInDay.Count;
@@ -45,9 +53,11 @@ namespace FRITeam.Swapify.Backend.Converter
                                 StartHour = (byte)(schedule.DaysInWeek[idxDay].BlocksInDay[blckIdx].BlockNumber + 6),
                                 Duration = 1
                             };
-                            
-                            coursesNumbers.Add(block.CourseName);
-                            
+                            if (!isTimetableForCourse)
+                            {
+                                bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                            }
+
                             timetable.Blocks.Add(bl);
                         }
                         continue;
@@ -64,7 +74,10 @@ namespace FRITeam.Swapify.Backend.Converter
                             StartHour = (byte)(schedule.DaysInWeek[idxDay].BlocksInDay[startingBlock].BlockNumber + 6), //blocknumber start 1 but starting hour in school is 7:00
                             Duration = (byte)(blckIdx - startingBlock)
                         };
-                        coursesNumbers.Add(blockBefore.CourseName);
+                        if (!isTimetableForCourse)
+                        {
+                            bl.CourseId = await GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, proxy);
+                        }
 
                         timetable.Blocks.Add(bl);
                         startingBlock = (byte)blckIdx;
@@ -75,29 +88,46 @@ namespace FRITeam.Swapify.Backend.Converter
                 idxDay++;
             }
 
-            return new Tuple<Timetable, List<string>>(timetable,coursesNumbers);
+            return timetable;
         }
 
-
-        public static async Task<Tuple<List<Guid>,List<string>>> GetOrCreateCourseIdFromBlock(List<string> courses,
-                                                                                        ICourseService courseServ,
-                                                                                        ISchoolScheduleProxy proxy)
+        private async static Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            List<Guid> courseIds = new List<Guid>();
-            foreach (var courseName in courses)
+            
+            var course = await courseServ.FindByNameAsync(courseName);
+            if (course == null)
             {
-                var course = await courseServ.FindByNameAsync(courseName);
-                if (course == null)
-                {
-                    var downloadedTimetable = proxy.GetBySubjectCode(courseName);
-                    var converted = ConvertTimetable(downloadedTimetable);
-                    course = new Course() { CourseName = courseName, Timetable = converted.Item1 };
-                    await courseServ.AddAsync(course);
-                }
-                courseIds.Add(course.Id);
+                var downloadedTimetable = proxy.GetBySubjectCode(courseName);
+                var convertedTimetable = await ConvertTimetableForCourse(downloadedTimetable,courseServ,proxy);
+                course = new Course() { CourseName = courseName, Timetable = convertedTimetable };
+                await courseServ.AddAsync(course);
             }
-            return new Tuple<List<Guid>, List<string>>(courseIds,null);
+            return course.Id;
+            
         }
+
+        //public static async Task<List<Tuple<Guid,List<string>>>> GetOrCreateCourseIdFromBlock(List<string> courses,
+        //                                                                                ICourseService courseServ,
+        //                                                                                ISchoolScheduleProxy proxy)
+        //{
+        //    List<Tuple<Guid,List<string>>> courseIds = new List<Tuple<Guid,List<string>>>();
+            
+        //    foreach (var courseName in courses)
+        //    {
+        //        List<string> crsNamesToLoad = new List<string>();
+        //        var course = await courseServ.FindByNameAsync(courseName);
+        //        if (course == null)
+        //        {
+        //            var downloadedTimetable = proxy.GetBySubjectCode(courseName);
+        //            var converted = ConvertTimetable(downloadedTimetable);
+        //            crsNamesToLoad = converted.Item2;
+        //            course = new Course() { CourseName = courseName, Timetable = converted.Item1 };
+        //            await courseServ.AddAsync(course);
+        //        }
+        //        courseIds.Add(new Tuple<Guid, List<string>>(course.Id,crsNamesToLoad));
+        //    }
+        //    return courseIds;
+        //}
 
         private static bool IsSameBlock(ScheduleHourContent b1, ScheduleHourContent b2)
         {
