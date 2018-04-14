@@ -31,26 +31,27 @@ namespace FRITeam.Swapify.Backend
             return await collection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public async Task<StudyGroup> GetStudyGroupAsync(string studyGroupNumber)
+        public async Task<StudyGroup> GetStudyGroupAsync(string studyGroupNumber, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
             var collection = _database.GetCollection<StudyGroup>(nameof(StudyGroup));
             var group = await collection.Find(x => x.GroupName.Equals(studyGroupNumber.ToUpper())).FirstOrDefaultAsync();
 
             if (group == null)
             {
-                ISchoolScheduleProxy proxy = new SchoolScheduleProxy();
                 var schedule = proxy.GetByStudyGroup(studyGroupNumber);
-                Timetable t = await ConverterApiToDomain.ConvertTimetable(schedule);
+                var converted = ConverterApiToDomain.ConvertTimetable(schedule);
+                Timetable t = converted.Item1;
                 group = new StudyGroup();
                 group.Timetable = t;
                 group.GroupName = studyGroupNumber;
-                group.Courses = GetCoursesFromBlocks(t.Blocks);
+                var loadedGroups = await ConverterApiToDomain.GetOrCreateCourseIdFromBlock(converted.Item2, courseServ, proxy);
+                group.Courses = loadedGroups.Item1;
             }
 
             return group;
         }
 
-        private List<Guid> GetCoursesFromBlocks(List<Block> blocks)
+        private List<Guid> GetCoursesIdsFromBlocks(List<Block> blocks)
         {
             HashSet<Guid> courseSet = new HashSet<Guid>();
             courseSet.UnionWith(blocks.Select(x => x.CourseId));

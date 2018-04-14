@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Backend.Database;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
@@ -12,11 +12,15 @@ namespace FRITeam.Swapify.Backend.Converter
 {
     public class ConverterApiToDomain
     {
-        public static async Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, bool withRecursiveCourseLoading = false)
+
+        /// <summary>
+        /// Return timetable and list of courses numbers
+        /// </summary>
+        public static Tuple<Timetable,List<string>> ConvertTimetable(ScheduleWeekContent schedule)
         {
             
             Timetable timetable = new Timetable();
-            
+            List<string> coursesNumbers = new List<string>();
             for (int idxDay = 0;idxDay < schedule.DaysInWeek.Count;idxDay++)
             {
                 var maxBlocks = schedule.DaysInWeek[idxDay].BlocksInDay.Count;
@@ -42,10 +46,8 @@ namespace FRITeam.Swapify.Backend.Converter
                                 Duration = 1
                             };
                             
-                            if (withRecursiveCourseLoading)
-                            {
-                                bl.CourseId = await GetOrCreateCourseIdFromBlock(block.CourseName);
-                            }
+                            coursesNumbers.Add(block.CourseName);
+                            
                             timetable.Blocks.Add(bl);
                         }
                         continue;
@@ -59,13 +61,11 @@ namespace FRITeam.Swapify.Backend.Converter
                             Day = ConvertToDay(idxDay),
                             Teacher = blockBefore.TeacherName,
                             Room = blockBefore.RoomName,
-                            StartHour = (byte)(schedule.DaysInWeek[idxDay].BlocksInDay[startingBlock].BlockNumber + 6),
+                            StartHour = (byte)(schedule.DaysInWeek[idxDay].BlocksInDay[startingBlock].BlockNumber + 6), //blocknumber start 1 but starting hour in school is 7:00
                             Duration = (byte)(blckIdx - startingBlock)
                         };
-                        if (withRecursiveCourseLoading)
-                        {
-                            bl.CourseId = await GetOrCreateCourseIdFromBlock(blockBefore.CourseName);
-                        }
+                        coursesNumbers.Add(blockBefore.CourseName);
+
                         timetable.Blocks.Add(bl);
                         startingBlock = (byte)blckIdx;
                     }
@@ -75,27 +75,28 @@ namespace FRITeam.Swapify.Backend.Converter
                 idxDay++;
             }
 
-            return timetable;
+            return new Tuple<Timetable, List<string>>(timetable,coursesNumbers);
         }
 
 
-        private static async Task<Guid> GetOrCreateCourseIdFromBlock(string courseName)
+        public static async Task<Tuple<List<Guid>,List<string>>> GetOrCreateCourseIdFromBlock(List<string> courses,
+                                                                                        ICourseService courseServ,
+                                                                                        ISchoolScheduleProxy proxy)
         {
-            ICourseService courseServ = new CourseService(DBSettings.Database);
-            var course = await courseServ.FindByNameAsync(courseName);
-            if (course == null)
+            List<Guid> courseIds = new List<Guid>();
+            foreach (var courseName in courses)
             {
-                course = new Course() { CourseName = courseName, Timetable = await GetCourseTimetableFromApi(courseName) }; 
-                await courseServ.AddAsync(course);
+                var course = await courseServ.FindByNameAsync(courseName);
+                if (course == null)
+                {
+                    var downloadedTimetable = proxy.GetBySubjectCode(courseName);
+                    var converted = ConvertTimetable(downloadedTimetable);
+                    course = new Course() { CourseName = courseName, Timetable = converted.Item1 };
+                    await courseServ.AddAsync(course);
+                }
+                courseIds.Add(course.Id);
             }
-            return course.Id;
-        }
-
-        private static async Task<Timetable> GetCourseTimetableFromApi(string courseName)
-        {
-            ISchoolScheduleProxy proxy = new SchoolScheduleProxy();
-            var weekSchedule = proxy.GetBySubjectCode(courseName);
-            return await ConvertTimetable(weekSchedule, true);
+            return new Tuple<List<Guid>, List<string>>(courseIds,null);
         }
 
         private static bool IsSameBlock(ScheduleHourContent b1, ScheduleHourContent b2)

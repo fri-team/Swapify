@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using NLog.Web;
 
 namespace WebAPI
 {
     public class Startup
     {
+        private const string DATABASENAME = "Swapify";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -21,6 +23,10 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            // just for development, for production environment variables has to be used
+            services.AddSingleton<IMongoDatabase>(
+                new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString)
+                    .GetDatabase(DATABASENAME));
             services.AddSingleton<IUserService, UserService>();
         }
 
