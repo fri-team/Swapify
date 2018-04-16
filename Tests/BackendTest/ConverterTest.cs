@@ -47,6 +47,7 @@ namespace BackendTest
             grp.Should().NotBeNull();
         }
 
+        
         [Fact]
         public async void ConvertTest_ValidStudyGroup1()
         {

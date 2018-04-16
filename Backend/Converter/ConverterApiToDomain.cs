@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                                 bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
                             }
 
                             timetable.Blocks.Add(bl);
@@ -105,30 +105,7 @@ namespace FRITeam.Swapify.Backend.Converter
             return course.Id;
             
         }
-
-        //public static async Task<List<Tuple<Guid,List<string>>>> GetOrCreateCourseIdFromBlock(List<string> courses,
-        //                                                                                ICourseService courseServ,
-        //                                                                                ISchoolScheduleProxy proxy)
-        //{
-        //    List<Tuple<Guid,List<string>>> courseIds = new List<Tuple<Guid,List<string>>>();
-            
-        //    foreach (var courseName in courses)
-        //    {
-        //        List<string> crsNamesToLoad = new List<string>();
-        //        var course = await courseServ.FindByNameAsync(courseName);
-        //        if (course == null)
-        //        {
-        //            var downloadedTimetable = proxy.GetBySubjectCode(courseName);
-        //            var converted = ConvertTimetable(downloadedTimetable);
-        //            crsNamesToLoad = converted.Item2;
-        //            course = new Course() { CourseName = courseName, Timetable = converted.Item1 };
-        //            await courseServ.AddAsync(course);
-        //        }
-        //        courseIds.Add(new Tuple<Guid, List<string>>(course.Id,crsNamesToLoad));
-        //    }
-        //    return courseIds;
-        //}
-
+        
         private static bool IsSameBlock(ScheduleHourContent b1, ScheduleHourContent b2)
         {
             return (b1.CourseName == b2?.CourseName) &&
