@@ -5,10 +5,19 @@
     <RootNamespace>FRITeam.Swapify.APIWrapper</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
 	<PackageReference Include="NLog.Web.AspNetCore" Version="4.5.0-rc3" />
     <PackageReference Include="NLog" Version="4.5.0-rc06" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.0.1.4822" />
   </ItemGroup>
 
 </Project>
