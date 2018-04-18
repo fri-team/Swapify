@@ -24,25 +24,25 @@ namespace FRITeam.Swapify.Backend.Converter
         }
 
 
-        private async static Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy,bool isTimetableForCourse)
+        private async static Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
         {
-            
+
             Timetable timetable = new Timetable();
-            
-            for (int idxDay = 0;idxDay < schedule.DaysInWeek.Count;idxDay++)
+
+            for (int idxDay = 0; idxDay < schedule.DaysInWeek.Count; idxDay++)
             {
                 var maxBlocks = schedule.DaysInWeek[idxDay].BlocksInDay.Count;
 
                 byte startingBlock = 0;
-                for (int blckIdx = 1;blckIdx < maxBlocks;blckIdx++)
+                for (int blckIdx = 1; blckIdx < maxBlocks; blckIdx++)
                 {
-                    var blockBefore = schedule.DaysInWeek[idxDay].BlocksInDay[blckIdx-1];
+                    var blockBefore = schedule.DaysInWeek[idxDay].BlocksInDay[blckIdx - 1];
                     var block = schedule.DaysInWeek[idxDay].BlocksInDay[blckIdx];
                     if (blockBefore == null)
                     {
                         startingBlock = (byte)blckIdx;
 
-                        if (block != null && blckIdx == maxBlocks-1)
+                        if (block != null && blckIdx == maxBlocks - 1)
                         {
                             var bl = new Block()
                             {
@@ -55,14 +55,14 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                 bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                                bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
                             }
 
                             timetable.Blocks.Add(bl);
                         }
                         continue;
-                        
-                    } 
+
+                    }
                     if (!IsSameBlock(blockBefore, block))
                     {
                         var bl = new Block()
@@ -93,19 +93,19 @@ namespace FRITeam.Swapify.Backend.Converter
 
         private async static Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            
+
             var course = await courseServ.FindByNameAsync(courseName);
             if (course == null)
             {
                 var downloadedTimetable = proxy.GetBySubjectCode(courseName);
-                var convertedTimetable = await ConvertTimetableForCourse(downloadedTimetable,courseServ,proxy);
+                var convertedTimetable = await ConvertTimetableForCourse(downloadedTimetable, courseServ, proxy);
                 course = new Course() { CourseName = courseName, Timetable = convertedTimetable };
                 await courseServ.AddAsync(course);
             }
             return course.Id;
-            
+
         }
-        
+
         private static bool IsSameBlock(ScheduleHourContent b1, ScheduleHourContent b2)
         {
             return (b1.CourseName == b2?.CourseName) &&
@@ -140,7 +140,7 @@ namespace FRITeam.Swapify.Backend.Converter
             {
                 case LessonType.Excercise:
                     return BlockType.Excercise;
-                case LessonType.Laboratory :
+                case LessonType.Laboratory:
                     return BlockType.Laboratory;
                 case LessonType.Lecture:
                     return BlockType.Lecture;

@@ -5,6 +5,6 @@ namespace FRITeam.Swapify.APIWrapper.Enums
         None = 0,
         Laboratory = 1,
         Excercise = 2,
-        Lecture = 3 
+        Lecture = 3
     }
 }

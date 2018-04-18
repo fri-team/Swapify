@@ -38,7 +38,7 @@ namespace BackendTest
             StudyGroup grp = null;
             try
             {
-                grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse,new FakeProxy());
+                grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new FakeProxy());
             }
             catch (ArgumentException ex)
             {
@@ -47,7 +47,7 @@ namespace BackendTest
             grp.Should().NotBeNull();
         }
 
-        
+
         [Fact]
         public async void ConvertTest_ValidStudyGroup1()
         {
@@ -91,7 +91,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = await ConverterApiToDomain.ConvertTimetableForGroup(week, serviceCourse,new FakeProxy());
+            var timetable = await ConverterApiToDomain.ConvertTimetableForGroup(week, serviceCourse, new FakeProxy());
 
             timetable.Blocks.Count.Should().Be(6);
             var blok = timetable.Blocks.Where(x => x.StartHour == 7).FirstOrDefault();

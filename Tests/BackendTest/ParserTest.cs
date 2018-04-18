@@ -16,10 +16,10 @@ namespace BackendTest
         public void ParseResponce_BadInputParameter()
         {
             string input = "{\"report\":\"Nena\u0161li sa \\u017eiadne bloky pre rozvrh.\",\"ScheduleContent\":[]}";
-            
+
             Action act = () => ResponseParser.ParseResponse(input);
             Assert.Throws<ArgumentException>(act);
-            
+
         }
 
         [Fact]

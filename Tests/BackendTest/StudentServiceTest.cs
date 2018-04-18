@@ -39,7 +39,7 @@ namespace BackendTest
             tt.Blocks.Add(bl);
             gr.Timetable = tt;
 
-            
+
             await grpsrvc.AddAsync(gr);
             st.StudyGroupId = gr.Id;
             await stSer.AddAsync(st);

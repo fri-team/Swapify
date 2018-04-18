@@ -24,7 +24,7 @@ namespace FRITeam.Swapify.Backend
         public async Task<Student> FindByIdAsync(Guid guid)
         {
             var collection = _database.GetCollection<Student>(nameof(Student));
-            return await collection.Find(x=>x.Id.Equals(guid)).FirstOrDefaultAsync();
+            return await collection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
     }
 }
