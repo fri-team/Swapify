@@ -20,6 +20,13 @@ matrix:
         - dotnet restore
       script:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
+        - sonar-scanner		
+		
+addons:
+  sonarcloud:
+    organization: "fri-team-github"
+    token:
+      secure: ASbQVPtXc1a5MJZlUnZ1yXf7bNvy1kSAgCiVmxlNiv/QjW2mS+Yab4zipJRkX+QGc2+VsrWcRXDF6+Jds8zYS+7bxw2vuIibJjn0UsD1HeEO8rEGa9LRul6AHhz+BcTPua6XQfn4P05cSouUpmPb/aQIqHKJe4w+gvYc0FzrzheJo8jZqXTY3P7Trk27LeB3cE+uqwwcJ9HK4KJcKfU1kxZz4ffqmIDzcECkkGCj0IYtUSo4S9YQhBjIbrmXkPichCSC0zhBlo9f/UPlDxgKFo+VPuBoHrT96tZpevzu088j0FOlQMreNWrrFobCv1wtzMn6EKZh+1m1NGF2hoR0X90qyTJVaLopHD3y8huNAun8UGtndZo8+10DOBGyKQqfHeIKZz83E1m6pJTGFnmhDA4A/zPUHugiagnioTTXoK29t/ppMfZP05NZktH329eo1tx8VLDZIac51LHRJHCwOqF60UxyCPdVcqVSRwiDCcns5d/E977uzAqtDtij1qFgbi0NdjuRaDrCOf4ij/XSuUuFifahdTGSKWrJLg7jC77C97KZTR8q26suc4klnIsmqj/3I/tokq26xpDPRPQ642Qy3n4jgWpbGuLM8QiPuMi8ei9tv+Ps57PdwnuW+zpxxy/Fp+mwO0abjUJGvkFLFM8B0AJDvcCuyB1eT3euBn0=
 
 notifications:
   email: false
