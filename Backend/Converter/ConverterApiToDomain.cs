@@ -13,18 +13,18 @@ namespace FRITeam.Swapify.Backend.Converter
     public class ConverterApiToDomain
     {
 
-        public async static Task<Timetable> ConvertTimetableForGroup(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            return await ConvertTimetable(schedule, courseServ, proxy, false);
+            return await ConvertTimetable(groupTimetable, courseServ, proxy, false);
         }
 
-        public async static Task<Timetable> ConvertTimetableForCourse(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            return await ConvertTimetable(schedule, courseServ, proxy, true);
+            return await ConvertTimetable(courseTimetable, courseServ, proxy, true);
         }
 
 
-        private async static Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
+        private static async Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
         {
 
             Timetable timetable = new Timetable();
@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
                             }
 
                             timetable.Blocks.Add(bl);
@@ -63,7 +63,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         continue;
 
                     }
-                    if (!IsSameBlock(blockBefore, block))
+                    if (!blockBefore.IsSameBlockAs(block))
                     {
                         var bl = new Block()
                         {
@@ -76,7 +76,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, proxy);
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, proxy);
                         }
 
                         timetable.Blocks.Add(bl);
@@ -90,30 +90,8 @@ namespace FRITeam.Swapify.Backend.Converter
 
             return timetable;
         }
+            
 
-        private async static Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, ISchoolScheduleProxy proxy)
-        {
-
-            var course = await courseServ.FindByNameAsync(courseName);
-            if (course == null)
-            {
-                var downloadedTimetable = proxy.GetBySubjectCode(courseName);
-                var convertedTimetable = await ConvertTimetableForCourse(downloadedTimetable, courseServ, proxy);
-                course = new Course() { CourseName = courseName, Timetable = convertedTimetable };
-                await courseServ.AddAsync(course);
-            }
-            return course.Id;
-
-        }
-
-        private static bool IsSameBlock(ScheduleHourContent b1, ScheduleHourContent b2)
-        {
-            return (b1.CourseName == b2?.CourseName) &&
-                    (b1.TeacherName == b2?.TeacherName) &&
-                    (b1.RoomName == b2?.RoomName) &&
-                    (b1.LessonType == b2?.LessonType) &&
-                    (b1.StudyGroups.SetEquals(b2?.StudyGroups));
-        }
 
         private static Day ConvertToDay(int idxDay)
         {

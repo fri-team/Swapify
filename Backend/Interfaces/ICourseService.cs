@@ -1,3 +1,4 @@
+using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task AddAsync(Course entityToAdd);
         Task<Course> FindByIdAsync(Guid guid);
         Task<Course> FindByNameAsync(string name);
+        Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, ISchoolScheduleProxy proxy);
     }
 }

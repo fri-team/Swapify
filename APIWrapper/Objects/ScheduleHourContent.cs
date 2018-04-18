@@ -67,5 +67,14 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             StudyGroups = new HashSet<string>();
             StudyGroups.UnionWith(studyGroups);
         }
+
+        public bool IsSameBlockAs(ScheduleHourContent b2)
+        {
+            return (CourseName == b2?.CourseName) &&
+                    (TeacherName == b2?.TeacherName) &&
+                    (RoomName == b2?.RoomName) &&
+                    (LessonType == b2?.LessonType) &&
+                    (StudyGroups.SetEquals(b2?.StudyGroups));
+        }
     }
 }
