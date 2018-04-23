@@ -15,7 +15,13 @@ const TimetableBlock = (props) => {
   };
   const icon = props.type === 'lecture' ? <Lecture fill={myStyle.color} /> : <Laboratory fill={myStyle.color} />;
   return (
-    <div className={classNames('block', props.cssClasses)} style={myStyle} onClick={props.onClick}>
+    <div
+      className={classNames('block', props.cssClasses)}
+      style={myStyle}
+      onClick={(event) => {
+        props.onClick(event, props);
+      }}
+    >
       <div>
         <div className="name">{props.courseShortcut}</div>
         {icon}

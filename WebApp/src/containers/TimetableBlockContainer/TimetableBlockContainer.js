@@ -6,9 +6,9 @@ import * as actions from '../../actions/blockDetailActions';
 import TimetableBlock from '../../components/Timetable/TimetableBlock';
 
 class TimetableBlockContainer extends Component {
-  onBlockClick = (evt) => {
+  onBlockClick = (evt, course) => {
     const { offsetTop, offsetLeft, offsetWidth } = evt.currentTarget;
-    this.props.actions.showDetail(offsetTop, offsetLeft + offsetWidth + 8);
+    this.props.actions.showDetail(offsetTop, offsetLeft + offsetWidth + 8, course);
   }
 
   render() {

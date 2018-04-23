@@ -11,12 +11,13 @@ class BlockDetailContainer extends Component {
   }
 
   render() {
-    const { isVisible, top, left } = this.props;
+    const { isVisible, top, left, course } = this.props;
     return (
       <BlockDetail
         isVisible={isVisible}
         top={top}
         left={left}
+        course={course}
         onOutsideClick={this.onOutsideClick}
       />
     );
@@ -27,6 +28,7 @@ BlockDetailContainer.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   top: PropTypes.number.isRequired,
   left: PropTypes.number.isRequired,
+  course: PropTypes.shape({}).isRequired,
   actions: PropTypes.shape({
     hideDetail: PropTypes.func,
   }).isRequired,
