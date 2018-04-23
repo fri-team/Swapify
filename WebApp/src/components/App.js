@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Toolbar from './Toolbar/Toolbar';
 import SidebarContainer from '../containers/SidebarContainer/SidebarContainer';
 import TimetableContainer from '../containers/TimetableContainer/TimetableContainer';
+import BlockDetailContainer from '../containers/BlockDetailContainer/BlockDetailContainer';
 
 // This is a class-based component because the current version of hot reloading
 // won't hot reload a stateless component at the top-level.
@@ -24,6 +25,7 @@ class App extends React.Component {
           <SidebarContainer open={this.state.sidebarOpen} />
           <TimetableContainer />
         </div>
+        <BlockDetailContainer />
       </div>
     );
   }

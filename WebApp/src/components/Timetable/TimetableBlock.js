@@ -15,7 +15,7 @@ const TimetableBlock = (props) => {
   };
   const icon = props.type === 'lecture' ? <Lecture fill={myStyle.color} /> : <Laboratory fill={myStyle.color} />;
   return (
-    <div className={classNames('block', props.cssClasses)} style={myStyle}>
+    <div className={classNames('block', props.cssClasses)} style={myStyle} onClick={props.onClick}>
       <div>
         <div className="name">{props.courseShortcut}</div>
         {icon}
@@ -35,6 +35,7 @@ TimetableBlock.propTypes = {
   isMine: PropTypes.bool,
   cssClasses: PropTypes.arrayOf(PropTypes.string),
   style: PropTypes.shape({}),
+  onClick: PropTypes.func.isRequired,
 };
 
 TimetableBlock.defaultProps = {

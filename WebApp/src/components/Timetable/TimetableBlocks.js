@@ -5,7 +5,7 @@ import {
   map, orderBy, size, values,
 } from 'lodash';
 import lcm from 'mlcm';
-import TimetableBlock from './TimetableBlock';
+import TimetableBlockContainer from '../../containers/TimetableBlockContainer/TimetableBlockContainer';
 
 export function groupByTimeBlocks(timetable) {
   if (!isArray(timetable) || isEmpty(timetable)) {
@@ -50,7 +50,7 @@ const TimetableBlocks = (props) => {
         classes.push('medium');
       }
       blocks.push(
-        <TimetableBlock
+        <TimetableBlockContainer
           key={`${block.courseShortcut}-${block.day}x${block.startBlock}`}
           {...block}
           cssClasses={classes}
