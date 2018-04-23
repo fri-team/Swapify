@@ -17,7 +17,7 @@ namespace BackendTest
         private const bool RUN_WITH_STANDARD_PORT = false;
 
         private readonly MongoDbRunner _runner;
-        public  IMongoClient MongoClient { get; }
+        public IMongoClient MongoClient { get; }
 
         public Mongo2GoFixture()
         {

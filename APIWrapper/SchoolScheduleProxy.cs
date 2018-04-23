@@ -61,7 +61,7 @@ namespace FRITeam.Swapify.APIWrapper
             }
             return ResponseParser.ParseResponse(myResponse);
         }
-       
+
     }
 
 }

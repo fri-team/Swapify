@@ -35,17 +35,17 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         /// <summary>
         /// Subject shortcut
         /// </summary>
-        public string SubjectShortcut { get; }
+        public string CourseShortcut { get; }
 
         /// <summary>
         /// Full name of subject
         /// </summary>
-        public string SubjectName { get; }
+        public string CourseName { get; }
 
         /// <summary>
         /// All study groups which have lesson in the same time
         /// </summary>
-        public List<string> StudyGroups { get; }
+        public HashSet<string> StudyGroups { get; }
 
         /// <summary>
         /// Type of subject - compulsory, optional, compulsoryElective
@@ -61,11 +61,20 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             LessonType = lessonType;
             TeacherName = teacherName;
             RoomName = roomName;
-            SubjectShortcut = subjectShortcut;
-            SubjectName = subjectName;
+            CourseShortcut = subjectShortcut;
+            CourseName = subjectName;
             SubjectType = subjectType;
-            StudyGroups = new List<string>();
-            StudyGroups.AddRange(studyGroups);
+            StudyGroups = new HashSet<string>();
+            StudyGroups.UnionWith(studyGroups);
+        }
+
+        public bool IsSameBlockAs(ScheduleHourContent b2)
+        {
+            return (CourseName == b2?.CourseName) &&
+                    (TeacherName == b2?.TeacherName) &&
+                    (RoomName == b2?.RoomName) &&
+                    (LessonType == b2?.LessonType) &&
+                    (StudyGroups.SetEquals(b2?.StudyGroups));
         }
     }
 }

@@ -16,10 +16,10 @@ namespace BackendTest
         public void ParseResponce_BadInputParameter()
         {
             string input = "{\"report\":\"Nena\u0161li sa \\u017eiadne bloky pre rozvrh.\",\"ScheduleContent\":[]}";
-            
+
             Action act = () => ResponseParser.ParseResponse(input);
             Assert.Throws<ArgumentException>(act);
-            
+
         }
 
         [Fact]
@@ -61,15 +61,15 @@ namespace BackendTest
             parsed.DaysInWeek[0].BlocksInDay[1].IsBlocked.Should().Be(false);
             parsed.DaysInWeek[0].BlocksInDay[1].LessonType.Should().Be(LessonType.Laboratory);
             parsed.DaysInWeek[0].BlocksInDay[1].RoomName.Should().Be("RB053");
-            parsed.DaysInWeek[0].BlocksInDay[1].SubjectName.Should().Be("pravdepodobnosť a štatistika");
-            parsed.DaysInWeek[0].BlocksInDay[1].SubjectShortcut.Should().Be("");
+            parsed.DaysInWeek[0].BlocksInDay[1].CourseName.Should().Be("pravdepodobnosť a štatistika");
+            parsed.DaysInWeek[0].BlocksInDay[1].CourseShortcut.Should().Be("");
             parsed.DaysInWeek[0].BlocksInDay[1].SubjectType.Should().Be(SubjectType.Compulsory);
             parsed.DaysInWeek[0].BlocksInDay[1].TeacherName.Should().Be("Ida Stankovianska");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups[0].Should().Be("5ZK011");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups[1].Should().Be("5ZZS11");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups[2].Should().Be("5ZZS12");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups[3].Should().Be("5ZZS13");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups[4].Should().Be("5ZZS14");
+            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZK011");
+            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS11");
+            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS12");
+            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS13");
+            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS14");
         }
     }
 }

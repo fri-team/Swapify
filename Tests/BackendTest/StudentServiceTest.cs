@@ -1,6 +1,5 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
-using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using System;
@@ -38,7 +37,8 @@ namespace BackendTest
             bl.Duration = 2;
             bl.Day = Day.Thursday;
             tt.Blocks.Add(bl);
-            gr.Timetables.Add(tt);
+            gr.Timetable = tt;
+
 
             await grpsrvc.AddAsync(gr);
             st.StudyGroupId = gr.Id;
@@ -48,10 +48,10 @@ namespace BackendTest
             st.Id.Should().NotBeEmpty(); // id was set?
             var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
             studyGroup.GroupName.Should().Be("5ZZS14");
-            studyGroup.Timetables.First().Blocks.First().Day.Should().Be(Day.Thursday);
-            studyGroup.Timetables.First().Blocks.First().Duration.Should().Be(2);
-            studyGroup.Timetables.First().Blocks.First().StartHour.Should().Be(16);
-            studyGroup.Timetables.First().Blocks.First().BlockType.Should().Be(BlockType.Lecture);
+            studyGroup.Timetable.Blocks.First().Day.Should().Be(Day.Thursday);
+            studyGroup.Timetable.Blocks.First().Duration.Should().Be(2);
+            studyGroup.Timetable.Blocks.First().StartHour.Should().Be(16);
+            studyGroup.Timetable.Blocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
     }
 }

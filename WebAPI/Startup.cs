@@ -11,7 +11,7 @@ namespace WebAPI
 {
     public class Startup
     {
-        private const string DATABSENAME = "Swapify";
+        private const string DATABASENAME = "Swapify";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,7 +26,7 @@ namespace WebAPI
             // just for development, for production environment variables has to be used
             services.AddSingleton<IMongoDatabase>(
                 new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString)
-                    .GetDatabase(DATABSENAME));
+                    .GetDatabase(DATABASENAME));
             services.AddSingleton<IUserService, UserService>();
         }
 
