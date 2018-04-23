@@ -34,9 +34,18 @@ namespace BackendTest
             var service = new StudyGroupService(database);
             var serviceCourse = new CourseService(database);
 
-
             StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new FakeProxy());
             grp.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async void ConvertTest_NotValidStudyGroup()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            var service = new StudyGroupService(database);
+            var serviceCourse = new CourseService(database);
+
+            Assert.Throws<AggregateException>(() => service.GetStudyGroupAsync("5ZZS99", serviceCourse, new SchoolScheduleProxy()).Wait());
         }
 
 

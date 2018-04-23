@@ -15,16 +15,16 @@ namespace FRITeam.Swapify.Backend.Converter
 
         public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            return await ConvertTimetable(groupTimetable, courseServ, proxy, false);
+            return await ConvertTimetableAsync(groupTimetable, courseServ, proxy, false);
         }
 
         public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
         {
-            return await ConvertTimetable(courseTimetable, courseServ, proxy, true);
+            return await ConvertTimetableAsync(courseTimetable, courseServ, proxy, true);
         }
 
 
-        private static async Task<Timetable> ConvertTimetable(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
+        private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
         {
 
             Timetable timetable = new Timetable();

@@ -52,11 +52,5 @@ namespace FRITeam.Swapify.Backend
             return group;
         }
 
-        private List<Guid> GetCoursesIdsFromBlocks(List<Block> blocks)
-        {
-            HashSet<Guid> courseSet = new HashSet<Guid>();
-            courseSet.UnionWith(blocks.Select(x => x.CourseId));
-            return new List<Guid>(courseSet);
-        }
     }
 }
