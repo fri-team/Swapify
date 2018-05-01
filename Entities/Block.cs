@@ -12,5 +12,15 @@ namespace FRITeam.Swapify.Entities
         public byte Duration { get; set; }
         public string Room { get; set; }
         public string Teacher { get; set; }
+
+        public bool IsSameAs(Block b)
+        {
+            return (this.BlockType == b?.BlockType) &&
+                (this.Day == b?.Day) &&
+                (this.StartHour == b?.StartHour) &&
+                (this.Duration == b?.Duration) &&
+                (this.Room == b?.Room) &&
+                (this.Teacher == b?.Teacher);
+        }
     }
 }

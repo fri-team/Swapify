@@ -57,7 +57,7 @@ namespace BackendTest
             var parsed = ResponseParser.ParseResponse(input);
 
             parsed.DaysInWeek[0].BlocksInDay[0].Should().BeNull();
-            parsed.DaysInWeek[0].BlocksInDay[1].BlockNumber.Should().Be(1);
+            parsed.DaysInWeek[0].BlocksInDay[1].BlockNumber.Should().Be(2);
             parsed.DaysInWeek[0].BlocksInDay[1].IsBlocked.Should().Be(false);
             parsed.DaysInWeek[0].BlocksInDay[1].LessonType.Should().Be(LessonType.Laboratory);
             parsed.DaysInWeek[0].BlocksInDay[1].RoomName.Should().Be("RB053");

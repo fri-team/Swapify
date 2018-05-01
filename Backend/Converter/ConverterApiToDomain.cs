@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, bl);
                             }
 
                             timetable.Blocks.Add(bl);
@@ -76,7 +76,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, proxy);
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, bl);
                         }
 
                         timetable.Blocks.Add(bl);
@@ -85,7 +85,7 @@ namespace FRITeam.Swapify.Backend.Converter
 
 
                 }
-                idxDay++;
+                //idxDay++;
             }
 
             return timetable;
