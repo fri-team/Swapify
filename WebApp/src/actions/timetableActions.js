@@ -31,6 +31,13 @@ export function loadMyTimetable() {
       dispatch({
         type: LOAD_MY_TIMETABLE_FAIL,
       });
+      // fallback if API is not running, TODO: remove in the future
+      dispatch({
+        type: LOAD_MY_TIMETABLE_DONE,
+        payload: {
+          timetable: data.timetable,
+        },
+      });
     });
   };
 }
