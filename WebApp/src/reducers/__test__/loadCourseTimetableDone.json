@@ -1,0 +1,248 @@
+{
+  "action": {
+    "type": "LOAD_COURSE_TIMETABLE_DONE",
+    "payload": {
+      "course": {
+        "courseName": "Databázy a získavanie znalostí",
+        "timetable": [
+          {
+            "day": 1,
+            "startBlock": 7,
+            "endBlock": 9,
+            "courseName": "Databázy a získavanie znalostí",
+            "courseShortcut": "II05",
+            "room": "RB052",
+            "teacher": "Vitaly Levashenko",
+            "type": "laboratory"
+          },
+          {
+            "day": 2,
+            "startBlock": 10,
+            "endBlock": 12,
+            "courseName": "Databázy a získavanie znalostí",
+            "courseShortcut": "II05",
+            "room": "RB052",
+            "teacher": "Vitaly Levashenko",
+            "type": "laboratory"
+          },
+          {
+            "day": 3,
+            "startBlock": 4,
+            "endBlock": 6,
+            "courseName": "Databázy a získavanie znalostí",
+            "courseShortcut": "II05",
+            "room": "RB052",
+            "teacher": "Vitaly Levashenko",
+            "type": "laboratory"
+          },
+          {
+            "day": 4,
+            "startBlock": 1,
+            "endBlock": 3,
+            "courseName": "Databázy a získavanie znalostí",
+            "courseShortcut": "II05",
+            "room": "RC009",
+            "teacher": "Vitaly Levashenko",
+            "type": "lecture"
+          },
+          {
+            "day": 5,
+            "startBlock": 6,
+            "endBlock": 8,
+            "courseName": "Databázy a získavanie znalostí",
+            "courseShortcut": "II05",
+            "room": "RB052",
+            "teacher": "Vitaly Levashenko",
+            "type": "laboratory"
+          }
+        ]
+      }
+    }
+  },
+  "stateBefore": {
+    "isLoadingCourse": true,
+    "courseTimetables": {
+      "Architektúry informačných systémov": [
+        {
+          "day": 1,
+          "startBlock": 7,
+          "endBlock": 9,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 9,
+          "endBlock": 11,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 11,
+          "endBlock": 13,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 3,
+          "startBlock": 8,
+          "endBlock": 10,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 3,
+          "startBlock": 10,
+          "endBlock": 12,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 4,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RC009",
+          "teacher": "Matilda Drozdová",
+          "type": "lecture"
+        }
+      ]
+    }
+  },
+  "stateAfter": {
+    "isLoadingCourse": false,
+    "courseTimetables": {
+      "Architektúry informačných systémov": [
+        {
+          "day": 1,
+          "startBlock": 7,
+          "endBlock": 9,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 9,
+          "endBlock": 11,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 11,
+          "endBlock": 13,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 3,
+          "startBlock": 8,
+          "endBlock": 10,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 3,
+          "startBlock": 10,
+          "endBlock": 12,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RB003",
+          "teacher": "Matilda Drozdová",
+          "type": "laboratory"
+        },
+        {
+          "day": 4,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RC009",
+          "teacher": "Matilda Drozdová",
+          "type": "lecture"
+        }
+      ],
+      "Databázy a získavanie znalostí": [
+        {
+          "day": 1,
+          "startBlock": 7,
+          "endBlock": 9,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RB052",
+          "teacher": "Vitaly Levashenko",
+          "type": "laboratory"
+        },
+        {
+          "day": 2,
+          "startBlock": 10,
+          "endBlock": 12,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RB052",
+          "teacher": "Vitaly Levashenko",
+          "type": "laboratory"
+        },
+        {
+          "day": 3,
+          "startBlock": 4,
+          "endBlock": 6,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RB052",
+          "teacher": "Vitaly Levashenko",
+          "type": "laboratory"
+        },
+        {
+          "day": 4,
+          "startBlock": 1,
+          "endBlock": 3,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RC009",
+          "teacher": "Vitaly Levashenko",
+          "type": "lecture"
+        },
+        {
+          "day": 5,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RB052",
+          "teacher": "Vitaly Levashenko",
+          "type": "laboratory"
+        }
+      ]
+    }
+  }
+}

@@ -31,13 +31,15 @@
   "author": "fri-team",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "classnames": "^2.2.5",
-    "immutable": "^3.8.2",
     "lodash": "^4.17.5",
+    "material-color-hash": "^0.1.4",
     "mlcm": "0.0.3",
     "object-assign": "4.1.0",
     "react": "16.2.0",
     "react-dom": "16.2.0",
+    "react-onclickoutside": "^6.7.1",
     "react-redux": "5.0.5",
     "react-router-dom": "4.2.2",
     "react-router-redux": "5.0.0-alpha.6",
@@ -109,7 +111,7 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tools/assetsTransformer.js",
-      "\\.(css)$": "<rootDir>/tools/assetsTransformer.js"
+      "\\.(s?css)$": "<rootDir>/tools/assetsTransformer.js"
     },
     "setupFiles": [
       "raf/polyfill",

@@ -1,0 +1,278 @@
+{
+  "action": {
+    "type": "SHOW_COURSE_TIMETABLE",
+    "payload": {
+      "course": "Teória informácie"
+    }
+  },
+  "stateBefore": {
+    "isLoadingMyTimetable": false,
+    "myTimetable": [
+      {
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture"
+      },
+      {
+        "day": 3,
+        "startBlock": 8,
+        "endBlock": 10,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture"
+      }
+    ],
+    "myCourseNames": [
+      "Architektúry informačných systémov",
+      "Teória informácie"
+    ],
+    "isLoadingCourse": false,
+    "courseTimetables": {
+      "Teória informácie": [
+        {
+          "day": 1,
+          "startBlock": 7,
+          "endBlock": 9,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RA301",
+          "teacher": "Tomáš Majer",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 9,
+          "endBlock": 11,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RA301",
+          "teacher": "Tomáš Majer",
+          "type": "laboratory"
+        },
+        {
+          "day": 2,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RC009",
+          "teacher": "Stanislav Palúch",
+          "type": "lecture"
+        }
+      ]
+    },
+    "displayedCourses": [],
+    "displayedTimetable": [
+      {
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture"
+      },
+      {
+        "day": 3,
+        "startBlock": 8,
+        "endBlock": 10,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture"
+      }
+    ]
+  },
+  "stateAfter": {
+    "isLoadingMyTimetable": false,
+    "myTimetable": [
+      {
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture"
+      },
+      {
+        "day": 3,
+        "startBlock": 8,
+        "endBlock": 10,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture"
+      }
+    ],
+    "myCourseNames": [
+      "Architektúry informačných systémov",
+      "Teória informácie"
+    ],
+    "isLoadingCourse": false,
+    "courseTimetables": {
+      "Teória informácie": [
+        {
+          "day": 1,
+          "startBlock": 7,
+          "endBlock": 9,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RA301",
+          "teacher": "Tomáš Majer",
+          "type": "laboratory"
+        },
+        {
+          "day": 1,
+          "startBlock": 9,
+          "endBlock": 11,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RA301",
+          "teacher": "Tomáš Majer",
+          "type": "laboratory"
+        },
+        {
+          "day": 2,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RC009",
+          "teacher": "Stanislav Palúch",
+          "type": "lecture"
+        }
+      ]
+    },
+    "displayedCourses": [
+      "Teória informácie"
+    ],
+    "displayedTimetable": [
+      {
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory",
+        "isMine": true
+      },
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture",
+        "isMine": true
+      },
+      {
+        "day": 3,
+        "startBlock": 8,
+        "endBlock": 10,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory",
+        "isMine": true
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture",
+        "isMine": true
+      },
+      {
+        "day": 1,
+        "startBlock": 9,
+        "endBlock": 11,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      }
+    ]
+  }
+}
