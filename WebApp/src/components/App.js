@@ -12,7 +12,7 @@ import NotFoundPage from './NotFoundPage/NotFoundPage';
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container">
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/register" component={RegisterPage} />
