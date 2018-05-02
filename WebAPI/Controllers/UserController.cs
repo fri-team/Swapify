@@ -3,11 +3,12 @@ using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/User")]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private ILogger<UserController> _logger;
@@ -32,24 +33,34 @@ namespace WebAPI.Controllers
         {
             return "value";
         }
-        
+
         // POST: api/User
         [HttpPost]
         public void Post([FromBody]string value)
         {
         }
-        
+
         // PUT: api/User/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]User userToAdd)
         {
-            
+
         }
-        
+
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [HttpPost("register")]
+        public IActionResult RegisterUser([FromBody] RegisterBody body)
+        {
+            if (string.IsNullOrEmpty(body.Email) || string.IsNullOrEmpty(body.Password))
+            {
+                return BadRequest(body);
+            }
+            return Ok(body);
         }
     }
 }
