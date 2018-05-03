@@ -1,0 +1,26 @@
+.not-found-background {
+  background-color: #fff;
+  animation: backgroundColor .5s infinite alternate;
+}
+
+@keyframes backgroundColor {
+  from { background-color: #fff; }
+  to { background-color: #000; }
+}
+
+.not-found-wrapper {
+  margin: auto;
+  text-align: center;
+  .not-found {
+    font-size: 30vw;
+  }
+  .not-found, a {
+    color: #000;
+    animation: textColor .5s infinite alternate;
+  }
+}
+
+@keyframes textColor {
+	from { color: #000; }
+	to { color: #fff; }
+}
