@@ -13,6 +13,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<Course> FindByIdAsync(Guid guid);
         Task<Course> FindByNameAsync(string name);
         Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, Block block);
-        Task Update(Course course);
+        Task UpdateAsync(Course course);
     }
 }

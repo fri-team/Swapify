@@ -36,30 +36,30 @@ namespace FRITeam.Swapify.Backend
             return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, Block bl)
+        public async Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, Block courseBlock)
         {
             var course = await courseServ.FindByNameAsync(courseName);
             if (course == null)
             {
                 var timetable = new Timetable();
-                timetable.Blocks.Add(bl);
+                timetable.Blocks.Add(courseBlock);
                 course = new Course() { CourseName = courseName, Timetable = timetable };
                 await courseServ.AddAsync(course);
             }
             else {
-                if (!course.Timetable.ContainsBlock(bl))
+                if (!course.Timetable.ContainsBlock(courseBlock))
                 {
                     //if course exist but doesnt contain this block
                     //is is neccessary to add it into timetable
-                    course.Timetable.Blocks.Add(bl);
-                    await courseServ.Update(course);
+                    course.Timetable.Blocks.Add(courseBlock);
+                    await courseServ.UpdateAsync(course);
                 }
             }
             return course.Id;
 
         }
 
-        public async Task Update(Course course)
+        public async Task UpdateAsync(Course course)
         {
             await _courseCollection.ReplaceOneAsync(x =>x.Id == course.Id,course);
         }
