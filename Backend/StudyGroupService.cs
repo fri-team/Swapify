@@ -39,8 +39,7 @@ namespace FRITeam.Swapify.Backend
             if (group == null)
             {
                 var schedule = proxy.GetByStudyGroup(studyGroupNumber);
-                var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, courseServ, proxy);
-                Timetable t = timetable;
+                Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, courseServ, proxy);
                 group = new StudyGroup();
                 group.Timetable = t;
                 group.GroupName = studyGroupNumber;

@@ -26,6 +26,61 @@ namespace BackendTest
             _mongoFixture = mongoFixture;
         }
 
+        [Fact]
+        public async void ConvertTest_ValidGroupWithSubject()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            var service = new StudyGroupService(database);
+            var serviceCourse = new CourseService(database);
+            
+
+            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new SchoolScheduleProxy());
+            StudyGroup grp1 = await service.GetStudyGroupAsync("5ZZS14", serviceCourse, new SchoolScheduleProxy());
+
+            var crs = await serviceCourse.FindByNameAsync("teória informácie");
+#pragma warning disable S1067 // Expressions should not be too complex
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA301") && (x.StartHour == 11) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+            
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA301") && (x.StartHour == 13) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+
+            
+            crs = await serviceCourse.FindByNameAsync("architektúry informačných systémov");
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RB003") && (x.StartHour == 17) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Wednesday) && (x.Duration == 2) &&
+                                            (x.Room == "RB003") && (x.StartHour == 16) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+
+
+            crs = await serviceCourse.FindByNameAsync("databázy a získavanie znalostí");
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA013") && (x.StartHour == 13) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Friday) && (x.Duration == 2) &&
+                                            (x.Room == "RB052") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.Blocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 7) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+#pragma warning restore S1067 // Expressions should not be too complex
+        }
+
 
         [Fact]
         public async void ConvertTest_ValidStudyGroup()

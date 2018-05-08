@@ -12,5 +12,17 @@ namespace FRITeam.Swapify.Entities
         {
             Blocks = new List<Block>();
         }
+
+        public bool ContainsBlock(Block bl)
+        {
+            foreach (var blck in Blocks)
+            {
+                if(blck.IsSameAs(bl))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
