@@ -42,7 +42,7 @@ namespace FRITeam.Swapify.Backend
             if (course == null)
             {
                 var timetable = new Timetable();
-                timetable.Blocks.Add(courseBlock);
+                timetable.AddNewBlock(courseBlock);
                 course = new Course() { CourseName = courseName, Timetable = timetable };
                 await courseServ.AddAsync(course);
             }
@@ -51,7 +51,7 @@ namespace FRITeam.Swapify.Backend
                 {
                     //if course exist but doesnt contain this block
                     //is is neccessary to add it into timetable
-                    course.Timetable.Blocks.Add(courseBlock);
+                    course.Timetable.AddNewBlock(courseBlock);
                     await courseServ.UpdateAsync(course);
                 }
             }

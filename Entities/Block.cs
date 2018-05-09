@@ -13,6 +13,9 @@ namespace FRITeam.Swapify.Entities
         public string Room { get; set; }
         public string Teacher { get; set; }
 
+        /// <summary>
+        /// Doesnt compare course ID
+        /// </summary>
         public bool IsSameAs(Block b)
         {
             return (this.BlockType == b?.BlockType) &&
@@ -21,6 +24,12 @@ namespace FRITeam.Swapify.Entities
                 (this.Duration == b?.Duration) &&
                 (this.Room == b?.Room) &&
                 (this.Teacher == b?.Teacher);
+        }
+
+        public override bool Equals(object obj)
+        {
+            Block other = obj as Block;
+            return (IsSameAs(other) && this.CourseId == other.CourseId);
         }
     }
 }
