@@ -1,0 +1,80 @@
+*:focus {
+    outline: none;
+}
+
+h1 {
+    margin: 0 0 20px 0;
+    font-weight: 300;
+    font-size: 28px;
+}
+
+.register-box {
+    position: relative;
+    margin: 5% auto;
+    padding: 40px;
+    width: 300px;
+    min-height: 370px;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+  
+input[type="text"],
+input[type="password"] {
+  display: block;
+  box-sizing: border-box;
+  padding: 4px 4px 2px 4px;
+  width: 100%;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid #AAA;
+  font-size: 15px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-bottom: 2px solid #28a2c5;
+  color: #28a2c5;
+  transition: 0.3s ease;
+}
+
+input[type="text"].has-error,
+input[type="password"].has-error {
+  transition: 0.3s ease;
+  border-bottom: 2px solid #fc5858;
+}
+
+.help-block {
+    display: block;
+    color: #fc5858;
+    font-size: 12px;
+    margin-top: 5px;
+    padding-left: 4px;
+}
+
+button {
+    background-color: #28a2c5;
+    border: none;
+    color: white;
+    padding: 8px 28px;
+    margin-top: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #6ecae4;
+    color: white;
+}
+
+.server-error {
+    color:#a94442;    
+    background: #f2dede;
+    border-color: #ebccd1;
+    border: 1px solid;
+    border-radius: 2px;
+    padding: 10px;
+    margin-top: 15px;
+}

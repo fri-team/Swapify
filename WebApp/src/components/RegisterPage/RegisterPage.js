@@ -1,63 +1,223 @@
 // TODO: remove this "eslint-disable" after you remove all console logs...
 /* eslint-disable no-console */
+
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import axios from 'axios';
-import { bind } from '../../util/stateBinding';
+import './RegisterPage.scss';
+import FormValidator from '../FormValidator/FormValidator';
+import PropTypes from 'prop-types';
 
 export default class RegisterPage extends Component {
-  state = {
-    email: '',
-    password: '',
-    passwordCheck: '',
+  constructor(props) {
+    super(props);
+    
+    this.validator = new FormValidator([
+      { 
+        field: 'email', 
+        method: 'isEmpty', 
+        validWhen: false, 
+        message: 'Email je povinný.' 
+      },
+      { 
+        field: 'email',
+        method: 'isEmail', 
+        validWhen: true,
+        message: 'Emailová adresa nie je platná.'
+      },
+      { 
+        field: 'name', 
+        method: 'isEmpty', 
+        validWhen: false, 
+        message: 'Meno je povinné.'
+      },
+      { 
+        field: 'surname', 
+        method: 'isEmpty', 
+        validWhen: false, 
+        message: 'Priezvisko je povinné.'
+      },
+      { 
+        field: 'password', 
+        method: 'isEmpty', 
+        validWhen: false, 
+        message: 'Heslo je povinné.'
+      },
+      { 
+        field: 'password', 
+        method: this.passwordLength,
+        validWhen: true, 
+        message: 'Heslo musí obsahovať aspoň 8 znakov.'
+      },
+      { 
+        field: 'password', 
+        method: 'matches',
+        args: [/\d/],
+        validWhen: true, 
+        message: 'Heslo musí obsahovať aspoň jednu číslicu.'
+      },
+      { 
+        field: 'password', 
+        method: 'matches',
+        args: [/.*[A-Z]/],
+        validWhen: true, 
+        message: 'Heslo musí obsahovať aspoň jedno veľké písmeno.'
+      },
+      { 
+        field: 'password', 
+        method: 'matches',
+        args: [/.*[a-z]/],
+        validWhen: true, 
+        message: 'Heslo musí obsahovať aspoň jedno malé písmeno.'
+      },
+      { 
+        field: 'passwordAgain', 
+        method: 'isEmpty', 
+        validWhen: false, 
+        message: 'Potvrdenie hesla je povinné.'
+       },
+      { 
+        field: 'passwordAgain', 
+        method: this.passwordMatch,
+        validWhen: true, 
+        message: 'Heslá sa nezhodujú.'
+      }
+    ]);
+
+    this.state = {
+      name: '',
+      surname: '',
+      email: '',
+      password: '',
+      passwordAgain: '',
+      validation: this.validator.valid(),
+      serverErrors: []
+    }
+  }
+
+  submitted = false;  
+  passwordMatch = (confirmation, state) => (state.password === confirmation)
+  passwordLength = (confirmation, state) => (state.password.length > 7)
+
+  handleInputChange = event => {
+    event.preventDefault();
+
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
   }
 
   onSubmit = () => {
     const data = {
+      name: this.state.name,
+      surname: this.state.surname,
       email: this.state.email,
       password: this.state.password,
+      passwordAgain: this.state.passwordAgain
     };
-    console.log(data);
-    axios({
-      method: 'post',
-      url: 'http://localhost:5000/api/user/register',
-      data,
-    }).then(() => {
-      console.log('Api call succeeded');
-    }).catch(() => {
-      console.error('Api call failed');
-    });
+    
+    const validation = this.validator.validate(this.state);
+    this.setState({ validation });
+    this.submitted = true;
+
+    if (validation.isValid) {
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/api/user/register',
+        data,
+      }).then(() => {
+        this.props.history.push('/');
+      }).catch(error => {
+        this.setState({ serverErrors: new Array() })
+        var newErrorsArray = new Array();
+        if(error.response.data.length > 0) {
+          for (let i = 0; i < error.response.data.length; i++) {           
+            if(error.response.data[i].code !== "DuplicateUserName") {
+              console.log(error.response.data[i].description);
+              newErrorsArray.push(error.response.data[i].description);            
+            }
+          }
+        }  
+        else {
+          newErrorsArray.push("Server validation error.");
+        }      
+        this.setState({ serverErrors: newErrorsArray });
+      });
+    }    
   }
 
   render() {
+    let validation = this.submitted ?
+                     this.validator.validate(this.state) :
+                     this.state.validation
+
+    const serverErrors = this.state.serverErrors;
+    const serverErrorsList = serverErrors.map((e) => <li key={e}>{e}</li>);
+
     return (
-      <div>
-        <h1>Register Page</h1>
-        <label htmlFor="email">E-mail:</label>
+      <div className="register-box">
+        <h1>Registrácia</h1>        
         <input
+          className={classNames({ 'has-error': validation.name.isInvalid })}
+          type="text"
+          name="name"
+          placeholder="Meno"
+          value={this.state.name}
+          onChange={this.handleInputChange}
+        />
+        <span className="help-block">{validation.name.message}</span>
+        <br />        
+        <input
+          className={classNames({ 'has-error': validation.surname.isInvalid })}
+          type="text"
+          name="surname"
+          placeholder="Priezvisko"
+          value={this.state.surname}
+          onChange={this.handleInputChange}
+        />
+        <span className="help-block">{validation.surname.message}</span>
+        <br />
+        <input
+          className={classNames({ 'has-error': validation.email.isInvalid })}
           type="text"
           name="email"
+          placeholder="Email"
           value={this.state.email}
-          onChange={bind('email', this)}
+          onChange={this.handleInputChange}
         />
+        <span className="help-block" id="emailHelp">{validation.email.message}</span>
         <br />
-        <label htmlFor="password">Heslo:</label>
         <input
+          className={classNames({ 'has-error': validation.password.isInvalid })}
           type="password"
           name="password"
+          placeholder="Heslo"
           value={this.state.password}
-          onChange={bind('password', this)}
+          onChange={this.handleInputChange}
         />
+        <span className="help-block">{validation.password.message}</span>
         <br />
-        <label htmlFor="password-check">Potvrdenie hesla:</label>
         <input
+          className={classNames({ 'has-error': validation.passwordAgain.isInvalid })}
           type="password"
-          name="password-check"
-          value={this.state.passwordCheck}
-          onChange={bind('passwordCheck', this)}
+          name="passwordAgain"
+          placeholder="Potvrdenie hesla"
+          value={this.state.passwordAgain}
+          onChange={this.handleInputChange}
         />
+        <span className="help-block">{validation.passwordAgain.message}</span>
         <br />
-        <button onClick={this.onSubmit}>Registruj</button>
+        <button onClick={this.onSubmit}>Registrovať</button>
+        <div className={classNames({ 'server-error': this.submitted && this.state.serverErrors.length > 0 })}> 
+          <ul>{ serverErrorsList }</ul>
+        </div>
       </div>
     );
   }
+}
+
+RegisterPage.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 }
