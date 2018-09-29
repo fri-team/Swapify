@@ -8,13 +8,13 @@ namespace FRITeam.Swapify.Backend
 {
     public class EmailService : IEmailService
     {
-        private readonly EmailSettings _emailSettings;
+        private readonly MailingSettings _emailSettings;
 
         public EmailService()
         {
         }
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailService(IOptions<MailingSettings> emailSettings)
         {
             _emailSettings = emailSettings.Value;
         }
@@ -22,7 +22,7 @@ namespace FRITeam.Swapify.Backend
         public void SendRegistrationConfirmationEmail(string receiverEmail, string confirmationLink)
         {
             NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
-            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort))
+            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
             {
                 client.Credentials = credentials;
                 client.EnableSsl = true;

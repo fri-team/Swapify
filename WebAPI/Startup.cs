@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NLog.Web;
 using System;
+using WebAPI.StartupFilters;
 
 namespace WebAPI
 {
@@ -35,11 +36,13 @@ namespace WebAPI
                 new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString)
                     .GetDatabase(DATABASENAME));
 
-            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity());
-            services.Configure<EmailSettings>(Configuration.GetSection("Mailing"));
+            LoadAndValidateSettings(services);
+
             services.AddSingleton<IEmailService>(
-                new EmailService(services.BuildServiceProvider().GetService<IOptions<EmailSettings>>()
-                ));
+                new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>()
+            ));
+            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
+                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,31 +66,48 @@ namespace WebAPI
             app.UseAuthentication();
         }
 
-        private MongoDbIdentityConfiguration ConfigureIdentity()
+        private void LoadAndValidateSettings(IServiceCollection services)
+        {
+            services.AddTransient<IStartupFilter, SettingValidationStartupFilter>();
+
+            var mailSettings = Configuration.GetSection("MailingSettings");
+            if (mailSettings.Get<MailingSettings>() == null)
+                throw new ArgumentException($"Unable to load {nameof(MailingSettings)} configuration section.");
+            var identitySettings = Configuration.GetSection("IdentitySettings");
+            if (identitySettings.Get<IdentitySettings>() == null)
+                throw new ArgumentException($"Unable to load {nameof(IdentitySettings)} configuration section.");
+
+            services.Configure<MailingSettings>(mailSettings);
+            services.Configure<IdentitySettings>(identitySettings);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<IdentitySettings>>().Value);
+        }
+
+        private MongoDbIdentityConfiguration ConfigureIdentity(IdentitySettings settings)
         {
             return new MongoDbIdentityConfiguration
             {
-                MongoDbSettings = new MongoDbSettings
+                MongoDbSettings = new MongoDbSettings //ToDo
                 {
                     ConnectionString = "mongodb://localhost:27017",
                     DatabaseName = DATABASENAME
                 },
                 IdentityOptionsAction = options =>
                 {
-                    options.Password.RequireDigit = true;
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireLowercase = true;
+                    options.Password.RequireDigit = (bool)settings.RequireDigit;
+                    options.Password.RequiredLength = (int)settings.RequiredLength;
+                    options.Password.RequireNonAlphanumeric = (bool)settings.RequireNonAlphanumeric;
+                    options.Password.RequireUppercase = (bool)settings.RequireUppercase;
+                    options.Password.RequireLowercase = (bool)settings.RequireLowercase;
 
-                    options.SignIn.RequireConfirmedEmail = true;
+                    options.SignIn.RequireConfirmedEmail = (bool)settings.RequireConfirmedEmail;
 
-                    // Lockout settings
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                    options.Lockout.MaxFailedAccessAttempts = 10;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)settings.DefaultLockoutTimeSpan);
+                    options.Lockout.MaxFailedAccessAttempts = (int)settings.MaxFailedAccessAttempts;
 
-                    // ApplicationUser settings
-                    options.User.RequireUniqueEmail = true;
+                    options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
                 }
             };
         }
