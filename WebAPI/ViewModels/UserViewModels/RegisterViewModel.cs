@@ -4,17 +4,22 @@ namespace WebAPI.Models
 {
     public class RegisterViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="Meno je povinné.")]
         public string Name { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Priezvisko je povinné.")]
         public string Surname { get; set; }
-        [Required]
-        [EmailAddress]
+
+        [Required(ErrorMessage = "Email je povinný.")]
+        [EmailAddress(ErrorMessage = "Zadaná emailová adresa nie je validná.")]
         public string Email { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Heslo je povinné.")]
+        [StringLength(100, ErrorMessage = "Heslo musí obsahovať aspoň {2} znakov.", MinimumLength = 8)]        
         public string Password { get; set; }
-        [Required]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+
+        [Required(ErrorMessage = "Potvrdenie hesla je povinné.")]
+        [Compare("Password", ErrorMessage = "Heslá sa nezhodujú.")]
         public string PasswordAgain { get; set; }
     }
 }

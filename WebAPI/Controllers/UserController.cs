@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly ILogger<UserController> _logger;
         private readonly IEmailService _emailService;
@@ -47,24 +48,21 @@ namespace WebAPI.Controllers
                     _emailService.SendRegistrationConfirmationEmail(body.Email, callbackUrl);
                     return Ok();
                 }
-                StringBuilder identityErrors = new StringBuilder($"Error when creating user {body.Email}. Identity errors: ");
-                foreach (var error in result.Errors)
-                {
-                    identityErrors.Append($"{error.Description} ");
-                }
-                _logger.LogError(identityErrors.ToString());
-                return BadRequest(result.Errors);
+                StringBuilder identityErrorBuilder = result.Errors.Aggregate(
+                            new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
+                            (sb, x) => sb.Append($"{x.Description} ")
+                        );
+                _logger.LogError(identityErrorBuilder.ToString());
+
+                Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
+                return ValidationError(identityErrors);
             }
-            StringBuilder modelStateErrors = new StringBuilder($"Error when creating user {body.Email}. Modelstate errors: ");
-            foreach (var modelError in ModelState)
-            {
-                foreach (var error in modelError.Value.Errors)
-                {
-                    modelStateErrors.Append($"{error.ErrorMessage} ");
-                }
-            }
-            _logger.LogError(modelStateErrors.ToString());
-            return BadRequest();
+            StringBuilder modelStateBuilder = ModelState.Values.SelectMany(x => x.Errors).Aggregate(
+                            new StringBuilder($"Error when creating user {body.Email}. ModelState errors: "),
+                            (sb, x) => sb.Append($"{x.ErrorMessage} "));
+            _logger.LogError(modelStateBuilder.ToString());
+
+            return ValidationError(ModelState);
         }
 
         public IActionResult ConfirmEmail(string email, string token)

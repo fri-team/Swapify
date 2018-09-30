@@ -130,17 +130,14 @@ export default class RegisterPage extends Component {
       }).catch(error => {
         this.setState({ serverErrors: new Array() })
         var newErrorsArray = new Array();
-        if(error.response.data.length > 0) {
-          for (let i = 0; i < error.response.data.length; i++) {           
-            if(error.response.data[i].code !== "DuplicateUserName") {
-              console.log(error.response.data[i].description);
-              newErrorsArray.push(error.response.data[i].description);            
+        var dictionary = error.response.data.errors;
+        for (var key in dictionary) {
+          if (dictionary.hasOwnProperty(key)) {
+            for (let i = 0; i < dictionary[key].length; i++) {
+              newErrorsArray.push(dictionary[key][i]);
             }
           }
-        }  
-        else {
-          newErrorsArray.push("Server validation error.");
-        }      
+      }
         this.setState({ serverErrors: newErrorsArray });
       });
     }    
