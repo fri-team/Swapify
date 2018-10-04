@@ -36,7 +36,7 @@ namespace BackendTest
             //add new block
             loadedStudent.Timetable.AddNewBlock(blckToAdd);
             //save new block
-            await stserv.UpdateStudent(loadedStudent);
+            await stserv.UpdateStudentAsync(loadedStudent);
             //load from db
             Student updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
@@ -47,7 +47,7 @@ namespace BackendTest
             //delete added block
             updatedStudent.Timetable.DeleteBlock(blckToAdd.Id);
             //save deleted
-            await stserv.UpdateStudent(updatedStudent);
+            await stserv.UpdateStudentAsync(updatedStudent);
             //load from db
             updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test

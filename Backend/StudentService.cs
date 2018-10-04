@@ -1,6 +1,5 @@
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -28,7 +27,7 @@ namespace FRITeam.Swapify.Backend
             return await _studentCollection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateStudent(Student loadedStudent)
+        public async Task UpdateStudentAsync(Student loadedStudent)
         {
             await _studentCollection.ReplaceOneAsync(x => x.Id == loadedStudent.Id, loadedStudent);
         }

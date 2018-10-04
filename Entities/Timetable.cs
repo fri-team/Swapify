@@ -47,14 +47,7 @@ namespace FRITeam.Swapify.Entities
 
         public bool ContainsBlock(Block bl)
         {
-            foreach (var blck in _blocks)
-            {
-                if (blck.IsSameAs(bl))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _blocks.Any(x => x.IsSameAs(bl));
         }
     }
 }
