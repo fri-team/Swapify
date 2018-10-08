@@ -1,10 +1,7 @@
 using FRITeam.Swapify.Entities;
 using MongoDB.Bson.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BackendTest
+namespace Backend
 {
     public static class DbRegistration
     {
