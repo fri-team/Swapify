@@ -7,12 +7,8 @@ namespace FRITeam.Swapify.Entities
 {
     public class Timetable : BaseEntity
     {
-        /// <summary>
-        /// !!! Do not use this property from outside this class,
-        /// public is just because of mongodb mapper !!
-        /// </summary>
-        public List<Block> _blocks { get; set; }
-
+        private List<Block> _blocks;
+        
         public virtual IList<Block> AllBlocks
         {
             get => _blocks.AsReadOnly();

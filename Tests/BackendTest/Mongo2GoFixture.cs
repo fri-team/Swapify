@@ -21,6 +21,7 @@ namespace BackendTest
 
         public Mongo2GoFixture()
         {
+            DbRegistration.Init();
             _runner = RUN_WITH_STANDARD_PORT ? MongoDbRunner.StartForDebugging() : MongoDbRunner.Start();
             MongoClient = new MongoClient(_runner.ConnectionString);
 
