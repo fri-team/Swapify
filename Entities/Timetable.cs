@@ -5,51 +5,45 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities
 {
-    public class Timetable: BaseEntity
+    public class Timetable : BaseEntity
     {
-        public List<Block> Blocks { get; set; }
+        private List<Block> _blocks;
+        
+        public virtual IList<Block> AllBlocks
+        {
+            get => _blocks.AsReadOnly();
+        }
 
         public Timetable()
         {
-            Blocks = new List<Block>();
+            _blocks = new List<Block>();
         }
 
-        public bool RemoveBlock(Guid blockId)
+        public Block GetBlock(Guid blockId)
         {
-            for (int i = 0; i < Blocks.Count; i++)
+            return _blocks.FirstOrDefault(x => x.Id == blockId);
+        }
+
+        public void AddNewBlock(Block newBlock)
+        {
+            newBlock.Id = Guid.NewGuid();
+            _blocks.Add(newBlock);
+        }
+
+        public void DeleteBlock(Guid blockId)
+        {
+            var blc = _blocks.Find(x => x.Id == blockId);
+            if (blc == null)
             {
-                if (Blocks[i].Id.Equals(blockId))
-                {
-                    Blocks.RemoveAt(i);
-                    return true;
-                }
+                throw new ArgumentException($"Block with id {blockId} is not in collection.");
             }
-            return false;            
+
+            _blocks.Remove(blc);
         }
 
         public bool ContainsBlock(Block bl)
         {
-            foreach (var blck in Blocks)
-            {
-                if(blck.IsSameAs(bl))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool UpdateBlock(Block block)
-        {
-            for (int i = 0; i < Blocks.Count; i++)
-            {
-                if (Blocks[i].Id.Equals(block.Id))
-                {
-                    Blocks[i] = block;
-                    return true;
-                }
-            }
-            return false;
+            return _blocks.Any(x => x.IsSameAs(bl));
         }
     }
 }

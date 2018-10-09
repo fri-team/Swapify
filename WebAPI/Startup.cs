@@ -1,3 +1,4 @@
+using Backend;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,7 @@ namespace WebAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            DbRegistration.Init();
         }
 
         public IConfiguration Configuration { get; }

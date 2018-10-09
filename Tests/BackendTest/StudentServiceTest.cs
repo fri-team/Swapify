@@ -22,7 +22,7 @@ namespace BackendTest
 
         [Fact]
         public async Task AddStudentTest()
-        {
+        {           
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService stSer = new StudentService(database);
             StudyGroupService grpsrvc = new StudyGroupService(database);
@@ -36,7 +36,7 @@ namespace BackendTest
             bl.StartHour = 16;
             bl.Duration = 2;
             bl.Day = Day.Thursday;
-            tt.Blocks.Add(bl);
+            tt.AddNewBlock(bl);
             gr.Timetable = tt;
 
 
@@ -48,10 +48,10 @@ namespace BackendTest
             st.Id.Should().NotBeEmpty(); // id was set?
             var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
             studyGroup.GroupName.Should().Be("5ZZS14");
-            studyGroup.Timetable.Blocks.First().Day.Should().Be(Day.Thursday);
-            studyGroup.Timetable.Blocks.First().Duration.Should().Be(2);
-            studyGroup.Timetable.Blocks.First().StartHour.Should().Be(16);
-            studyGroup.Timetable.Blocks.First().BlockType.Should().Be(BlockType.Lecture);
+            studyGroup.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
+            studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
+            studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
+            studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
 
 

@@ -58,7 +58,7 @@ namespace FRITeam.Swapify.Backend.Converter
                                 bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, bl);
                             }
 
-                            timetable.Blocks.Add(bl);
+                            timetable.AddNewBlock(bl);
                         }
                         continue;
 
@@ -79,7 +79,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, bl);
                         }
 
-                        timetable.Blocks.Add(bl);
+                        timetable.AddNewBlock(bl);
                         startingBlock = (byte)blckIdx;
                     }
 
