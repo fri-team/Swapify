@@ -43,7 +43,7 @@ namespace FRITeam.Swapify.Backend
                 group = new StudyGroup();
                 group.Timetable = t;
                 group.GroupName = studyGroupNumber;
-                group.Courses = t.Blocks.Select(x => x.CourseId).ToList();
+                group.Courses = t.AllBlocks.Select(x => x.CourseId).ToList();
                 await AddAsync(group);
 
             }

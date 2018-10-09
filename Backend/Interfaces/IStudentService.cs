@@ -7,7 +7,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
     public interface IStudentService
     {
         Task AddAsync(Student entityToAdd);
-
         Task<Student> FindByIdAsync(Guid guid);
+        Task UpdateStudentAsync(Student studentToUpdate);
     }
 }

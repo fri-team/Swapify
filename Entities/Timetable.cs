@@ -1,28 +1,49 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FRITeam.Swapify.Entities
 {
-    public class Timetable: BaseEntity
+    public class Timetable : BaseEntity
     {
-        public List<Block> Blocks { get; set; }
+        private List<Block> _blocks;
+        
+        public virtual IList<Block> AllBlocks
+        {
+            get => _blocks.AsReadOnly();
+        }
 
         public Timetable()
         {
-            Blocks = new List<Block>();
+            _blocks = new List<Block>();
+        }
+
+        public Block GetBlock(Guid blockId)
+        {
+            return _blocks.FirstOrDefault(x => x.Id == blockId);
+        }
+
+        public void AddNewBlock(Block newBlock)
+        {
+            newBlock.Id = Guid.NewGuid();
+            _blocks.Add(newBlock);
+        }
+
+        public void DeleteBlock(Guid blockId)
+        {
+            var blc = _blocks.Find(x => x.Id == blockId);
+            if (blc == null)
+            {
+                throw new ArgumentException($"Block with id {blockId} is not in collection.");
+            }
+
+            _blocks.Remove(blc);
         }
 
         public bool ContainsBlock(Block bl)
         {
-            foreach (var blck in Blocks)
-            {
-                if(blck.IsSameAs(bl))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _blocks.Any(x => x.IsSameAs(bl));
         }
     }
 }
