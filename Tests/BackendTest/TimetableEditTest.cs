@@ -45,7 +45,7 @@ namespace BackendTest
 
 
             //delete added block
-            updatedStudent.Timetable.DeleteBlock(blckToAdd.Id);
+            updatedStudent.Timetable.RemoveBlock(blckToAdd.Id);
             //save deleted
             await stserv.UpdateStudentAsync(updatedStudent);
             //load from db

@@ -67,21 +67,21 @@ namespace BackendTest
             Block bl3 = new Block() { Room = "room3" };
 
             st.Timetable = new Timetable();
-            st.Timetable.Blocks.Add(bl1);
-            st.Timetable.Blocks.Add(bl2);
+            st.Timetable.AddNewBlock(bl1);
+            st.Timetable.AddNewBlock(bl2);
             await stSer.AddAsync(st);
-            st.Timetable.Blocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
+            st.Timetable.AllBlocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Timetable.RemoveBlock(bl1.Id).Should().Be(true);
             bl2.Room = "newroom";
             st.Timetable.UpdateBlock(bl2);
-            st.Timetable.Blocks.Add(bl3);
+            st.Timetable.AddNewBlock(bl3);
 
-            await stSer.UpdateAsync(st);
-            st.Timetable.Blocks.FirstOrDefault(x => x.Id.Equals(bl2.Id)).Room.Should().Be("newroom");
-            st.Timetable.Blocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
-            st.Timetable.Blocks.Count.Should().Be(2);
+            await stSer.UpdateStudentAsync(st);
+            st.Timetable.AllBlocks.FirstOrDefault(x => x.Id.Equals(bl2.Id)).Room.Should().Be("newroom");
+            st.Timetable.AllBlocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
+            st.Timetable.AllBlocks.Count.Should().Be(2);
         }
     }
 }

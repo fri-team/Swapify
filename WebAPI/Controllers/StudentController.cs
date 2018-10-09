@@ -70,8 +70,8 @@ namespace WebAPI.Controllers
                 return BadRequest(new ErrorMessage($"Timetable for student with id: {studentId} does not exist."));
             }
 
-            student.Timetable.Blocks.Add(block);
-            await _studentService.UpdateAsync(student);
+            student.Timetable.AddNewBlock(block);
+            await _studentService.UpdateStudentAsync(student);
             //return block with new id 
             return Ok(block);
         }
@@ -98,7 +98,7 @@ namespace WebAPI.Controllers
             }
 
             student.Timetable.UpdateBlock(block);
-            await _studentService.UpdateAsync(student);
+            await _studentService.UpdateStudentAsync(student);
 
             return Ok();
         }
@@ -128,7 +128,7 @@ namespace WebAPI.Controllers
 
             if (student.Timetable.RemoveBlock(new Guid(blockId)))
             {
-                await _studentService.UpdateAsync(student);
+                await _studentService.UpdateStudentAsync(student);
             }
             else
             {
