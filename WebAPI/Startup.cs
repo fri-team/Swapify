@@ -28,6 +28,7 @@ namespace WebAPI
                 new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString)
                     .GetDatabase(DATABASENAME));
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IStudentService, StudentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

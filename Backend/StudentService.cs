@@ -9,6 +9,7 @@ namespace FRITeam.Swapify.Backend
     public class StudentService : IStudentService
     {
         private readonly IMongoDatabase _database;
+        private IMongoCollection<Student> _studentCollection => _database.GetCollection<Student>(nameof(Student));
 
         public StudentService(IMongoDatabase database)
         {
@@ -18,13 +19,31 @@ namespace FRITeam.Swapify.Backend
         public async Task AddAsync(Student entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
-            await _database.GetCollection<Student>(nameof(Student)).InsertOneAsync(entityToAdd);
+            AddIdsForBlocks(entityToAdd);
+            await _studentCollection.InsertOneAsync(entityToAdd);
         }
 
         public async Task<Student> FindByIdAsync(Guid guid)
         {
-            var collection = _database.GetCollection<Student>(nameof(Student));
-            return await collection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
+            return await _studentCollection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateAsync(Student student)
+        {
+            AddIdsForBlocks(student);
+            await _studentCollection.ReplaceOneAsync(x => x.Id == student.Id, student);
+        }
+
+        private void AddIdsForBlocks(Student student)
+        {
+            if (student.Timetable?.Blocks == null) return;
+            foreach (Block blck in student.Timetable.Blocks)
+            {
+                if (blck.Id == Guid.Empty)
+                {
+                    blck.Id = Guid.NewGuid();
+                }
+            }
         }
     }
 }
