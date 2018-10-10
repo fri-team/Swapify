@@ -1,3 +1,4 @@
+using Backend;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,7 @@ namespace WebAPI
         {
             Configuration = configuration;
             Environment = environment;
+            DbRegistration.Init();
         }
 
         public void ConfigureServices(IServiceCollection services)

@@ -47,9 +47,9 @@ namespace FRITeam.Swapify.APIWrapper
                             string subjectName = b["k"].ToString();
                             List<string> studyGroups = b["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
                             SubjectType subjectType = (SubjectType)Convert.ToInt32(b["p"].ToString());
-                            sc = new ScheduleHourContent(blockNumber++, isBlocked, lessonType, teacherName, roomName, subjectShortcut, subjectName, subjectType, studyGroups);
+                            sc = new ScheduleHourContent(blockNumber, isBlocked, lessonType, teacherName, roomName, subjectShortcut, subjectName, subjectType, studyGroups);
                         }
-
+                        blockNumber++;
                         daySchedule.BlocksInDay.Add(sc);
                     }
                     catch (Exception ex)

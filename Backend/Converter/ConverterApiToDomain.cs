@@ -55,10 +55,10 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, proxy);
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, bl);
                             }
 
-                            timetable.Blocks.Add(bl);
+                            timetable.AddNewBlock(bl);
                         }
                         continue;
 
@@ -76,16 +76,16 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, proxy);
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, bl);
                         }
 
-                        timetable.Blocks.Add(bl);
+                        timetable.AddNewBlock(bl);
                         startingBlock = (byte)blckIdx;
                     }
 
 
                 }
-                idxDay++;
+                //idxDay++;
             }
 
             return timetable;
