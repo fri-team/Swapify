@@ -14,8 +14,7 @@ deploy:
   bucket_name: $DEPLOY_BUCKET_NAME
   skip_cleanup: true
   on:
-    all_branches: true
-    #branch: master
+    branch: master
   
 notifications:
   email: false
