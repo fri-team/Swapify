@@ -24,6 +24,9 @@ matrix:
       script:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
 
+before_deploy:        
+  - cd
+
 deploy:
   skip_cleanup: true
   provider: elasticbeanstalk
