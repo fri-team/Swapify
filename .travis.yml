@@ -4,8 +4,7 @@ services:
 script:
   - docker-compose up ci
   
-deploy:
-  skip_cleanup: true
+deploy:  
   provider: elasticbeanstalk
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -13,6 +12,10 @@ deploy:
   app: $APP_NAME
   env: $DEPLOY_ENV
   bucket_name: $DEPLOY_BUCKET_NAME
+  skip_cleanup: true
+  on:
+    all_branches: true
+    #branch: master
   
 notifications:
   email: false
