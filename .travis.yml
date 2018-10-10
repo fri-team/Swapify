@@ -27,25 +27,22 @@ jobs:
       script:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
         
-    - stage: 'Deploy'
-      script: skip
-      before_deploy:        
-        - cd $TRAVIS_BUILD_DIR
-      deploy:
-        skip_cleanup: true
-        provider: elasticbeanstalk
-        access_key_id: $AWS_ACCESS_KEY_ID
-        secret_access_key: $AWS_SECRET_ACCESS_KEY
-        region: $REGION
-        app: $APP_NAME
-        env: $DEPLOY_ENV
-        bucket_name: $DEPLOY_BUCKET_NAME
+
+before_deploy:        
+  - cd $TRAVIS_BUILD_DIR
+deploy:
+  skip_cleanup: true
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: $REGION
+  app: $APP_NAME
+  env: $DEPLOY_ENV
+  bucket_name: $DEPLOY_BUCKET_NAME
 
 stages:
   - 'Test JS'
   - 'Test C#'
-  - 'Deploy'
-#    if: branch = master
     
 notifications:
   email: false
