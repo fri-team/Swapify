@@ -1,14 +1,10 @@
 services:
   - docker
 
-env:  
-  global:
-    - NODEJS_DONE=false
-    - CSHARP_DONE=false
-
-matrix:
+jobs:
   include:
-    - language: node_js
+    - stage: 'Test JS'
+      language: node_js
       node_js:
         - node
       cache:
@@ -21,35 +17,35 @@ matrix:
       script:
         - npm run lint
         - npm run test:CI
-      after_script:
-        - export NODEJS_DONE=true        
-    - language: csharp
+    - stage: 'Test C#'
+      language: csharp
       mono: none
       dotnet: 2.1.4
       install:
         - dotnet restore
       script:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
-      after_script:
-        - export CSHARP_DONE=true
+#    - stage: 'Deploy'
+#      before_deploy:        
+#        - cd $TRAVIS_BUILD_DIR
+#      deploy:
+#        skip_cleanup: true
+#        provider: elasticbeanstalk
+#        access_key_id: $AWS_ACCESS_KEY_ID
+#        secret_access_key: $AWS_SECRET_ACCESS_KEY
+#        region: $REGION
+#        app: $APP_NAME
+#        env: $DEPLOY_ENV
+#        bucket_name: $DEPLOY_BUCKET_NAME
+#        on:
+#          all_branches: true
+#          branch: master        
 
-before_deploy:        
-  - cd $TRAVIS_BUILD_DIR
-
-deploy:
-  skip_cleanup: true
-  provider: elasticbeanstalk
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  region: $REGION
-  app: $APP_NAME
-  env: $DEPLOY_ENV
-  bucket_name: $DEPLOY_BUCKET_NAME
-  on:
-    all_branches: true
-    condition: $NODEJS_DONE && $CSHARP_DONE
-#    branch: master        
-        
+stages:
+  - 'Test JS'
+  - 'Test C#'
+#  - 'Deploy'
+  
 notifications:
   email: false
   slack:
