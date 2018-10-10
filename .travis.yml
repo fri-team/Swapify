@@ -21,6 +21,19 @@ matrix:
       script:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
 
+deploy:
+  skip_cleanup: true
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: $REGION
+  app: $APP_NAME
+  env: $DEPLOY_ENV
+  bucket_name: $DEPLOY_BUCKET_NAME
+  on:
+    all_branches: true
+#    branch: master        
+        
 notifications:
   email: false
   slack:
