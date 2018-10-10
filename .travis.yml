@@ -28,9 +28,7 @@ jobs:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
         
     - stage: 'Deploy'
-      language: node_js
-      node_js:
-        - node
+      script: skip
       before_deploy:        
         - cd $TRAVIS_BUILD_DIR
       deploy:
