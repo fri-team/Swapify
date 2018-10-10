@@ -1,0 +1,15 @@
+$padding: 0.5em;
+
+.img-checkbox {
+  display: inline-block;
+  padding-left: 1.8em;
+  padding-top: $padding;
+  padding-bottom: $padding;
+  font-size: 1em;
+  background-size: auto 1.2em;
+  background-repeat: no-repeat;
+  background-position: left center;
+  input {
+    display: none;
+  }
+}

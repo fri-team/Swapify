@@ -1,0 +1,126 @@
+{
+  "action": {
+    "type": "LOAD_MY_TIMETABLE_DONE",
+    "payload": {
+      "timetable": [
+        {
+          "day": 2,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Teória informácie",
+          "courseShortcut": "TI",
+          "room": "RC009",
+          "teacher": "Stanislav Palúch",
+          "type": "lecture"
+        },
+        {
+          "day": 4,
+          "startBlock": 1,
+          "endBlock": 3,
+          "courseName": "Databázy a získavanie znalostí",
+          "courseShortcut": "II05",
+          "room": "RC009",
+          "teacher": "Vitaly Levashenko",
+          "type": "lecture"
+        },
+        {
+          "day": 4,
+          "startBlock": 6,
+          "endBlock": 8,
+          "courseName": "Architektúry informačných systémov",
+          "courseShortcut": "AIS",
+          "room": "RC009",
+          "teacher": "Matilda Drozdová",
+          "type": "lecture"
+        }
+      ]
+    }
+  },
+  "stateBefore": {
+    "isLoadingMyTimetable": true,
+    "myTimetable": [],
+    "myCourseNames": [],
+    "isLoadingCourse": false,
+    "courseTimetables": {},
+    "displayedCourses": [],
+    "displayedTimetable": []
+  },
+  "stateAfter": {
+    "isLoadingMyTimetable": false,
+    "myTimetable": [
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture"
+      },
+      {
+        "day": 4,
+        "startBlock": 1,
+        "endBlock": 3,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RC009",
+        "teacher": "Vitaly Levashenko",
+        "type": "lecture"
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture"
+      }
+    ],
+    "myCourseNames": [
+      "Architektúry informačných systémov",
+      "Databázy a získavanie znalostí",
+      "Teória informácie"
+    ],
+    "isLoadingCourse": false,
+    "courseTimetables": {},
+    "displayedCourses": [],
+    "displayedTimetable": [
+      {
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture",
+        "isMine": true
+      },
+      {
+        "day": 4,
+        "startBlock": 1,
+        "endBlock": 3,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RC009",
+        "teacher": "Vitaly Levashenko",
+        "type": "lecture",
+        "isMine": true
+      },
+      {
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture",
+        "isMine": true
+      }
+    ]
+  }
+}
