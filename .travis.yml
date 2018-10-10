@@ -25,7 +25,7 @@ matrix:
         - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
 
 before_deploy:        
-  - cd
+  - cd $TRAVIS_BUILD_DIR
 
 deploy:
   skip_cleanup: true
