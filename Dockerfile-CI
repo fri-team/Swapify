@@ -1,0 +1,15 @@
+# https://docs.docker.com/develop/develop-images/multistage-build/
+# Build React bundle
+FROM node AS react
+WORKDIR /app/WebApp
+COPY ./WebApp ./
+RUN npm install
+RUN npm run lint
+RUN npm run test:CI
+
+# Build .NET Code app
+FROM microsoft/aspnetcore-build:2.0 AS dotnet
+WORKDIR /src
+COPY ./ ./
+RUN dotnet restore
+RUN find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;

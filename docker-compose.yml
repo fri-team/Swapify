@@ -9,3 +9,8 @@ services:
       - ./logs:/app/logs
     ports:
       - '80:80'
+  ci:
+    build:
+      context: .
+      dockerfile: Dockerfile-CI
+    image: tests

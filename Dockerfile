@@ -9,10 +9,8 @@ RUN npm run build:CI
 # Build .NET Code app
 FROM microsoft/aspnetcore-build:2.0 AS dotnet-build
 WORKDIR /src
-COPY *.sln ./
-COPY WebAPI/WebAPI.csproj WebAPI/
+COPY ./ ./
 RUN dotnet restore
-COPY ./WebAPI/ ./WebAPI/
 RUN mkdir -p /src/WebAPI/wwwroot/
 COPY --from=react-build /app/WebApp/dist/ /src/WebAPI/wwwroot/
 WORKDIR /src/WebAPI
