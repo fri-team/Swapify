@@ -19,6 +19,17 @@ namespace FRITeam.Swapify.Entities
             _blocks = new List<Block>();
         }
 
+        public Timetable Clone()
+        {
+            var newTimetable = new Timetable();
+            foreach (var block in _blocks)
+            {
+                newTimetable.AddNewBlock(block.Clone());
+            }
+
+            return newTimetable;
+        }
+
         public Block GetBlock(Guid blockId)
         {
             return _blocks.FirstOrDefault(x => x.Id == blockId);
