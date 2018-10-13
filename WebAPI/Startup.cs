@@ -52,6 +52,13 @@ namespace WebAPI
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc();
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            {
+                builder.UseMvc(routes =>
+                {
+                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
+                });
+            });
         }
     }
 }
