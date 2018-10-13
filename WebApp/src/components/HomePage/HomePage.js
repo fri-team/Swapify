@@ -1,10 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import { ElevatedBox, MacBackground } from '../';
 import './HomePage.scss';
 
 const HomePage = ({ history }) => (
-  <div className="container home">
-    <div className="home-wrapper">
+  <MacBackground>
+    <ElevatedBox className="home-content">
       <h1>Swapify</h1>
       <h3>Spravuj svoj rozvrh na jednom mieste!</h3>
       <Button
@@ -21,8 +22,8 @@ const HomePage = ({ history }) => (
       >
         Prihlásiť sa
       </Button>
-    </div>
-  </div>
+    </ElevatedBox>
+  </MacBackground>
 );
 
 export default HomePage;

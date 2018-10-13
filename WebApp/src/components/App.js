@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import HomePage from './HomePage/HomePage';
 import RegisterPage from './RegisterPage/RegisterPage';
+import LoginPage from './LoginPage/LoginPage';
 import TimetablePage from './TimetablePage/TimetablePage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 
@@ -14,6 +15,7 @@ export default class App extends React.Component {
       <div className="container">
         <Switch>
           <Route exact path="/" component={HomePage} />
+          <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/timetable" component={TimetablePage} />
           <Route component={NotFoundPage} />
