@@ -6,6 +6,7 @@ import browserSync from 'browser-sync';
 // Required for react-router browserHistory
 // see https://github.com/BrowserSync/browser-sync/issues/204#issuecomment-102623643
 import historyApiFallback from 'connect-history-api-fallback';
+import proxy from 'http-proxy-middleware';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
@@ -25,6 +26,8 @@ browserSync({
     middleware: [
       historyApiFallback(),
 
+      proxy('/api', { target: 'http://localhost:5000', changeOrigin: true }),
+
       webpackDevMiddleware(bundler, {
         // Dev middleware can't access config, so we provide publicPath
         publicPath: config.output.publicPath,
@@ -40,7 +43,7 @@ browserSync({
           timings: false,
           chunks: false,
           chunkModules: false
-        },
+        }
 
         // for other settings see
         // https://webpack.js.org/guides/development/#using-webpack-dev-middleware
@@ -53,7 +56,5 @@ browserSync({
 
   // no need to watch '*.js' here, webpack will take care of it for us,
   // including full page reloads if HMR won't work
-  files: [
-    'src/*.html'
-  ]
+  files: ['src/*.html']
 });
