@@ -18,11 +18,7 @@ namespace FRITeam.Swapify.Entities
         {
             _blocks = new List<Block>();
         }
-
-        public Block GetBlock(Guid blockId)
-        {
-            return _blocks.FirstOrDefault(x => x.Id == blockId);
-        }
+         
 
         public void AddNewBlock(Block newBlock)
         {
@@ -30,11 +26,11 @@ namespace FRITeam.Swapify.Entities
             _blocks.Add(newBlock);
         }
 
-        public bool RemoveBlock(Guid blockId)
+        public bool RemoveBlock(Block block)
         {
             for (int i = 0; i < _blocks.Count; i++)
             {
-                if (_blocks[i].Id.Equals(blockId))
+                if (_blocks[i].IsSameAs(block))
                 {
                     _blocks.RemoveAt(i);
                     return true;

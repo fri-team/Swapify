@@ -19,7 +19,6 @@ namespace FRITeam.Swapify.Backend
         public async Task AddAsync(Student entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
-            AddIdsForBlocks(entityToAdd);
             await _studentCollection.InsertOneAsync(entityToAdd);
         }
 
@@ -30,20 +29,8 @@ namespace FRITeam.Swapify.Backend
 
         public async Task UpdateStudentAsync(Student loadedStudent)
         {
-            AddIdsForBlocks(loadedStudent);
             await _studentCollection.ReplaceOneAsync(x => x.Id == loadedStudent.Id, loadedStudent);
         }
-
-        private void AddIdsForBlocks(Student student)
-        {
-            if (student.Timetable?.AllBlocks == null) return;
-            foreach (Block blck in student.Timetable.AllBlocks)
-            {
-                if (blck.Id == Guid.Empty)
-                {
-                    blck.Id = Guid.NewGuid();
-                }
-            }
-        }
+                
     }
 }

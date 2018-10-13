@@ -62,9 +62,9 @@ namespace BackendTest
             StudentService stSer = new StudentService(database);
             Student st = new Student();
 
-            Block bl1 = new Block() { Room = "room1" };
-            Block bl2 = new Block() { Room = "room2" };
-            Block bl3 = new Block() { Room = "room3" };
+            Block bl1 = new Block { Room = "room1" };
+            Block bl2 = new Block { Room = "room2" };
+            Block bl3 = new Block { Room = "room3" };
 
             st.Timetable = new Timetable();
             st.Timetable.AddNewBlock(bl1);
@@ -73,7 +73,7 @@ namespace BackendTest
             st.Timetable.AllBlocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
 
             st = await stSer.FindByIdAsync(st.Id);
-            st.Timetable.RemoveBlock(bl1.Id).Should().Be(true);
+            st.Timetable.RemoveBlock(bl1).Should().Be(true);
             bl2.Room = "newroom";
             st.Timetable.UpdateBlock(bl2);
             st.Timetable.AddNewBlock(bl3);

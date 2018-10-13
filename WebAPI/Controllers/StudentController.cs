@@ -76,36 +76,9 @@ namespace WebAPI.Controllers
             return Ok(block);
         }
 
+     
         [HttpPost]
-        public async Task<IActionResult> UpdateBlock([FromBody]string studentId, [FromBody]Block block)
-        {
-            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
-            if (!isValidGUID)
-            {
-                return BadRequest(new ErrorMessage($"Student id: {studentId} is not valid GUID."));
-            }
-
-            var student = await _studentService.FindByIdAsync(guid);
-
-            if (student == null)
-            {
-                return BadRequest(new ErrorMessage($"Student with id: {studentId} does not exist."));
-            }
-
-            if (student.Timetable == null)
-            {
-                return BadRequest(new ErrorMessage($"Timetable for student with id: {studentId} does not exist."));
-            }
-
-            student.Timetable.UpdateBlock(block);
-            await _studentService.UpdateStudentAsync(student);
-
-            return Ok();
-        }
-
-
-        [HttpGet("removeblock/{studentId}/{blockId}")]
-        public async Task<IActionResult> RemoveBlock([FromBody]string studentId, [FromBody]string blockId)
+        public async Task<IActionResult> RemoveBlock([FromBody]string studentId, [FromBody]Block block)
         {
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
@@ -126,13 +99,13 @@ namespace WebAPI.Controllers
             }
 
 
-            if (student.Timetable.RemoveBlock(new Guid(blockId)))
+            if (student.Timetable.RemoveBlock(block))
             {
                 await _studentService.UpdateStudentAsync(student);
             }
             else
             {
-                return BadRequest(new ErrorMessage($"Block with id: {blockId} does not exist in student {studentId} timetable."));
+                return BadRequest(new ErrorMessage($"Block {block.ToString()} does not exist in student {studentId} timetable."));
             }
 
             return Ok();
