@@ -8,51 +8,53 @@ import {
   LOAD_COURSE_TIMETABLE_DONE,
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
-  HIDE_COURSE_TIMETABLE,
+  HIDE_COURSE_TIMETABLE
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
 export function loadMyTimetable() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
-      type: LOAD_MY_TIMETABLE,
+      type: LOAD_MY_TIMETABLE
     });
     axios({
       method: 'get',
-      url: 'http://localhost:5000/api/timetable',
-    }).then((res) => {
-      dispatch({
-        type: LOAD_MY_TIMETABLE_DONE,
-        payload: {
-          timetable: res.data.blocks,
-        },
+      url: '/api/timetable'
+    })
+      .then(res => {
+        dispatch({
+          type: LOAD_MY_TIMETABLE_DONE,
+          payload: {
+            timetable: res.data.blocks
+          }
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: LOAD_MY_TIMETABLE_FAIL
+        });
+        // fallback if API is not running, TODO: remove in the future
+        dispatch({
+          type: LOAD_MY_TIMETABLE_DONE,
+          payload: {
+            timetable: data.timetable
+          }
+        });
       });
-    }).catch(() => {
-      dispatch({
-        type: LOAD_MY_TIMETABLE_FAIL,
-      });
-      // fallback if API is not running, TODO: remove in the future
-      dispatch({
-        type: LOAD_MY_TIMETABLE_DONE,
-        payload: {
-          timetable: data.timetable,
-        },
-      });
-    });
   };
 }
 
 function loadCourseTimetableAsync(dispatch, course) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       dispatch({
         type: LOAD_COURSE_TIMETABLE_DONE,
         payload: {
           course: {
             courseName: course,
-            timetable: data.courses[course],
-          },
-        },
+            timetable: data.courses[course]
+          }
+        }
       });
       resolve();
     }, 100);
@@ -60,9 +62,9 @@ function loadCourseTimetableAsync(dispatch, course) {
 }
 
 export function loadCourseTimetable(course) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
-      type: LOAD_COURSE_TIMETABLE,
+      type: LOAD_COURSE_TIMETABLE
     });
     loadCourseTimetableAsync(dispatch, course);
   };
@@ -73,32 +75,33 @@ export function showCourseTimetable(course) {
     const { timetable } = getState();
     const action = {
       type: SHOW_COURSE_TIMETABLE,
-      payload: { course },
+      payload: { course }
     };
     if (!has(timetable.courseTimetables, course)) {
       axios({
         method: 'get',
-        url: `http://localhost:5000/api/timetable/course/${course}`,
-      }).then((res) => {
-        dispatch({
-          type: LOAD_COURSE_TIMETABLE_DONE,
-          payload: {
-            course: {
-              courseName: course,
-              timetable: res.data.blocks,
-            },
-          },
-        });
-      }).catch(() => {
-        dispatch({
-          type: LOAD_COURSE_TIMETABLE_FAIL,
-        });
-        // fallback, TODO: modify logic to return data from API
-        loadCourseTimetableAsync(dispatch, course)
-          .then(() => {
+        url: `/api/timetable/course/${course}`
+      })
+        .then(res => {
+          dispatch({
+            type: LOAD_COURSE_TIMETABLE_DONE,
+            payload: {
+              course: {
+                courseName: course,
+                timetable: res.data.blocks
+              }
+            }
+          });
+        })
+        .catch(() => {
+          dispatch({
+            type: LOAD_COURSE_TIMETABLE_FAIL
+          });
+          // fallback, TODO: modify logic to return data from API
+          loadCourseTimetableAsync(dispatch, course).then(() => {
             dispatch(action);
           });
-      })
+        });
     } else {
       dispatch(action);
     }
@@ -108,6 +111,6 @@ export function showCourseTimetable(course) {
 export function hideCourseTimetable(course) {
   return {
     type: HIDE_COURSE_TIMETABLE,
-    payload: { course },
+    payload: { course }
   };
 }
