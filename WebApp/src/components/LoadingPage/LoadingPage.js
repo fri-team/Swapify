@@ -9,13 +9,10 @@ const style = {
   justifyContent: 'center'
 };
 
-const LoadingPage = () => {
-  console.log('loading');
-  return (
-    <div style={style}>
-      <CircularProgress size={50} />
-    </div>
-  );
-};
+const LoadingPage = () => (
+  <div style={style}>
+    <CircularProgress size={50} />
+  </div>
+);
 
 export default LoadingPage;
