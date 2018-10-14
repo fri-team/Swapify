@@ -2,7 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
 import App from './App';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue
+  }
+});
 
 export default class Root extends Component {
   render() {
@@ -10,7 +18,9 @@ export default class Root extends Component {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <App />
+          <MuiThemeProvider theme={theme}>
+            <App />
+          </MuiThemeProvider>
         </ConnectedRouter>
       </Provider>
     );
