@@ -5,7 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ConnectedRouter } from 'react-router-redux';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import App from './App';
+import { App, LoadingPage } from './';
 
 const theme = createMuiTheme({
   palette: {
@@ -18,7 +18,7 @@ export default class Root extends Component {
     const { store, persistor, history } = this.props;
     return (
       <Provider store={store}>
-        <PersistGate persistor={persistor}>
+        <PersistGate persistor={persistor} loading={<LoadingPage />}>
           <ConnectedRouter history={history}>
             <MuiThemeProvider theme={theme}>
               <App />

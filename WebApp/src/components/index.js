@@ -4,6 +4,7 @@ import ElevatedBox from './ElevatedBox/ElevatedBox';
 import HamburgerButton from './HamburgerButton/HamburgerButton';
 import HomePage from './HomePage/HomePage';
 import ImgCheckbox from './ImgCheckbox/ImgCheckbox';
+import LoadingPage from './LoadingPage/LoadingPage';
 import LoginPage from './LoginPage/LoginPage';
 import MacBackground from './MacBackground/MacBackground';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
@@ -23,6 +24,7 @@ export {
   HamburgerButton,
   HomePage,
   ImgCheckbox,
+  LoadingPage,
   LoginPage,
   MacBackground,
   NotFoundPage,
