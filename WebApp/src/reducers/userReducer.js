@@ -1,6 +1,6 @@
 import { LOGIN_DONE } from '../constants/actionTypes';
 
-const initState = {
+export const initState = {
   isAuthenticated: false,
   token: null,
   validTo: null
