@@ -40,7 +40,7 @@ class StudyGroup extends React.Component {
           <FormControl
             fullWidth={true}
           >
-            <InputLabel htmlFor="group">Zadajte štud. skupinu</InputLabel>
+            <InputLabel htmlFor="group">Vyberte štud. skupinu</InputLabel>
             <Select
               value={this.state.group}
               onChange={this.handleSubmit}
