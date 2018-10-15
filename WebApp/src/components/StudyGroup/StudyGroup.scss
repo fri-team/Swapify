@@ -5,8 +5,23 @@
 
 .StudyGroup-wrapper {
   margin: auto;
-  padding: 4em;
+  width: 20%;
+  padding: 3em;
   text-align: center;
   background-color: #fff;
   box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, .36);
 }
+
+.input {
+  padding-right: 20%;
+}
+
+.br {
+   display: block;
+   margin: 20px 0;
+}
+
+.fab {
+  float: right;
+  padding: 8em;
+};
