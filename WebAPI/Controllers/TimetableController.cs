@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new ErrorMessage($"Study group with number: {studyGroupNumber} does not exist."));
             }
 
-            await _studentService.UpdateStudentTimetableAsync(student, sg);
+            await _studentService.UpdateStudentTimetableAsync(student, sg, _studentService);
             return Ok(student.Timetable);
         }
 
