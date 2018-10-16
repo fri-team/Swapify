@@ -1,26 +1,21 @@
-matrix:
-  include:
-    - language: node_js
-      node_js:
-        - node
-      cache:
-        directories:
-          - WebApp/node_modules
-      before_install:
-        - cd WebApp/
-      install:
-       - npm install
-      script:
-        - npm run lint
-        - npm run test:CI
-    - language: csharp
-      mono: none
-      dotnet: 2.1.4
-      install:
-        - dotnet restore
-      script:
-        - find Tests/ -type f -name "*.csproj" -exec dotnet test {} \;
+services:
+  - docker
 
+script:
+  - docker-compose up ci
+  
+deploy:  
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: $REGION
+  app: $APP_NAME
+  env: $DEPLOY_ENV
+  bucket_name: $DEPLOY_BUCKET_NAME
+  skip_cleanup: true
+  on:
+    branch: master
+  
 notifications:
   email: false
   slack:

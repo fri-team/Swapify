@@ -1,6 +1,7 @@
 using AspNetCore.Identity.MongoDbCore.Extensions;
 using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using AspNetCore.Identity.MongoDbCore.Models;
+using Backend;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
@@ -19,25 +20,29 @@ namespace WebAPI
 {
     public class Startup
     {
-        private const string DATABASENAME = "Swapify";
-        public Startup(IConfiguration configuration)
+        public const string DATABASENAME = "Swapify";
+        public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
+            DbRegistration.Init();
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            // just for development, for production environment variables has to be used
-            services.AddSingleton<IMongoDatabase>(
-                new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString)
-                    .GetDatabase(DATABASENAME));
+
+            if (Environment.IsDevelopment())
+            {
+                services.AddSingleton(new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString).GetDatabase(DATABASENAME));
+            }
 
             LoadAndValidateSettings(services);
 
+            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IEmailService>(
                 new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>()
             ));
@@ -45,7 +50,6 @@ namespace WebAPI
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -64,6 +68,13 @@ namespace WebAPI
             app.UseStaticFiles();
             app.UseMvc();
             app.UseAuthentication();
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            {
+                builder.UseMvc(routes =>
+                {
+                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
+                });
+            });
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)

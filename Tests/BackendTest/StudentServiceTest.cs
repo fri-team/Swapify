@@ -22,7 +22,7 @@ namespace BackendTest
 
         [Fact]
         public async Task AddStudentTest()
-        {
+        {           
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService stSer = new StudentService(database);
             StudyGroupService grpsrvc = new StudyGroupService(database);
@@ -36,7 +36,7 @@ namespace BackendTest
             bl.StartHour = 16;
             bl.Duration = 2;
             bl.Day = Day.Thursday;
-            tt.Blocks.Add(bl);
+            tt.AddNewBlock(bl);
             gr.Timetable = tt;
 
 
@@ -48,10 +48,41 @@ namespace BackendTest
             st.Id.Should().NotBeEmpty(); // id was set?
             var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
             studyGroup.GroupName.Should().Be("5ZZS14");
-            studyGroup.Timetable.Blocks.First().Day.Should().Be(Day.Thursday);
-            studyGroup.Timetable.Blocks.First().Duration.Should().Be(2);
-            studyGroup.Timetable.Blocks.First().StartHour.Should().Be(16);
-            studyGroup.Timetable.Blocks.First().BlockType.Should().Be(BlockType.Lecture);
+            studyGroup.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
+            studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
+            studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
+            studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
+        }
+
+
+        [Fact]
+        public async Task UpdateStudentTest()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudentService stSer = new StudentService(database);
+            Student st = new Student();
+
+            Block bl1 = new Block { Room = "room1" };
+            Block bl2 = new Block { Room = "room2" };
+            Block bl3 = new Block { Room = "room3" };
+
+            st.Timetable = new Timetable();
+            st.Timetable.AddNewBlock(bl1);
+            st.Timetable.AddNewBlock(bl2);
+            await stSer.AddAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+
+            st = await stSer.FindByIdAsync(st.Id);
+            st.Timetable.RemoveBlock(bl1).Should().Be(true);
+            st.Timetable.AllBlocks.Count().Should().Be(1);
+            st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
+            st.Timetable.AddNewBlock(bl3);
+
+            await stSer.UpdateStudentAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+            st.Timetable.AllBlocks.Any(x=>x.Room == "room3").Should().Be(true);
+            st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+
         }
     }
 }

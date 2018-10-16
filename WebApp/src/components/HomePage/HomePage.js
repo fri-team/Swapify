@@ -1,15 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+import './HomePage.scss';
 
-const HomePage = () => {
-  return (
-    <div>
-      <h1>Home Page</h1>
-      <Link to="/register">Registration Page</Link>
-      <br />
-      <Link to="/timetable">Timetable Page</Link>
+const HomePage = ({ history }) => (
+  <div className="container home">
+    <div className="home-wrapper">
+      <h1>Swapify</h1>
+      <h3>Spravuj svoj rozvrh na jednom mieste!</h3>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => history.push('/register')}
+      >
+        Registrovať sa
+      </Button>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => history.push('/login')}
+      >
+        Prihlásiť sa
+      </Button>
     </div>
-  );
-};
+  </div>
+);
 
 export default HomePage;

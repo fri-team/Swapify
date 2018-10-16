@@ -26,6 +26,61 @@ namespace BackendTest
             _mongoFixture = mongoFixture;
         }
 
+        [Fact]
+        public async void ConvertTest_ValidGroupWithSubject()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            var service = new StudyGroupService(database);
+            var serviceCourse = new CourseService(database);
+            
+
+            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new SchoolScheduleProxy());
+            StudyGroup grp1 = await service.GetStudyGroupAsync("5ZZS14", serviceCourse, new SchoolScheduleProxy());
+
+            var crs = await serviceCourse.FindByNameAsync("teória informácie");
+#pragma warning disable S1067 // Expressions should not be too complex
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA301") && (x.StartHour == 11) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+            
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA301") && (x.StartHour == 13) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+
+            
+            crs = await serviceCourse.FindByNameAsync("architektúry informačných systémov");
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RB003") && (x.StartHour == 17) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Wednesday) && (x.Duration == 2) &&
+                                            (x.Room == "RB003") && (x.StartHour == 16) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+
+
+            crs = await serviceCourse.FindByNameAsync("databázy a získavanie znalostí");
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
+                                            (x.Room == "RA013") && (x.StartHour == 13) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Friday) && (x.Duration == 2) &&
+                                            (x.Room == "RB052") && (x.StartHour == 12) &&
+                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
+
+            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
+                                            (x.Room == "RC009") && (x.StartHour == 7) &&
+                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
+#pragma warning restore S1067 // Expressions should not be too complex
+        }
+
 
         [Fact]
         public async void ConvertTest_ValidStudyGroup()
@@ -94,32 +149,32 @@ namespace BackendTest
             week.DaysInWeek.Add(day);
             var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse, new FakeProxy());
 
-            timetable.Blocks.Count.Should().Be(6);
-            var blok = timetable.Blocks.FirstOrDefault(x => x.StartHour == 7);
+            timetable.AllBlocks.Count.Should().Be(6);
+            var blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 7);
             blok.Room.Should().Be("room200");
             blok.StartHour.Should().Be(7);
             blok.Teacher.Should().Be("teacher1");
             blok.Duration.Should().Be(2);
 
-            blok = timetable.Blocks.FirstOrDefault(x => x.StartHour == 11);
+            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 11);
             blok.Room.Should().Be("room2005");
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher5");
             blok.Duration.Should().Be(1);
 
-            blok = timetable.Blocks.FirstOrDefault(x => x.StartHour == 13);
+            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 13);
             blok.Room.Should().Be("room2007");
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher7");
             blok.Duration.Should().Be(1);
 
-            blok = timetable.Blocks.FirstOrDefault(x => x.StartHour == 16);
+            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 16);
             blok.Room.Should().Be("room20010");
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher10");
             blok.Duration.Should().Be(2);
 
-            blok = timetable.Blocks.FirstOrDefault(x => x.StartHour == 19);
+            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 19);
             blok.Room.Should().Be("room20013");
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher13");

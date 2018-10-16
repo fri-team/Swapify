@@ -33,21 +33,35 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindByNameAsync(string name)
         {
-            return await _courseCollection.Find(x => x.CourseName.Equals(name.ToUpper())).FirstOrDefaultAsync();
+            return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public async Task<Guid> GetOrAddNotExistsCourseId(string courseName, ICourseService courseServ, Block courseBlock)
         {
             var course = await courseServ.FindByNameAsync(courseName);
             if (course == null)
             {
-                var downloadedTimetable = proxy.GetBySubjectCode(courseName);
-                var convertedTimetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(downloadedTimetable, courseServ, proxy);
-                course = new Course() { CourseName = courseName, Timetable = convertedTimetable };
+                var timetable = new Timetable();
+                timetable.AddNewBlock(courseBlock);
+                course = new Course() { CourseName = courseName, Timetable = timetable };
                 await courseServ.AddAsync(course);
+            }
+            else {
+                if (!course.Timetable.ContainsBlock(courseBlock))
+                {
+                    //if course exist but doesnt contain this block
+                    //is is neccessary to add it into timetable
+                    course.Timetable.AddNewBlock(courseBlock);
+                    await courseServ.UpdateAsync(course);
+                }
             }
             return course.Id;
 
+        }
+
+        public async Task UpdateAsync(Course course)
+        {
+            await _courseCollection.ReplaceOneAsync(x =>x.Id == course.Id,course);
         }
     }
 }

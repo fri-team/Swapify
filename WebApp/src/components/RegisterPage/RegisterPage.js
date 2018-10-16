@@ -123,7 +123,7 @@ export default class RegisterPage extends Component {
     if (validation.isValid) {
       axios({
         method: 'post',
-        url: 'http://localhost:5000/api/user/register',
+        url: '/api/user/register',
         data,
       }).then(() => {
         this.props.history.push('/');
