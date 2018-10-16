@@ -1,5 +1,4 @@
 using Backend;
-using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -34,9 +33,7 @@ namespace WebAPI
             }
 
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IStudyGroupService, StudyGroupService>();
-            services.AddSingleton<ICourseService, CourseService>();
-            services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
+            services.AddSingleton<IStudentService, StudentService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -56,6 +53,13 @@ namespace WebAPI
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc();
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            {
+                builder.UseMvc(routes =>
+                {
+                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
+                });
+            });
         }
     }
 }

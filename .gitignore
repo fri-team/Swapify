@@ -323,3 +323,6 @@ ASALocalRun/
 
 # Ignore Docker volumes
 logs/
+
+# Ignore archives
+*.zip

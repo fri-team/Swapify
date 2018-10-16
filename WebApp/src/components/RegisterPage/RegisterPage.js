@@ -8,25 +8,27 @@ export default class RegisterPage extends Component {
   state = {
     email: '',
     password: '',
-    passwordCheck: '',
-  }
+    passwordCheck: ''
+  };
 
   onSubmit = () => {
     const data = {
       email: this.state.email,
-      password: this.state.password,
+      password: this.state.password
     };
     console.log(data);
     axios({
       method: 'post',
-      url: 'http://localhost:5000/api/user/register',
-      data,
-    }).then(() => {
-      console.log('Api call succeeded');
-    }).catch(() => {
-      console.error('Api call failed');
-    });
-  }
+      url: '/api/user/register',
+      data
+    })
+      .then(() => {
+        console.log('Api call succeeded');
+      })
+      .catch(() => {
+        console.error('Api call failed');
+      });
+  };
 
   render() {
     return (

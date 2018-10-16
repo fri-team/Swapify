@@ -3,7 +3,7 @@ using System;
 
 namespace FRITeam.Swapify.Entities
 {
-    public class Block : BaseEntity
+    public class Block 
     {
         public BlockType BlockType { get; set; }
         public Guid CourseId { get; set; }
