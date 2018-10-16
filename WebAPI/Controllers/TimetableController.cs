@@ -21,7 +21,8 @@ namespace WebAPI.Controllers
         public TimetableController(IStudyGroupService groupService,
                                    ICourseService courseService,
                                    ISchoolScheduleProxy proxy,
-                                   IStudentService studentService)
+                                   IStudentService studentService
+                                   )
         {
             _groupService = groupService;
             _courseService = courseService;
@@ -33,9 +34,12 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> SetStudentTimetableFromGroup(string studyGroupNumber, Student student)
         {
             StudyGroup sg = await _groupService.GetStudyGroupAsync(studyGroupNumber, _courseService, _proxy);
-            student.Timetable = sg.Timetable.Clone();
-            student.StudyGroupId = sg.Id;
-            await _studentService.UpdateStudentAsync(student);
+            if (sg == null || student == null)
+            {
+                return BadRequest(new ErrorMessage($"Study group with number: {studyGroupNumber} does not exist."));
+            }
+
+            await _studentService.UpdateStudentTimetableAsync(student, sg);
             return Ok(student.Timetable);
         }
 

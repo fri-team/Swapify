@@ -31,19 +31,19 @@ namespace BackendTest
             ISchoolScheduleProxy proxy = new FakeProxy();
 
             StudyGroup sg = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
-            Student s = new Student();
-            s.Timetable = sg.Timetable.Clone();
-            s.StudyGroupId = sg.Id;
+            Student student = new Student();
+            student.Timetable = sg.Timetable.Clone();
+            student.StudyGroupId = sg.Id;
 
             var newBlock = new Block();
             var countShouldBe = sg.Timetable.AllBlocks.Count;
             sg.Timetable.AddNewBlock(newBlock);
 
-            s.Timetable.AllBlocks.Count().Should().Be(countShouldBe);
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe);
 
             var newBlockSt = new Block();
-            s.Timetable.AddNewBlock(newBlockSt);
-            s.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
+            student.Timetable.AddNewBlock(newBlockSt);
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
         }
 
         [Fact]
