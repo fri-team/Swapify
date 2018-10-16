@@ -36,15 +36,14 @@ namespace BackendTest
             s.StudyGroupId = sg.Id;
 
             var newBlock = new Block();
-
+            var countShouldBe = sg.Timetable.AllBlocks.Count;
             sg.Timetable.AddNewBlock(newBlock);
 
-            s.Timetable.GetBlock(newBlock.Id).Should().BeNull();
+            s.Timetable.AllBlocks.Count().Should().Be(countShouldBe);
 
             var newBlockSt = new Block();
             s.Timetable.AddNewBlock(newBlockSt);
-
-            sg.Timetable.GetBlock(newBlockSt.Id).Should().BeNull();
+            s.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
         }
 
         [Fact]

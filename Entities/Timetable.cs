@@ -30,11 +30,6 @@ namespace FRITeam.Swapify.Entities
             return newTimetable;
         }
 
-        public Block GetBlock(Guid blockId)
-        {
-            return _blocks.FirstOrDefault(x => x.Id == blockId);
-        }
-
         public void AddNewBlock(Block newBlock)
         {
             _blocks.Add(newBlock);

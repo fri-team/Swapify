@@ -1,4 +1,5 @@
 using Backend;
+using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +34,9 @@ namespace WebAPI
             }
 
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IStudentService, StudentService>();
+            services.AddSingleton<IStudyGroupService, StudyGroupService>();
+            services.AddSingleton<ICourseService, CourseService>();
+            services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
