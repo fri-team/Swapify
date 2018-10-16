@@ -18,32 +18,31 @@ namespace FRITeam.Swapify.Entities
         {
             _blocks = new List<Block>();
         }
-
-        public Block GetBlock(Guid blockId)
-        {
-            return _blocks.FirstOrDefault(x => x.Id == blockId);
-        }
+         
 
         public void AddNewBlock(Block newBlock)
         {
-            newBlock.Id = Guid.NewGuid();
             _blocks.Add(newBlock);
         }
 
-        public void DeleteBlock(Guid blockId)
+        public bool RemoveBlock(Block block)
         {
-            var blc = _blocks.Find(x => x.Id == blockId);
-            if (blc == null)
+            for (int i = 0; i < _blocks.Count; i++)
             {
-                throw new ArgumentException($"Block with id {blockId} is not in collection.");
+                if (_blocks[i].IsSameAs(block))
+                {
+                    _blocks.RemoveAt(i);
+                    return true;
+                }
             }
-
-            _blocks.Remove(blc);
+            return false;
         }
 
         public bool ContainsBlock(Block bl)
         {
             return _blocks.Any(x => x.IsSameAs(bl));
         }
+
+       
     }
 }

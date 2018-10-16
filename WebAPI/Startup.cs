@@ -33,6 +33,7 @@ namespace WebAPI
             }
 
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IStudentService, StudentService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

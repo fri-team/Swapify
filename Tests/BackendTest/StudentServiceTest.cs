@@ -53,5 +53,36 @@ namespace BackendTest
             studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
             studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
+
+
+        [Fact]
+        public async Task UpdateStudentTest()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudentService stSer = new StudentService(database);
+            Student st = new Student();
+
+            Block bl1 = new Block { Room = "room1" };
+            Block bl2 = new Block { Room = "room2" };
+            Block bl3 = new Block { Room = "room3" };
+
+            st.Timetable = new Timetable();
+            st.Timetable.AddNewBlock(bl1);
+            st.Timetable.AddNewBlock(bl2);
+            await stSer.AddAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+
+            st = await stSer.FindByIdAsync(st.Id);
+            st.Timetable.RemoveBlock(bl1).Should().Be(true);
+            st.Timetable.AllBlocks.Count().Should().Be(1);
+            st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
+            st.Timetable.AddNewBlock(bl3);
+
+            await stSer.UpdateStudentAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+            st.Timetable.AllBlocks.Any(x=>x.Room == "room3").Should().Be(true);
+            st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+
+        }
     }
 }
