@@ -70,18 +70,19 @@ namespace BackendTest
             st.Timetable.AddNewBlock(bl1);
             st.Timetable.AddNewBlock(bl2);
             await stSer.AddAsync(st);
-            st.Timetable.AllBlocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Timetable.RemoveBlock(bl1).Should().Be(true);
-            bl2.Room = "newroom";
-            st.Timetable.UpdateBlock(bl2);
+            st.Timetable.AllBlocks.Count().Should().Be(1);
+            st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
             st.Timetable.AddNewBlock(bl3);
 
             await stSer.UpdateStudentAsync(st);
-            st.Timetable.AllBlocks.FirstOrDefault(x => x.Id.Equals(bl2.Id)).Room.Should().Be("newroom");
-            st.Timetable.AllBlocks.Count(x => x.Id == Guid.Empty).Should().Be(0);
-            st.Timetable.AllBlocks.Count.Should().Be(2);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+            st.Timetable.AllBlocks.Any(x=>x.Room == "room3").Should().Be(true);
+            st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+
         }
     }
 }

@@ -22,7 +22,6 @@ namespace FRITeam.Swapify.Entities
 
         public void AddNewBlock(Block newBlock)
         {
-            newBlock.Id = Guid.NewGuid();
             _blocks.Add(newBlock);
         }
 
@@ -44,17 +43,6 @@ namespace FRITeam.Swapify.Entities
             return _blocks.Any(x => x.IsSameAs(bl));
         }
 
-        public bool UpdateBlock(Block block)
-        {
-            for (int i = 0; i < _blocks.Count; i++)
-            {
-                if (_blocks[i].Id.Equals(block.Id))
-                {
-                    _blocks[i] = block;
-                    return true;
-                }
-            }
-            return false;
-        }
+       
     }
 }
