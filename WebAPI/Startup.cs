@@ -20,7 +20,7 @@ namespace WebAPI
 {
     public class Startup
     {
-        public const string DATABASENAME = "Swapify";
+        private const string DatabaseName = "Swapify";
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
 
@@ -37,7 +37,7 @@ namespace WebAPI
 
             if (Environment.IsDevelopment())
             {
-                services.AddSingleton(new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString).GetDatabase(DATABASENAME));
+                services.AddSingleton(new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString).GetDatabase(DatabaseName));
             }
 
             LoadAndValidateSettings(services);
@@ -63,7 +63,7 @@ namespace WebAPI
 
             env.ConfigureNLog($"nlog.{env.EnvironmentName}.config");
 
-            // Serve index.html and static resources from wwwroot/            
+            // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc();
@@ -98,29 +98,32 @@ namespace WebAPI
 
         private MongoDbIdentityConfiguration ConfigureIdentity(IdentitySettings settings)
         {
-            return new MongoDbIdentityConfiguration
+            MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
+            if (Environment.IsDevelopment())
+                configuration.MongoDbSettings = new MongoDbSettings
+                {
+                    ConnectionString = Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString,
+                    DatabaseName = DatabaseName
+                };
+            else
+                configuration.MongoDbSettings = new MongoDbSettings();
+
+            configuration.IdentityOptionsAction = options =>
             {
-                MongoDbSettings = new MongoDbSettings //ToDo
-                {
-                    ConnectionString = "mongodb://localhost:27017",
-                    DatabaseName = DATABASENAME
-                },
-                IdentityOptionsAction = options =>
-                {
-                    options.Password.RequireDigit = (bool)settings.RequireDigit;
-                    options.Password.RequiredLength = (int)settings.RequiredLength;
-                    options.Password.RequireNonAlphanumeric = (bool)settings.RequireNonAlphanumeric;
-                    options.Password.RequireUppercase = (bool)settings.RequireUppercase;
-                    options.Password.RequireLowercase = (bool)settings.RequireLowercase;
+                options.Password.RequireDigit = (bool)settings.RequireDigit;
+                options.Password.RequiredLength = (int)settings.RequiredLength;
+                options.Password.RequireNonAlphanumeric = (bool)settings.RequireNonAlphanumeric;
+                options.Password.RequireUppercase = (bool)settings.RequireUppercase;
+                options.Password.RequireLowercase = (bool)settings.RequireLowercase;
 
-                    options.SignIn.RequireConfirmedEmail = (bool)settings.RequireConfirmedEmail;
+                options.SignIn.RequireConfirmedEmail = (bool)settings.RequireConfirmedEmail;
 
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)settings.DefaultLockoutTimeSpan);
-                    options.Lockout.MaxFailedAccessAttempts = (int)settings.MaxFailedAccessAttempts;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)settings.DefaultLockoutTimeSpan);
+                options.Lockout.MaxFailedAccessAttempts = (int)settings.MaxFailedAccessAttempts;
 
-                    options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
-                }
+                options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
             };
+            return configuration;
         }
     }
 }
