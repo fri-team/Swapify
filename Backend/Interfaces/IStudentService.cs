@@ -9,6 +9,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task AddAsync(Student entityToAdd);
         Task<Student> FindByIdAsync(Guid guid);
         Task UpdateStudentAsync(Student studentToUpdate);
-        Task UpdateStudentTimetableAsync(Student student, StudyGroup sg, IStudentService studServ);
+        Task SetStudyGroupAndCopyTimetableAsync(Student studentToUpdate, StudyGroup studygroup);
     }
 }

@@ -30,16 +30,16 @@ namespace BackendTest
             CourseService crsrv = new CourseService(database);
             ISchoolScheduleProxy proxy = new FakeProxy();
 
-            StudyGroup sg = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
+            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
             Student student = new Student();
-            student.Timetable = sg.Timetable.Clone();
-            student.StudyGroupId = sg.Id;
+            student.Timetable = studyGroup.Timetable.Clone();
+            student.StudyGroupId = studyGroup.Id;
 
             var newBlock = new Block();
-            var countShouldBe = sg.Timetable.AllBlocks.Count;
-            sg.Timetable.AddNewBlock(newBlock);
+            var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
+            studyGroup.Timetable.AddNewBlock(newBlock);
 
-            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe);
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
 
             var newBlockSt = new Block();
             student.Timetable.AddNewBlock(newBlockSt);
