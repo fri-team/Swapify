@@ -6,11 +6,12 @@ import configureStore, { history } from './store/configureStore';
 import Root from './components/Root';
 import './styles/styles.scss';
 require('./favicon.ico');
-const store = configureStore();
+
+const { store, persistor } = configureStore();
 
 render(
   <AppContainer>
-    <Root store={store} history={history} />
+    <Root store={store} persistor={persistor} history={history} />
   </AppContainer>,
   document.getElementById('app')
 );
@@ -20,7 +21,7 @@ if (module.hot) {
     const NewRoot = require('./components/Root').default;
     render(
       <AppContainer>
-        <NewRoot store={store} history={history} />
+        <NewRoot store={store} persistor={persistor} history={history} />
       </AppContainer>,
       document.getElementById('app')
     );

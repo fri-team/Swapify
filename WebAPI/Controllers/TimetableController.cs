@@ -9,7 +9,6 @@ using Timetable = WebAPI.Models.Timetable;
 
 namespace WebAPI.Controllers
 {
-    [Produces("application/json")]
     [Route("api/[controller]")]
     public class TimetableController : Controller
     {
