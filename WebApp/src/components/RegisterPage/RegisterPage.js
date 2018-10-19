@@ -2,84 +2,87 @@
 /* eslint-disable no-console */
 
 import React, { Component } from 'react';
+import {flatten ,values} from 'lodash';
 import classNames from 'classnames';
 import axios from 'axios';
 import './RegisterPage.scss';
 import FormValidator from '../FormValidator/FormValidator';
 import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 export default class RegisterPage extends Component {
   constructor(props) {
     super(props);
-    
+
     this.validator = new FormValidator([
-      { 
-        field: 'email', 
-        method: 'isEmpty', 
-        validWhen: false, 
-        message: 'Email je povinný.' 
-      },
-      { 
+      {
         field: 'email',
-        method: 'isEmail', 
+        method: 'isEmpty',
+        validWhen: false,
+        message: 'Email je povinný.'
+      },
+      {
+        field: 'email',
+        method: 'isEmail',
         validWhen: true,
         message: 'Emailová adresa nie je platná.'
       },
-      { 
-        field: 'name', 
-        method: 'isEmpty', 
-        validWhen: false, 
+      {
+        field: 'name',
+        method: 'isEmpty',
+        validWhen: false,
         message: 'Meno je povinné.'
       },
-      { 
-        field: 'surname', 
-        method: 'isEmpty', 
-        validWhen: false, 
+      {
+        field: 'surname',
+        method: 'isEmpty',
+        validWhen: false,
         message: 'Priezvisko je povinné.'
       },
-      { 
-        field: 'password', 
-        method: 'isEmpty', 
-        validWhen: false, 
+      {
+        field: 'password',
+        method: 'isEmpty',
+        validWhen: false,
         message: 'Heslo je povinné.'
       },
-      { 
-        field: 'password', 
+      {
+        field: 'password',
         method: this.passwordLength,
-        validWhen: true, 
+        validWhen: true,
         message: 'Heslo musí obsahovať aspoň 8 znakov.'
       },
-      { 
-        field: 'password', 
+      {
+        field: 'password',
         method: 'matches',
         args: [/\d/],
-        validWhen: true, 
+        validWhen: true,
         message: 'Heslo musí obsahovať aspoň jednu číslicu.'
       },
-      { 
-        field: 'password', 
+      {
+        field: 'password',
         method: 'matches',
         args: [/.*[A-Z]/],
-        validWhen: true, 
+        validWhen: true,
         message: 'Heslo musí obsahovať aspoň jedno veľké písmeno.'
       },
-      { 
-        field: 'password', 
+      {
+        field: 'password',
         method: 'matches',
         args: [/.*[a-z]/],
-        validWhen: true, 
+        validWhen: true,
         message: 'Heslo musí obsahovať aspoň jedno malé písmeno.'
       },
-      { 
-        field: 'passwordAgain', 
-        method: 'isEmpty', 
-        validWhen: false, 
+      {
+        field: 'passwordAgain',
+        method: 'isEmpty',
+        validWhen: false,
         message: 'Potvrdenie hesla je povinné.'
        },
-      { 
-        field: 'passwordAgain', 
+      {
+        field: 'passwordAgain',
         method: this.passwordMatch,
-        validWhen: true, 
+        validWhen: true,
         message: 'Heslá sa nezhodujú.'
       }
     ]);
@@ -91,11 +94,11 @@ export default class RegisterPage extends Component {
       password: '',
       passwordAgain: '',
       validation: this.validator.valid(),
+      submitted: false,
       serverErrors: []
     }
   }
 
-  submitted = false;  
   passwordMatch = (confirmation, state) => (state.password === confirmation)
   passwordLength = (confirmation, state) => (state.password.length > 7)
 
@@ -115,10 +118,9 @@ export default class RegisterPage extends Component {
       password: this.state.password,
       passwordAgain: this.state.passwordAgain
     };
-    
+
     const validation = this.validator.validate(this.state);
-    this.setState({ validation });
-    this.submitted = true;
+    this.setState({ validation, submitted: true });
 
     if (validation.isValid) {
       axios({
@@ -128,84 +130,83 @@ export default class RegisterPage extends Component {
       }).then(() => {
         this.props.history.push('/');
       }).catch(error => {
-        this.setState({ serverErrors: new Array() })
-        var newErrorsArray = new Array();
-        var dictionary = error.response.data.errors;
-        for (var key in dictionary) {
-          if (dictionary.hasOwnProperty(key)) {
-            for (let i = 0; i < dictionary[key].length; i++) {
-              newErrorsArray.push(dictionary[key][i]);
-            }
-          }
-      }
-        this.setState({ serverErrors: newErrorsArray });
+        var serverErrors = flatten(values(error.response.data.errors));
+        this.setState({ serverErrors });
       });
-    }    
+    }
   }
 
   render() {
-    let validation = this.submitted ?
+    let validation = this.state.submitted ?
                      this.validator.validate(this.state) :
-                     this.state.validation
+                     this.state.validation;
 
     const serverErrors = this.state.serverErrors;
     const serverErrorsList = serverErrors.map((e) => <li key={e}>{e}</li>);
 
     return (
       <div className="register-box">
-        <h1>Registrácia</h1>        
-        <input
-          className={classNames({ 'has-error': validation.name.isInvalid })}
-          type="text"
-          name="name"
-          placeholder="Meno"
-          value={this.state.name}
-          onChange={this.handleInputChange}
+        <h1>Registrácia</h1>
+        <TextField
+            label="Meno"
+            required
+            name = "name"
+            error={!!validation.name.message}
+            helperText={validation.name.message}
+            value={this.state.name}
+            onChange={this.handleInputChange}
         />
-        <span className="help-block">{validation.name.message}</span>
-        <br />        
-        <input
-          className={classNames({ 'has-error': validation.surname.isInvalid })}
-          type="text"
-          name="surname"
-          placeholder="Priezvisko"
-          value={this.state.surname}
-          onChange={this.handleInputChange}
+
+        <TextField
+            label="Priezvisko"
+            required
+            name = "surname"
+            error={!!validation.surname.message}
+            helperText={validation.surname.message}
+            value={this.state.surname}
+            onChange={this.handleInputChange}
         />
-        <span className="help-block">{validation.surname.message}</span>
-        <br />
-        <input
-          className={classNames({ 'has-error': validation.email.isInvalid })}
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={this.state.email}
-          onChange={this.handleInputChange}
+
+        <TextField
+            label="Email"
+            required
+            name = "email"
+            error={!!validation.email.message}
+            helperText={validation.email.message}
+            value={this.state.email}
+            onChange={this.handleInputChange}
         />
-        <span className="help-block" id="emailHelp">{validation.email.message}</span>
-        <br />
-        <input
-          className={classNames({ 'has-error': validation.password.isInvalid })}
-          type="password"
-          name="password"
-          placeholder="Heslo"
-          value={this.state.password}
-          onChange={this.handleInputChange}
+
+        <TextField
+            label="Heslo"
+            type="password"
+            required
+            name = "password"
+            error={!!validation.password.message}
+            helperText={validation.password.message}
+            value={this.state.password}
+            onChange={this.handleInputChange}
         />
-        <span className="help-block">{validation.password.message}</span>
-        <br />
-        <input
-          className={classNames({ 'has-error': validation.passwordAgain.isInvalid })}
-          type="password"
-          name="passwordAgain"
-          placeholder="Potvrdenie hesla"
-          value={this.state.passwordAgain}
-          onChange={this.handleInputChange}
+
+        <TextField
+            label="Potvrdenie hesla"
+            type="password"
+            required
+            name = "passwordAgain"
+            error={!!validation.passwordAgain.message}
+            helperText={validation.passwordAgain.message}
+            value={this.state.passwordAgain}
+            onChange={this.handleInputChange}
         />
-        <span className="help-block">{validation.passwordAgain.message}</span>
-        <br />
-        <button onClick={this.onSubmit}>Registrovať</button>
-        <div className={classNames({ 'server-error': this.submitted && this.state.serverErrors.length > 0 })}> 
+
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={this.onSubmit}
+        >
+          Registrovať
+        </Button>
+        <div className={classNames({ 'server-error': this.state.submitted && this.state.serverErrors.length > 0 })}>
           <ul>{ serverErrorsList }</ul>
         </div>
       </div>
