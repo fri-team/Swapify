@@ -1,5 +1,4 @@
 using Backend;
-using Backend.Config;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,40 +39,13 @@ namespace WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
             if (Environment.IsDevelopment())
             {
                 services.AddSingleton(new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString).GetDatabase(DatabaseName));
             }
 
-            services.Configure<EnvironmentConfig>(Configuration);
-            services.AddMvc(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-                options.Filters.Add(new ProducesAttribute("application/json"));
-            });
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(GetJwtSecret()),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
-
             LoadAndValidateSettings(services);
+            ConfigureAuthorization(services);            
 
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStudentService, StudentService>();
@@ -124,10 +96,42 @@ namespace WebAPI
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
+            services.Configure<EnvironmentSettings>(Configuration);
+
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<IdentitySettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
+        }
+
+        private void ConfigureAuthorization(IServiceCollection services)
+        {
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new ProducesAttribute("application/json"));
+            });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(GetJwtSecret()),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         private MongoDbIdentityConfiguration ConfigureIdentity(IdentitySettings settings)
