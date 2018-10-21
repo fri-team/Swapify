@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
@@ -18,17 +19,18 @@ namespace WebAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IEmailService _emailService;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public UserController(ILogger<UserController> logger, UserManager<User> userManager, SignInManager<User> signInManager,
+        public UserController(ILogger<UserController> logger, UserManager<User> userManager, IUserService userService,
             IEmailService emailService)
         {
             _logger = logger;
             _userManager = userManager;
-            _signInManager = signInManager;
+            _userService = userService;
             _emailService = emailService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel body)
         {
@@ -95,16 +97,17 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(string email, string password, bool rememberMe)
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] CredentialsBody body)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, rememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
-            {
-                _logger.LogInformation($"User {email} logged in.");
-            }
-            _logger.LogInformation($"User {email} - invalid login attempt.");
-            return Ok();
+            if (body == null || !body.IsValid())
+                return BadRequest();
+
+            var token = _userService.Authenticate(body.Login, body.Password);
+            var authUser = new AuthUser(token);
+
+            return Ok(authUser);
         }
     }
 }
