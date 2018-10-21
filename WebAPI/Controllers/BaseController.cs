@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using WebAPI.Models;
 using System.Collections.Generic;
+using WebAPI.Models.ErrorResponseModels;
 
 namespace WebAPI.Controllers
 {
@@ -17,6 +17,12 @@ namespace WebAPI.Controllers
         public IActionResult ValidationError(Dictionary<string, string[]> keyValuePairs)
         {
             return new ValidationErrorResponse(keyValuePairs).ToResult();
+        }
+
+        [NonAction]
+        public IActionResult ErrorResponse(string error)
+        {
+            return new ErrorResponse(error).ToResult();
         }
     }
 }

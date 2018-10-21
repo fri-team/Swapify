@@ -47,7 +47,7 @@ namespace WebAPI
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);            
 
-            services.AddSingleton<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IEmailService>(
                 new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>()
