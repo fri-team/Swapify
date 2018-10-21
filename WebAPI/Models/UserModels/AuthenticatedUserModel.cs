@@ -1,14 +1,14 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace WebAPI.Models
+namespace WebAPI.Models.UserModels
 {
-    public class AuthUser
+    public class AuthenticatedUserModel
     {
         public string Token { get; set; }
         public DateTime ValidTo { get; set; }
 
-        public AuthUser(JwtSecurityToken token)
+        public AuthenticatedUserModel(JwtSecurityToken token)
         {
             Token = token.RawData;
             ValidTo = token.ValidTo;

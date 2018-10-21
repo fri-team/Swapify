@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using WebAPI.ViewModels;
+using WebAPI.Models;
 using System.Collections.Generic;
 
 namespace WebAPI.Controllers

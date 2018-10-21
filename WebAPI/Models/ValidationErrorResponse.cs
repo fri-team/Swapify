@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebAPI.ViewModels
+namespace WebAPI.Models
 {
     public class ValidationErrorResponse
     {

@@ -7,8 +7,8 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel body)
+        public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
             if (ModelState.IsValid)
             {
@@ -99,13 +99,13 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] CredentialsBody body)
+        public IActionResult Login([FromBody] LoginModel body)
         {
-            if (body == null || !body.IsValid())
+            if (body == null || !ModelState.IsValid)
                 return BadRequest();
 
             var token = _userService.Authenticate(body.Login, body.Password);
-            var authUser = new AuthUser(token);
+            var authUser = new AuthenticatedUserModel(token);
 
             return Ok(authUser);
         }
