@@ -1,4 +1,4 @@
-using System;
+using FRITeam.Swapify.Backend.Exceptions;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
@@ -15,9 +15,9 @@ namespace FRITeam.Swapify.Backend.Settings
         public void Validate()
         {
             if (string.IsNullOrEmpty(Environment))
-                throw new ArgumentException($"Setting {nameof(Environment)} is missing in launchSettings.json environmentVariables configuration section.");
+                throw new SettingException("launchSettings.json", $"Setting {nameof(Environment)} is missing in environmentVariables configuration section.");
             if (string.IsNullOrEmpty(JwtSecret))
-                throw new ArgumentException($"Setting {nameof(JwtSecret)} is missing in launchSettings.json environmentVariables configuration section.");
+                throw new SettingException("launchSettings.json", $"Setting {nameof(JwtSecret)} is missing in environmentVariables configuration section.");
 
         }
     }

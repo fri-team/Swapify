@@ -1,4 +1,4 @@
-using System;
+using FRITeam.Swapify.Backend.Exceptions;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
@@ -17,13 +17,13 @@ namespace FRITeam.Swapify.Backend.Settings
         public void Validate()
         {
             if (string.IsNullOrEmpty(SmtpServer))
-                throw new ArgumentException($"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Username))
-                throw new ArgumentException($"Setting {nameof(Username)} is missing in {nameof(MailingSettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Setting {nameof(Username)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Password))
-                throw new ArgumentException($"Setting {nameof(Password)} is missing in {nameof(MailingSettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Setting {nameof(Password)} is missing in {nameof(MailingSettings)} configuration section.");
             if (SmtpPort == null)
-                throw new ArgumentException($"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
         }
     }
 }

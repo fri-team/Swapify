@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
+using FRITeam.Swapify.Backend.Exceptions;
 using System.Reflection;
-using System.Text;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
@@ -27,7 +25,7 @@ namespace FRITeam.Swapify.Backend.Settings
             foreach (PropertyInfo info in typeof(IdentitySettings).GetProperties())
             {
                 if (info.GetValue(this, null) == null)
-                    throw new ArgumentException($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
+                    throw new SettingException("appsettings.json", $"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
             }
         }
     }
