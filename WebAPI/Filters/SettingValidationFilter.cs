@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 
-namespace WebAPI.StartupFilters
+namespace WebAPI.Filters
 {
-    public class SettingValidationStartupFilter : IStartupFilter
+    public class SettingValidationFilter : IStartupFilter
     {
         readonly IEnumerable<IValidatable> _validatableObjects;
-        public SettingValidationStartupFilter(IEnumerable<IValidatable> validatableObjects)
+        public SettingValidationFilter(IEnumerable<IValidatable> validatableObjects)
         {
             _validatableObjects = validatableObjects;
         }

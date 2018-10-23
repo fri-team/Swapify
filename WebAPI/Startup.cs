@@ -20,7 +20,7 @@ using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.Extensions.Options;
 using System;
-using WebAPI.StartupFilters;
+using WebAPI.Filters;
 
 namespace WebAPI
 {
@@ -85,7 +85,7 @@ namespace WebAPI
 
         private void LoadAndValidateSettings(IServiceCollection services)
         {
-            services.AddTransient<IStartupFilter, SettingValidationStartupFilter>();
+            services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
             if (mailSettings.Get<MailingSettings>() == null)
@@ -115,6 +115,7 @@ namespace WebAPI
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new ProducesAttribute("application/json"));
+                options.Filters.Add(typeof(ValidationFilter));
             });
             services.AddAuthentication(options =>
             {

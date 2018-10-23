@@ -30,19 +30,7 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
-            if (body == null)
-                return BadRequest();
-
             body.Email = body.Email.ToLower();
-            if (!ModelState.IsValid)
-            {
-                StringBuilder modelStateBuilder = ModelState.Values.SelectMany(x => x.Errors).Aggregate(
-                                new StringBuilder($"Error when creating user {body.Email}. ModelState errors: "),
-                                (sb, x) => sb.Append($"{x.ErrorMessage} "));
-                _logger.LogError(modelStateBuilder.ToString());
-                return ValidationError(ModelState);
-            }
-
             User user = new User(body.Email, body.Name, body.Surname);
             var result = await _userService.AddUserAsync(user, body.Password);
             if (result.Succeeded)
@@ -94,9 +82,6 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
-            if (body == null || !ModelState.IsValid)
-                return BadRequest();
-
             body.Login = body.Login.ToLower();
             var user = await _userService.GetUserAsync(body.Login);
             if (user == null)
