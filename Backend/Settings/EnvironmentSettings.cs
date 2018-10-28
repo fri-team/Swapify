@@ -14,11 +14,11 @@ namespace FRITeam.Swapify.Backend.Settings
 
         public void Validate()
         {
-            if (string.IsNullOrEmpty(Environment))
-                throw new SettingException("launchSettings.json", $"Setting {nameof(Environment)} is missing in environmentVariables configuration section.");
-            if (string.IsNullOrEmpty(JwtSecret))
-                throw new SettingException("launchSettings.json", $"Setting {nameof(JwtSecret)} is missing in environmentVariables configuration section.");
-
+            //  See issue #87
+            //if (string.IsNullOrEmpty(Environment))
+            //    throw new SettingException("launchSettings.json", $"Setting {nameof(Environment)} is missing in environmentVariables configuration section.");
+            //if (string.IsNullOrEmpty(JwtSecret))
+            //    throw new SettingException("launchSettings.json", $"Setting {nameof(JwtSecret)} is missing in environmentVariables configuration section.");
         }
     }
 }

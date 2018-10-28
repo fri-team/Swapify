@@ -9,7 +9,7 @@ using WebAPI;
 namespace IntegrationTest
 {
     public class TestFixture : IDisposable
-    {        
+    {
         public HttpClient Client { get; private set; }
         public Uri BaseUrl { get => new Uri("http://localhost:5000/api/"); }
         private readonly TestServer Server;
@@ -27,6 +27,7 @@ namespace IntegrationTest
             var builder = new WebHostBuilder()
                 .UseContentRoot(relativePathToWebProject)
                 .UseConfiguration(config)
+                .UseEnvironment("Development")
                 .UseStartup<Startup>();
 
             Server = new TestServer(builder);
