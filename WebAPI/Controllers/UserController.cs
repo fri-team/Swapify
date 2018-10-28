@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
             StringBuilder identityErrorBuilder = result.Errors.Aggregate(
                             new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
                             (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogError(identityErrorBuilder.ToString());
+            _logger.LogInformation(identityErrorBuilder.ToString());
             Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
             return ValidationError(identityErrors);
         }
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
             var user = await _userService.GetUserAsync(email);
             if (user == null)
             {
-                _logger.LogError($"Invalid email confirmation attempt. User {email} doesn't exist.");
+                _logger.LogWarning($"Invalid email confirmation attempt. User {email} doesn't exist.");
                 return BadRequest();
             }
 
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
             StringBuilder errors = emailConfirmation.Result.Errors.Aggregate(
                            new StringBuilder($"Confirmation of email address {email} failed. Errors: "),
                            (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogError(errors.ToString());
+            _logger.LogWarning(errors.ToString());
             return BadRequest();
         }
 
@@ -82,17 +82,26 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
-            body.Login = body.Login.ToLower();
-            var user = await _userService.GetUserAsync(body.Login);
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserAsync(body.Email);
             if (user == null)
             {
-                _logger.LogError($"Invalid login attemp. User {body.Login} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Login} neexistuje.");
+                _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            var token = await _userService.Authenticate(body.Login, body.Password);
+            if(!user.EmailConfirmed)
+            {
+                _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
+                return ErrorResponse($"Pre prihlásenie prosím potvrďte svoju emailovú adresu.");
+            }
+
+            var token = await _userService.Authenticate(body.Email, body.Password);
             if(token == null)
-                return ErrorResponse("Zadané údaje nie sú správne.");
+            {
+                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                return ErrorResponse("Zadané heslo nie je správne.");
+            }                
 
             var authUser = new AuthenticatedUserModel(token);
             return Ok(authUser);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {flatten ,values} from 'lodash';
 import classNames from 'classnames';
 import axios from 'axios';
 import '../RegisterPage/RegisterPage.scss';
@@ -10,43 +9,39 @@ import { ElevatedBox, MacBackground } from '../';
 import { connect } from 'react-redux';
 import { login as loginAction } from '../../actions/userActions';
 
+const validator = new FormValidator([
+  {
+    field: 'email',
+    method: 'isEmpty',
+    validWhen: false,
+    message: 'Zadajte email'
+  },
+  {
+    field: 'email',
+    method: 'isEmail',
+    validWhen: true,
+    message: 'Emailová adresa nie je platná.'
+  },    
+  {
+    field: 'password',
+    method: 'isEmpty',
+    validWhen: false,
+    message: 'Zadajte heslo'
+  }    
+]);
 class LoginPage extends Component {
-  static validator = new FormValidator([
-    {
-      field: 'email',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Zadajte email'
-    },
-    {
-      field: 'email',
-      method: 'isEmail',
-      validWhen: true,
-      message: 'Emailová adresa nie je platná.'
-    },    
-    {
-      field: 'password',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Zadajte heslo'
-    }    
-  ]);
-
   state = {
     email: '',
     password: '',    
-    validation: this.validator.valid(),
+    validation: validator.valid(),
     submitted: false,
-    serverErrors: []
+    serverErrors: ''
   };
 
   handleInputChange = event => {
     event.preventDefault();
-
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   onSubmit = () => {
     const data = {      
@@ -55,7 +50,7 @@ class LoginPage extends Component {
     };
     const { dispatch, history } = this.props;
 
-    const validation = this.validator.validate(this.state);
+    const validation = validator.validate(data);
     this.setState({ validation, submitted: true });
 
     if (validation.isValid) {
@@ -63,23 +58,21 @@ class LoginPage extends Component {
         method: 'post',
         url: '/api/user/login',
         data,
-      }).then(() => {
-        dispatch(loginAction(data));
-        history.push('/timetable');
-      }).catch(error => {
-        var serverErrors = flatten(values(error.response.data.errors));
-        this.setState({ serverErrors });
+      })
+        .then(() => {
+          dispatch(loginAction(data));
+          history.push('/timetable');
+      })
+        .catch(error => {          
+          this.setState({ serverErrors : error.response.data.error });
       });
     }
   }
 
   render() {
-    let validation = this.state.submitted ?
-                     this.validator.validate(this.state) :
-                     this.state.validation;
-
-    const serverErrors = this.state.serverErrors;
-    const serverErrorsList = serverErrors.map((e) => <li key={e}>{e}</li>);
+    let validation = this.state.submitted
+      ? validator.validate(this.state)
+      : this.state.validation;
 
     return (
       <MacBackground>
@@ -118,7 +111,7 @@ class LoginPage extends Component {
               Prihlásiť
             </Button>
             <div className={classNames({ 'server-error': this.state.submitted && this.state.serverErrors.length > 0 })}>
-                <ul>{ serverErrorsList }</ul>
+                {this.state.serverErrors}
             </div>
           </div>
         </ElevatedBox>
