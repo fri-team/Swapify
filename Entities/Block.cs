@@ -26,6 +26,19 @@ namespace FRITeam.Swapify.Entities
                 (this.Teacher == b?.Teacher);
         }
 
+        public Block Clone()
+        {
+            var newBlock = new Block();
+            newBlock.BlockType = this.BlockType;
+            newBlock.CourseId = this.CourseId;
+            newBlock.Day = this.Day;
+            newBlock.Duration = this.Duration;
+            newBlock.Room = this.Room;
+            newBlock.StartHour = this.StartHour;
+            newBlock.Teacher = this.Teacher;
+            return newBlock;
+        }
+
         public override bool Equals(object obj)
         {
             Block other = obj as Block;

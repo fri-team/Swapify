@@ -5,6 +5,7 @@ using FRITeam.Swapify.Entities.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FRITeam.Swapify.APIWrapper;
 using MongoDB.Driver;
 using Xunit;
 
@@ -18,6 +19,31 @@ namespace BackendTest
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+        }
+
+        
+        [Fact]
+        public async Task AssingTimetableToStudent()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudyGroupService grpsrvc = new StudyGroupService(database);
+            CourseService crsrv = new CourseService(database);
+            ISchoolScheduleProxy proxy = new FakeProxy();
+
+            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
+            Student student = new Student();
+            student.Timetable = studyGroup.Timetable.Clone();
+            student.StudyGroupId = studyGroup.Id;
+
+            var newBlock = new Block();
+            var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
+            studyGroup.Timetable.AddNewBlock(newBlock);
+
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
+
+            var newBlockSt = new Block();
+            student.Timetable.AddNewBlock(newBlockSt);
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
         }
 
         [Fact]

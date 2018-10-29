@@ -50,6 +50,5 @@ namespace FRITeam.Swapify.Backend
 
             return group;
         }
-
     }
 }
