@@ -1,4 +1,5 @@
 using Backend;
+using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,7 +49,9 @@ namespace WebAPI
             ConfigureAuthorization(services);            
 
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IStudentService, StudentService>();
+            services.AddSingleton<IStudyGroupService, StudyGroupService>();
+            services.AddSingleton<ICourseService, CourseService>();
+            services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
             services.AddSingleton<IEmailService>(
                 new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>()
             ));
