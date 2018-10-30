@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace WebAPI.Models
+namespace WebAPI.Models.TimetableModels
 {
     [JsonConverter(typeof(StringEnumConverter), true)]
     public enum TimetableBlockType
