@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{
 		SonarQube\SwapifyCSharp.ruleset = SonarQube\SwapifyCSharp.ruleset
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "Tests\IntegrationTest\IntegrationTest.csproj", "{47DE3159-8875-4F29-918F-75FE040BE6EE}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoursesParser", "CoursesParser\CoursesParser.csproj", "{E9CC6930-201D-474A-A306-9EADDFA3470D}"
 EndProject
 Global
@@ -49,16 +51,13 @@ Global
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9CC6930-201D-474A-A306-9EADDFA3470D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9CC6930-201D-474A-A306-9EADDFA3470D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9CC6930-201D-474A-A306-9EADDFA3470D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9CC6930-201D-474A-A306-9EADDFA3470D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AEA98F2A-6A42-4A5B-82E1-BFC67890525F} = {2B48E3B6-DE36-4B37-AE0B-3C85912E3942}
+		{47DE3159-8875-4F29-918F-75FE040BE6EE} = {2B48E3B6-DE36-4B37-AE0B-3C85912E3942}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3E1C83F-EF40-4AA6-BAD3-2B7D17A2D09A}

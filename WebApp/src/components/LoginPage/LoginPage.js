@@ -1,90 +1,118 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import '../RegisterPage/RegisterPage.scss';
+import FormValidator from '../FormValidator/FormValidator';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, MacBackground } from '../';
+import { connect } from 'react-redux';
 import { login as loginAction } from '../../actions/userActions';
-import './LoginPage.scss';
 
+const validator = new FormValidator([
+  {
+    field: 'email',
+    method: 'isEmpty',
+    validWhen: false,
+    message: 'Zadajte email'
+  },
+  {
+    field: 'email',
+    method: 'isEmail',
+    validWhen: true,
+    message: 'Emailová adresa nie je platná.'
+  },    
+  {
+    field: 'password',
+    method: 'isEmpty',
+    validWhen: false,
+    message: 'Zadajte heslo'
+  }    
+]);
 class LoginPage extends Component {
   state = {
-    login: '',
-    password: '',
-    loginError: '',
-    passwordError: '',
-    sending: false
+    email: '',
+    password: '',    
+    validation: validator.valid(),
+    submitted: false,
+    serverErrors: ''
   };
 
-  updateValue = key => evt => {
-    const { value } = evt.target;
-    this.setState({
-      [key]: value,
-      [`${key}Error`]: value ? '' : 'Hodnota je povinná'
-    });
+  handleInputChange = event => {
+    event.preventDefault();
+    this.setState({ [event.target.name]: event.target.value });
   };
 
-  canLogin = () => {
-    const { login, password, sending } = this.state;
-    return !sending && login && password;
-  };
-
-  login = () => {
+  onSubmit = () => {
+    const data = {      
+      email: this.state.email,
+      password: this.state.password    
+    };
     const { dispatch, history } = this.props;
-    const { login, password } = this.state;
-    this.setState({ sending: true });
-    axios
-      .post('/api/user/login', { login, password })
-      .then(({ data }) => {
-        dispatch(loginAction(data));
-        history.push('/timetable');
+
+    const validation = validator.validate(data);
+    this.setState({ validation, submitted: true });
+
+    if (validation.isValid) {
+      axios({
+        method: 'post',
+        url: '/api/user/login',
+        data,
       })
-      .catch(() =>
-        this.setState({
-          login: '',
-          password: '',
-          loginError: 'Login alebo heslo nie je správne',
-          passwordError: 'Login alebo heslo nie je správne',
-          sending: false
-        })
-      );
-  };
+        .then(() => {
+          dispatch(loginAction(data));
+          history.push('/timetable');
+      })
+        .catch(error => {          
+          this.setState({ serverErrors : error.response.data.error });
+      });
+    }
+  }
 
   render() {
-    const { login, password, loginError, passwordError, sending } = this.state;
+    let validation = this.state.submitted
+      ? validator.validate(this.state)
+      : this.state.validation;
+
     return (
       <MacBackground>
         <ElevatedBox>
-          <div className="login-form">
+          <div className="register-form">
             <TextField
-              label="Login"
+              label="Email"
               required
-              disabled={sending}
-              error={!!loginError}
-              helperText={loginError}
-              value={login}
-              onChange={this.updateValue('login')}
+              name = "email"
+              error={!!validation.email.message}
+              helperText={validation.email.message}
+              value={this.state.email}
+              fullWidth
+              onChange={this.handleInputChange}
             />
-            <div className="login-form-spacer">
+
+            <div className="register-form-spacer">
               <TextField
                 label="Heslo"
                 type="password"
-                disabled={sending}
                 required
-                error={!!passwordError}
-                helperText={passwordError}
-                value={password}
-                onChange={this.updateValue('password')}
+                name = "password"
+                error={!!validation.password.message}
+                helperText={validation.password.message}
+                value={this.state.password}
+                fullWidth
+                onChange={this.handleInputChange}
               />
             </div>
+
             <Button
-              disabled={!this.canLogin()}
               color="primary"
               variant="contained"
-              onClick={this.login}
+              onClick={this.onSubmit}
             >
               Prihlásiť
             </Button>
+            <div className={classNames({ 'server-error': this.state.submitted && this.state.serverErrors.length > 0 })}>
+                {this.state.serverErrors}
+            </div>
           </div>
         </ElevatedBox>
       </MacBackground>

@@ -4,18 +4,18 @@ using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
-using Timetable = WebAPI.Models.Timetable;
+using WebAPI.Models.TimetableModels;
+using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class TimetableController : Controller
+    public class TimetableController : BaseController
     {
-        private IStudyGroupService _groupService;
-        private ICourseService _courseService;
-        private ISchoolScheduleProxy _proxy;
-        private IStudentService _studentService;
+        private readonly IStudyGroupService _groupService;
+        private readonly ICourseService _courseService;
+        private readonly ISchoolScheduleProxy _proxy;
+        private readonly IStudentService _studentService;
 
         public TimetableController(IStudyGroupService groupService,
                                    ICourseService courseService,
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             StudyGroup sg = await _groupService.GetStudyGroupAsync(studyGroupNumber, _courseService, _proxy);
             if (sg == null || student == null)
             {
-                return BadRequest(new ErrorMessage($"Study group with number: {studyGroupNumber} does not exist."));
+                return ErrorResponse($"Study group with number: {studyGroupNumber} does not exist.");
             }
 
             await _studentService.UpdateStudentTimetableAsync(student, sg);
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         {
             if (!string.Equals(courseId, "DISS"))
             {
-                return BadRequest(new ErrorMessage($"Course with id: {courseId} does not exist."));
+                return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
             var timetable = new Timetable
             {
