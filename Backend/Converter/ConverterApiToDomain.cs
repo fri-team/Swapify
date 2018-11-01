@@ -13,18 +13,18 @@ namespace FRITeam.Swapify.Backend.Converter
     public class ConverterApiToDomain
     {
 
-        public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
         {
-            return await ConvertTimetableAsync(groupTimetable, courseServ, proxy, false);
+            return await ConvertTimetableAsync(groupTimetable, courseServ, false);
         }
 
-        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ)
         {
-            return await ConvertTimetableAsync(courseTimetable, courseServ, proxy, true);
+            return await ConvertTimetableAsync(courseTimetable, courseServ, true);
         }
 
 
-        private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, ISchoolScheduleProxy proxy, bool isTimetableForCourse)
+        private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, bool isTimetableForCourse)
         {
 
             Timetable timetable = new Timetable();
@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, courseServ, bl);
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, bl);
                             }
 
                             timetable.AddNewBlock(bl);
@@ -76,7 +76,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, courseServ, bl);
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, bl);
                         }
 
                         timetable.AddNewBlock(bl);

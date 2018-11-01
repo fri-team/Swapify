@@ -147,7 +147,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse, new FakeProxy());
+            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse);
 
             timetable.AllBlocks.Count.Should().Be(6);
             var blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 7);
