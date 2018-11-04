@@ -9,6 +9,7 @@ namespace FRITeam.Swapify.Backend
     public class StudentService : IStudentService
     {
         private readonly IMongoDatabase _database;
+
         private IMongoCollection<Student> _studentCollection => _database.GetCollection<Student>(nameof(Student));
 
         public StudentService(IMongoDatabase database)
@@ -31,5 +32,13 @@ namespace FRITeam.Swapify.Backend
         {
             await _studentCollection.ReplaceOneAsync(x => x.Id == loadedStudent.Id, loadedStudent);
         }
+
+        public async Task UpdateStudentTimetableAsync(Student studentToUpdate, StudyGroup studyGroup)
+        {
+            studentToUpdate.Timetable = studyGroup.Timetable.Clone();
+            studentToUpdate.StudyGroupId = studyGroup.Id;
+            await this.UpdateStudentAsync(studentToUpdate);
+        }
+                
     }
 }

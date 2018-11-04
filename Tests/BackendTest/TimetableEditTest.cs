@@ -41,18 +41,18 @@ namespace BackendTest
             Student updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
-            updatedStudent.Timetable.GetBlock(blckToAdd.Id).Should().NotBeNull();
+            updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
 
 
             //delete added block
-            updatedStudent.Timetable.DeleteBlock(blckToAdd.Id);
+            updatedStudent.Timetable.RemoveBlock(blckToAdd);
             //save deleted
             await stserv.UpdateStudentAsync(updatedStudent);
             //load from db
             updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(0);
-            updatedStudent.Timetable.GetBlock(blckToAdd.Id).Should().BeNull();
+            updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(false);
         }
 
 

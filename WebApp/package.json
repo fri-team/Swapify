@@ -46,7 +46,12 @@
     "react-router-dom": "4.2.2",
     "react-router-redux": "5.0.0-alpha.6",
     "redux": "3.6.0",
-    "redux-thunk": "2.1.0"
+    "redux-auth-wrapper": "^2.0.3",
+    "redux-persist": "^5.10.0",
+    "redux-persist-transform-encrypt": "^2.0.1",
+    "redux-saga": "^0.16.2",
+    "redux-thunk": "2.1.0",
+    "validator": "^10.8.0"
   },
   "devDependencies": {
     "autoprefixer": "7.1.4",

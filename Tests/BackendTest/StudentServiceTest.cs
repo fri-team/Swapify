@@ -5,6 +5,7 @@ using FRITeam.Swapify.Entities.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FRITeam.Swapify.APIWrapper;
 using MongoDB.Driver;
 using Xunit;
 
@@ -18,6 +19,31 @@ namespace BackendTest
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+        }
+
+        
+        [Fact]
+        public async Task AssingTimetableToStudent()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudyGroupService grpsrvc = new StudyGroupService(database);
+            CourseService crsrv = new CourseService(database);
+            ISchoolScheduleProxy proxy = new FakeProxy();
+
+            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
+            Student student = new Student();
+            student.Timetable = studyGroup.Timetable.Clone();
+            student.StudyGroupId = studyGroup.Id;
+
+            var newBlock = new Block();
+            var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
+            studyGroup.Timetable.AddNewBlock(newBlock);
+
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
+
+            var newBlockSt = new Block();
+            student.Timetable.AddNewBlock(newBlockSt);
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
         }
 
         [Fact]
@@ -52,6 +78,37 @@ namespace BackendTest
             studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
             studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
             studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
+        }
+
+
+        [Fact]
+        public async Task UpdateStudentTest()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudentService stSer = new StudentService(database);
+            Student st = new Student();
+
+            Block bl1 = new Block { Room = "room1" };
+            Block bl2 = new Block { Room = "room2" };
+            Block bl3 = new Block { Room = "room3" };
+
+            st.Timetable = new Timetable();
+            st.Timetable.AddNewBlock(bl1);
+            st.Timetable.AddNewBlock(bl2);
+            await stSer.AddAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+
+            st = await stSer.FindByIdAsync(st.Id);
+            st.Timetable.RemoveBlock(bl1).Should().Be(true);
+            st.Timetable.AllBlocks.Count().Should().Be(1);
+            st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
+            st.Timetable.AddNewBlock(bl3);
+
+            await stSer.UpdateStudentAsync(st);
+            st.Timetable.AllBlocks.Count().Should().Be(2);
+            st.Timetable.AllBlocks.Any(x=>x.Room == "room3").Should().Be(true);
+            st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+
         }
     }
 }
