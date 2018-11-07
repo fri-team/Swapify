@@ -16,10 +16,8 @@
   <ItemGroup>
     <PackageReference Include="Mongo2Go" Version="2.2.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="RestSharp.NetCore" Version="105.2.4-rc4-24214-01" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.0.1.4822" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
   </ItemGroup>
 
@@ -28,10 +26,6 @@
     <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Threading.Tasks">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile259\System.Threading.Tasks.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
 
 </Project>

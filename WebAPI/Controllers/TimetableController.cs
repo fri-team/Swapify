@@ -1,132 +1,45 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
+using WebAPI.Models.TimetableModels;
+using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class TimetableController : Controller
+    public class TimetableController : BaseController
     {
-        [HttpGet]
-        public IActionResult GetStudentTimetable()
+        private readonly IStudyGroupService _groupService;
+        private readonly ICourseService _courseService;
+        private readonly ISchoolScheduleProxy _proxy;
+        private readonly IStudentService _studentService;
+
+        public TimetableController(IStudyGroupService groupService,
+                                   ICourseService courseService,
+                                   ISchoolScheduleProxy proxy,
+                                   IStudentService studentService
+                                   )
         {
-            var timetable = new Timetable
+            _groupService = groupService;
+            _courseService = courseService;
+            _proxy = proxy;
+            _studentService = studentService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetStudentTimetableFromGroup(string studyGroupNumber, Student student)
+        {
+            StudyGroup sg = await _groupService.GetStudyGroupAsync(studyGroupNumber, _courseService, _proxy);
+            if (sg == null || student == null)
             {
-                Blocks = new List<TimetableBlock>
-                {
-                    new TimetableBlock
-                    {
-                        Day = 1,
-                        StartBlock = 7,
-                        EndBlock = 9,
-                        CourseName = "Teória informácie",
-                        CourseShortcut = "TI",
-                        Room = "RA301",
-                        Teacher = "Tomáš Majer",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 2,
-                        StartBlock = 6,
-                        EndBlock = 8,
-                        CourseName = "Teória informácie",
-                        CourseShortcut = "TI",
-                        Room = "RC009",
-                        Teacher = "Stanislav Palúch",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 3,
-                        StartBlock = 8,
-                        EndBlock = 10,
-                        CourseName = "Architektúry informačných systémov",
-                        CourseShortcut = "AIS",
-                        Room = "RB003",
-                        Teacher = "Matilda Drozdová",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 4,
-                        StartBlock = 1,
-                        EndBlock = 3,
-                        CourseName = "Databázy a získavanie znalostí",
-                        CourseShortcut = "II05",
-                        Room = "RC009",
-                        Teacher = "Vitaly Levashenko",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 4,
-                        StartBlock = 6,
-                        EndBlock = 8,
-                        CourseName = "Architektúry informačných systémov",
-                        CourseShortcut = "AIS",
-                        Room = "RC009",
-                        Teacher = "Matilda Drozdová",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 4,
-                        StartBlock = 9,
-                        EndBlock = 11,
-                        CourseName = "Teória spoľahlivosti",
-                        CourseShortcut = "TSP",
-                        Room = "RA201",
-                        Teacher = "Elena Zaitseva",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 4,
-                        StartBlock = 11,
-                        EndBlock = 13,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "AF3A6",
-                        Teacher = "Norbert Adamko",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 5,
-                        StartBlock = 2,
-                        EndBlock = 4,
-                        CourseName = "Teória spoľahlivosti",
-                        CourseShortcut = "TSP",
-                        Room = "RA201",
-                        Teacher = "Elena Zaitseva",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 5,
-                        StartBlock = 4,
-                        EndBlock = 6,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Boris Bučko",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Day = 5,
-                        StartBlock = 6,
-                        EndBlock = 8,
-                        CourseName = "Databázy a získavanie znalostí",
-                        CourseShortcut = "II05",
-                        Room = "RB052",
-                        Teacher = "Vitaly Levashenko",
-                        Type = TimetableBlockType.Laboratory
-                    }
-                }
-            };
-            return Ok(timetable);
+                return ErrorResponse($"Study group with number: {studyGroupNumber} does not exist.");
+            }
+
+            await _studentService.UpdateStudentTimetableAsync(student, sg);
+            return Ok(student.Timetable);
         }
 
         [HttpGet("course/{courseId}")]
@@ -134,7 +47,7 @@ namespace WebAPI.Controllers
         {
             if (!string.Equals(courseId, "DISS"))
             {
-                return BadRequest(new ErrorMessage($"Course with id: {courseId} does not exist."));
+                return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
             var timetable = new Timetable
             {
