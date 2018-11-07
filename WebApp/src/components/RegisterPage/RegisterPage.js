@@ -137,16 +137,19 @@ class RegisterPage extends Component {
       <MacBackground>
         <ElevatedBox>
           <div className="register-form">
-            <TextField
-              label="Meno"
-              required
-              name="name"
-              error={!!validation.name.message}
-              helperText={validation.name.message}
-              value={this.state.name}
-              fullWidth
-              onChange={this.handleInputChange}
-            />
+            Registrácia
+            <div className="register-form-spacer">
+              <TextField
+                label="Meno"
+                required
+                name="name"
+                error={!!validation.name.message}
+                helperText={validation.name.message}
+                value={this.state.name}
+                fullWidth
+                onChange={this.handleInputChange}
+              />
+            </div>
 
             <div className="register-form-spacer">
               <TextField

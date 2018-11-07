@@ -33,5 +33,20 @@ namespace FRITeam.Swapify.Backend
                 client.Send(message);
             }
         }
+
+        public void SendResetPasswordEmail(string receiverEmail, string resetLink)
+        {
+            NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
+            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
+            {
+                client.Credentials = credentials;
+                client.EnableSsl = true;
+
+                string body = $"Pre reset hesla klikni na tento <a href='{resetLink}'>odkaz</a>.";
+                MailMessage message = new MailMessage(_emailSettings.Username, receiverEmail, "Swapify - obnovenie hesla", body);
+                message.IsBodyHtml = true;
+                client.Send(message);
+            }
+        }
     }
 }

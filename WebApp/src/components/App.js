@@ -6,7 +6,8 @@ import {
   RegisterPage,
   LoginPage,
   TimetablePage,
-  NotFoundPage
+  NotFoundPage,
+  ForgotPasswordPage
 } from './';
 
 // This is a class-based component because the current version of hot reloading
@@ -21,6 +22,7 @@ export default class App extends React.Component {
           <Route path="/login" component={onlyNotAuth(LoginPage)} />
           <Route path="/register" component={onlyNotAuth(RegisterPage)} />
           <Route path="/timetable" component={onlyAuth(TimetablePage)} />
+          <Route path="/forgott-pass" component={onlyNotAuth(ForgotPasswordPage)} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

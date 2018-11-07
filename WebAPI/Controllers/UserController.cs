@@ -53,6 +53,7 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("ConfirmEmail/{email}/{token})")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             var user = await _userService.GetUserAsync(email);
@@ -90,21 +91,71 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            if(!user.EmailConfirmed)
+            if (!user.EmailConfirmed)
             {
                 _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
-                return ErrorResponse($"Pre prihlásenie prosím potvrďte svoju emailovú adresu.");
+                return ErrorResponse($"Pre prihlásenie prosím potvrď svoju emailovú adresu.");
             }
 
             var token = await _userService.Authenticate(body.Email, body.Password);
-            if(token == null)
+            if (token == null)
             {
                 _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
                 return ErrorResponse("Zadané heslo nie je správne.");
-            }                
+            }
 
             var authUser = new AuthenticatedUserModel(token);
             return Ok(authUser);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel body)
+        {
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid password reset attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                _logger.LogInformation($"Invalid password reset attemp. User {body.Email} didn't confirm email address.");
+                return ErrorResponse($"Najskôr prosím potvrď svoju emailovú adresu.");
+            }
+
+            var token = await _userService.GeneratePasswordResetTokenAsync(user);
+            string callbackUrl = Url.Action("SetNewPassword", "User",
+                  new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
+            _emailService.SendResetPasswordEmail(body.Email, callbackUrl);
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("setnewpassword")]
+        public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordModel body)
+        {
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogError($"Invalid password reset attemp. User {body.Email} doesn't exist.");
+                return BadRequest();
+            }
+            var result = await _userService.ResetPasswordAsync(user, body.Token, body.Password);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            StringBuilder identityErrorBuilder = result.Errors.Aggregate(
+                            new StringBuilder($"Error when resetting password for user {body.Email}. Identity errors: "),
+                            (sb, x) => sb.Append($"{x.Description} "));
+            _logger.LogInformation(identityErrorBuilder.ToString());
+            Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
+            return ValidationError(identityErrors);
         }
     }
 }

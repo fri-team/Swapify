@@ -16,6 +16,7 @@ import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
 import UserButton from './UserButton/UserButton';
+import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 
 export {
   App,
@@ -35,5 +36,6 @@ export {
   Timetable,
   TimetablePage,
   Toolbar,
-  UserButton
+  UserButton,
+  ForgotPasswordPage
 };

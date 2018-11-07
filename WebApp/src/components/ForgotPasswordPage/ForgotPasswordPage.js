@@ -6,9 +6,6 @@ import FormValidator from '../FormValidator/FormValidator';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, MacBackground } from '../';
-import { connect } from 'react-redux';
-import { login as loginAction } from '../../actions/userActions';
-import { Link } from 'react-router-dom'
 
 const validator = new FormValidator([
   {
@@ -22,20 +19,14 @@ const validator = new FormValidator([
     method: 'isEmail',
     validWhen: true,
     message: 'Emailová adresa nie je platná.'
-  },    
-  {
-    field: 'password',
-    method: 'isEmpty',
-    validWhen: false,
-    message: 'Zadajte heslo'
-  }    
+  }
 ]);
-class LoginPage extends Component {
+class ForgotPasswordPage extends Component {
   state = {
-    email: '',
-    password: '',    
+    email: '',    
     validation: validator.valid(),
     submitted: false,
+    success: false,
     serverErrors: ''
   };
 
@@ -46,10 +37,8 @@ class LoginPage extends Component {
 
   onSubmit = () => {
     const data = {      
-      email: this.state.email,
-      password: this.state.password    
+      email: this.state.email      
     };
-    const { dispatch, history } = this.props;
 
     const validation = validator.validate(data);
     this.setState({ validation, submitted: true });
@@ -57,12 +46,11 @@ class LoginPage extends Component {
     if (validation.isValid) {
       axios({
         method: 'post',
-        url: '/api/user/login',
-        data,
+        url: '/api/user/ResetPassword',
+        data
       })
         .then(() => {
-          dispatch(loginAction(data));
-          history.push('/timetable');
+          this.setState({ success: true });
       })
         .catch(error => {          
           this.setState({ serverErrors : error.response.data.error });
@@ -75,11 +63,14 @@ class LoginPage extends Component {
       ? validator.validate(this.state)
       : this.state.validation;
 
+    const formStyle = this.state.success ? {display: 'none'} : {}
+    const messageStyle = !this.state.success ? {display: 'none'} : {}
+
     return (
       <MacBackground>
-        <ElevatedBox>
-          <div className="register-form">
-            Prihlásenie
+        <ElevatedBox>        
+          <div className='register-form' style={formStyle}>
+            Zabudnuté heslo
             <div className="register-form-spacer">
               <TextField
                 label="Email"
@@ -92,38 +83,19 @@ class LoginPage extends Component {
                 onChange={this.handleInputChange}
               />
             </div>
-            
-            <div className="register-form-spacer">
-              <TextField
-                label="Heslo"
-                type="password"
-                required
-                name = "password"
-                error={!!validation.password.message}
-                helperText={validation.password.message}
-                value={this.state.password}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
-
             <Button
               color="primary"
               variant="contained"
               onClick={this.onSubmit}
             >
-              Prihlásiť
-            </Button>
-            <Button 
-              variant="text"
-              size="small"
-              component={Link} to="/forgott-pass"
-            >
-              Zabudnuté heslo
-            </Button>
+              Resetovať
+            </Button>            
             <div className={classNames({ 'server-error': this.state.submitted && this.state.serverErrors.length > 0 })}>
                 {this.state.serverErrors}
             </div>
+          </div>
+          <div style={messageStyle}>
+            Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.          
           </div>
         </ElevatedBox>
       </MacBackground>
@@ -131,4 +103,4 @@ class LoginPage extends Component {
   }
 }
 
-export default connect()(LoginPage);
+export default ForgotPasswordPage;
