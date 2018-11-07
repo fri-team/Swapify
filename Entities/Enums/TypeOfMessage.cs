@@ -8,6 +8,7 @@ namespace FRITeam.Swapify.Entities.Enums
     {
         RegistrationMessage,
         ConfirmSwapMessage,
-        ForgotPasswordMessage
+        ForgotPasswordMessage,
+        CreateSwapRequest
     };
 }

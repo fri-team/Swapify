@@ -2,19 +2,23 @@
 <html>
 <head>
   <style>
-    input {
+    #spacer {
+      display: block;
+      padding:  15px;
+    }
+
+    #button {
       width: 35%;
       background-color: grey;
       color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
+      padding: 14px 50px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
     
     table {
-      max-width: 600px;
+      max-width: 500px;
       width: 100%;
       margin-left: 10px;
     }
@@ -23,27 +27,24 @@
       text-decoration: none;
       color: blueviolet;
     }
-
   </style>
+  <title>Email template</title>
 </head>
 <body>
 <div>
   <table>
     <tr>
       <td>
-        <h2>[title]</h2>
+        <p>Dear student,</p>
+        <p>{body}</p>
       </td>
     </tr>
+    <tr id="spacer"></tr>
     <tr>
       <td>
-        <p>[ourbody]</p>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <form action="http://swapify-env.cmp3dp4epn.eu-west-1.elasticbeanstalk.com">
-          <input type="submit" value="Visit our site" />
-        </form>
+        <a id="button" target="_blank" href="http://swapify-env.cmp3dp4epn.eu-west-1.elasticbeanstalk.com">
+          Visit our site
+        </a>
       </td>
     </tr>
     <tr id="footer">
@@ -58,4 +59,3 @@
 </div>
 </body>
 </html>
-
