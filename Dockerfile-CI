@@ -14,4 +14,5 @@ WORKDIR /src
 COPY ./ ./
 # run dotnet tests
 RUN dotnet restore
-RUN find Tests/ -type f -name "*.csproj" -exec dotnet test {} +
+RUN dotnet test Tests/BackendTest/BackendTest.csproj
+RUN dotnet test Tests/IntegrationTest/IntegrationTest.csproj
