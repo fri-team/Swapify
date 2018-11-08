@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { onlyAuth, onlyNotAuth } from '../util/auth';
+import { HOME, LOGIN, REGISTER, TIMETABLE } from '../util/routes';
 import {
   HomePage,
   RegisterPage,
@@ -17,10 +18,10 @@ export default class App extends React.Component {
     return (
       <div className="container">
         <Switch>
-          <Route exact path="/" component={onlyNotAuth(HomePage)} />
-          <Route path="/login" component={onlyNotAuth(LoginPage)} />
-          <Route path="/register" component={onlyNotAuth(RegisterPage)} />
-          <Route path="/timetable" component={onlyAuth(TimetablePage)} />
+          <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
+          <Route path={LOGIN} component={onlyNotAuth(LoginPage)} />
+          <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
+          <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

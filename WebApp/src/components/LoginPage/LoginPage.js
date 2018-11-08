@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, MacBackground } from '../';
 import { connect } from 'react-redux';
-import { login as loginAction } from '../../actions/userActions';
+import { login } from '../../actions/userActions';
 
 const validator = new FormValidator([
   {
@@ -44,7 +44,7 @@ class LoginPage extends Component {
   };
 
   onSubmit = () => {
-    const { dispatch, history } = this.props;
+    const { dispatch } = this.props;
 
     const body = {
       email: this.state.email,
@@ -60,8 +60,7 @@ class LoginPage extends Component {
         data: body
       })
         .then(({ data }) => {
-          dispatch(loginAction(data));
-          history.push('/timetable');
+          dispatch(login(data));
         })
         .catch(error => {
           this.setState({ serverErrors: error.response.data.error });
