@@ -1,4 +1,3 @@
-using CoursesParser.Enums;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
@@ -61,27 +60,27 @@ namespace CoursesParser
             foreach (var facultyOption in _selectFaculties.ChildNodes)
             {
                 _facId = facultyOption.Attributes["value"].Value;
-                DownloadAndSaveCourses(ChangeLevel.FromFaculty);
+                DownloadAndSaveCourses(1);
                 foreach (var town in _selectTown.ChildNodes)
                 {
                     _townId = town.Attributes["value"].Value;
-                    DownloadAndSaveCourses(ChangeLevel.FromTown);
+                    DownloadAndSaveCourses(2);
                     foreach(var studyType in _selectStudyType.ChildNodes)
                     {
                         _studyTypeId = studyType.Attributes["value"].Value;
-                        DownloadAndSaveCourses(ChangeLevel.FromStudyType);
+                        DownloadAndSaveCourses(3);
                         foreach (var studyYear in _selectStudyYear.ChildNodes)
                         {
                             _studyYearId = studyYear.Attributes["value"].Value;
-                            DownloadAndSaveCourses(ChangeLevel.FromStudyYear);
+                            DownloadAndSaveCourses(4);
                             foreach (var fieldOfStudy in _selectFieldOfStudy.ChildNodes)
                             {
                                 _fieldOfStudyId = fieldOfStudy.Attributes["value"].Value;
-                                DownloadAndSaveCourses(ChangeLevel.FromFieldOfStudy);
+                                DownloadAndSaveCourses(5);
                                 foreach (var fieldOfStudyDetailed in _selectFieldOfStudyDetailed.ChildNodes)
                                 {
                                     _fieldOfStudyDetailedId = fieldOfStudyDetailed.Attributes["value"].Value;
-                                    DownloadAndSaveCourses(ChangeLevel.FromDetailedFieldOfStudy);
+                                    DownloadAndSaveCourses(6);
                                 }
                             }
                         }
@@ -92,7 +91,7 @@ namespace CoursesParser
         }
 
 
-        private void DownloadAndSaveCourses(ChangeLevel level)
+        private void DownloadAndSaveCourses(int level)
         {
             if (_facId == null || _townId == null || _studyTypeId == null || _studyYearId == null ||
                 _fieldOfStudyId == null || _fieldOfStudyDetailedId == null)
@@ -113,27 +112,27 @@ namespace CoursesParser
             
             switch (level)
             {
-                case ChangeLevel.FromDetailedFieldOfStudy:
+                case 6:
                     break;
-                case ChangeLevel.FromFieldOfStudy:
+                case 5:
                     _selectFieldOfStudyDetailed = ConvertJsonToHtmlNode(deserialized["z"].ToString());
                     break;
-                case ChangeLevel.FromStudyYear:
+                case 4:
                     _selectFieldOfStudyDetailed = ConvertJsonToHtmlNode(deserialized["z"].ToString());
                     _selectFieldOfStudy = ConvertJsonToHtmlNode(deserialized["o"].ToString());
                     break;
-                case ChangeLevel.FromStudyType:
+                case 3:
                     _selectFieldOfStudyDetailed = ConvertJsonToHtmlNode(deserialized["z"].ToString());
                     _selectFieldOfStudy = ConvertJsonToHtmlNode(deserialized["o"].ToString());
                     _selectStudyYear = ConvertJsonToHtmlNode(deserialized["r"].ToString());
                     break;
-                case ChangeLevel.FromTown:
+                case 2:
                     _selectFieldOfStudyDetailed = ConvertJsonToHtmlNode(deserialized["z"].ToString());
                     _selectFieldOfStudy = ConvertJsonToHtmlNode(deserialized["o"].ToString());
                     _selectStudyYear = ConvertJsonToHtmlNode(deserialized["r"].ToString());
                     _selectStudyType = ConvertJsonToHtmlNode(deserialized["m"].ToString());
                     break;
-                case ChangeLevel.FromFaculty:
+                case 1:
                     _selectFieldOfStudyDetailed = ConvertJsonToHtmlNode(deserialized["z"].ToString());
                     _selectFieldOfStudy = ConvertJsonToHtmlNode(deserialized["o"].ToString());
                     _selectStudyYear = ConvertJsonToHtmlNode(deserialized["r"].ToString());
