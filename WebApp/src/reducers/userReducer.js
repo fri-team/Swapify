@@ -6,12 +6,12 @@ export const initState = {
   validTo: null
 };
 
-export const setStateIfNotExpired = state => {
-  const validTo = new Date(state.validTo || 0);
+export const setStateIfNotExpired = payload => {
+  const validTo = new Date(payload.validTo || 0);
   if (validTo.getTime() < Date.now()) return initState;
   return {
     isAuthenticated: true,
-    token: state.token,
+    token: payload.token,
     validTo
   };
 };
