@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, MacBackground } from '../';
+import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
   {
@@ -116,7 +117,7 @@ class RegisterPage extends Component {
         data
       })
         .then(() => {
-          this.props.history.push('/');
+          this.props.history.push(HOME);
         })
         .catch(error => {
           var serverErrors = flatten(values(error.response.data.errors));

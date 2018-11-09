@@ -19,7 +19,7 @@ namespace FRITeam.Swapify.Backend
             _emailSettings = emailSettings.Value;
         }
 
-        public void SendRegistrationConfirmationEmail(string receiverEmail, string confirmationLink)
+        public virtual void SendRegistrationConfirmationEmail(string receiverEmail, string confirmationLink)
         {
             NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
             using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))

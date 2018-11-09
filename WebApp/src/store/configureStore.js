@@ -5,19 +5,23 @@ import createHistory from 'history/createBrowserHistory';
 // 'routerMiddleware': the new way of storing route changes with redux middleware since rrV4.
 import { routerMiddleware } from 'react-router-redux';
 import { persistStore } from 'redux-persist';
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers';
+import sagas from '../sagas';
 
 export const history = createHistory();
 
 function configureStoreProd(initialState) {
   const reactRouterMiddleware = routerMiddleware(history);
+  const sagaMiddleware = createSagaMiddleware();
   const middlewares = [
     // Add other middleware on this line...
 
     // thunk middleware can also accept an extra argument to be passed to each thunk action
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
     thunk,
-    reactRouterMiddleware
+    reactRouterMiddleware,
+    sagaMiddleware
   ];
 
   const store = createStore(
@@ -25,13 +29,16 @@ function configureStoreProd(initialState) {
     initialState,
     compose(applyMiddleware(...middlewares))
   );
+
   const persistor = persistStore(store);
+  sagaMiddleware.run(sagas);
 
   return { store, persistor };
 }
 
 function configureStoreDev(initialState) {
   const reactRouterMiddleware = routerMiddleware(history);
+  const sagaMiddleware = createSagaMiddleware();
   const middlewares = [
     // Add other middleware on this line...
 
@@ -41,7 +48,8 @@ function configureStoreDev(initialState) {
     // thunk middleware can also accept an extra argument to be passed to each thunk action
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
     thunk,
-    reactRouterMiddleware
+    reactRouterMiddleware,
+    sagaMiddleware
   ];
 
   const composeEnhancers =
@@ -52,7 +60,9 @@ function configureStoreDev(initialState) {
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
   );
+
   const persistor = persistStore(store);
+  sagaMiddleware.run(sagas);
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

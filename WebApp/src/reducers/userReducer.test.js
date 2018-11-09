@@ -1,11 +1,6 @@
 import reducer, { initState } from './userReducer';
 import { login } from '../actions/userActions';
-
-const addDays = (date, days) => {
-  const copy = new Date(date);
-  copy.setDate(copy.getDate() + days);
-  return copy;
-};
+import { addDays } from '../util';
 
 describe('Reducers: User', () => {
   it('Do not set user as logged-in when token is expired', () => {

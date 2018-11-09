@@ -1,6 +1,10 @@
-import { LOGIN_DONE } from '../constants/actionTypes';
+import { LOGIN, LOGOUT } from '../constants/actionTypes';
 
 export const login = payload => ({
-  type: LOGIN_DONE,
+  type: LOGIN,
   payload
+});
+
+export const logout = () => ({
+  type: LOGOUT
 });
