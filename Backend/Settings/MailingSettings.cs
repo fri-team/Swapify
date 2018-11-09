@@ -1,8 +1,7 @@
-using FRITeam.Swapify.Backend.Exceptions;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
-    public class MailingSettings : IValidatable
+    public class MailingSettings : SettingsBase
     {
         public string SmtpServer { get; set; }
         public int? SmtpPort { get; set; }
@@ -14,16 +13,18 @@ namespace FRITeam.Swapify.Backend.Settings
 
         }
 
-        public void Validate()
+        public override void Validate()
         {
             if (string.IsNullOrEmpty(SmtpServer))
-                throw new SettingException("appsettings.json", $"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
+                _errors.AppendLine($"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Username))
-                throw new SettingException("appsettings.json", $"Setting {nameof(Username)} is missing in {nameof(MailingSettings)} configuration section.");
+                _errors.AppendLine($"Setting {nameof(Username)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Password))
-                throw new SettingException("appsettings.json", $"Setting {nameof(Password)} is missing in {nameof(MailingSettings)} configuration section.");
+                _errors.AppendLine($"Setting {nameof(Password)} is missing in {nameof(MailingSettings)} configuration section.");
             if (SmtpPort == null)
-                throw new SettingException("appsettings.json", $"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
+                _errors.AppendLine($"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
+
+            CheckErrors("appsettings.json");
         }
     }
 }
