@@ -5,20 +5,20 @@ namespace FRITeam.Swapify.Backend.Settings
 {
     public abstract class SettingsBase : IValidatable
     {
-        protected readonly StringBuilder _errors;
+        protected StringBuilder Errors { get; }
 
         protected SettingsBase()
         {
-            _errors = new StringBuilder();
+            Errors = new StringBuilder();
         }
 
         public abstract void Validate();
 
         protected void CheckErrors(string configName)
         {
-            if (_errors.Length != 0)
+            if (Errors.Length != 0)
             {
-                throw new SettingException(configName, _errors.ToString());
+                throw new SettingException(configName, Errors.ToString());
             }
         }
     }

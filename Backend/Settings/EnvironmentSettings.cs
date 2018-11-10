@@ -14,9 +14,9 @@ namespace FRITeam.Swapify.Backend.Settings
         public override void Validate()
         {
             if (string.IsNullOrEmpty(Environment))
-                _errors.AppendLine($"Setting {nameof(Environment)} is missing in environmentVariables.");
+                Errors.AppendLine($"Setting {nameof(Environment)} is missing in environmentVariables.");
             if (string.IsNullOrEmpty(JwtSecret))
-                _errors.AppendLine($"Setting {nameof(JwtSecret)} is missing in environmentVariables.");
+                Errors.AppendLine($"Setting {nameof(JwtSecret)} is missing in environmentVariables.");
 
             CheckErrors("environmentVariables");
         }

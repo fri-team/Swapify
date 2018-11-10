@@ -24,7 +24,7 @@ namespace FRITeam.Swapify.Backend.Settings
             foreach (PropertyInfo info in typeof(IdentitySettings).GetProperties())
             {
                 if (info.GetValue(this, null) == null)
-                    _errors.AppendLine($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
+                    Errors.AppendLine($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
             }
 
             CheckErrors("appsettings.json");
