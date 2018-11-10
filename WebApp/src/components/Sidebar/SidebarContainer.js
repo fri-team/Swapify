@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { includes, map } from 'lodash';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   showCourseTimetable,
@@ -19,9 +19,9 @@ class SidebarContainer extends PureComponent {
 
   render() {
     const { open, onClose, myCourseNames, displayedCourses } = this.props;
-    const courses = map(myCourseNames, course => ({
+    const courses = _.map(myCourseNames, course => ({
       name: course,
-      checked: includes(displayedCourses, course)
+      checked: _.includes(displayedCourses, course)
     }));
     return (
       <Sidebar

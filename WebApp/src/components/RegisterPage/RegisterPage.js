@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { flatten, values } from 'lodash';
+import _ from 'lodash';
 import classNames from 'classnames';
 import axios from 'axios';
 import './RegisterPage.scss';
@@ -120,7 +120,7 @@ class RegisterPage extends Component {
           this.props.history.push(HOME);
         })
         .catch(error => {
-          var serverErrors = flatten(values(error.response.data.errors));
+          var serverErrors = _.flatten(_.values(error.response.data.errors));
           this.setState({ serverErrors });
         });
     }
