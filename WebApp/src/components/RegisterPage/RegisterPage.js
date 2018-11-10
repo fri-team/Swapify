@@ -7,7 +7,7 @@ import FormValidator from '../FormValidator/FormValidator';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { ElevatedBox, MacBackground } from '../';
+import { ElevatedBox, Form, MacBackground } from '../';
 import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
@@ -137,7 +137,7 @@ class RegisterPage extends Component {
     return (
       <MacBackground>
         <ElevatedBox>
-          <div className="register-form">
+          <Form className="register-form" onSubmit={this.onSubmit}>
             <TextField
               label="Meno"
               required
@@ -203,7 +203,7 @@ class RegisterPage extends Component {
               />
             </div>
 
-            <Button color="primary" variant="contained" onClick={this.onSubmit}>
+            <Button type="submit" color="primary" variant="contained">
               Registrovať
             </Button>
             <div
@@ -214,7 +214,7 @@ class RegisterPage extends Component {
             >
               <ul>{serverErrorsList}</ul>
             </div>
-          </div>
+          </Form>
         </ElevatedBox>
       </MacBackground>
     );
