@@ -103,7 +103,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse("Zadané heslo nie je správne.");
             }                
 
-            var authUser = new AuthenticatedUserModel(token);
+            var authUser = new AuthenticatedUserModel(user, token);
             return Ok(authUser);
         }
     }
