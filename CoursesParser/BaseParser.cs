@@ -12,6 +12,7 @@ namespace CoursesParser
 {
     public class BaseParser
     {
+        private string _url = "http://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
         private HtmlDocument _document;
         private HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
@@ -34,14 +35,14 @@ namespace CoursesParser
         public BaseParser()
         {
             _encoding = CodePagesEncodingProvider.Instance.GetEncoding(1250);
-            var url = "https://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
+            
             var web = new HtmlWeb();
             web.AutoDetectEncoding = false;
 
             web.OverrideEncoding = _encoding;
 
             _allCourses = new HashSet<string>(5000);
-            _document = web.Load(url);
+            _document = web.Load(_url);
             _document.OptionDefaultStreamEncoding = _encoding;
 
             _selectFaculties = _document.GetElementbyId("f");
@@ -101,7 +102,7 @@ namespace CoursesParser
             }
             Debug.WriteLine($"{_facId}, {_townId}, {_studyTypeId}, {_studyYearId}, {_fieldOfStudyId}, {_fieldOfStudyDetailedId}, {level.ToString()}");
             var json = DownloadJson(_facId, _townId, _studyTypeId, _studyYearId,
-                                          _fieldOfStudyId, _fieldOfStudyDetailedId, level.ToString());
+                                          _fieldOfStudyId, _fieldOfStudyDetailedId, ((int)level).ToString());
             var deserialized = JObject.Parse(json);
             if (deserialized["msg"] != null)
             {
@@ -158,7 +159,7 @@ namespace CoursesParser
             using (WebClient wc = new WebClient())
             {
                 wc.Encoding = _encoding;
-                retJson = wc.DownloadString($"http://vzdelavanie.uniza.sk/vzdelavanie/plany.php?f={f}&t={t}&m={m}&r={r}&o={o}&z={z}&c={c}");
+                retJson = wc.DownloadString($"{_url}?f={f}&t={t}&m={m}&r={r}&o={o}&z={z}&c={c}");
             }
             return retJson;
         }

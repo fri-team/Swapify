@@ -3,6 +3,8 @@ using FluentAssertions;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
 using MongoDB.Driver;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -27,21 +29,18 @@ namespace BackendTest
             //CourseService courseSrv = new CourseService(database);
             //BaseParser parser = new BaseParser();
             ////download from elearning - it can take few minutes!
-            //var allCourses = parser.ParseFaculties();
+            //int id = 1;
+            //var allCourses = parser.ParseFaculties().Select(x =>
+            //new { Id = id++,
+            //      CourseCode = parser.SplitCodeAndName(x).Item1,
+            //      CourseName = parser.SplitCodeAndName(x).Item2
+            //});
+                        
+            
+            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(allCourses);
+            //File.WriteAllText("courses.json", json);
 
-            ////add to database
-            //foreach (var course in allCourses)
-            //{
-            //    var parsed = parser.SplitCodeAndName(course);
-            //    var newCourse = new Course { CourseCode = parsed.Item1,
-            //                                 CourseName = parsed.Item2,
-            //                                 Timetable = new Timetable()
-            //                               };
-            //    await courseSrv.AddAsync(newCourse);                                            
-            //}
-            //var ret = await courseSrv.FindByNameAsync("praktikum z programovania 1");
-            //ret.Should().NotBeNull();
-
+           
             ////*****************************************************************************//
         }
     }
