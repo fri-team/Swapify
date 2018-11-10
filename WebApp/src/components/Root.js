@@ -17,6 +17,9 @@ const styledTheme = {
 };
 
 const muiTheme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
   palette: {
     primary: blue,
     secondary: pink

@@ -9,7 +9,6 @@ import MacBackground from './MacBackground/MacBackground';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import RegisterPage from './RegisterPage/RegisterPage';
 import Root from './Root';
-import Sidebar from './Sidebar/Sidebar';
 import SvgButton from './SvgButton/SvgButton';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
@@ -27,7 +26,6 @@ export {
   NotFoundPage,
   RegisterPage,
   Root,
-  Sidebar,
   SvgButton,
   Timetable,
   TimetablePage,
