@@ -56,7 +56,7 @@ export default {
     }),
 
     // Minify JS
-    new webpack.optimize.UglifyJsPlugin({ sourceMap: true }),
+    new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
   ],
   module: {
     rules: [
@@ -136,15 +136,15 @@ export default {
                 minimize: true,
                 sourceMap: true
               }
-            }, {
+            },
+            {
               loader: 'postcss-loader',
               options: {
-                plugins: () => [
-                  require('autoprefixer')
-                ],
+                plugins: () => [require('autoprefixer')],
                 sourceMap: true
               }
-            }, {
+            },
+            {
               loader: 'sass-loader',
               options: {
                 includePaths: [path.resolve(__dirname, 'src', 'scss')],
