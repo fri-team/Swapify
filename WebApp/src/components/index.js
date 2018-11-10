@@ -1,7 +1,6 @@
 import App from './App';
 import BlockDetail from './BlockDetail/BlockDetail';
 import ElevatedBox from './ElevatedBox/ElevatedBox';
-import HamburgerButton from './HamburgerButton/HamburgerButton';
 import HomePage from './HomePage/HomePage';
 import ImgCheckbox from './ImgCheckbox/ImgCheckbox';
 import LoadingPage from './LoadingPage/LoadingPage';
@@ -15,13 +14,11 @@ import SvgButton from './SvgButton/SvgButton';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
-import UserButton from './UserButton/UserButton';
 
 export {
   App,
   BlockDetail,
   ElevatedBox,
-  HamburgerButton,
   HomePage,
   ImgCheckbox,
   LoadingPage,
@@ -34,6 +31,5 @@ export {
   SvgButton,
   Timetable,
   TimetablePage,
-  Toolbar,
-  UserButton
+  Toolbar
 };
