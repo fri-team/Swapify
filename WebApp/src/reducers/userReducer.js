@@ -1,4 +1,4 @@
-import { LOGIN } from '../constants/actionTypes';
+import { LOGIN, LOGOUT } from '../constants/actionTypes';
 
 export const initState = {
   isAuthenticated: false,
@@ -24,6 +24,8 @@ export default function userReducer(state = initState, { type, payload }) {
   switch (type) {
     case LOGIN:
       return getUserData(payload);
+    case LOGOUT:
+      return initState;
     default:
       return state;
   }

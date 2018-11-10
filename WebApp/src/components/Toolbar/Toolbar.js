@@ -5,8 +5,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Menu from './Menu';
+import { logout } from '../../actions/userActions';
 import UserAvatar from './UserAvatar';
+import Menu from './Menu';
 import { PullRight } from './shared';
 
 const ToolbarWrapper = styled.div`
@@ -20,6 +21,8 @@ const IconTray = styled.div`
 
 class AppToolbar extends PureComponent {
   state = { showMenu: false };
+
+  handleLogout = () => this.props.dispatch(logout());
 
   render() {
     const { user, toggleSidebar } = this.props;
@@ -46,6 +49,7 @@ class AppToolbar extends PureComponent {
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
+                  onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                 />
               )}
@@ -57,8 +61,6 @@ class AppToolbar extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
+const mapStateToProps = state => ({ user: state.user });
 
 export default connect(mapStateToProps)(AppToolbar);

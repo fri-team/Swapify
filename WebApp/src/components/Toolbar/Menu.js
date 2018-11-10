@@ -81,7 +81,7 @@ class Menu extends PureComponent {
   };
 
   render() {
-    const { username, email } = this.props;
+    const { username, email, onLogout } = this.props;
     const { x, y } = this.state;
     const width = 300;
     return (
@@ -100,7 +100,9 @@ class Menu extends PureComponent {
             <PadBox>
               <FlexBox>
                 <PullRight />
-                <MenuButton variant="contained">Odhlásiť</MenuButton>
+                <MenuButton variant="contained" onClick={onLogout}>
+                  Odhlásiť
+                </MenuButton>
               </FlexBox>
             </PadBox>
           </Content>
