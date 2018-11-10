@@ -1,12 +1,10 @@
 import { call, put, take } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-import { routerActions } from 'react-router-redux';
 import { REHYDRATE } from 'redux-persist';
 import { LOGIN } from '../constants/actionTypes';
 import { login, logout } from '../actions/userActions';
 import { userLogout } from './userSagas';
 import { addDays } from '../util';
-import { HOME, TIMETABLE } from '../util/routes';
 
 describe('Sagas: User', () => {
   it('On successful login should redirect to timetable and schedule logout', () => {
@@ -18,11 +16,9 @@ describe('Sagas: User', () => {
 
     expect(gen.next().value).toEqual(take([LOGIN, REHYDRATE]));
     expect(gen.next(loginAction).value).toEqual(
-      call(routerActions.push, TIMETABLE)
+      call(delay, 24 * 60 * 60 * 1000)
     );
-    expect(gen.next().value).toEqual(call(delay, 24 * 60 * 60 * 1000));
     expect(gen.next().value).toEqual(put(logout()));
-    expect(gen.next().value).toEqual(call(routerActions.push, HOME));
     expect(gen.next()).toEqual({ done: true, value: undefined });
   });
 
@@ -38,11 +34,9 @@ describe('Sagas: User', () => {
 
     expect(gen.next().value).toEqual(take([LOGIN, REHYDRATE]));
     expect(gen.next(rehydrateAction).value).toEqual(
-      call(routerActions.push, TIMETABLE)
+      call(delay, 24 * 60 * 60 * 1000)
     );
-    expect(gen.next().value).toEqual(call(delay, 24 * 60 * 60 * 1000));
     expect(gen.next().value).toEqual(put(logout()));
-    expect(gen.next().value).toEqual(call(routerActions.push, HOME));
     expect(gen.next()).toEqual({ done: true, value: undefined });
   });
 });

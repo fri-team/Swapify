@@ -1,5 +1,5 @@
 import reducer, { initState } from './userReducer';
-import { login } from '../actions/userActions';
+import { login, logout } from '../actions/userActions';
 import { addDays } from '../util';
 
 describe('Reducers: User', () => {
@@ -20,5 +20,12 @@ describe('Reducers: User', () => {
       validTo: new Date(validTo)
     };
     expect(reducer(initState, action)).toEqual(expected);
+  });
+
+  it("On logout reset state to it's initial value", () => {
+    const validTo = addDays(new Date(), 1).toString();
+    const action = login({ token: 'jwt-token', validTo });
+    const notInitialState = reducer(initState, action);
+    expect(reducer(notInitialState, logout())).toEqual(initState);
   });
 });
