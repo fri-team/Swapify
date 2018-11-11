@@ -1,4 +1,5 @@
-import { LOGIN, LOGOUT } from '../constants/actionTypes';
+import axios from 'axios';
+import { LOGIN, LOGOUT, RENEW } from '../constants/actionTypes';
 
 export const initState = {
   isAuthenticated: false,
@@ -9,6 +10,7 @@ export const initState = {
 export const getUserData = payload => {
   const validTo = new Date(payload.validTo || 0);
   if (validTo.getTime() < Date.now()) return initState;
+  axios.defaults.headers.common['Authorization'] = payload.token;
   return {
     userName: payload.userName,
     email: payload.email,
@@ -20,10 +22,17 @@ export const getUserData = payload => {
   };
 };
 
+const getRenewData = (state, payload) => {
+  const { token, validTo } = getUserData(payload);
+  return { ...state, token, validTo };
+};
+
 export default function userReducer(state = initState, { type, payload }) {
   switch (type) {
     case LOGIN:
       return getUserData(payload);
+    case RENEW:
+      return getRenewData(state, payload);
     case LOGOUT:
       return initState;
     default:

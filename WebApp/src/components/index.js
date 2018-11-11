@@ -1,6 +1,7 @@
 import App from './App';
 import BlockDetail from './BlockDetail/BlockDetail';
 import ElevatedBox from './ElevatedBox/ElevatedBox';
+import Form from './Form/Form';
 import HomePage from './HomePage/HomePage';
 import ImgCheckbox from './ImgCheckbox/ImgCheckbox';
 import LoadingPage from './LoadingPage/LoadingPage';
@@ -17,6 +18,7 @@ export {
   App,
   BlockDetail,
   ElevatedBox,
+  Form,
   HomePage,
   ImgCheckbox,
   LoadingPage,
