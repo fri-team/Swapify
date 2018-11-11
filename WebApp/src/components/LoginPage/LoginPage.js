@@ -5,7 +5,7 @@ import '../RegisterPage/RegisterPage.scss';
 import FormValidator from '../FormValidator/FormValidator';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { ElevatedBox, MacBackground } from '../';
+import { ElevatedBox, Form, MacBackground } from '../';
 import { connect } from 'react-redux';
 import { login } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
@@ -78,13 +78,13 @@ class LoginPage extends Component {
     return (
       <MacBackground>
         <ElevatedBox>
-          <div className="register-form">
+          <Form className="register-form" onSubmit={this.onSubmit}>
             Prihlásenie
             <div className="register-form-spacer">
               <TextField
                 label="Email"
                 required
-                name = "email"
+                name="email"
                 error={!!validation.email.message}
                 helperText={validation.email.message}
                 value={this.state.email}
@@ -92,7 +92,7 @@ class LoginPage extends Component {
                 onChange={this.handleInputChange}
               />
             </div>
-            
+
             <div className="register-form-spacer">
               <TextField
                 label="Heslo"
@@ -107,7 +107,7 @@ class LoginPage extends Component {
               />
             </div>
 
-            <Button color="primary" variant="contained" onClick={this.onSubmit}>
+            <Button type="submit" color="primary" variant="contained">
               Prihlásiť
             </Button>
             <Button 
@@ -125,7 +125,7 @@ class LoginPage extends Component {
             >
               {this.state.serverErrors}
             </div>
-          </div>
+          </Form>
         </ElevatedBox>
       </MacBackground>
     );

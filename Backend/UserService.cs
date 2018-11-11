@@ -34,6 +34,28 @@ namespace FRITeam.Swapify.Backend
             return null;
         }
 
+        public JwtSecurityToken Renew(string jwtToken)
+        {
+            var secret = Encoding.ASCII.GetBytes(_environmentSettings.JwtSecret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = false,
+                IssuerSigningKey = new SymmetricSecurityKey(secret)
+            };
+
+            var claims = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
+            var jwtSecurityToken = validatedToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            var login = claims.Identity.Name;
+            return GenerateJwtToken(login);
+        }
+
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
             return await _userManager.CreateAsync(user, password);
@@ -71,7 +93,7 @@ namespace FRITeam.Swapify.Backend
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, login) }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddHours(6),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = (JwtSecurityToken)tokenHandler.CreateToken(tokenDescriptor);

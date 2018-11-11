@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
-import { deburr, lowerCase, replace } from 'lodash';
+import _ from 'lodash';
 import toMaterialStyle from 'material-color-hash';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -20,7 +20,8 @@ class BlockDetail extends PureComponent {
     }
     const { top, left, course } = this.props;
     const email =
-      replace(lowerCase(deburr(course.teacher)), ' ', '.') + '@fri.uniza.sk';
+      _.replace(_.lowerCase(_.deburr(course.teacher)), ' ', '.') +
+      '@fri.uniza.sk';
     const { backgroundColor, color } = toMaterialStyle(
       course.courseShortcut || ''
     );

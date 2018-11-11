@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { flatten, values } from 'lodash';
+import _ from 'lodash';
 import classNames from 'classnames';
 import axios from 'axios';
 import './RegisterPage.scss';
@@ -7,7 +7,7 @@ import FormValidator from '../FormValidator/FormValidator';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { ElevatedBox, MacBackground } from '../';
+import { ElevatedBox, Form, MacBackground } from '../';
 import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
@@ -120,7 +120,7 @@ class RegisterPage extends Component {
           this.props.history.push(HOME);
         })
         .catch(error => {
-          var serverErrors = flatten(values(error.response.data.errors));
+          var serverErrors = _.flatten(_.values(error.response.data.errors));
           this.setState({ serverErrors });
         });
     }
@@ -137,7 +137,7 @@ class RegisterPage extends Component {
     return (
       <MacBackground>
         <ElevatedBox>
-          <div className="register-form">
+          <Form className="register-form" onSubmit={this.onSubmit}>
             Registrácia
             <div className="register-form-spacer">
               <TextField
@@ -206,7 +206,7 @@ class RegisterPage extends Component {
               />
             </div>
 
-            <Button color="primary" variant="contained" onClick={this.onSubmit}>
+            <Button type="submit" color="primary" variant="contained">
               Registrovať
             </Button>
             <div
@@ -217,7 +217,7 @@ class RegisterPage extends Component {
             >
               <ul>{serverErrorsList}</ul>
             </div>
-          </div>
+          </Form>
         </ElevatedBox>
       </MacBackground>
     );

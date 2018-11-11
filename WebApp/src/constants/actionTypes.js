@@ -14,3 +14,4 @@ export const HIDE_DETAIL = 'HIDE_DETAIL';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const RENEW = 'RENEW';
