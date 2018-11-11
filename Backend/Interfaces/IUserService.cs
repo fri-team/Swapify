@@ -12,5 +12,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
         Task<User> GetUserAsync(string email);
+        JwtSecurityToken Renew(string jwtToken);
     }
 }
