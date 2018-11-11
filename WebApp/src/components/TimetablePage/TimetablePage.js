@@ -1,35 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Toolbar from '../Toolbar/Toolbar';
-import SidebarContainer from '../../containers/SidebarContainer/SidebarContainer';
 import TimetableContainer from '../../containers/TimetableContainer/TimetableContainer';
 import BlockDetailContainer from '../../containers/BlockDetailContainer/BlockDetailContainer';
+import SidebarContainer from '../Sidebar/SidebarContainer';
 
-class TimetablePage extends React.Component {
-  state = {
-    sidebarOpen: true,
-  }
-
-  toggleSidebar = () => {
-    this.setState({ sidebarOpen: !this.state.sidebarOpen });
-  }
+export default class TimetablePage extends PureComponent {
+  state = { sidebarOpen: false };
 
   render() {
     return (
       <div className="container">
-        <Toolbar toggleSidebar={this.toggleSidebar} />
-        <div className="sidebar-timetable">
-          <SidebarContainer open={this.state.sidebarOpen} />
-          <TimetableContainer />
-        </div>
+        <Toolbar
+          toggleSidebar={() =>
+            this.setState(prevState => ({
+              sidebarOpen: !prevState.sidebarOpen
+            }))
+          }
+        />
+        <SidebarContainer
+          open={this.state.sidebarOpen}
+          onClose={() => this.setState({ sidebarOpen: false })}
+        />
+        <TimetableContainer />
         <BlockDetailContainer />
       </div>
     );
   }
 }
-
-TimetablePage.propTypes = {
-  children: PropTypes.element,
-};
-
-export default TimetablePage;

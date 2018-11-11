@@ -1,33 +1,31 @@
 @import '../../styles/globals';
-
 $border-width: 1px;
 $border: $border-width solid $border-color;
-
 .timetable {
-  width: 100%;
-  display: grid;
-  border: $border;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: auto 1fr;
-  grid-template-areas: '. .'
-                       '. blocks';
-  border: $border;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    border: $border;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: '. .' '. blocks';
+    border: $border;
 }
 
 .border-cell {
-  padding: 1em;
-  text-align: center;
-  border: $border;
-  background-color: $background-color;
+    padding: 1em;
+    text-align: center;
+    border: $border;
+    background-color: $background-color;
 }
 
 .border-cells,
 .blocks {
-  grid-area: blocks;
+    grid-area: blocks;
 }
 
 .blocks {
-  display: grid;
-  grid-gap: $border-width * 2;
-  border: $border-width solid transparent;
+    display: grid;
+    grid-gap: $border-width * 2;
+    border: $border-width solid transparent;
 }

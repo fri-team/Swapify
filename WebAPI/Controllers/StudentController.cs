@@ -1,8 +1,6 @@
-
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -13,12 +11,10 @@ namespace WebAPI.Controllers
     public class StudentController : BaseController
     {
 
-        private readonly ILogger<UserController> _logger;
         private readonly IStudentService _studentService;
 
-        public StudentController(ILogger<UserController> logger, IStudentService studentService)
+        public StudentController(IStudentService studentService)
         {
-            _logger = logger;
             _studentService = studentService;
         }
 

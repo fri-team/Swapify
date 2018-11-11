@@ -5,19 +5,12 @@
 
 :root {
     box-sizing: border-box;
-    font-size: calc(.5vw + .5em);
 }
 
 *,
 ::before,
 ::after {
     box-sizing: inherit;
-}
-
-@media (min-width: 50em) {
-    :root {
-        font-size: 1.125em;
-    }
 }
 
 html,

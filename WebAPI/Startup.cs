@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using NLog.Web;
 using System.Text;
 using AspNetCore.Identity.MongoDbCore.Extensions;
 using AspNetCore.Identity.MongoDbCore.Infrastructure;
@@ -22,6 +21,10 @@ using FRITeam.Swapify.Entities;
 using Microsoft.Extensions.Options;
 using System;
 using WebAPI.Filters;
+using FRITeam.Swapify.Backend.DbSeed;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using FRITeam.Swapify.Backend.Exceptions;
 
 namespace WebAPI
 {
@@ -30,23 +33,31 @@ namespace WebAPI
         private const string DatabaseName = "Swapify";
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
             Environment = environment;
             DbRegistration.Init();
+            _logger = loggerFactory.CreateLogger<Startup>();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogInformation("Configuring services");
             if (Environment.IsDevelopment())
             {
-                services.AddSingleton(new MongoClient(Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString).GetDatabase(DatabaseName));
+                _logger.LogInformation("Starting Mongo2Go");
+                Mongo2Go.MongoDbRunner.StartForDebugging();
+                MongoClientSettings settings = new MongoClientSettings();
+                settings.GuidRepresentation = GuidRepresentation.Standard;
+
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
             }
 
             LoadAndValidateSettings(services);
-            ConfigureAuthorization(services);            
+            ConfigureAuthorization(services);
 
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IStudyGroupService, StudyGroupService>();
@@ -68,9 +79,9 @@ namespace WebAPI
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
-            }
 
-            env.ConfigureNLog($"nlog.{env.EnvironmentName}.config");
+                CreateDbSeed(app.ApplicationServices);
+            }
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
@@ -88,14 +99,15 @@ namespace WebAPI
 
         private void LoadAndValidateSettings(IServiceCollection services)
         {
+            _logger.LogInformation("Validating settings");
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
             if (mailSettings.Get<MailingSettings>() == null)
-                throw new ArgumentException($"Unable to load {nameof(MailingSettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
             if (identitySettings.Get<IdentitySettings>() == null)
-                throw new ArgumentException($"Unable to load {nameof(IdentitySettings)} configuration section.");
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(IdentitySettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
@@ -111,6 +123,7 @@ namespace WebAPI
 
         private void ConfigureAuthorization(IServiceCollection services)
         {
+            _logger.LogInformation("Configuring authorization");
             services.AddMvc(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -140,6 +153,7 @@ namespace WebAPI
 
         private MongoDbIdentityConfiguration ConfigureIdentity(IdentitySettings settings)
         {
+            _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
             if (Environment.IsDevelopment())
                 configuration.MongoDbSettings = new MongoDbSettings
@@ -170,9 +184,25 @@ namespace WebAPI
 
         private byte[] GetJwtSecret()
         {
+            _logger.LogInformation("Generating JwtSecret");
             var secret = System.Environment.GetEnvironmentVariable("JwtSecret");
             var bytes = Encoding.ASCII.GetBytes(secret);
             return bytes;
+        }
+
+        private void CreateDbSeed(IServiceProvider serviceProvider)
+        {
+            _logger.LogInformation("Creating DB seed");
+            try
+            {
+                _logger.LogInformation("Creating testing user");
+                DbSeed.CreateTestingUser(serviceProvider);
+                _logger.LogInformation("Oleg created");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Oleg not created:\n{e.Message}");
+            }
         }
     }
 }
