@@ -1,9 +1,8 @@
-using FRITeam.Swapify.Backend.Exceptions;
 using System.Reflection;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
-    public class IdentitySettings : IValidatable
+    public class IdentitySettings : SettingsBase
     {
         public bool? RequireDigit { get; set; }
         public int? RequiredLength { get; set; }
@@ -20,13 +19,15 @@ namespace FRITeam.Swapify.Backend.Settings
 
         }
 
-        public void Validate()
+        public override void Validate()
         {
             foreach (PropertyInfo info in typeof(IdentitySettings).GetProperties())
             {
                 if (info.GetValue(this, null) == null)
-                    throw new SettingException("appsettings.json", $"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
+                    Errors.AppendLine($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
             }
+
+            CheckErrors("appsettings.json");
         }
     }
 }

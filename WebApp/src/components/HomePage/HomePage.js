@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { ElevatedBox, MacBackground } from '../';
+import { LOGIN, REGISTER } from '../../util/routes';
 import './HomePage.scss';
 
 const HomePage = ({ history }) => (
@@ -11,14 +12,14 @@ const HomePage = ({ history }) => (
       <Button
         color="primary"
         variant="contained"
-        onClick={() => history.push('/register')}
+        onClick={() => history.push(REGISTER)}
       >
         Registrovať sa
       </Button>
       <Button
         color="primary"
         variant="contained"
-        onClick={() => history.push('/login')}
+        onClick={() => history.push(LOGIN)}
       >
         Prihlásiť sa
       </Button>

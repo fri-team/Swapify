@@ -5,7 +5,7 @@ import createEncryptor from 'redux-persist-transform-encrypt';
 import storage from 'redux-persist/lib/storage';
 import timetable from './timetableReducer';
 import blockDetail from './blockDetailReducer';
-import user, { setStateIfNotExpired } from './userReducer';
+import user, { getUserData } from './userReducer';
 
 const transforms = [
   createTransform(
@@ -13,7 +13,7 @@ const transforms = [
       ...state,
       validTo: validTo ? validTo.toString() : null
     }),
-    setStateIfNotExpired,
+    getUserData,
     { whitelist: ['user'] }
   )
 ];

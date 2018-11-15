@@ -1,4 +1,5 @@
-import { LOGIN_DONE } from '../constants/actionTypes';
+import axios from 'axios';
+import { LOGIN, LOGOUT, RENEW } from '../constants/actionTypes';
 
 export const initState = {
   isAuthenticated: false,
@@ -6,20 +7,34 @@ export const initState = {
   validTo: null
 };
 
-export const setStateIfNotExpired = state => {
-  const validTo = new Date(state.validTo || 0);
+export const getUserData = payload => {
+  const validTo = new Date(payload.validTo || 0);
   if (validTo.getTime() < Date.now()) return initState;
+  axios.defaults.headers.common['Authorization'] = payload.token;
   return {
+    userName: payload.userName,
+    email: payload.email,
+    name: payload.name,
+    surname: payload.surname,
     isAuthenticated: true,
-    token: state.token,
+    token: payload.token,
     validTo
   };
 };
 
+const getRenewData = (state, payload) => {
+  const { token, validTo } = getUserData(payload);
+  return { ...state, token, validTo };
+};
+
 export default function userReducer(state = initState, { type, payload }) {
   switch (type) {
-    case LOGIN_DONE:
-      return setStateIfNotExpired(payload);
+    case LOGIN:
+      return getUserData(payload);
+    case RENEW:
+      return getRenewData(state, payload);
+    case LOGOUT:
+      return initState;
     default:
       return state;
   }
