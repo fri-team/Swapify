@@ -9,6 +9,7 @@ import { logout } from '../../actions/userActions';
 import UserAvatar from './UserAvatar';
 import Menu from './Menu';
 import { PullRight } from './shared';
+import { withRouter } from 'react-router-dom';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -23,6 +24,8 @@ class AppToolbar extends PureComponent {
   state = { showMenu: false };
 
   handleLogout = () => this.props.dispatch(logout());
+
+  changeGroup = () => this.props.history.push('/studygroup');
 
   render() {
     const { user, toggleSidebar } = this.props;
@@ -49,6 +52,7 @@ class AppToolbar extends PureComponent {
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
+                  selectStudyGroup={this.changeGroup}
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                 />
@@ -63,4 +67,4 @@ class AppToolbar extends PureComponent {
 
 const mapStateToProps = state => ({ user: state.user });
 
-export default connect(mapStateToProps)(AppToolbar);
+export default connect(mapStateToProps)(withRouter(AppToolbar));
