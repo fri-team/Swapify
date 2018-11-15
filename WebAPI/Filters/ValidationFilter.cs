@@ -25,11 +25,11 @@ namespace WebAPI.Filters
             if (!context.ModelState.IsValid)
             {
                 context.Result = new ValidationErrorResponse(context.ModelState).ToResult();
-            }
-            StringBuilder modelStateBuilder = context.ModelState.Values.SelectMany(x => x.Errors).Aggregate(
+                StringBuilder modelStateBuilder = context.ModelState.Values.SelectMany(x => x.Errors).Aggregate(
                                 new StringBuilder($"ModelState errors: "),
                                 (sb, x) => sb.Append($"{x.ErrorMessage} "));
-            _logger.LogError(modelStateBuilder.ToString());
+                _logger.LogInformation(modelStateBuilder.ToString());
+            }
         }
     }
 }

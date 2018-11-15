@@ -1,23 +1,66 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import HamburgerButton from '../HamburgerButton/HamburgerButton';
-import UserButton from '../UserButton/UserButton';
-import './Toolbar.scss';
+import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import { logout } from '../../actions/userActions';
+import UserAvatar from './UserAvatar';
+import Menu from './Menu';
+import { PullRight } from './shared';
 
-export default class Toolbar extends Component {
+const ToolbarWrapper = styled.div`
+  width: 100%;
+`;
+
+const IconTray = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+class AppToolbar extends PureComponent {
+  state = { showMenu: false };
+
+  handleLogout = () => this.props.dispatch(logout());
+
   render() {
+    const { user, toggleSidebar } = this.props;
     return (
-      <div className="toolbar">
-        <HamburgerButton onClick={this.props.toggleSidebar} />
-        <UserButton />
-      </div>
+      <ToolbarWrapper>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="Menu"
+              onClick={toggleSidebar}
+            >
+              <MenuIcon />
+            </IconButton>
+            <IconTray>
+              <PullRight />
+              <UserAvatar
+                ref={ref => (this.anchor = ref)}
+                username={user.name}
+                onClick={() => this.setState({ showMenu: true })}
+              />
+              {this.state.showMenu && (
+                <Menu
+                  renderRef={this.anchor}
+                  username={`${user.name} ${user.surname}`}
+                  email={user.email}
+                  onLogout={this.handleLogout}
+                  onClose={() => this.setState({ showMenu: false })}
+                />
+              )}
+            </IconTray>
+          </Toolbar>
+        </AppBar>
+      </ToolbarWrapper>
     );
   }
 }
 
-Toolbar.propTypes = {
-  toggleSidebar: PropTypes.func.isRequired,
-};
+const mapStateToProps = state => ({ user: state.user });
 
-Toolbar.defaultProps = {
-};
+export default connect(mapStateToProps)(AppToolbar);

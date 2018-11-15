@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { has } from 'lodash';
+import _ from 'lodash';
 import {
   LOAD_MY_TIMETABLE,
   LOAD_MY_TIMETABLE_DONE,
@@ -77,7 +77,7 @@ export function showCourseTimetable(course) {
       type: SHOW_COURSE_TIMETABLE,
       payload: { course }
     };
-    if (!has(timetable.courseTimetables, course)) {
+    if (!_.has(timetable.courseTimetables, course)) {
       axios({
         method: 'get',
         url: `/api/timetable/course/${course}`
