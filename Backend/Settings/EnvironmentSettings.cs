@@ -5,10 +5,9 @@ namespace FRITeam.Swapify.Backend.Settings
     {
         public string Environment { get; set; }
         public string JwtSecret { get; set; }
-
+        
         public EnvironmentSettings()
         {
-
         }
 
         public override void Validate()

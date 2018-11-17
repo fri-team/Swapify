@@ -3,10 +3,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.Backend.Notification;
+using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
@@ -39,7 +42,9 @@ namespace WebAPI.Controllers
                 string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
                 string callbackUrl = Url.Action("ConfirmEmail", "User",
                   new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-                _emailService.SendRegistrationConfirmationEmail(body.Email, callbackUrl);
+                Email email = new Email();
+                email.ToEmail = body.Email;
+                _emailService.SendReqistrationMail(email, callbackUrl);
                 _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
                 return Ok();
             }

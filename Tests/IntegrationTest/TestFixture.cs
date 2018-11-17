@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using FRITeam.Swapify.Backend.Notification;
 using WebAPI;
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
@@ -87,8 +88,8 @@ namespace IntegrationTest
                 services.Remove(serviceDescriptor);
             }
             var emailServiceMock = new Mock<IEmailService>();
-            emailServiceMock.Setup(x => x.SendRegistrationConfirmationEmail(It.IsAny<string>(), It.IsAny<string>()))
-                           .Verifiable();
+            emailServiceMock.Setup(x => x.SendReqistrationMail(new Email() {ToEmail = It.IsAny<string>()}, It.IsAny<string>()))
+                .Verifiable();
             services.AddSingleton(emailServiceMock.Object);
         }
     }
