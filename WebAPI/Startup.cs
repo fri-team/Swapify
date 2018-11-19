@@ -25,7 +25,6 @@ using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
-using FRITeam.Swapify.Backend.Notification;
 
 namespace WebAPI
 {
@@ -67,21 +66,8 @@ namespace WebAPI
             services.AddSingleton<IEmailService>(
                 new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>()
             ));
-            services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddSingleton<IMailGunSettings>(
-                new MailGunSettings(Configuration.GetSection("MailGun:apikey").Value,
-                                    Configuration.GetSection("MailGun:senderDomain").Value,
-                                    Configuration.GetSection("MailGun:domain").Value,
-                                    Configuration.GetSection("MailGun:fromEmail").Value)
-                );
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
-            var x = new MailGunSettings(Configuration.GetSection("MailGun:apikey").Value,
-                                    Configuration.GetSection("MailGun:senderDomain").Value,
-                                    Configuration.GetSection("MailGun:domain").Value,
-                                    Configuration.GetSection("MailGun:fromEmail").Value);
-            new EmailSender(x).SendSimpleMessage(new Email() { Body = "cau", ToEmail = "madaras.david1@gmail.com",Subject ="ahoj" });
-
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
