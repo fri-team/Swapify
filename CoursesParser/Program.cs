@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,16 +11,7 @@ namespace CoursesParser
         {
             BaseParser parser = new BaseParser();
             //download from elearning - it can take few minutes!
-            int id = 1;
-            var allCourses = parser.ParseFaculties().Select(x =>
-            new
-            {
-                Id = id++,
-                CourseCode = parser.SplitCodeAndName(x).Item1,
-                CourseName = parser.SplitCodeAndName(x).Item2
-            });
-
-
+            List<Course> allCourses = parser.ParseFaculties();
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(allCourses);
             var actDate = DateTime.Now;
             File.WriteAllText($"courses_{actDate.Year}_{actDate.Month}_{actDate.Day}.json", json);

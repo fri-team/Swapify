@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -21,15 +22,14 @@ namespace CoursesParser
         private HtmlNode _selectFieldOfStudy;
         private HtmlNode _selectFieldOfStudyDetailed;
         private HtmlNode _selectPlansTable;
-        private string _facId;
-        private string _townId;
-        private string _studyTypeId;
 
-        
-        private string _studyYearId;
-        private string _fieldOfStudyId;
-        private string _fieldOfStudyDetailedId;
-        private HashSet<string> _allCourses;
+        private HtmlNode _facAct;
+        private HtmlNode _townAct;
+        private HtmlNode _studyTypeAct;
+        private HtmlNode _studyYearAct;
+        private HtmlNode _fieldOfStudyAct;
+        private HtmlNode _fieldOfStudyDetailedAct;
+        private List<Course> _allCourses;
         private Encoding _encoding;
 
         public BaseParser()
@@ -41,7 +41,7 @@ namespace CoursesParser
 
             web.OverrideEncoding = _encoding;
 
-            _allCourses = new HashSet<string>(5000);
+            _allCourses = new List<Course>(5000);
             _document = web.Load(_url);
             _document.OptionDefaultStreamEncoding = _encoding;
 
@@ -56,32 +56,37 @@ namespace CoursesParser
         }
 
 
-        public HashSet<string> ParseFaculties()
+        public List<Course> ParseFaculties()
         {
             
             foreach (var facultyOption in _selectFaculties.ChildNodes)
             {
-                _facId = facultyOption.Attributes["value"].Value;
+                _facAct = facultyOption;
+                Console.WriteLine(facultyOption.InnerText);
                 DownloadAndSaveCourses(ChangeLevel.FromFaculty);
                 foreach (var town in _selectTown.ChildNodes)
                 {
-                    _townId = town.Attributes["value"].Value;
+                    _townAct = town;
+                    Console.WriteLine(town.InnerText);
                     DownloadAndSaveCourses(ChangeLevel.FromTown);
                     foreach(var studyType in _selectStudyType.ChildNodes)
                     {
-                        _studyTypeId = studyType.Attributes["value"].Value;
+                        _studyTypeAct = studyType;
+                        Console.WriteLine(studyType.InnerText);
                         DownloadAndSaveCourses(ChangeLevel.FromStudyType);
                         foreach (var studyYear in _selectStudyYear.ChildNodes)
                         {
-                            _studyYearId = studyYear.Attributes["value"].Value;
+                            _studyYearAct = studyYear;
+                            Console.WriteLine(studyYear.InnerText);
                             DownloadAndSaveCourses(ChangeLevel.FromStudyYear);
                             foreach (var fieldOfStudy in _selectFieldOfStudy.ChildNodes)
                             {
-                                _fieldOfStudyId = fieldOfStudy.Attributes["value"].Value;
+                                _fieldOfStudyAct = fieldOfStudy;
+                                Console.WriteLine(fieldOfStudy.InnerText);
                                 DownloadAndSaveCourses(ChangeLevel.FromFieldOfStudy);
                                 foreach (var fieldOfStudyDetailed in _selectFieldOfStudyDetailed.ChildNodes)
                                 {
-                                    _fieldOfStudyDetailedId = fieldOfStudyDetailed.Attributes["value"].Value;
+                                    _fieldOfStudyDetailedAct = fieldOfStudyDetailed;
                                     DownloadAndSaveCourses(ChangeLevel.FromDetailedFieldOfStudy);
                                 }
                             }
@@ -95,14 +100,26 @@ namespace CoursesParser
 
         private void DownloadAndSaveCourses(ChangeLevel level)
         {
-            if (_facId == null || _townId == null || _studyTypeId == null || _studyYearId == null ||
-                _fieldOfStudyId == null || _fieldOfStudyDetailedId == null)
+
+            if (_facAct.Attributes["value"].Value == null ||
+                _townAct?.Attributes["value"]?.Value == null ||
+                _studyTypeAct?.Attributes["value"]?.Value == null ||
+                _studyYearAct?.Attributes["value"]?.Value == null ||
+                _fieldOfStudyAct?.Attributes["value"]?.Value == null ||
+                _fieldOfStudyDetailedAct?.Attributes["value"]?.Value == null)
             {
                 return;
             }
-            Debug.WriteLine($"{_facId}, {_townId}, {_studyTypeId}, {_studyYearId}, {_fieldOfStudyId}, {_fieldOfStudyDetailedId}, {level.ToString()}");
-            var json = DownloadJson(_facId, _townId, _studyTypeId, _studyYearId,
-                                          _fieldOfStudyId, _fieldOfStudyDetailedId, ((int)level).ToString());
+            Debug.WriteLine($"{_facAct}, {_townAct}, {_studyTypeAct}, {_studyYearAct}, {_fieldOfStudyAct}, {_fieldOfStudyDetailedAct}, {level.ToString()}");
+            var json = DownloadJson(
+                _facAct.Attributes["value"].Value,
+                _townAct.Attributes["value"].Value,
+                _studyTypeAct.Attributes["value"].Value,
+                _studyYearAct.Attributes["value"].Value,
+                _fieldOfStudyAct.Attributes["value"].Value,
+                _fieldOfStudyDetailedAct.Attributes["value"].Value,
+                ((int)level).ToString());
+            var fac = _selectFaculties.ChildNodes.Select(y => y.Attributes.Select(x => x.Name == "option"));
             var deserialized = JObject.Parse(json);
             if (deserialized["msg"] != null)
             {
@@ -172,19 +189,22 @@ namespace CoursesParser
                 var course = x.ChildNodes["td"]?.ChildNodes["a"];
                 if (course != null)
                 {
-                    _allCourses.Add(course.InnerText);
+                    var crs = new Course();
+                    crs.Faculty = _facAct.InnerText;
+                    crs.Town = _townAct.InnerText;
+                    crs.YearOfStudy = _studyYearAct.InnerText;
+                    crs.StudyOfField = _fieldOfStudyAct.InnerText;
+                    crs.DetailedStudyOfField = _fieldOfStudyDetailedAct.InnerText;
+                    crs.StudyType = _studyTypeAct.InnerText;
+                    int spaceIdx = course.InnerText.IndexOf(" ");
+                    crs.CourseCode = course.InnerText.Substring(0, spaceIdx);
+                    crs.CourseName = course.InnerText.Substring(spaceIdx + 1, course.InnerText.Length - spaceIdx - 1);
+                    
+                    _allCourses.Add(crs);
                 }
             }
         }
-
-        public Tuple<string,string> SplitCodeAndName(string course)
-        {
-            Tuple<string, string> ret;
-            int spaceIdx = course.IndexOf(" ");
-            ret = new Tuple<string, string>(course.Substring(0, spaceIdx),
-                  course.Substring(spaceIdx + 1, course.Length - spaceIdx - 1));
-            return ret;
-        }
+          
 
     }
 }
