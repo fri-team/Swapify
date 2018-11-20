@@ -13,7 +13,7 @@ namespace CoursesParser
 {
     public class BaseParser
     {
-        private string _url = "http://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
+        private string Url = "http://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
         private HtmlDocument _document;
         private HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
@@ -42,7 +42,7 @@ namespace CoursesParser
             web.OverrideEncoding = _encoding;
 
             _allCourses = new List<Course>(5000);
-            _document = web.Load(_url);
+            _document = web.Load(Url);
             _document.OptionDefaultStreamEncoding = _encoding;
 
             _selectFaculties = _document.GetElementbyId("f");
@@ -176,7 +176,7 @@ namespace CoursesParser
             using (WebClient wc = new WebClient())
             {
                 wc.Encoding = _encoding;
-                retJson = wc.DownloadString($"{_url}?f={f}&t={t}&m={m}&r={r}&o={o}&z={z}&c={c}");
+                retJson = wc.DownloadString($"{Url}?f={f}&t={t}&m={m}&r={r}&o={o}&z={z}&c={c}");
             }
             return retJson;
         }
