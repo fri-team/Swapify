@@ -6,6 +6,5 @@ namespace FRITeam.Swapify.Entities
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
         public Timetable Timetable { get; set; }
-
     }
 }
