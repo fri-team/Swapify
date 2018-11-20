@@ -88,7 +88,7 @@ namespace IntegrationTest
                 services.Remove(serviceDescriptor);
             }
             var emailServiceMock = new Mock<IEmailService>();
-            var email = new Email() { Body= It.IsAny<string>(),Subject=It.IsAny<string>(),ToEmail=It.IsAny<string>()};
+            var email = new Email() { Body = It.IsAny<string>(), Subject = It.IsAny<string>(), ToEmail = It.IsAny<string>() };
             emailServiceMock.Setup(x => x.SendEmail(email)).Verifiable();
             services.AddSingleton(emailServiceMock.Object);
         }

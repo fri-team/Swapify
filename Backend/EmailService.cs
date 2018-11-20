@@ -32,20 +32,5 @@ namespace FRITeam.Swapify.Backend
                 client.Send(message);
             }
         }
-
-        //public virtual void SendRegistrationConfirmationEmail(string receiverEmail, string confirmationLink)
-        //{
-        //    NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
-        //    using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
-        //    {
-        //        client.Credentials = credentials;
-        //        client.EnableSsl = true;
-
-        //        string body = $"Pre potvrdenie účtu klikni na tento <a href='{confirmationLink}'>odkaz</a>.";
-        //        MailMessage message = new MailMessage(_emailSettings.Username, receiverEmail, "Swapify - potvrdenie registrácie", body);
-        //        message.IsBodyHtml = true;
-        //        client.Send(message);
-        //    }
-        //}
     }
 }
