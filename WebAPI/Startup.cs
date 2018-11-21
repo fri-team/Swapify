@@ -198,6 +198,9 @@ namespace WebAPI
                 _logger.LogInformation("Creating testing user");
                 DbSeed.CreateTestingUser(serviceProvider);
                 _logger.LogInformation("Oleg created");
+                _logger.LogInformation("Creating courses");
+                DbSeed.CreateTestingCourses(serviceProvider);
+                _logger.LogInformation("Courses created");
             }
             catch (Exception e)
             {

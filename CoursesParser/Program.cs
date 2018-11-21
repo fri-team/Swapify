@@ -1,3 +1,4 @@
+using FRITeam.Swapify.Backend.CourseParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,7 @@ namespace CoursesParser
         {
             BaseParser parser = new BaseParser();
             //download from elearning - it can take few minutes!
-            List<Course> allCourses = parser.ParseFaculties();
+            List<CourseItem> allCourses = parser.ParseFaculties();
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(allCourses);
             var actDate = DateTime.Now;
             File.WriteAllText($"courses_{actDate.Year}_{actDate.Month}_{actDate.Day}.json", json);

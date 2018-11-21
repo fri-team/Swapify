@@ -1,4 +1,5 @@
 using CoursesParser.Enums;
+using FRITeam.Swapify.Backend.CourseParser;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
@@ -29,7 +30,7 @@ namespace CoursesParser
         private HtmlNode _studyYearAct;
         private HtmlNode _fieldOfStudyAct;
         private HtmlNode _fieldOfStudyDetailedAct;
-        private List<Course> _allCourses;
+        private List<CourseItem> _allCourses;
         private Encoding _encoding;
 
         public BaseParser()
@@ -41,7 +42,7 @@ namespace CoursesParser
 
             web.OverrideEncoding = _encoding;
 
-            _allCourses = new List<Course>(5000);
+            _allCourses = new List<CourseItem>(5000);
             _document = web.Load(Url);
             _document.OptionDefaultStreamEncoding = _encoding;
 
@@ -56,7 +57,7 @@ namespace CoursesParser
         }
 
 
-        public List<Course> ParseFaculties()
+        public List<CourseItem> ParseFaculties()
         {
             
             foreach (var facultyOption in _selectFaculties.ChildNodes)
@@ -189,7 +190,7 @@ namespace CoursesParser
                 var course = x.ChildNodes["td"]?.ChildNodes["a"];
                 if (course != null)
                 {
-                    var crs = new Course();
+                    var crs = new CourseItem();
                     crs.Faculty = _facAct.InnerText;
                     crs.Town = _townAct.InnerText;
                     crs.YearOfStudy = _studyYearAct.InnerText;

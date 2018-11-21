@@ -1,11 +1,10 @@
-using CoursesParser.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CoursesParser
+namespace FRITeam.Swapify.Backend.CourseParser
 {
-    public class Course
+    public class CourseItem
     {
         public string CourseName { get; set; }
         public string CourseCode { get; set; }
