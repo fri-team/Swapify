@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Backend.Enums;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Notification;
 using FRITeam.Swapify.Backend.Settings;
@@ -42,11 +44,18 @@ namespace WebAPI.Controllers
                 string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
                 string callbackUrl = Url.Action("ConfirmEmail", "User",
                   new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-                Email email = new Email();
+                EmailBase email = new EmailBase();
                 email.ToEmail = body.Email;
-                _emailService.SendReqistrationMail(email, callbackUrl);
-                _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
-                return Ok();
+                try
+                {
+                    _emailService.ComposeAndSendMail(EmailTypes.RegistrationEmail, email, callbackUrl);
+                    _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
+                    return Ok();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
             }
 
             StringBuilder identityErrorBuilder = result.Errors.Aggregate(
@@ -95,18 +104,18 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            if(!user.EmailConfirmed)
+            if (!user.EmailConfirmed)
             {
                 _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
                 return ErrorResponse($"Pre prihlásenie prosím potvrďte svoju emailovú adresu.");
             }
 
             var token = await _userService.Authenticate(body.Email, body.Password);
-            if(token == null)
+            if (token == null)
             {
                 _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
                 return ErrorResponse("Zadané heslo nie je správne.");
-            }                
+            }
 
             var authUser = new AuthenticatedUserModel(user, token);
             return Ok(authUser);

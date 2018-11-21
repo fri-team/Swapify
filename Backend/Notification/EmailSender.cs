@@ -10,7 +10,7 @@ namespace FRITeam.Swapify.Backend.Notification
 {
     public class EmailSender
     {
-        public static void SendSimpleMessage(Email email)
+        public static void SendSimpleMessage(EmailBase email)
         {
             RestClient client = new RestClient();
             client.BaseUrl = new Uri("https://api.mailgun.net/v3");

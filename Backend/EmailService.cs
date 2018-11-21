@@ -3,6 +3,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
+using FRITeam.Swapify.Backend.Enums;
 using FRITeam.Swapify.Backend.Notification;
 
 namespace FRITeam.Swapify.Backend
@@ -22,12 +23,30 @@ namespace FRITeam.Swapify.Backend
             _urlSettings = urlSettings.Value;
         }
 
-        public virtual void SendReqistrationMail(Email data, string confirmationLink)
+        public void ComposeAndSendMail(EmailTypes typeOfEmail, EmailBase email, string generatedLink)
+        {
+            if (typeOfEmail == EmailTypes.RegistrationEmail)
+            {
+                RegistrationEmail regMail = new RegistrationEmail(email);
+                regMail.GetSubject();
+                regMail.GetBody(_urlSettings.DevelopUrl, generatedLink);
+                ComposeMessage(regMail);
+            }
+            else if (typeOfEmail == EmailTypes.RestorePaswordEmail)
+            {
+                RestorePasswordEmail passwordEmail = new RestorePasswordEmail(email);
+                passwordEmail.GetSubject();
+                passwordEmail.GetBody(_urlSettings.DevelopUrl, generatedLink);
+                ComposeMessage(passwordEmail);
+            }
+        }
+
+        public void ComposeMessage(EmailBase data)
         {
             using (MailMessage message = new MailMessage(data.FromEmail, data.ToEmail))
             {
-                message.Subject = data.GetRegistrationEmailSubject();
-                message.Body = data.GetRegistrationEmailBody(_urlSettings.ApplicationUrl ,confirmationLink);
+                message.Subject = data.Subject;
+                message.Body = data.Body;
                 data.AddAttachmentToTemplate(message);
                 message.IsBodyHtml = true;
 
@@ -35,24 +54,10 @@ namespace FRITeam.Swapify.Backend
             }
         }
 
-        public virtual void SendRestorePaswordMail(Email data, string resetPasswordLink)
-        {
-            using (MailMessage message = new MailMessage(data.FromEmail, data.ToEmail))
-            {
-                message.Subject = data.GetRestorePasswordEmailSubject();
-                message.Body = data.GetRestorePasswordEmailBody(_urlSettings.ApplicationUrl, resetPasswordLink);
-                data.AddAttachmentToTemplate(message);
-                message.IsBodyHtml = true;
-
-                SendMailMessage(message);
-            }
-        }
-
-
-        public virtual void SendMailMessage(MailMessage message)
+        public void SendMailMessage(MailMessage message)
         {
             NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
-            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int) _emailSettings.SmtpPort))
+            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
             {
                 client.Credentials = credentials;
                 client.EnableSsl = true;

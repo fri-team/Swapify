@@ -12,7 +12,9 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JwtSecret": "DoNotUseMeInProduction"
+        "JwtSecret": "DoNotUseMeInProduction",
+        "DomainUrl": "http://www.swapify.uniza.sk",
+        "DevelopUrl": "http://localhost:3000/"
       },
       "applicationUrl": "http://localhost:5000/"
     }

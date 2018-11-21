@@ -25,6 +25,7 @@ using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebAPI
 {
@@ -66,7 +67,7 @@ namespace WebAPI
             services.AddSingleton<IEmailService>(
                 new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>(),
                                  services.BuildServiceProvider().GetService<IOptions<UrlSettings>>()
-            ));
+                                 ));
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
@@ -110,14 +111,11 @@ namespace WebAPI
             var identitySettings = Configuration.GetSection("IdentitySettings");
             if (identitySettings.Get<IdentitySettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(IdentitySettings)} configuration section.");
-            var urlSettings = Configuration.GetSection("UrlSettings");
-            if(urlSettings.Get<UrlSettings>() == null)
-                throw new SettingException("appsettings.json", $"Unable to load {nameof(UrlSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<EnvironmentSettings>(Configuration);
-            services.Configure<UrlSettings>(urlSettings);
+            //services.Configure<UrlSettings>(Configuration);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
@@ -125,8 +123,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<IdentitySettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
-            services.AddSingleton<IValidatable>(resolver =>
-                resolver.GetRequiredService<IOptions<UrlSettings>>().Value);
+            //services.AddSingleton<IValidatable>(resolver =>
+            //    resolver.GetRequiredService<IOptions<UrlSettings>>().Value);
         }
 
         private void ConfigureAuthorization(IServiceCollection services)

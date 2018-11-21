@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using FRITeam.Swapify.Backend.Enums;
 using FRITeam.Swapify.Backend.Notification;
 using WebAPI;
 
@@ -88,7 +89,8 @@ namespace IntegrationTest
                 services.Remove(serviceDescriptor);
             }
             var emailServiceMock = new Mock<IEmailService>();
-            emailServiceMock.Setup(x => x.SendReqistrationMail(new Email() {ToEmail = It.IsAny<string>()}, It.IsAny<string>()))
+            var email = new EmailBase() { Body = It.IsAny<string>(), Subject = It.IsAny<string>(), ToEmail = It.IsAny<string>() };
+            emailServiceMock.Setup(x => x.ComposeAndSendMail(EmailTypes.RegistrationEmail, email, It.IsAny<string>()))
                 .Verifiable();
             services.AddSingleton(emailServiceMock.Object);
         }
