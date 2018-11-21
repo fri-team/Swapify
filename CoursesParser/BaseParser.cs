@@ -13,7 +13,8 @@ namespace CoursesParser
     public class BaseParser
     {
         private const string Url = "http://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
-        private readonly HtmlNode _selectFaculties;
+        private HtmlDocument _document;
+        private HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
         private HtmlNode _selectStudyType;
         private HtmlNode _selectStudyYear;
@@ -41,12 +42,12 @@ namespace CoursesParser
             _document = web.Load(Url);
             _document.OptionDefaultStreamEncoding = _encoding;
 
-            _selectFaculties = document.GetElementbyId("f");
-            _selectTown = document.GetElementbyId("t");
-            _selectStudyType = document.GetElementbyId("m");
-            _selectStudyYear = document.GetElementbyId("r");
-            _selectFieldOfStudy = document.GetElementbyId("o");
-            _selectFieldOfStudyDetailed = document.GetElementbyId("z");
+            _selectFaculties = _document.GetElementbyId("f");
+            _selectTown = _document.GetElementbyId("t");
+            _selectStudyType = _document.GetElementbyId("m");
+            _selectStudyYear = _document.GetElementbyId("r");
+            _selectFieldOfStudy = _document.GetElementbyId("o");
+            _selectFieldOfStudyDetailed = _document.GetElementbyId("z");
         }
 
 
