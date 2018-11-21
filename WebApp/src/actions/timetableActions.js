@@ -39,7 +39,7 @@ export function loadMyTimetable() {
           payload: {
             timetable: data.timetable
           }
-        });
+        });s
       });
   };
 }

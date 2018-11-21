@@ -9,6 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
 import './StudyGroup.scss';
+import axios from 'axios';
 import { MacBackground } from '../';
 
 class StudyGroup extends React.Component {
@@ -18,7 +19,18 @@ class StudyGroup extends React.Component {
   }
 
   Submit = () => {
-    this.props.history.push('/timetable');
+    const data = {
+      studyGroupNumber: this.state.group,
+      student: this.props.user
+    }
+    axios({
+      method: 'post',
+      url: '/api/timetable/SetStudentTimetableFromGroup',
+      data
+    })
+      .then(() => {
+        this.props.history.push('/timetable');
+      });
   }
 
   handleSubmit = (evt) => {
@@ -26,23 +38,18 @@ class StudyGroup extends React.Component {
   }
 
   canBeSubmitted = () => {
-    const group = this.state.group;
-    return (
-      group != ''
-    );
+    return Boolean(this.state.group);
 
   }
 
   render() {
-    const valid = this.canBeSubmitted();
-    const { user } = this.props;
     return (
         <MacBackground>
             <div className="container home">
                  <Toolbar />
                 <div className="StudyGroup-wrapper">
                 <FormControl
-                    fullWidth={true}
+                    fullWidth
                 >
                     <InputLabel htmlFor="group">Vyberte štud. skupinu</InputLabel>
                     <Select
@@ -54,12 +61,12 @@ class StudyGroup extends React.Component {
                     <MenuItem value="">
                         <em>Nevybratá štud. skupina</em>
                     </MenuItem>
-                    <MenuItem value={'5ZZS11'}>5ZZS11</MenuItem>
-                    <MenuItem value={'5ZZS12'}>5ZZS12</MenuItem>
-                    <MenuItem value={'5ZZS13'}>5ZZS13</MenuItem>
-                    <MenuItem value={'5ZZS21'}>5ZZS21</MenuItem>
-                    <MenuItem value={'5ZZS22'}>5ZZS22</MenuItem>
-                    <MenuItem value={'5ZZS23'}>5ZZS23</MenuItem>
+                    <MenuItem value='5ZZS11'>5ZZS11</MenuItem>
+                    <MenuItem value='5ZZS12'>5ZZS12</MenuItem>
+                    <MenuItem value='5ZZS13'>5ZZS13</MenuItem>
+                    <MenuItem value='5ZZS21'>5ZZS21</MenuItem>
+                    <MenuItem value='5ZZS22'>5ZZS22</MenuItem>
+                    <MenuItem value='5ZZS23'>5ZZS23</MenuItem>
                     </Select>
                 </FormControl>
                 <br />
@@ -70,7 +77,7 @@ class StudyGroup extends React.Component {
                     mini
                     className="fab"
                     onClick={this.Submit}
-                    disabled={!valid}
+                    disabled={!this.canBeSubmitted()}
                 >
                     <NavigationIcon />
                 </Button>
