@@ -9,6 +9,7 @@ import LoginPage from './LoginPage/LoginPage';
 import MacBackground from './MacBackground/MacBackground';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import RegisterPage from './RegisterPage/RegisterPage';
+import ConfirmEmailPage from './ConfirmEmailPage/ConfirmEmailPage';
 import Root from './Root';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
@@ -27,6 +28,7 @@ export {
   MacBackground,
   NotFoundPage,
   RegisterPage,
+  ConfirmEmailPage,
   Root,
   Timetable,
   TimetablePage,

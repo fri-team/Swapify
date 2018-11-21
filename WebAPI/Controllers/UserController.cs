@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using WebAPI.Models.UserModels;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -37,8 +38,13 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation($"User {body.Email} created.");
                 string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+                token = Uri.EscapeDataString(token);
+                string escapedEmail = Uri.EscapeDataString(body.Email);
                 string callbackUrl = Url.Action("ConfirmEmail", "User",
-                  new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
+                  new { email = escapedEmail, token }, protocol: HttpContext.Request.Scheme);                
+                //string escapedEmail = Uri.EscapeDataString(body.Email);
+                //string callbackUrl = $@"http://localhost:3000/confirmEmail/{escapedEmail}/{token}";
+
                 _emailService.SendRegistrationConfirmationEmail(body.Email, callbackUrl);
                 _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
                 return Ok();
@@ -53,14 +59,17 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("ConfirmEmail/{email}/{token})")]
+        [HttpGet("confirmEmail/{email}/{token}")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
+            token = Uri.UnescapeDataString(token);
+            email = Uri.UnescapeDataString(email);
             var user = await _userService.GetUserAsync(email);
             if (user == null)
             {
                 _logger.LogWarning($"Invalid email confirmation attempt. User {email} doesn't exist.");
-                return BadRequest();
+                //return BadRequest();
+                return Redirect("http://localhost:3000/NotFoundPage");
             }
 
             if (user.EmailConfirmed)
@@ -70,13 +79,15 @@ namespace WebAPI.Controllers
             if (emailConfirmation.Result.Succeeded)
             {
                 _logger.LogInformation($"User {email} confirmed email address.");
-                return Ok();
+                //return Ok();
+                return Redirect("http://localhost:3000/confirmEmail");
             }
             StringBuilder errors = emailConfirmation.Result.Errors.Aggregate(
                            new StringBuilder($"Confirmation of email address {email} failed. Errors: "),
                            (sb, x) => sb.Append($"{x.Description} "));
             _logger.LogWarning(errors.ToString());
-            return BadRequest();
+            //return BadRequest();
+            return Redirect("http://localhost:3000/NotFoundPage");
         }
 
         [AllowAnonymous]

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { onlyAuth, onlyNotAuth } from '../util/auth';
-import { HOME, LOGIN, REGISTER, TIMETABLE, FORGOTPASS } from '../util/routes';
+import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, FORGOTPASS } from '../util/routes';
 
 import {
   HomePage,
   RegisterPage,
+  ConfirmEmailPage,
   LoginPage,
   TimetablePage,
   NotFoundPage,
@@ -24,6 +25,7 @@ export default class App extends Component {
             <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
             <Route path={LOGIN} component={onlyNotAuth(LoginPage)} />
             <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
+            <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
             <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />
             <Route path={FORGOTPASS} component={onlyNotAuth(ForgotPasswordPage)} />
             <Route component={NotFoundPage} />
