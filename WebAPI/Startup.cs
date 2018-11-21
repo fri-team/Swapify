@@ -208,7 +208,7 @@ namespace WebAPI
             }
             catch (Exception e)
             {
-                _logger.LogError($"Oleg not created:\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
             }
         }
     }

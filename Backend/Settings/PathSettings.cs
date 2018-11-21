@@ -18,6 +18,8 @@ namespace FRITeam.Swapify.Backend.Settings
         {
             if (string.IsNullOrEmpty(CoursesJsonPath))
                 Errors.AppendLine($"Setting {nameof(CoursesJsonPath)} is missing in {nameof(PathSettings)} configuration section.");
+
+            CheckErrors("appsettings.json");
         }
     }
 }
