@@ -55,6 +55,7 @@ namespace WebAPI.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError(e.ToString());
+                    return BadRequest();
                 }
             }
 

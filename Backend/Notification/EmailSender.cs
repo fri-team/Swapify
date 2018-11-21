@@ -1,10 +1,6 @@
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters;
 
 namespace FRITeam.Swapify.Backend.Notification
 {

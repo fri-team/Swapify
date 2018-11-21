@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Mustache;
 
 namespace FRITeam.Swapify.Backend.Notification
@@ -22,13 +19,6 @@ namespace FRITeam.Swapify.Backend.Notification
 
         }
 
-        public RestorePasswordEmail(EmailBase baseEmail, string baseUrl, string resetPasswordLink)
-            : base()
-        {
-            GetSubject();
-            GetBody(baseUrl, resetPasswordLink);
-        }
-
         public string GetSubject()
         {
             return Subject = "Zabudnuté heslo";
@@ -36,28 +26,20 @@ namespace FRITeam.Swapify.Backend.Notification
 
         public string GetBody(string baseUrl, string resetPasswordLink)
         {
-            try
+            using (var reader = new StreamReader(PathToTemplate))
             {
-                using (var reader = new StreamReader(PathToTemplate))
-                {
-                    Body = reader.ReadToEnd();
-                }
+                Body = reader.ReadToEnd();
+            }
 
-                var compiler = new HtmlFormatCompiler();
-                var generator = compiler.Compile(Body);
-                Body = generator.Render(new
-                {
-                    link = baseUrl,
-                    restorePasswordLink = resetPasswordLink,
-                    img1 = ConstImg1,
-                    img2 = ConstImg2
-                });
-            }
-            catch (Exception e)
+            var compiler = new HtmlFormatCompiler();
+            var generator = compiler.Compile(Body);
+            Body = generator.Render(new
             {
-                
-                throw;
-            }
+                link = baseUrl,
+                restorePasswordLink = resetPasswordLink,
+                img1 = ConstImg1,
+                img2 = ConstImg2
+            });
             return Body;
         }
     }

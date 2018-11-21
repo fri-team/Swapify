@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Mustache;
 
 namespace FRITeam.Swapify.Backend.Notification
@@ -20,13 +17,6 @@ namespace FRITeam.Swapify.Backend.Notification
             : base()
         {
             
-        }
-
-        public RegistrationEmail(EmailBase baseEmail, string baseUrl, string confirmLink)
-            : base()
-        {
-            GetSubject();
-            GetBody(baseUrl, confirmLink);
         }
 
         public string GetSubject()

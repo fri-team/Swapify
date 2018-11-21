@@ -1,19 +1,14 @@
-using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
-using FRITeam.Swapify.Backend.Settings;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Mustache;
 
 namespace FRITeam.Swapify.Backend.Notification
 {
     public class EmailBase
     {
-        private const string pathToMac = "EmailTemplate/images/home -background.png";
-        private const string pathToLogo = "EmailTemplate/images/swapify.png";
-        private const string macContentID = "Mac";
-        private const string logoContentID = "Swapify";
+        private const string PathToMac = "EmailTemplate/images/home -background.png";
+        private const string PathToLogo = "EmailTemplate/images/swapify.png";
+        private const string MacContentId = "Mac";
+        private const string LogoContentId = "Swapify";
 
         public string FromEmail { get; set; } = "Mailgun Sandbox <postmaster @sandbox260b1e74a61b4b7faf43e42dd656e3a0.mailgun.org>";
         public string ToEmail { get; set; } = "ExampleName<youremail@gmail.com>";
@@ -28,14 +23,14 @@ namespace FRITeam.Swapify.Backend.Notification
         {
             using (message)
             {
-                Attachment mac = new Attachment(pathToMac);
+                Attachment mac = new Attachment(PathToMac);
                 message.Attachments.Add(mac);
-                string contentID = macContentID;
+                string contentID = MacContentId;
                 mac.ContentId = contentID;
 
-                Attachment swapify = new Attachment(pathToLogo);
+                Attachment swapify = new Attachment(PathToLogo);
                 message.Attachments.Add(swapify);
-                string contentID2 = logoContentID;
+                string contentID2 = LogoContentId;
                 swapify.ContentId = contentID2;
 
                 swapify.ContentDisposition.Inline = true;
