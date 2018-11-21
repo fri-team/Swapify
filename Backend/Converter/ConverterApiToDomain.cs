@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.Backend.Interfaces;
@@ -10,7 +8,7 @@ using FRITeam.Swapify.Entities.Enums;
 
 namespace FRITeam.Swapify.Backend.Converter
 {
-    public class ConverterApiToDomain
+    public static class ConverterApiToDomain
     {
 
         public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
@@ -26,9 +24,7 @@ namespace FRITeam.Swapify.Backend.Converter
 
         private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, bool isTimetableForCourse)
         {
-
             Timetable timetable = new Timetable();
-
             for (int idxDay = 0; idxDay < schedule.DaysInWeek.Count; idxDay++)
             {
                 var maxBlocks = schedule.DaysInWeek[idxDay].BlocksInDay.Count;
@@ -57,11 +53,9 @@ namespace FRITeam.Swapify.Backend.Converter
                             {
                                 bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, bl);
                             }
-
                             timetable.AddNewBlock(bl);
                         }
                         continue;
-
                     }
                     if (!blockBefore.IsSameBlockAs(block))
                     {
@@ -82,16 +76,10 @@ namespace FRITeam.Swapify.Backend.Converter
                         timetable.AddNewBlock(bl);
                         startingBlock = (byte)blckIdx;
                     }
-
-
                 }
-                //idxDay++;
             }
-
             return timetable;
         }
-            
-
 
         private static Day ConvertToDay(int idxDay)
         {
@@ -125,7 +113,6 @@ namespace FRITeam.Swapify.Backend.Converter
                 default:
                     throw new Exception("Unknow LessonType");
             }
-
         }
     }
 }

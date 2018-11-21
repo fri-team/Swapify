@@ -1,4 +1,3 @@
-using FRITeam.Swapify.Backend.Email;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
@@ -26,7 +25,7 @@ namespace FRITeam.Swapify.Backend
             using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
             {
                 client.Credentials = credentials;
-                client.EnableSsl = true;                
+                client.EnableSsl = true;
                 MailMessage message = new MailMessage(_emailSettings.Username, email.ToEmail, email.Subject, email.Body);
                 message.IsBodyHtml = true;
                 client.Send(message);

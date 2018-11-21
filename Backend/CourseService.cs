@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using FRITeam.Swapify.APIWrapper;
-using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using MongoDB.Driver;
@@ -50,7 +46,8 @@ namespace FRITeam.Swapify.Backend
                 course = new Course() { CourseName = courseName, Timetable = timetable };
                 await this.AddAsync(course);
             }
-            else {
+            else
+            {
                 if (!course.Timetable.ContainsBlock(courseBlock))
                 {
                     //if course exists but doesnt contain this block
@@ -65,9 +62,7 @@ namespace FRITeam.Swapify.Backend
 
         public async Task UpdateAsync(Course course)
         {
-            await _courseCollection.ReplaceOneAsync(x =>x.Id == course.Id,course);
+            await _courseCollection.ReplaceOneAsync(x => x.Id == course.Id, course);
         }
-
-        
     }
 }
