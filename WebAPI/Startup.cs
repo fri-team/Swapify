@@ -108,9 +108,13 @@ namespace WebAPI
             var identitySettings = Configuration.GetSection("IdentitySettings");
             if (identitySettings.Get<IdentitySettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(IdentitySettings)} configuration section.");
+            var pathSettings = Configuration.GetSection("PathSettings");
+            if (pathSettings.Get<PathSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(PathSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
+            services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
 
             services.AddSingleton<IValidatable>(resolver =>

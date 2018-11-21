@@ -1,7 +1,9 @@
 using FRITeam.Swapify.Backend.CourseParser;
+using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -44,8 +46,9 @@ namespace FRITeam.Swapify.Backend.DbSeed
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var courseCollection = dbService.GetCollection<Course>(nameof(Course));
-
-            var json = File.ReadAllText(@"..\CoursesParser\ActualCoursesJson\courses_2018_11_20.json");
+            
+            var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();
+            var json = File.ReadAllText(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
 
             Dictionary<string, Course> dic = new Dictionary<string, Course>();
