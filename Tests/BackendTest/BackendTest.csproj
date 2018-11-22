@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\APIWrapper\APIWrapper.csproj" />
     <ProjectReference Include="..\..\Backend\Backend.csproj" />
+    <ProjectReference Include="..\..\CoursesParser\CoursesParser.csproj" />
     <ProjectReference Include="..\..\Entities\Entities.csproj" />
   </ItemGroup>
 

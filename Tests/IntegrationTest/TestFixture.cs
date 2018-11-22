@@ -1,3 +1,4 @@
+using FRITeam.Swapify.Backend.Email;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;

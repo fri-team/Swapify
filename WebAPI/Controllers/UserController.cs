@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using WebAPI.Models.UserModels;
+using FRITeam.Swapify.Backend.Email;
 
 namespace WebAPI.Controllers
 {
