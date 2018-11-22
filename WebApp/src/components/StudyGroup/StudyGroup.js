@@ -11,17 +11,16 @@ import Input from '@material-ui/core/Input';
 import './StudyGroup.scss';
 import axios from 'axios';
 import { MacBackground } from '../';
+import { TIMETABLE } from '../../util/routes';
 
 class StudyGroup extends React.Component {
   state = {
-    sidebarOpen: true,
     group: ''
   }
 
   Submit = () => {
     const data = {
-      studyGroupNumber: this.state.group,
-      student: this.props.user
+      studyGroupNumber: this.state.group
     }
     axios({
       method: 'post',
@@ -29,11 +28,11 @@ class StudyGroup extends React.Component {
       data
     })
       .then(() => {
-        this.props.history.push('/timetable');
+        this.props.history.push(TIMETABLE);
       });
   }
 
-  handleSubmit = (evt) => {
+handleSubmit = (evt) => {
     this.setState({ group: evt.target.value });
   }
 
