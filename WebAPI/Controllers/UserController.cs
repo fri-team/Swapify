@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Backend.Enums;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Notification;
-using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using WebAPI.Models.UserModels;
-using FRITeam.Swapify.Backend.Email;
 
 namespace WebAPI.Controllers
 {
@@ -45,19 +40,14 @@ namespace WebAPI.Controllers
                 string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
                 string callbackUrl = Url.Action("ConfirmEmail", "User",
                   new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-                EmailBase email = new EmailBase();
-                email.ToEmail = body.Email;
-                try
+                if (_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
                 {
-                    _emailService.ComposeAndSendMail(EmailTypes.RegistrationEmail, email, callbackUrl);
                     _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
                     return Ok();
                 }
-                catch (Exception e)
-                {
-                    _logger.LogError(e.ToString());
-                    return BadRequest();
-                }
+                _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
+                await _userService.DeleteUserAsyc(user);
+                return BadRequest();
             }
 
             StringBuilder identityErrorBuilder = result.Errors.Aggregate(

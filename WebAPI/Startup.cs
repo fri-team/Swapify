@@ -64,10 +64,7 @@ namespace WebAPI
             services.AddSingleton<IStudyGroupService, StudyGroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
-            services.AddSingleton<IEmailService>(
-                new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>(),
-                                 services.BuildServiceProvider().GetService<IOptions<UrlSettings>>()
-                                 ));
+            services.AddSingleton<IEmailService, EmailService>();
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
@@ -119,7 +116,6 @@ namespace WebAPI
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
-            //services.Configure<UrlSettings>(Configuration);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);

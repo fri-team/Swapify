@@ -1,60 +1,48 @@
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Net;
 using System.Net.Mail;
-using FRITeam.Swapify.Backend.Enums;
-using FRITeam.Swapify.Backend.Notification;
 
 namespace FRITeam.Swapify.Backend
 {
     public class EmailService : IEmailService
     {
+        private readonly ILogger _logger;
         private readonly MailingSettings _emailSettings;
-        private readonly UrlSettings _urlSettings;
+        private readonly EnvironmentSettings _environmentSettings;
 
-        public EmailService()
+        public EmailService(ILoggerFactory loggerFactory, IOptions<MailingSettings> emailSettings,
+            IOptions<EnvironmentSettings> environmentSettings)
         {
-        }
-
-        public EmailService(IOptions<MailingSettings> emailSettings, IOptions<UrlSettings> urlSettings)
-        {
+            _logger = loggerFactory.CreateLogger(GetType().FullName);
             _emailSettings = emailSettings.Value;
-            _urlSettings = urlSettings.Value;
+            _environmentSettings = environmentSettings.Value;
         }
 
-        public void ComposeAndSendMail(EmailTypes typeOfEmail, EmailBase email, string generatedLink)
+        public bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType)
         {
-            if (typeOfEmail == EmailTypes.RegistrationEmail)
+            try
             {
-                RegistrationEmail regMail = new RegistrationEmail(email);
-                regMail.GetSubject();
-                regMail.GetBody(_urlSettings.DevelopUrl, generatedLink);
-                ComposeMessage(regMail);
+                string type = $"FRITeam.Swapify.Backend.Emails.ConfirmationEmails.{emailType}";
+                var email = Activator.CreateInstance(Type.GetType(type), _emailSettings.Username, _emailSettings.DisplayName, receiver);
+                email.GetType().GetMethod("CreateConfirmationEmailBody")
+                               .Invoke(email, new object[] { _environmentSettings.BaseUrl, confirmationLink });
+                MailMessage mailMessage = (MailMessage)email.GetType().GetMethod("CreateMailMessage")
+                                                                      .Invoke(email, null);
+                SendEmail(mailMessage);
+                return true;
             }
-            else if (typeOfEmail == EmailTypes.RestorePaswordEmail)
+            catch (Exception e)
             {
-                RestorePasswordEmail passwordEmail = new RestorePasswordEmail(email);
-                passwordEmail.GetSubject();
-                passwordEmail.GetBody(_urlSettings.DevelopUrl, generatedLink);
-                ComposeMessage(passwordEmail);
-            }
-        }
-
-        public void ComposeMessage(EmailBase data)
-        {
-            using (MailMessage message = new MailMessage(data.FromEmail, data.ToEmail))
-            {
-                message.Subject = data.Subject;
-                message.Body = data.Body;
-                data.AddAttachmentToTemplate(message);
-                message.IsBodyHtml = true;
-
-                SendMailMessage(message);
+                _logger.LogError(e.ToString());
+                return false;
             }
         }
 
-        public void SendMailMessage(MailMessage message)
+        private void SendEmail(MailMessage message)
         {
             NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
             using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
