@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using WebAPI.Models.UserModels;
+using FRITeam.Swapify.Backend.Email;
 
 namespace WebAPI.Controllers
 {
@@ -39,7 +40,9 @@ namespace WebAPI.Controllers
                 string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
                 string callbackUrl = Url.Action("ConfirmEmail", "User",
                   new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-                _emailService.SendRegistrationConfirmationEmail(body.Email, callbackUrl);
+                _emailService.SendEmail(new Email { Body = $"Pre potvrdenie účtu klikni na tento <a href='{callbackUrl}'>odkaz</a>.",
+                                                    Subject = "Swapify - potvrdenie registrácie",
+                                                    ToEmail = body.Email});
                 _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
                 return Ok();
             }

@@ -10,7 +10,6 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace BackendTest
@@ -32,17 +31,17 @@ namespace BackendTest
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             var service = new StudyGroupService(database);
             var serviceCourse = new CourseService(database);
-            
+
 
             StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new SchoolScheduleProxy());
             StudyGroup grp1 = await service.GetStudyGroupAsync("5ZZS14", serviceCourse, new SchoolScheduleProxy());
 
-            var crs = await serviceCourse.FindByNameAsync("teória informácie");
+            var crs = await serviceCourse.FindByNameAsync("komunikačné technológie");
 #pragma warning disable S1067 // Expressions should not be too complex
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RA301") && (x.StartHour == 11) &&
                                             (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-            
+
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RA301") && (x.StartHour == 13) &&
                                             (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
@@ -51,8 +50,8 @@ namespace BackendTest
                                             (x.Room == "RC009") && (x.StartHour == 12) &&
                                             (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
 
-            
-            crs = await serviceCourse.FindByNameAsync("architektúry informačných systémov");
+
+            crs = await serviceCourse.FindByNameAsync("optimalizácia sietí");
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RB003") && (x.StartHour == 17) &&
                                             (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
@@ -66,7 +65,7 @@ namespace BackendTest
                                             (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
 
 
-            crs = await serviceCourse.FindByNameAsync("databázy a získavanie znalostí");
+            crs = await serviceCourse.FindByNameAsync("pokročilé databázové systémy");
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RA013") && (x.StartHour == 13) &&
                                             (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
@@ -147,7 +146,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse, new FakeProxy());
+            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse);
 
             timetable.AllBlocks.Count.Should().Be(6);
             var blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 7);
