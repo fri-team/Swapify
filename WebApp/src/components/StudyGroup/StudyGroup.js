@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 import './StudyGroup.scss';
 import axios from 'axios';
 import { MacBackground } from '../';
@@ -32,13 +29,12 @@ class StudyGroup extends React.Component {
       });
   }
 
-handleSubmit = (evt) => {
+  handleSubmit = (evt) => {
     this.setState({ group: evt.target.value });
   }
 
   canBeSubmitted = () => {
-    return Boolean(this.state.group);
-
+    return this.state.group.length === 6;
   }
 
   render() {
@@ -50,26 +46,19 @@ handleSubmit = (evt) => {
                 <FormControl
                     fullWidth
                 >
-                    <InputLabel htmlFor="group">Vyberte štud. skupinu</InputLabel>
-                    <Select
-                    value={this.state.group}
-                    onChange={this.handleSubmit}
-                    input={<Input name="group" id="group" />}
-                    autoWidth
-                    >
-                    <MenuItem value="">
-                        <em>Nevybratá štud. skupina</em>
-                    </MenuItem>
-                    <MenuItem value='5ZZS11'>5ZZS11</MenuItem>
-                    <MenuItem value='5ZZS12'>5ZZS12</MenuItem>
-                    <MenuItem value='5ZZS13'>5ZZS13</MenuItem>
-                    <MenuItem value='5ZZS21'>5ZZS21</MenuItem>
-                    <MenuItem value='5ZZS22'>5ZZS22</MenuItem>
-                    <MenuItem value='5ZZS23'>5ZZS23</MenuItem>
-                    </Select>
+                    <TextField
+                      error={this.state.group.length !== 6 && this.state.group !== ""}
+                      id="group"
+                      value={this.state.group}
+                      onChange={this.handleSubmit}
+                      label="Zadajte štud. skupinu"
+                      placeholder="Príklad 5ZZS12"
+                      margin="normal"
+                      fullWidth
+                      multiline
+                      helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý format štud. skupiny' : ' '}
+                    />
                 </FormControl>
-                <br />
-                <br />
                 <Button
                     color="primary"
                     variant="fab"

@@ -10,7 +10,7 @@ import UserAvatar from './UserAvatar';
 import Menu from './Menu';
 import { PullRight } from './shared';
 import { withRouter } from 'react-router-dom';
-import {STUDYGROUP} from '../../util/routes'
+import { STUDYGROUP } from '../../util/routes'
 
 const ToolbarWrapper = styled.div`
   width: 100%;
