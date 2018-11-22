@@ -61,8 +61,6 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 };
             }
             courseCollection.InsertMany(dic.Select(x => x.Value));
-
-
         }
     }
 }

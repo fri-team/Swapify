@@ -123,6 +123,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<IdentitySettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<PathSettings>>().Value);
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
