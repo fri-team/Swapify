@@ -1,4 +1,3 @@
-using FRITeam.Swapify.Backend.Email;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -88,8 +87,8 @@ namespace IntegrationTest
                 services.Remove(serviceDescriptor);
             }
             var emailServiceMock = new Mock<IEmailService>();
-            var email = new Email() { Body = It.IsAny<string>(), Subject = It.IsAny<string>(), ToEmail = It.IsAny<string>() };
-            emailServiceMock.Setup(x => x.SendEmail(email)).Verifiable();
+            emailServiceMock.Setup(x => x.SendConfirmationEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
             services.AddSingleton(emailServiceMock.Object);
         }
     }
