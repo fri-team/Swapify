@@ -11,6 +11,7 @@ namespace FRITeam.Swapify.Backend
     public class EmailService : IEmailService
     {
         private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly MailingSettings _emailSettings;
         private readonly EnvironmentSettings _environmentSettings;
 
@@ -18,6 +19,7 @@ namespace FRITeam.Swapify.Backend
             IOptions<EnvironmentSettings> environmentSettings)
         {
             _logger = loggerFactory.CreateLogger(GetType().FullName);
+            _loggerFactory = loggerFactory;
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
         }
@@ -26,12 +28,16 @@ namespace FRITeam.Swapify.Backend
         {
             try
             {
-                string type = $"FRITeam.Swapify.Backend.Emails.ConfirmationEmails.{emailType}";
-                var email = Activator.CreateInstance(Type.GetType(type), _emailSettings.Username, _emailSettings.DisplayName, receiver);
-                email.GetType().GetMethod("CreateConfirmationEmailBody")
-                               .Invoke(email, new object[] { _environmentSettings.BaseUrl, confirmationLink });
+                string type = $"{_emailSettings.EmailsNameSpace}.{emailType}";
+                var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory ,_emailSettings.Username,
+                    _emailSettings.DisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
                 MailMessage mailMessage = (MailMessage)email.GetType().GetMethod("CreateMailMessage")
                                                                       .Invoke(email, null);
+                if (mailMessage == null)
+                {
+                    _logger.LogError($"Unable to create MailMessage for email type '{emailType}'.");
+                    return false;
+                }
                 SendEmail(mailMessage);
                 return true;
             }

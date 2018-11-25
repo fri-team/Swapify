@@ -34,28 +34,31 @@ namespace WebAPI.Controllers
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var result = await _userService.AddUserAsync(user, body.Password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                _logger.LogInformation($"User {body.Email} created.");
-                string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
-                string callbackUrl = Url.Action("ConfirmEmail", "User",
-                  new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-                if (_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
-                {
-                    _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
-                    return Ok();
-                }
+                StringBuilder identityErrorBuilder = result.Errors.Aggregate(
+                           new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
+                           (sb, x) => sb.Append($"{x.Description} "));
+                _logger.LogInformation(identityErrorBuilder.ToString());
+                Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
+                return ValidationError(identityErrors);
+            }
+
+            _logger.LogInformation($"User {body.Email} created.");
+            string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+            string callbackUrl = Url.Action("ConfirmEmail", "User",
+              new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
+
+            if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
+            {
                 _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
                 await _userService.DeleteUserAsyc(user);
+                _logger.LogInformation($"User {body.Email} deleted.");
                 return BadRequest();
             }
 
-            StringBuilder identityErrorBuilder = result.Errors.Aggregate(
-                            new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
-                            (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogInformation(identityErrorBuilder.ToString());
-            Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
-            return ValidationError(identityErrors);
+            _logger.LogInformation($"Confirmation email to user {body.Email} sent.");
+            return Ok();
         }
 
         [AllowAnonymous]

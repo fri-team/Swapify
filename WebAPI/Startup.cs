@@ -25,7 +25,6 @@ using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebAPI
 {

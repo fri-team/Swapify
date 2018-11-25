@@ -1,24 +1,20 @@
-
-using System;
-using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace FRITeam.Swapify.Backend.Settings
 {
     public class MailingSettings : SettingsBase
     {
+        public string EmailsNameSpace { get; set; }
         public string SmtpServer { get; set; }
         public int? SmtpPort { get; set; }
         public string Username { get; set; }
         public string DisplayName { get; set; }
         public string Password { get; set; }
 
-        public MailingSettings()
-        {
-
-        }
-
         public override void Validate()
         {
+            if (string.IsNullOrEmpty(EmailsNameSpace))
+                Errors.AppendLine($"Setting {nameof(EmailsNameSpace)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(SmtpServer))
                 Errors.AppendLine($"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Username))
@@ -30,16 +26,9 @@ namespace FRITeam.Swapify.Backend.Settings
             if (SmtpPort == null)
                 Errors.AppendLine($"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
 
-            try
-            {
-#pragma warning disable S1481 // Unused local variables should be removed
-                MailAddress m = new MailAddress(Username);
-#pragma warning restore S1481 // Unused local variables should be removed
-            }
-            catch (FormatException)
-            {
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            if(!regex.IsMatch(Username))
                 Errors.AppendLine($"{Username} is not valid email address.");
-            }
 
             CheckErrors("appsettings.json");
         }

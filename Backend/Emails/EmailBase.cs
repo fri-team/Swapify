@@ -7,23 +7,25 @@ namespace FRITeam.Swapify.Backend.Emails
 {
     public abstract class EmailBase
     {
-        protected string Location { get; }
+        protected string OutputDirLocation { get; }
         protected abstract string PathToTemplate { get; }
-        public abstract string Subject { get; }
-        public MailAddress Sender { get; set; }
-        public MailAddress Receiver { get; set; }
-        public string Body { get; set; }
+        protected abstract string Subject { get; }
+        protected MailAddress Sender { get; set; }
+        protected MailAddress Receiver { get; set; }        
+        protected string BaseUrl { get; set; }
+        protected string Body { get; set; }
 
-        protected EmailBase(string sender, string senderDisplayName, string receiver)
+        protected EmailBase(string sender, string senderDisplayName, string receiver, string baseUrl)
         {
             Sender = new MailAddress(sender, senderDisplayName);
             Receiver = new MailAddress(receiver);
-            Location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            OutputDirLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
-
+                
         public abstract MailMessage CreateMailMessage();
+        protected abstract bool CreateEmailBody();
 
-        protected Attachment CreateAttachment(string pathToAttachment, string contentId)
+        protected Attachment CreateImgAttachment(string pathToAttachment, string contentId)
         {
             Attachment attachment = new Attachment(pathToAttachment);
             attachment.ContentId = contentId;

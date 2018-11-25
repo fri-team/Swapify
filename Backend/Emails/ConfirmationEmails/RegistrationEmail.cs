@@ -1,15 +1,14 @@
+using Microsoft.Extensions.Logging;
 
-using System.Net.Mail;
-
-namespace FRITeam.Swapify.Backend.Emails.ConfirmationEmails
+namespace FRITeam.Swapify.Backend.Emails
 {
     public class RegistrationEmail : ConfirmationEmailBase
     {
-        public override string Subject => "Registrácia na Swapify";
+        protected override string Subject => "Registrácia na Swapify";
         protected override string PathToTemplate => @"Emails/EmailTemplates/RegistrationTemplate.html";
 
-        public RegistrationEmail(string sender, string senderDisplayName, string receiver)
-            : base(sender, senderDisplayName, receiver)
+        public RegistrationEmail(ILoggerFactory loggerFactory, string sender, string senderDisplayName, string receiver, string baseUrl, string confirmationLink)
+            : base(loggerFactory, sender, senderDisplayName, receiver, baseUrl, confirmationLink)
         {
         }
     }
