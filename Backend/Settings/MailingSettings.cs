@@ -8,7 +8,7 @@ namespace FRITeam.Swapify.Backend.Settings
         public string SmtpServer { get; set; }
         public int? SmtpPort { get; set; }
         public string Username { get; set; }
-        public string DisplayName { get; set; }
+        public string SenderDisplayName { get; set; }
         public string Password { get; set; }
 
         public override void Validate()
@@ -19,8 +19,8 @@ namespace FRITeam.Swapify.Backend.Settings
                 Errors.AppendLine($"Setting {nameof(SmtpServer)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Username))
                 Errors.AppendLine($"Setting {nameof(Username)} is missing in {nameof(MailingSettings)} configuration section.");
-            if (string.IsNullOrEmpty(DisplayName))
-                Errors.AppendLine($"Setting {nameof(DisplayName)} is missing in {nameof(MailingSettings)} configuration section.");
+            if (string.IsNullOrEmpty(SenderDisplayName))
+                Errors.AppendLine($"Setting {nameof(SenderDisplayName)} is missing in {nameof(MailingSettings)} configuration section.");
             if (string.IsNullOrEmpty(Password))
                 Errors.AppendLine($"Setting {nameof(Password)} is missing in {nameof(MailingSettings)} configuration section.");
             if (SmtpPort == null)

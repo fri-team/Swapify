@@ -20,6 +20,7 @@ namespace FRITeam.Swapify.Backend.Emails
             Sender = new MailAddress(sender, senderDisplayName);
             Receiver = new MailAddress(receiver);
             OutputDirLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            BaseUrl = baseUrl;
         }
                 
         public abstract MailMessage CreateMailMessage();

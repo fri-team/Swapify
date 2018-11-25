@@ -30,7 +30,7 @@ namespace FRITeam.Swapify.Backend
             {
                 string type = $"{_emailSettings.EmailsNameSpace}.{emailType}";
                 var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory ,_emailSettings.Username,
-                    _emailSettings.DisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
+                    _emailSettings.SenderDisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
                 MailMessage mailMessage = (MailMessage)email.GetType().GetMethod("CreateMailMessage")
                                                                       .Invoke(email, null);
                 if (mailMessage == null)

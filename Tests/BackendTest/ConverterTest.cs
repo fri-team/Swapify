@@ -35,7 +35,7 @@ namespace BackendTest
 
             StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new SchoolScheduleProxy());
             StudyGroup grp1 = await service.GetStudyGroupAsync("5ZZS14", serviceCourse, new SchoolScheduleProxy());
-            
+
             var crs = await serviceCourse.FindByNameAsync("komunikačné technológie");
 #pragma warning disable S1067 // Expressions should not be too complex
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
@@ -50,7 +50,7 @@ namespace BackendTest
                                             (x.Room == "RC009") && (x.StartHour == 12) &&
                                             (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
 
-            
+
             crs = await serviceCourse.FindByNameAsync("optimalizácia sietí");
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RB003") && (x.StartHour == 17) &&
@@ -64,7 +64,7 @@ namespace BackendTest
                                             (x.Room == "RC009") && (x.StartHour == 12) &&
                                             (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
 
-            
+
             crs = await serviceCourse.FindByNameAsync("pokročilé databázové systémy");
             crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
                                             (x.Room == "RA013") && (x.StartHour == 13) &&
