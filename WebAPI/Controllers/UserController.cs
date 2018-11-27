@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,25 +35,31 @@ namespace WebAPI.Controllers
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var result = await _userService.AddUserAsync(user, body.Password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                _logger.LogInformation($"User {body.Email} created.");
-                string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
-                token = Uri.EscapeDataString(token);
-                user = await _userService.GetUserByEmailAsync(body.Email);
-                string callbackUrl = $@"http://localhost:3000/confirmEmail/{user.Id}/{token}";
-
-                _emailService.SendRegistrationConfirmationEmail(user.Email, callbackUrl);
-                _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
-                return Ok();
+                StringBuilder identityErrorBuilder = result.Errors.Aggregate(
+                           new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
+                           (sb, x) => sb.Append($"{x.Description} "));
+                _logger.LogInformation(identityErrorBuilder.ToString());
+                Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
+                return ValidationError(identityErrors);
             }
 
-            StringBuilder identityErrorBuilder = result.Errors.Aggregate(
-                            new StringBuilder($"Error when creating user {user.Email}. Identity errors: "),
-                            (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogInformation(identityErrorBuilder.ToString());
-            Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
-            return ValidationError(identityErrors);
+            _logger.LogInformation($"User {body.Email} created.");
+            string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+            token = Uri.EscapeDataString(token);
+            user = await _userService.GetUserByEmailAsync(body.Email);
+            string callbackUrl = $@"http://localhost:3000/confirmEmail/{user.Id}/{token}";
+
+            if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
+            {
+                _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
+                await _userService.DeleteUserAsyc(user);
+                _logger.LogInformation($"User {body.Email} deleted.");
+                return BadRequest();
+            }
+            _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+            return Ok();
         }
 
         [AllowAnonymous]

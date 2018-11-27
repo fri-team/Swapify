@@ -91,6 +91,11 @@ namespace FRITeam.Swapify.Backend
             return await _userManager.FindByIdAsync(userId);
         }
 
+        public async Task<IdentityResult> DeleteUserAsyc(User user)
+        {
+            return await _userManager.DeleteAsync(user);
+        }
+
         private JwtSecurityToken GenerateJwtToken(string login)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

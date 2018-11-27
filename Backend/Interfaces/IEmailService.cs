@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FRITeam.Swapify.Backend.Interfaces
 {
     public interface IEmailService
     {
-        void SendRegistrationConfirmationEmail(string receiverEmail, string confirmationLink);
+        bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType);
         void SendResetPasswordEmail(string receiverEmail, string resetLink);
     }
 }
