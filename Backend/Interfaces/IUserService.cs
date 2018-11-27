@@ -13,7 +13,8 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<string> GeneratePasswordResetTokenAsync(User user);
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
-        Task<User> GetUserAsync(string email);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<User> GetUserByIdAsync(string userId);
         JwtSecurityToken Renew(string jwtToken);
     }
 }

@@ -81,9 +81,14 @@ namespace FRITeam.Swapify.Backend
             return await _userManager.ConfirmEmailAsync(user, token);
         }
 
-        public async Task<User> GetUserAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
         }
 
         private JwtSecurityToken GenerateJwtToken(string login)
