@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             if (user.EmailConfirmed)
                 return Ok();
 
-            var result = _userService.ConfirmEmailAsync(user, body.Token).Result;
+            var result = await _userService.ConfirmEmailAsync(user, body.Token);
             if (result.Succeeded)
             {
                 _logger.LogInformation($"User {user.Email} confirmed email address.");
