@@ -3,6 +3,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
 {
     public interface IEmailService
     {
-        void SendEmail(Email.Email email);
+        bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType);
     }
 }
