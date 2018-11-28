@@ -10,6 +10,7 @@ import MacBackground from './MacBackground/MacBackground';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import RegisterPage from './RegisterPage/RegisterPage';
 import ConfirmEmailPage from './ConfirmEmailPage/ConfirmEmailPage';
+import SetNewPasswordPage from './SetNewPasswordPage/SetNewPasswordPage';
 import Root from './Root';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
@@ -33,5 +34,6 @@ export {
   Timetable,
   TimetablePage,
   Toolbar,  
-  ForgotPasswordPage
+  ForgotPasswordPage,
+  SetNewPasswordPage
 };

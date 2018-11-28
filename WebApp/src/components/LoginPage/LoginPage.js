@@ -9,7 +9,7 @@ import { ElevatedBox, Form, MacBackground } from '../';
 import { connect } from 'react-redux';
 import { login } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
-import { FORGOTPASS } from '../../util/routes';
+import { FORGOTPASSWORD } from '../../util/routes';
 
 const validator = new FormValidator([
   {
@@ -113,7 +113,7 @@ class LoginPage extends Component {
             <Button 
               variant="text"
               size="small"
-              component={Link} to={FORGOTPASS}
+              component={Link} to={FORGOTPASSWORD}
             >
               Zabudnuté heslo
             </Button>

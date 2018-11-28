@@ -3,9 +3,10 @@ import classNames from 'classnames';
 import axios from 'axios';
 import '../RegisterPage/RegisterPage.scss';
 import FormValidator from '../FormValidator/FormValidator';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { Button, TextField}   from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { ElevatedBox, MacBackground } from '../';
+import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
   {
@@ -46,7 +47,7 @@ class ForgotPasswordPage extends Component {
     if (validation.isValid) {
       axios({
         method: 'post',
-        url: '/api/user/ResetPassword',
+        url: '/api/user/resetPassword',
         data
       })
         .then(() => {
@@ -95,7 +96,14 @@ class ForgotPasswordPage extends Component {
             </div>
           </div>
           <div style={messageStyle}>
-            Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.          
+            <p>Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.</p>
+            <Button 
+              variant="text"
+              size="small"
+              component={Link} to={HOME}
+            >
+              Domov
+            </Button>
           </div>
         </ElevatedBox>
       </MacBackground>

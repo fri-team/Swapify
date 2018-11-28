@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
@@ -9,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using WebAPI.Models.UserModels;
-using System;
+using FRITeam.Swapify.Backend.Settings;
+using Microsoft.Extensions.Options;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -20,12 +20,15 @@ namespace WebAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
+        private readonly Uri _baseUrl;
 
-        public UserController(ILogger<UserController> logger, IUserService userService, IEmailService emailService)
+        public UserController(ILogger<UserController> logger, IUserService userService, IEmailService emailService,
+            IOptions<EnvironmentSettings> environmentSettings)
         {
             _logger = logger;
             _userService = userService;
             _emailService = emailService;
+            _baseUrl = new Uri(environmentSettings.Value.BaseUrl);
         }
 
         [AllowAnonymous]
@@ -37,11 +40,8 @@ namespace WebAPI.Controllers
             var result = await _userService.AddUserAsync(user, body.Password);
             if (!result.Succeeded)
             {
-                StringBuilder identityErrorBuilder = result.Errors.Aggregate(
-                           new StringBuilder($"Error when creating user {body.Email}. Identity errors: "),
-                           (sb, x) => sb.Append($"{x.Description} "));
-                _logger.LogInformation(identityErrorBuilder.ToString());
-                Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
+                _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", result.Errors));
+                Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(result.Errors);
                 return ValidationError(identityErrors);
             }
 
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
             string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
             token = Uri.EscapeDataString(token);
             user = await _userService.GetUserByEmailAsync(body.Email);
-            string callbackUrl = $@"http://localhost:3000/confirmEmail/{user.Id}/{token}";
+            string callbackUrl = new Uri(_baseUrl, $@"confirmEmail/{user.Id}/{token}").ToString();
 
             if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
             {
@@ -63,30 +63,27 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("confirmEmail/{userId}/{token}")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        [HttpPost("confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
         {
-            token = Uri.UnescapeDataString(token);
-            var user = await _userService.GetUserByIdAsync(userId);
+            body.Token = Uri.UnescapeDataString(body.Token);
+            var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
-                _logger.LogWarning($"Invalid email confirmation attempt. User {userId} doesn't exist.");
+                _logger.LogWarning($"Invalid email confirmation attempt. User with id {body.UserId} doesn't exist.");
                 return BadRequest();
             }
 
             if (user.EmailConfirmed)
                 return Ok();
 
-            var emailConfirmation = _userService.ConfirmEmailAsync(user, token);
-            if (emailConfirmation.Result.Succeeded)
+            var result = _userService.ConfirmEmailAsync(user, body.Token).Result;
+            if (result.Succeeded)
             {
                 _logger.LogInformation($"User {user.Email} confirmed email address.");
                 return Ok();
             }
-            StringBuilder errors = emailConfirmation.Result.Errors.Aggregate(
-                           new StringBuilder($"Confirmation of email address {userId} failed. Errors: "),
-                           (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogWarning(errors.ToString());
+            _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Confirmation of email address {body.UserId} failed. Errors: ", result.Errors));
             return BadRequest();
         }
 
@@ -128,7 +125,7 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("resetpassword")]
+        [HttpPost("resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel body)
         {
             body.Email = body.Email.ToLower();
@@ -145,36 +142,36 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Najskôr prosím potvrď svoju emailovú adresu.");
             }
 
-            var token = await _userService.GeneratePasswordResetTokenAsync(user);
-            string callbackUrl = Url.Action("SetNewPassword", "User",
-                  new { email = body.Email, token }, protocol: HttpContext.Request.Scheme);
-            _emailService.SendResetPasswordEmail(body.Email, callbackUrl);
+            string token = await _userService.GeneratePasswordResetTokenAsync(user);
+            token = Uri.EscapeDataString(token);
+            string callbackUrl = new Uri(_baseUrl, $@"set-new-password/{user.Id}/{token}").ToString();
+            if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RestorePasswordEmail"))
+            {
+                _logger.LogError($"Error when sending password reset email to user {body.Email}.");
+                return BadRequest();
+            }
             return Ok();
         }
 
         [AllowAnonymous]
-        [HttpPost("setnewpassword")]
+        [HttpPost("setNewPassword")]
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordModel body)
         {
-            body.Email = body.Email.ToLower();
-            var user = await _userService.GetUserByEmailAsync(body.Email);
+            body.Token = Uri.UnescapeDataString(body.Token);
+            var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
-                _logger.LogError($"Invalid password reset attemp. User {body.Email} doesn't exist.");
+                _logger.LogError($"Invalid password reset attemp. User with id {body.UserId} doesn't exist.");
                 return BadRequest();
             }
             var result = await _userService.ResetPasswordAsync(user, body.Token, body.Password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return Ok();
+                _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when resetting password for user {user.Email}. Identity errors: ", result.Errors));
+                Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(result.Errors);
+                return ValidationError(identityErrors);
             }
-
-            StringBuilder identityErrorBuilder = result.Errors.Aggregate(
-                            new StringBuilder($"Error when resetting password for user {body.Email}. Identity errors: "),
-                            (sb, x) => sb.Append($"{x.Description} "));
-            _logger.LogInformation(identityErrorBuilder.ToString());
-            Dictionary<string, string[]> identityErrors = result.Errors.ToDictionary(x => x.Code, x => new string[] { x.Description });
-            return ValidationError(identityErrors);
+            return Ok();
         }
     }
 }

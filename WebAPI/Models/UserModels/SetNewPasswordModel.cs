@@ -4,9 +4,8 @@ namespace WebAPI.Models.UserModels
 {
     public class SetNewPasswordModel
     {
-        [Required(ErrorMessage = "Email je povinný.")]
-        [EmailAddress(ErrorMessage = "Zadaná emailová adresa nie je validná.")]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "UserId je povinné.")]
+        public string UserId { get; set; }
 
         [Required(ErrorMessage = "Heslo je povinné.")]
         [StringLength(100, ErrorMessage = "Heslo musí obsahovať aspoň {2} znakov.", MinimumLength = 8)]
