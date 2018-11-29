@@ -13,6 +13,7 @@ import Root from './Root';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
+import AddBlockForm from './AddBlockForm/AddBlockForm'
 
 export {
   App,
@@ -29,5 +30,6 @@ export {
   Root,
   Timetable,
   TimetablePage,
-  Toolbar
+  Toolbar,
+  AddBlockForm
 };

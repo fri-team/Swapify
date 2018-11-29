@@ -8,7 +8,8 @@ import {
   LOAD_COURSE_TIMETABLE_DONE,
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
-  HIDE_COURSE_TIMETABLE
+  HIDE_COURSE_TIMETABLE,
+  ADD_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -112,5 +113,12 @@ export function hideCourseTimetable(course) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { course }
+  };
+}
+
+export function addBlock(block) {
+  return {
+    type: ADD_BLOCK,
+    payload: { block }
   };
 }

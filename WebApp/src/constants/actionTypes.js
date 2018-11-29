@@ -15,3 +15,6 @@ export const HIDE_DETAIL = 'HIDE_DETAIL';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const RENEW = 'RENEW';
+
+export const ADD_BLOCK = 'ADD_BLOCK';
+export const HIDE_ADD_BLOCK = 'ADD_BLOCK';

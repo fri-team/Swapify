@@ -3,6 +3,31 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import TimetableBlocks from './TimetableBlocks';
 import './Timetable.scss';
+import {connect} from 'react-redux';
+import {addBlock} from '../../actions/timetableActions'
+import AddBlockForm from '../AddBlockForm/AddBlockForm'
+
+const addBlockForm = <AddBlockForm></AddBlockForm>;
+
+class Block extends React.Component {
+  render() {
+    const {i,j,addBlock} = this.props;
+    return (
+      <div
+        className="border-cell"
+        style={{ gridRow: i, gridColumn: j}}
+        onClick={(event) => addBlock({i, j})
+        }
+      />
+    )
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  addBlock: (block) => dispatch(addBlock(block))
+})
+
+const ConnectedBlock = connect(undefined, mapDispatchToProps)(Block);
 
 const Timetable = props => {
   const hours = _.map(props.colHeadings, (col, idx) => (
@@ -19,10 +44,10 @@ const Timetable = props => {
   for (let i = 1; i <= days.length; i++) {
     for (let j = 1; j <= hours.length; j++) {
       borderCells.push(
-        <div
+        <ConnectedBlock
           key={`${i}x${j}`}
-          className="border-cell"
-          style={{ gridRow: i, gridColumn: j }}
+          i={i}
+          j={j}
         />
       );
     }
@@ -36,19 +61,21 @@ const Timetable = props => {
     gridTemplateRows: `repeat(${days.length}, 1fr)`
   };
   const style = _.merge({}, hoursStyle, daysStyle);
+  
   return (
     <div className="timetable">
       <div className="border-cell" />
       <div style={hoursStyle}>{hours}</div>
       <div style={daysStyle}>{days}</div>
-      <div className="border-cells" style={style}>
-        {borderCells}
-      </div>
       <TimetableBlocks
         columns={hours.length}
         rows={days.length}
         items={props.items}
       />
+      <div className="border-cells" style={style}>
+        {borderCells}
+      </div>
+      {addBlockForm}
     </div>
   );
 };

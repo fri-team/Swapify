@@ -33,7 +33,8 @@ export const initState = {
   isLoadingCourse: false,
   courseTimetables: {},
   displayedCourses: [],
-  displayedTimetable: []
+  displayedTimetable: [],
+  addedBlocks: []
 };
 
 export default function timetableReducer(state = initState, { type, payload }) {
