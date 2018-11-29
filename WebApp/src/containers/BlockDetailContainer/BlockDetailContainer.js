@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/blockDetailActions';
 import BlockDetail from '../../components/BlockDetail/BlockDetail';
+import * as timetableActions from '../../actions/timetableActions';
 
 class BlockDetailContainer extends Component {
   onOutsideClick = () => {
     this.props.actions.hideDetail();
+  }
+
+  exchangeRequest = (course) =>
+  {
+    this.props.timetableActions.showExchangeModeTimetable(course);
   }
 
   render() {
@@ -19,6 +25,7 @@ class BlockDetailContainer extends Component {
         left={left}
         course={course}
         onOutsideClick={this.onOutsideClick}
+        onExchangeRequest={this.exchangeRequest}
       />
     );
   }
@@ -31,6 +38,7 @@ BlockDetailContainer.propTypes = {
   course: PropTypes.shape({}).isRequired,
   actions: PropTypes.shape({
     hideDetail: PropTypes.func,
+    exchangeRequest: PropTypes.func,
   }).isRequired,
 };
 
@@ -38,10 +46,12 @@ BlockDetailContainer.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   ...state.blockDetail,
+  ...state.timetable,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
+  timetableActions: bindActionCreators(timetableActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlockDetailContainer);

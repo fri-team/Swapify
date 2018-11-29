@@ -8,7 +8,8 @@ import {
   LOAD_COURSE_TIMETABLE_DONE,
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
-  HIDE_COURSE_TIMETABLE
+  HIDE_COURSE_TIMETABLE,
+  SHOW_EXCHANGE_MODE_TIMETABLE
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -41,6 +42,15 @@ export function loadMyTimetable() {
           }
         });
       });
+  };
+}
+
+export function showExchangeModeTimetable(course) {
+  return dispatch => {
+    dispatch({
+      type: SHOW_EXCHANGE_MODE_TIMETABLE,
+      payload: { course }
+    });
   };
 }
 
