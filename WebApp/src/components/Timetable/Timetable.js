@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {addBlock} from '../../actions/timetableActions'
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
 
-const addBlockForm = <AddBlockForm></AddBlockForm>;
+const addBlockForm = <AddBlockForm/>;
 
 class Block extends React.Component {
   render() {
