@@ -10,15 +10,26 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 const addBlockForm = <AddBlockForm/>;
 
 class Block extends React.Component {
+  state = { showMenu: false };
+
   render() {
     const {i,j,addBlock} = this.props;
     return (
       <div
         className="border-cell"
         style={{ gridRow: i, gridColumn: j}}
-        onClick={(event) => addBlock({i, j})
-        }
-      />
+        onClick={() => this.setState({ showMenu: true })}
+      >
+       {this.state.showMenu && (
+          <AddBlockForm
+            renderRef=""
+            username=""
+            email=""
+            onLogout={this.handleLogout}
+            onClose={() => this.setState({ showMenu: false })}
+          />
+        )}
+      </div>       
     )
   }
 }
@@ -75,7 +86,6 @@ const Timetable = props => {
       <div className="border-cells" style={style}>
         {borderCells}
       </div>
-      {addBlockForm}
     </div>
   );
 };
