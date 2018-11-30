@@ -46,12 +46,11 @@ export function loadMyTimetable() {
 }
 
 export function showExchangeModeTimetable(course) {
-  return dispatch => {
-    dispatch({
-      type: SHOW_EXCHANGE_MODE_TIMETABLE,
-      payload: { course }
-    });
+  var action = {
+    type: SHOW_EXCHANGE_MODE_TIMETABLE,
+    payload: { course }
   };
+  return dowloadCourseTimetableIfNeeded(course.courseName, action);
 }
 
 function loadCourseTimetableAsync(dispatch, course) {
@@ -80,13 +79,9 @@ export function loadCourseTimetable(course) {
   };
 }
 
-export function showCourseTimetable(course) {
+function dowloadCourseTimetableIfNeeded(course, action) {
   return (dispatch, getState) => {
     const { timetable } = getState();
-    const action = {
-      type: SHOW_COURSE_TIMETABLE,
-      payload: { course }
-    };
     if (!_.has(timetable.courseTimetables, course)) {
       axios({
         method: 'get',
@@ -116,6 +111,14 @@ export function showCourseTimetable(course) {
       dispatch(action);
     }
   };
+}
+
+export function showCourseTimetable(course) {
+  const action = {
+    type: SHOW_COURSE_TIMETABLE,
+    payload: { course }
+  };
+  return dowloadCourseTimetableIfNeeded(course, action);
 }
 
 export function hideCourseTimetable(course) {

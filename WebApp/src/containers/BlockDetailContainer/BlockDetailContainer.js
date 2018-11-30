@@ -14,6 +14,7 @@ class BlockDetailContainer extends Component {
   exchangeRequest = (course) =>
   {
     this.props.timetableActions.showExchangeModeTimetable(course);
+    this.props.actions.hideDetail();
   }
 
   render() {
