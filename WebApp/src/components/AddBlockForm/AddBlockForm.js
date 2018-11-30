@@ -42,18 +42,6 @@ const FlexBox = styled.div`
   }
 `;
 
-const MenuButton = styled(Button)`
-  && {
-    background-color: #fafafa;
-    color: #666;
-    border: 1px solid #666;
-    box-shadow: none;
-    :hover {
-      background-color: #fff;
-    }
-  }
-`;
-
 class AddBlockForm extends PureComponent {
   state = { x: 0, y: 0 };
 
@@ -79,9 +67,25 @@ class AddBlockForm extends PureComponent {
     this.props.onClose();
   };
 
+  decodeDay = (day) => {
+    switch (day) {
+    case 1 :
+      return "Pondelok";
+    case 2: 
+      return "Utorok";
+    case 3: 
+      return "Streda";
+    case 4: 
+      return "Štvrtok";
+    case 5: 
+      return "Piatok";
+    }
+  }
+
   render() {
+    const { start, day } = this.props;
     const { x, y } = this.state;
-    const width = 300;
+    const width = 400;
     return (
       <MenuWrapper x={x - width} y={y + 8}>
         <Shaddow>
@@ -99,22 +103,22 @@ class AddBlockForm extends PureComponent {
               <TextField
                 id="teacher"
                 label="Profesor"
-                placeholder="Nazov profesora"
+                placeholder="Meno profesora"
                 margin="normal"
                 fullWidth
               />
               <TextField
                 id="day"
-                label="day"
-                defaultValue="Pondelok"
+                label="Deň"
+                defaultValue={this.decodeDay(day)}
                 margin="normal"
                 disabled
                 fullWidth
               />
               <TextField
                 id="start"
-                label="start"
-                defaultValue="07:00"
+                label="Začiatok"
+                defaultValue={start + ":00"}
                 margin="normal"
                 disabled
                 fullWidth

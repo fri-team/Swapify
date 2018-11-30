@@ -7,26 +7,25 @@ import {connect} from 'react-redux';
 import {addBlock} from '../../actions/timetableActions'
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
 
-const addBlockForm = <AddBlockForm/>;
 
 class Block extends React.Component {
-  state = { showMenu: false };
+  state = { showBlockForm: false };
 
   render() {
-    const {i,j,addBlock} = this.props;
+    const {i,j} = this.props;
     return (
       <div
+        ref={ref => (this.anchor = ref)}
         className="border-cell"
         style={{ gridRow: i, gridColumn: j}}
-        onClick={() => this.setState({ showMenu: true })}
+        onClick={() => this.setState({ showBlockForm: true })}
       >
-       {this.state.showMenu && (
+       {this.state.showBlockForm && (
           <AddBlockForm
-            renderRef=""
-            username=""
             email=""
-            onLogout={this.handleLogout}
-            onClose={() => this.setState({ showMenu: false })}
+            day={i}
+            start={j+6}
+            onClose={() => this.setState({ showBlockForm: false })}
           />
         )}
       </div>       
