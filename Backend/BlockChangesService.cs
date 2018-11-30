@@ -36,7 +36,7 @@ namespace FRITeam.Swapify.Backend
                       x.BlockFrom.Duration == blockRequest.BlockTo.Duration &&
                       x.BlockFrom.StartHour == blockRequest.BlockTo.StartHour &&
                       x.StudentId != blockRequest.StudentId &&
-                      x.Status != ExchangeStatus.Done)).FirstOrDefaultAsync();
+                      x.Status != ExchangeStatus.Done)).SortBy(x=>x.DateOfCreation).FirstOrDefaultAsync();
         }
 
         public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
@@ -53,15 +53,18 @@ namespace FRITeam.Swapify.Backend
             }
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
-            await RemoveStudentRequests(request.StudentId, request.BlockFrom.CourseId);
-            await RemoveStudentRequests(requestForExchange.StudentId, requestForExchange.BlockFrom.CourseId);
+            await RemoveStudentRequests(request);
+            await RemoveStudentRequests(requestForExchange);
             return true;
         }
 
-        private async Task RemoveStudentRequests(Guid studentId, Guid courseId)
+        private async Task RemoveStudentRequests(BlockChangeRequest request)
         {
-            await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == studentId &&
-                                                     x.BlockFrom.CourseId == courseId);
+            await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
+                                                     x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
+                                                     x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
+                                                     x.BlockFrom.Day == request.BlockFrom.Day &&
+                                                     x.BlockFrom.Duration == request.BlockFrom.Duration);
         }
 
         private async Task SetDoneStatus(BlockChangeRequest request)
