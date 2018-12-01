@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
@@ -30,13 +31,17 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetStudentTimetableFromGroup(string studyGroupNumber, Student student)
+        public async Task<IActionResult> SetStudentTimetableFromGroup(string studyGroupNumber, User user)
         {
             StudyGroup sg = await _groupService.GetStudyGroupAsync(studyGroupNumber, _courseService, _proxy);
-            if (sg == null || student == null)
+            if (sg == null)
             {
                 return ErrorResponse($"Study group with number: {studyGroupNumber} does not exist.");
             }
+            Student student = new Student();
+            student.StudyGroupId = sg.Id;
+            student.Timetable = sg.Timetable;
+            user.Student = student;
 
             await _studentService.UpdateStudentTimetableAsync(student, sg);
             return Ok(student.Timetable);

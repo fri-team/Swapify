@@ -16,13 +16,13 @@ class StudyGroup extends React.Component {
   }
 
   Submit = () => {
-    const data = {
-      studyGroupNumber: this.state.group
+    const body = {
+      groupNumber: this.state.group
     }
     axios({
       method: 'post',
-      url: '/api/timetable/SetStudentTimetableFromGroup',
-      data
+      url: '/api/timetable',
+      data: body
     })
       .then(() => {
         this.props.history.push(TIMETABLE);
