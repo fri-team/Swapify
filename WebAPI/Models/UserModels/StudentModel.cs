@@ -7,6 +7,6 @@ namespace WebAPI.Models.UserModels
     {
         public string GroupNumber { get; set; }
 
-        public User User { get; set; }
+        public User user { get; set; }
     }
 }

@@ -48,6 +48,10 @@ namespace FRITeam.Swapify.Backend
             }
             else
             {
+                if (course.Timetable == null)
+                {
+                    course.Timetable = new Timetable();
+                }
                 if (!course.Timetable.ContainsBlock(courseBlock))
                 {
                     //if course exists but doesnt contain this block

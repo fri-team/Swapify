@@ -12,21 +12,23 @@ import { TIMETABLE } from '../../util/routes';
 
 class StudyGroup extends React.Component {
   state = {
-    group: ''
+    group: '',
+    user: this.props.user
   }
 
   Submit = () => {
     const body = {
-      groupNumber: this.state.group
+      groupNumber: this.state.group,
+      user: this.state.user
     }
     axios({
       method: 'post',
       url: '/api/timetable',
       data: body
     })
-      .then(() => {
-        this.props.history.push(TIMETABLE);
-      });
+    .then(() => {
+      this.props.history.push(TIMETABLE);
+    });
   }
 
   handleSubmit = (evt) => {
