@@ -8,7 +8,8 @@ import {
   LOAD_COURSE_TIMETABLE_DONE,
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
-  HIDE_COURSE_TIMETABLE
+  HIDE_COURSE_TIMETABLE,
+  SHOW_EXCHANGE_MODE_TIMETABLE
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -44,6 +45,14 @@ export function loadMyTimetable() {
   };
 }
 
+export function showExchangeModeTimetable(course) {
+  var action = {
+    type: SHOW_EXCHANGE_MODE_TIMETABLE,
+    payload: { course }
+  };
+  return dowloadCourseTimetableIfNeeded(course.courseName, action);
+}
+
 function loadCourseTimetableAsync(dispatch, course) {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -70,13 +79,9 @@ export function loadCourseTimetable(course) {
   };
 }
 
-export function showCourseTimetable(course) {
+function dowloadCourseTimetableIfNeeded(course, action) {
   return (dispatch, getState) => {
     const { timetable } = getState();
-    const action = {
-      type: SHOW_COURSE_TIMETABLE,
-      payload: { course }
-    };
     if (!_.has(timetable.courseTimetables, course)) {
       axios({
         method: 'get',
@@ -106,6 +111,14 @@ export function showCourseTimetable(course) {
       dispatch(action);
     }
   };
+}
+
+export function showCourseTimetable(course) {
+  const action = {
+    type: SHOW_COURSE_TIMETABLE,
+    payload: { course }
+  };
+  return dowloadCourseTimetableIfNeeded(course, action);
 }
 
 export function hideCourseTimetable(course) {

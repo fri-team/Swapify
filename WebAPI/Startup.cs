@@ -60,6 +60,7 @@ namespace WebAPI
             ConfigureAuthorization(services);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IStudyGroupService, StudyGroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
