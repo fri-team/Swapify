@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
@@ -39,7 +38,7 @@ namespace FRITeam.Swapify.Backend
             if (group == null)
             {
                 var schedule = proxy.GetByStudyGroup(studyGroupNumber);
-                Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, courseServ, proxy);
+                Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, courseServ);
                 group = new StudyGroup();
                 group.Timetable = t;
                 group.GroupName = studyGroupNumber;
