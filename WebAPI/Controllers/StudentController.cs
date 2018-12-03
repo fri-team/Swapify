@@ -12,10 +12,12 @@ namespace WebAPI.Controllers
     {
 
         private readonly IStudentService _studentService;
+        private readonly IUserService _userService;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IUserService userService)
         {
             _studentService = studentService;
+            _userService = userService;
         }
 
 
@@ -43,35 +45,31 @@ namespace WebAPI.Controllers
             return Ok(student.Timetable);
         }
 
-        [HttpPost("addblock")]
-        public async Task<IActionResult> AddNewBlock([FromBody]string studentId, [FromBody]Block block)
+        [HttpPost]
+        public async Task<IActionResult> AddNewBlock([FromBody]User user, [FromBody]Block newBlock)
         {
-            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
-            if (!isValidGUID)
-            {
-                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
-            }
+            var _user = await _userService.GetUserAsync(user.Email);
 
-            var student = await _studentService.FindByIdAsync(guid);
+            var student = _user.Student;
 
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {studentId} does not exist.");
+                return ErrorResponse($"Student with id: {student.Id} does not exist.");
             }
 
             if (student.Timetable == null)
             {
-                return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
+                return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            student.Timetable.AddNewBlock(block);
+            student.Timetable.AddNewBlock(newBlock);
             await _studentService.UpdateStudentAsync(student);
             //return block with new id 
-            return Ok(block);
+            return Ok(newBlock);
         }
 
 
-        [HttpPost]
+        [HttpPost("addblock")]
         public async Task<IActionResult> RemoveBlock([FromBody]string studentId, [FromBody]Block block)
         {
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);

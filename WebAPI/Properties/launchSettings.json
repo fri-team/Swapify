@@ -12,7 +12,8 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JwtSecret": "DoNotUseMeInProduction"
+        "JwtSecret": "DoNotUseMeInProduction",
+        "BaseUrl": "http://localhost:3000/"
       },
       "applicationUrl": "http://localhost:5000/"
     }

@@ -106,13 +106,16 @@ class AddBlockForm extends PureComponent {
       EndBlock: this.props.start + this.state.Length,
       Type: this.state.Type
     }
-    const user = this.state.user;
+    const body = {
+      user: this.state.user,
+      newBlock: block
+    }
     
     
     axios({
       method: 'post',
-      url: '/api/student/addblock',
-      data: {block, user}
+      url: '/api/student',
+      data: body
     })
       .then(() => {
         //this.props.history.push(TIMETABLE);
