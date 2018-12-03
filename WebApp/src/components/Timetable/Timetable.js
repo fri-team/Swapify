@@ -9,10 +9,11 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 
 
 class Block extends React.Component {
-  state = { showBlockForm: false };
+  state = { showBlockForm: false};
 
+  
   render() {
-    const {i,j} = this.props;
+    const {i,j, user} = this.props;
     return (
       <div
         ref={ref => (this.anchor = ref)}
@@ -22,7 +23,7 @@ class Block extends React.Component {
       >
        {this.state.showBlockForm && (
           <AddBlockForm
-            email=""
+            user={user}
             day={i}
             start={j+6}
             onClose={() => this.setState({ showBlockForm: false })}
@@ -33,11 +34,12 @@ class Block extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  addBlock: (block) => dispatch(addBlock(block))
-})
 
-const ConnectedBlock = connect(undefined, mapDispatchToProps)(Block);
+const mapDispatchToProps = (state,dispatch) => ({ 
+  addBlock: (block) => dispatch(addBlock(block)),
+  user: state.user });
+
+const ConnectedBlock = connect(mapDispatchToProps)(Block);
 
 const Timetable = props => {
   const hours = _.map(props.colHeadings, (col, idx) => (
@@ -98,5 +100,6 @@ Timetable.propTypes = {
 Timetable.defaultProps = {
   items: []
 };
+
 
 export default Timetable;

@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             return Ok(student.Timetable);
         }
 
-        [HttpPost]
+        [HttpPost("addblock")]
         public async Task<IActionResult> AddNewBlock([FromBody]string studentId, [FromBody]Block block)
         {
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
