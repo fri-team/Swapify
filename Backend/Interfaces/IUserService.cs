@@ -13,6 +13,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
         Task<User> GetUserAsync(string email);
         Task<IdentityResult> DeleteUserAsyc(User user);
+        Task<IdentityResult> UpdateUserAsync(User userToUpdate);
         JwtSecurityToken Renew(string jwtToken);
     }
 }

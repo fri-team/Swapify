@@ -43,18 +43,36 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Study group with number: {body.GroupNumber} does not exist.");
             }
-            if (user == null)
+            else if (user == null)
             {
                 return ErrorResponse($"User with email: {body.user.Email} does not exist.");
             }
-            Student student = new Student();
-            student.StudyGroupId = sg.Id;
-            student.Timetable = sg.Timetable;
-            
-            user.Student = student;
-
-            await _studentService.UpdateStudentTimetableAsync(student, sg);
-            return Ok(student.Timetable);
+            else 
+            {
+                Student student = user.Student;
+                if (student == null)
+                {
+                    student = new Student();
+                    student.StudyGroupId = sg.Id;
+                    student.Timetable = sg.Timetable;
+                    user.Student = student;
+                    await _studentService.UpdateStudentTimetableAsync(student, sg);
+                    await _userService.UpdateUserAsync(user);
+                    return Ok(student.Timetable);
+                }
+                if (student.StudyGroupId.Equals(sg))
+                {
+                    return Ok(student.Timetable);
+                }
+                else
+                {
+                    user.Student.StudyGroupId = sg.Id;
+                    user.Student.Timetable = sg.Timetable;
+                    await _studentService.UpdateStudentTimetableAsync(student, sg);
+                    await _userService.UpdateUserAsync(user);
+                    return Ok(student.Timetable);
+                }
+            }
         }
 
         [HttpGet("course/{courseId}")]
