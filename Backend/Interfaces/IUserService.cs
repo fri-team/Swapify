@@ -11,7 +11,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<IdentityResult> AddUserAsync(User user, string password);
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
         Task<string> GeneratePasswordResetTokenAsync(User user);
-        Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
+        Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword);
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByIdAsync(string userId);

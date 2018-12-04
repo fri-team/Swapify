@@ -37,25 +37,25 @@ namespace WebAPI.Controllers
         {
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
-            var result = await _userService.AddUserAsync(user, body.Password);
-            if (!result.Succeeded)
+            var addResult = await _userService.AddUserAsync(user, body.Password);
+            if (!addResult.Succeeded)
             {
-                _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", result.Errors));
-                Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(result.Errors);
+                _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", addResult.Errors));
+                Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(addResult.Errors);
                 return ValidationError(identityErrors);
             }
 
             _logger.LogInformation($"User {body.Email} created.");
             string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
-            token = Uri.EscapeDataString(token);
             user = await _userService.GetUserByEmailAsync(body.Email);
             string callbackUrl = new Uri(_baseUrl, $@"confirmEmail/{user.Id}/{token}").ToString();
 
             if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
             {
                 _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
-                await _userService.DeleteUserAsyc(user);
-                _logger.LogInformation($"User {body.Email} deleted.");
+                var deleteResult = await _userService.DeleteUserAsyc(user);
+                if(deleteResult.Succeeded)
+                    _logger.LogInformation($"User {body.Email} deleted.");
                 return BadRequest();
             }
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
@@ -65,8 +65,7 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
-        {
-            body.Token = Uri.UnescapeDataString(body.Token);
+        {            
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
@@ -142,8 +141,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Najskôr prosím potvrď svoju emailovú adresu.");
             }
 
-            string token = await _userService.GeneratePasswordResetTokenAsync(user);
-            token = Uri.EscapeDataString(token);
+            string token = await _userService.GeneratePasswordResetTokenAsync(user);            
             string callbackUrl = new Uri(_baseUrl, $@"set-new-password/{user.Id}/{token}").ToString();
             if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RestorePasswordEmail"))
             {
@@ -156,8 +154,7 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("setNewPassword")]
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordModel body)
-        {
-            body.Token = Uri.UnescapeDataString(body.Token);
+        {            
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {

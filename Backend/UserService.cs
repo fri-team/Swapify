@@ -63,21 +63,25 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
         {
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return Uri.EscapeDataString(token);
         }
 
         public async Task<string> GeneratePasswordResetTokenAsync(User user)
         {
-            return await _userManager.GeneratePasswordResetTokenAsync(user);
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return Uri.EscapeDataString(token);
         }
 
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
         {
+            token = Uri.UnescapeDataString(token);
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
 
         public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
         {
+            token = Uri.UnescapeDataString(token);
             return await _userManager.ConfirmEmailAsync(user, token);
         }
 
