@@ -7,7 +7,7 @@ namespace FRITeam.Swapify.Entities
     public class Student : BaseEntity
     {
         public Timetable Timetable { get; set; }
-        public Guid StudyGroupId { get; set; }
+        public StudyGroup StudyGroup { get; set; }
 
         
     }

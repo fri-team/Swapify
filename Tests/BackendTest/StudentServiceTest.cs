@@ -33,7 +33,7 @@ namespace BackendTest
             StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
             Student student = new Student();
             student.Timetable = studyGroup.Timetable.Clone();
-            student.StudyGroupId = studyGroup.Id;
+            student.StudyGroup = studyGroup;
 
             var newBlock = new Block();
             var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
@@ -67,7 +67,7 @@ namespace BackendTest
 
 
             await grpsrvc.AddAsync(gr);
-            st.StudyGroupId = gr.Id;
+            st.StudyGroup = gr;
             await stSer.AddAsync(st);
 
             st = await stSer.FindByIdAsync(st.Id);

@@ -47,31 +47,26 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"User with email: {body.user.Email} does not exist.");
             }
-            else 
+            Student student = user.Student;
+            if (student == null)
             {
-                Student student = user.Student;
-                if (student == null)
-                {
-                    student = new Student();
-                    student.StudyGroupId = sg.Id;
-                    student.Timetable = sg.Timetable;
-                    user.Student = student;
-                    await _studentService.UpdateStudentTimetableAsync(student, sg);
-                    await _userService.UpdateUserAsync(user);
-                    return Ok(student.Timetable);
-                }
-                if (student.StudyGroupId.Equals(sg))
-                {
-                    return Ok(student.Timetable);
-                }
-                else
-                {
-                    user.Student.StudyGroupId = sg.Id;
-                    user.Student.Timetable = sg.Timetable;
-                    await _studentService.UpdateStudentTimetableAsync(student, sg);
-                    await _userService.UpdateUserAsync(user);
-                    return Ok(student.Timetable);
-                }
+                student = new Student();
+                user.Student = student;
+                student.StudyGroup = sg;
+                await _studentService.UpdateStudentTimetableAsync(student, sg);
+                await _userService.UpdateUserAsync(user);
+                return Ok(student.Timetable);
+            }
+            if (student.StudyGroup.Equals(sg))
+            {
+                return Ok(student.Timetable);
+            }
+            else
+            {
+                student.StudyGroup = sg;
+                await _studentService.UpdateStudentTimetableAsync(student, sg);
+                await _userService.UpdateUserAsync(user);
+                return Ok(student.Timetable);
             }
         }
 

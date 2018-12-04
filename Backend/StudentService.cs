@@ -36,7 +36,7 @@ namespace FRITeam.Swapify.Backend
         public async Task UpdateStudentTimetableAsync(Student studentToUpdate, StudyGroup studyGroup)
         {
             studentToUpdate.Timetable = studyGroup.Timetable.Clone();
-            studentToUpdate.StudyGroupId = studyGroup.Id;
+            studentToUpdate.StudyGroup = studyGroup;
             await this.UpdateStudentAsync(studentToUpdate);
         }
                 
