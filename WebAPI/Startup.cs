@@ -25,7 +25,6 @@ using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebAPI
 {
@@ -61,13 +60,11 @@ namespace WebAPI
             ConfigureAuthorization(services);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IStudyGroupService, StudyGroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
-            services.AddSingleton<IEmailService>(
-                new EmailService(services.BuildServiceProvider().GetService<IOptions<MailingSettings>>(),
-                                 services.BuildServiceProvider().GetService<IOptions<UrlSettings>>()
-                                 ));
+            services.AddSingleton<IEmailService, EmailService>();
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
@@ -111,11 +108,14 @@ namespace WebAPI
             var identitySettings = Configuration.GetSection("IdentitySettings");
             if (identitySettings.Get<IdentitySettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(IdentitySettings)} configuration section.");
+            var pathSettings = Configuration.GetSection("PathSettings");
+            if (pathSettings.Get<PathSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(PathSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
+            services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
-            //services.Configure<UrlSettings>(Configuration);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
@@ -123,8 +123,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<IdentitySettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
-            //services.AddSingleton<IValidatable>(resolver =>
-            //    resolver.GetRequiredService<IOptions<UrlSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<PathSettings>>().Value);
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
@@ -204,10 +204,13 @@ namespace WebAPI
                 _logger.LogInformation("Creating testing user");
                 DbSeed.CreateTestingUser(serviceProvider);
                 _logger.LogInformation("Oleg created");
+                _logger.LogInformation("Creating courses");
+                DbSeed.CreateTestingCourses(serviceProvider);
+                _logger.LogInformation("Courses created");
             }
             catch (Exception e)
             {
-                _logger.LogError($"Oleg not created:\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
             }
         }
     }

@@ -13,6 +13,7 @@ import './BlockDetail.scss';
 
 class BlockDetail extends PureComponent {
   handleClickOutside = () => this.props.onOutsideClick();
+  handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
 
   render() {
     if (!this.props.isVisible) {
@@ -31,9 +32,14 @@ class BlockDetail extends PureComponent {
         <div className="header" style={{ backgroundColor }}>
           <div className="buttons">
             {course.type !== 'lecture' && (
-              <IconButton>
-                <DeleteIcon nativeColor={color} />
-              </IconButton>
+              <span>
+                <IconButton onClick={this.handleClickExchange }>
+                  <SwapHorizontal className="icon" />
+                </IconButton>
+                <IconButton>
+                  <DeleteIcon nativeColor={color} />
+                </IconButton>
+              </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
               <ClearIcon nativeColor={color} />
@@ -77,7 +83,8 @@ BlockDetail.propTypes = {
   top: PropTypes.number.isRequired,
   left: PropTypes.number.isRequired,
   course: PropTypes.shape({}).isRequired,
-  onOutsideClick: PropTypes.func.isRequired
+  onOutsideClick: PropTypes.func.isRequired,
+  onExchangeRequest: PropTypes.func.isRequired
 };
 
 export default onClickOutside(BlockDetail);

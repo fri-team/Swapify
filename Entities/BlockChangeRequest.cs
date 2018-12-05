@@ -7,14 +7,18 @@ namespace FRITeam.Swapify.Entities
 {
     public class BlockChangeRequest : BaseEntity
     {
-        public List<Guid> BlockOptionsChange { get; set; }
-        public Guid BlockForChangeId { get; set; }
+        /// <summary>
+        /// Student who wants to change block
+        /// </summary>
         public Guid StudentId { get; set; }
-        public StatusRequestType Status { get; set; }
+        public Block BlockFrom { get; set; }
+        public Block BlockTo { get; set; }
+        public ExchangeStatus Status { get; set; }
+        public DateTime DateOfCreation { get; set; }
 
         public BlockChangeRequest()
         {
-            BlockOptionsChange = new List<Guid>();
+            Status = ExchangeStatus.WaitingForExchange;
         }
     }
 }
