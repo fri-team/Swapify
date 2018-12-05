@@ -10,6 +10,7 @@ using WebAPI.Models.UserModels;
 using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -54,7 +55,7 @@ namespace WebAPI.Controllers
             {
                 _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
                 var deleteResult = await _userService.DeleteUserAsyc(user);
-                if(deleteResult.Succeeded)
+                if (deleteResult.Succeeded)
                     _logger.LogInformation($"User {body.Email} deleted.");
                 return BadRequest();
             }
@@ -65,7 +66,7 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
-        {            
+        {
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
@@ -87,6 +88,33 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost("sendEmailConfirmTokenAgain")]
+        public async Task<IActionResult> SendEmailConfirmTokenAgain([FromBody] SendEmailConfirmTokenAgainModel body)
+        {
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogWarning($"Invalid send confirmation email attempt. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            if (user.EmailConfirmed)
+                return ErrorResponse($"Emailová adresa je už potvrdená.");
+
+            string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+            string callbackUrl = new Uri(_baseUrl, $@"confirmEmail/{user.Id}/{token}").ToString();
+
+            if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
+            {
+                _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
+                return BadRequest();
+            }
+            _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+            return Ok();
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
@@ -101,7 +129,7 @@ namespace WebAPI.Controllers
             if (!user.EmailConfirmed)
             {
                 _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
-                return ErrorResponse($"Pre prihlásenie prosím potvrď svoju emailovú adresu.");
+                return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
             }
 
             var token = await _userService.Authenticate(body.Email, body.Password);
@@ -141,7 +169,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Najskôr prosím potvrď svoju emailovú adresu.");
             }
 
-            string token = await _userService.GeneratePasswordResetTokenAsync(user);            
+            string token = await _userService.GeneratePasswordResetTokenAsync(user);
             string callbackUrl = new Uri(_baseUrl, $@"set-new-password/{user.Id}/{token}").ToString();
             if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RestorePasswordEmail"))
             {
@@ -154,7 +182,7 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("setNewPassword")]
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordModel body)
-        {            
+        {
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {

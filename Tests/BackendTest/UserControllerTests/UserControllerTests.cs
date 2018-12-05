@@ -169,6 +169,14 @@ namespace BackendTest.UserControllerTests
                 PasswordAgain = "Heslo.123"
             };
         }
+
+        private static SendEmailConfirmTokenAgainModel CreateSendEmailConfirmTokenAgain()
+        {
+            return new SendEmailConfirmTokenAgainModel
+            {
+                Email = "tester@testovaci.com"
+            };
+        }
         #endregion
 
         [Fact]
@@ -314,7 +322,7 @@ namespace BackendTest.UserControllerTests
         }
 
         [Fact]
-        public async Task Login_EmailNotConfirmed_BadRequestObject()
+        public async Task Login_EmailNotConfirmed_ObjectResult()
         {
             bool createUserSuccess = true;
             bool findUserByIdSuccess = true;
@@ -327,11 +335,13 @@ namespace BackendTest.UserControllerTests
 
             var result = await controller.Login(loginModel);
 
-            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<ObjectResult>(result);
 
-            dynamic badRequestObject = (BadRequestObjectResult)result;
-            string error = badRequestObject.Value.Error;
+            ObjectResult badRequestObject = (ObjectResult)result;
+            string error = (string)badRequestObject.Value;
+            int statusCode = (int)badRequestObject.StatusCode;
             Assert.Equal("Pre prihlásenie prosím potvrď svoju emailovú adresu.", error);
+            Assert.Equal(403, statusCode);
         }
 
         [Fact]
@@ -513,6 +523,77 @@ namespace BackendTest.UserControllerTests
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task SendEmailConfirmTokenAgain_UserNotExists_BadRequestObjectResult()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = false;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
+
+            var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task SendEmailConfirmTokenAgain_EmailAlreadyConfirmed_BadRequestObjectResult()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            bool confirmEmailSuccess = true;
+            bool emailAlreadyConfirmed = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
+                confirmEmailSuccess, emailAlreadyConfirmed),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
+
+            var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task SendEmailConfirmTokenAgain_EmailServiceError_BadRequestResult()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockEmailService(false),
+                _envSettingsMock.Object);
+            SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
+
+            var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async Task SendEmailConfirmTokenAgain_EmailSuccess_Ok()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
+
+            var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
 
             Assert.IsType<OkResult>(result);
         }

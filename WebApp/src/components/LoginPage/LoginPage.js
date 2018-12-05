@@ -37,7 +37,9 @@ class LoginPage extends Component {
     password: '',
     validation: validator.valid(),
     submitted: false,
-    serverErrors: ''
+    serverErrors: '',
+    emailNotConfirmed: false,
+    sendConfirmEmailAgainResult: ''
   };
 
   handleInputChange = event => {
@@ -45,8 +47,27 @@ class LoginPage extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  sendConfirmationEmailAgain = () => {
+    const body = {
+      email: this.state.email      
+    };
+
+    axios({
+      method: 'post',
+      url: '/api/user/SendEmailConfirmTokenAgain',
+      data: body
+    })
+      .then(() => {
+        this.setState({ sendConfirmEmailAgainResult: 'Email bol odoslaný' });
+      })
+      .catch(() => {
+        this.setState({ sendConfirmEmailAgainResult: 'Pri odosielaní emailu nastala chyba' });
+      });    
+  };
+
   onSubmit = () => {
     const { dispatch } = this.props;
+    this.setState( { emailNotConfirmed: false });
 
     const body = {
       email: this.state.email,
@@ -65,7 +86,12 @@ class LoginPage extends Component {
           dispatch(login(data));
         })
         .catch(error => {
-          this.setState({ serverErrors: error.response.data.error });
+          if (error.response.status === 403) {
+            this.setState({ serverErrors: error.response.data });
+            this.setState( { emailNotConfirmed: true });
+          }
+          else
+            this.setState({ serverErrors: error.response.data.error });
         });
     }
   };
@@ -78,54 +104,69 @@ class LoginPage extends Component {
     return (
       <MacBackground>
         <ElevatedBox>
-          <Form className="register-form" onSubmit={this.onSubmit}>
-            Prihlásenie
-            <div className="register-form-spacer">
-              <TextField
-                label="Email"
-                required
-                name="email"
-                error={!!validation.email.message}
-                helperText={validation.email.message}
-                value={this.state.email}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+        { 
+          this.state.sendConfirmEmailAgainResult === ''
+          ? <Form className="register-form" onSubmit={this.onSubmit}>
+              Prihlásenie
+              <div className="register-form-spacer">
+                <TextField
+                  label="Email"
+                  required
+                  name="email"
+                  error={!!validation.email.message}
+                  helperText={validation.email.message}
+                  value={this.state.email}
+                  fullWidth
+                  onChange={this.handleInputChange}
+                />
+              </div>
 
-            <div className="register-form-spacer">
-              <TextField
-                label="Heslo"
-                type="password"
-                required
-                name="password"
-                error={!!validation.password.message}
-                helperText={validation.password.message}
-                value={this.state.password}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+              <div className="register-form-spacer">
+                <TextField
+                  label="Heslo"
+                  type="password"
+                  required
+                  name="password"
+                  error={!!validation.password.message}
+                  helperText={validation.password.message}
+                  value={this.state.password}
+                  fullWidth
+                  onChange={this.handleInputChange}
+                />
+              </div>
 
-            <Button type="submit" color="primary" variant="contained">
-              Prihlásiť
-            </Button>
-            <Button 
-              variant="text"
-              size="small"
-              component={Link} to={FORGOTPASSWORD}
-            >
-              Zabudnuté heslo
-            </Button>
-            <div
-              className={classNames({
-                'server-error':
-                  this.state.submitted && this.state.serverErrors.length > 0
-              })}
-            >
-              {this.state.serverErrors}
-            </div>
-          </Form>
+              <Button type="submit" color="primary" variant="contained">
+                Prihlásiť
+              </Button>
+              <Button 
+                variant="text"
+                size="small"
+                component={Link} to={FORGOTPASSWORD}
+              >
+                Zabudnuté heslo
+              </Button>
+              <div
+                className={classNames({
+                  'server-error':
+                    this.state.submitted && this.state.serverErrors.length > 0
+                })}
+              >
+                {this.state.serverErrors}
+                { 
+                  this.state.emailNotConfirmed
+                  ? <Button 
+                      variant="text"
+                      size="small"
+                      onClick={this.sendConfirmationEmailAgain}
+                    >
+                      Znovu poslať overovací email
+                    </Button>
+                  : null 
+                }          
+              </div>              
+            </Form>
+          : <p>{ this.state.sendConfirmEmailAgainResult }</p> 
+        }          
         </ElevatedBox>
       </MacBackground>
     );
