@@ -23,7 +23,7 @@ class StudyGroup extends React.Component {
     }
     axios({
       method: 'post',
-      url: '/api/timetable',
+      url: '/api/timetable/setStudentTimetableFromGroup',
       data: body
     })
     .then(() => {

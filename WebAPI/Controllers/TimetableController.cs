@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("setStudentTimetableFromGroup")]
         public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
         {
             StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber, _courseService, _proxy);
@@ -52,7 +52,6 @@ namespace WebAPI.Controllers
             {
                 student = new Student();
                 user.Student = student;
-                student.StudyGroup = sg;
                 await _studentService.UpdateStudentTimetableAsync(student, sg);
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
@@ -63,7 +62,6 @@ namespace WebAPI.Controllers
             }
             else
             {
-                student.StudyGroup = sg;
                 await _studentService.UpdateStudentTimetableAsync(student, sg);
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
