@@ -5,17 +5,26 @@ using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace FRITeam.Swapify.Backend
 {
     public class StudyGroupService : IStudyGroupService
     {
+        private readonly ILogger<StudyGroupService> _logger;
         private readonly IMongoDatabase _database;
+        private readonly ISchoolScheduleProxy _scheduleProxy;
+        private readonly ICourseService _courseService;
 
-        public StudyGroupService(IMongoDatabase database)
+        public StudyGroupService(ILogger<StudyGroupService> logger, IMongoDatabase database,
+            ISchoolScheduleProxy scheduleProxy, ICourseService courseService)
         {
+            _logger = logger;
             _database = database;
+            _scheduleProxy = scheduleProxy;
+            _courseService = courseService;
+
         }
 
         public async Task AddAsync(StudyGroup entityToAdd)
@@ -30,15 +39,20 @@ namespace FRITeam.Swapify.Backend
             return await collection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public async Task<StudyGroup> GetStudyGroupAsync(string studyGroupNumber, ICourseService courseServ, ISchoolScheduleProxy proxy)
+        public virtual async Task<StudyGroup> GetStudyGroupAsync(string studyGroupNumber)
         {
             var collection = _database.GetCollection<StudyGroup>(nameof(StudyGroup));
             var group = await collection.Find(x => x.GroupName.Equals(studyGroupNumber.ToUpper())).FirstOrDefaultAsync();
 
             if (group == null)
             {
-                var schedule = proxy.GetByStudyGroup(studyGroupNumber);
-                Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, courseServ);
+                var schedule = _scheduleProxy.GetByStudyGroup(studyGroupNumber);
+                if (schedule == null)
+                {
+                    _logger.LogError($"Unable to load schedule for study group {studyGroupNumber}. Schedule proxy returned null");
+                    return null;
+                }
+                Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, _courseService);
                 group = new StudyGroup();
                 group.Timetable = t;
                 group.GroupName = studyGroupNumber;

@@ -6,10 +6,13 @@ using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BackendTest
@@ -17,97 +20,46 @@ namespace BackendTest
     [Collection("Database collection")]
     public class ConverterTest : IClassFixture<Mongo2GoFixture>
     {
-
         private readonly Mongo2GoFixture _mongoFixture;
+        private readonly IMongoDatabase _database;
+        private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
 
         public ConverterTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+            _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
         [Fact]
-        public async void ConvertTest_ValidGroupWithSubject()
+        public async Task ConvertTest_ValidStudyGroup()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            var service = new StudyGroupService(database);
-            var serviceCourse = new CourseService(database);
-
-
-            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new SchoolScheduleProxy());
-            StudyGroup grp1 = await service.GetStudyGroupAsync("5ZZS14", serviceCourse, new SchoolScheduleProxy());
-
-            var crs = await serviceCourse.FindByNameAsync("komunikačné technológie");
-#pragma warning disable S1067 // Expressions should not be too complex
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
-                                            (x.Room == "RA301") && (x.StartHour == 11) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
-                                            (x.Room == "RA301") && (x.StartHour == 13) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
-                                            (x.Room == "RC009") && (x.StartHour == 12) &&
-                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
-
-
-            crs = await serviceCourse.FindByNameAsync("optimalizácia sietí");
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
-                                            (x.Room == "RB003") && (x.StartHour == 17) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Wednesday) && (x.Duration == 2) &&
-                                            (x.Room == "RB003") && (x.StartHour == 16) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
-                                            (x.Room == "RC009") && (x.StartHour == 12) &&
-                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
-
-
-            crs = await serviceCourse.FindByNameAsync("pokročilé databázové systémy");
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Monday) && (x.Duration == 2) &&
-                                            (x.Room == "RA013") && (x.StartHour == 13) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Friday) && (x.Duration == 2) &&
-                                            (x.Room == "RB052") && (x.StartHour == 12) &&
-                                            (x.BlockType == BlockType.Laboratory)).Should().NotBeNull();
-
-            crs.Timetable.AllBlocks.Where(x => (x.Day == Day.Thursday) && (x.Duration == 2) &&
-                                            (x.Room == "RC009") && (x.StartHour == 7) &&
-                                            (x.BlockType == BlockType.Lecture)).Should().NotBeNull();
-#pragma warning restore S1067 // Expressions should not be too complex
-        }
-
-
-        [Fact]
-        public async void ConvertTest_ValidStudyGroup()
-        {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            var service = new StudyGroupService(database);
-            var serviceCourse = new CourseService(database);
-
-            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13", serviceCourse, new FakeProxy());
+            var serviceCourse = new CourseService(_database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            var service = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13");
             grp.Should().NotBeNull();
         }
 
         [Fact]
-        public async void ConvertTest_NotValidStudyGroup()
+        public async Task ConvertTest_NotValidStudyGroup()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            var service = new StudyGroupService(database);
-            var serviceCourse = new CourseService(database);
+            var serviceCourse = new CourseService(_database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            var serviceMock = new Mock<StudyGroupService>(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            serviceMock.Setup(x => x.GetStudyGroupAsync(It.IsAny<string>()))
+                       .Returns(Task.FromResult<StudyGroup>(null));
 
-            Assert.Throws<AggregateException>(() => service.GetStudyGroupAsync("5ZZS99", serviceCourse, new SchoolScheduleProxy()).Wait());
+            var result = await serviceMock.Object.GetStudyGroupAsync("5ZZS99");
+
+            Assert.Null(result);
         }
 
 
         [Fact]
-        public async void ConvertTest_ValidStudyGroup1()
+        public async Task ConvertTest_ValidStudyGroup1()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            var serviceCourse = new CourseService(database);
+            var serviceCourse = new CourseService(_database);
 
             ScheduleDayContent day = new ScheduleDayContent();
             var grps = new List<string>();
@@ -288,7 +240,6 @@ namespace BackendTest
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
             return week;
-
         }
     }
 }

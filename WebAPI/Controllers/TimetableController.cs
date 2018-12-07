@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
 using WebAPI.Models.UserModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
@@ -14,22 +13,16 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class TimetableController : BaseController
     {
+        private readonly ILogger<TimetableController> _logger;
         private readonly IStudyGroupService _groupService;
-        private readonly ICourseService _courseService;
-        private readonly ISchoolScheduleProxy _proxy;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
 
-        public TimetableController(IStudyGroupService groupService,
-                                   ICourseService courseService,
-                                   ISchoolScheduleProxy proxy,
-                                   IStudentService studentService,
-                                   IUserService userService
-                                   )
+        public TimetableController(ILogger<TimetableController> logger, IStudyGroupService groupService,
+            IStudentService studentService, IUserService userService)
         {
+            _logger = logger;
             _groupService = groupService;
-            _courseService = courseService;
-            _proxy = proxy;
             _studentService = studentService;
             _userService = userService;
         }
@@ -37,16 +30,17 @@ namespace WebAPI.Controllers
         [HttpPost("setStudentTimetableFromGroup")]
         public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
         {
-            StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber, _courseService, _proxy);
-            User user = await _userService.GetUserAsync(body.user.Email);
+            _logger.LogInformation($"Setting timetable for student: {body.Email}.");
+            User user = await _userService.GetUserAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogError($"User with email: {body.Email} does not exist.");
+                return ErrorResponse($"User with email: {body.Email} does not exist.");
+            }
+            StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber);
             if (sg == null)
-            {
                 return ErrorResponse($"Study group with number: {body.GroupNumber} does not exist.");
-            }
-            else if (user == null)
-            {
-                return ErrorResponse($"User with email: {body.user.Email} does not exist.");
-            }
+
             Student student = user.Student;
             if (student == null)
             {

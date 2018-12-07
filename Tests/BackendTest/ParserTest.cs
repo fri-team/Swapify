@@ -17,9 +17,9 @@ namespace BackendTest
         {
             string input = "{\"report\":\"Nena\u0161li sa \\u017eiadne bloky pre rozvrh.\",\"ScheduleContent\":[]}";
 
-            Action act = () => ResponseParser.ParseResponse(input);
-            Assert.Throws<ArgumentException>(act);
+            var parseResult = ResponseParser.ParseResponse(input);
 
+            Assert.Null(parseResult);
         }
 
         [Fact]

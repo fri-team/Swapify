@@ -19,7 +19,7 @@ class StudyGroup extends React.Component {
   Submit = () => {
     const body = {
       groupNumber: this.state.group,
-      user: this.state.user
+      email: this.state.user.email
     }
     axios({
       method: 'post',
@@ -28,6 +28,9 @@ class StudyGroup extends React.Component {
     })
     .then(() => {
       this.props.history.push(TIMETABLE);
+    })
+    .catch(error => {
+      alert(error.response.data.error);
     });
   }
 

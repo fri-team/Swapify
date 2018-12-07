@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
 using MongoDB.Driver;
 using Xunit;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace BackendTest
 {
@@ -15,22 +17,26 @@ namespace BackendTest
     public class StudentServiceTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
+        private readonly IMongoDatabase _database;
+        private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
 
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+            _mongoFixture = mongoFixture;
+            _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
-        
+
         [Fact]
         public async Task AssingTimetableToStudent()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudyGroupService grpsrvc = new StudyGroupService(database);
-            CourseService crsrv = new CourseService(database);
-            ISchoolScheduleProxy proxy = new FakeProxy();
+            var serviceCourse = new CourseService(_database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
 
-            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZI001", crsrv, proxy);
+            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZZS14");
             Student student = new Student();
             student.Timetable = studyGroup.Timetable.Clone();
             student.StudyGroup = studyGroup;
@@ -48,10 +54,12 @@ namespace BackendTest
 
         [Fact]
         public async Task AddStudentTest()
-        {           
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stSer = new StudentService(database);
-            StudyGroupService grpsrvc = new StudyGroupService(database);
+        {
+            var serviceCourse = new CourseService(_database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            StudentService stSer = new StudentService(_database);
+            
             Student st = new Student();
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
             StudyGroup gr = new StudyGroup() { GroupName = "5ZZS14" };
@@ -106,7 +114,7 @@ namespace BackendTest
 
             await stSer.UpdateStudentAsync(st);
             st.Timetable.AllBlocks.Count().Should().Be(2);
-            st.Timetable.AllBlocks.Any(x=>x.Room == "room3").Should().Be(true);
+            st.Timetable.AllBlocks.Any(x => x.Room == "room3").Should().Be(true);
             st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
 
         }

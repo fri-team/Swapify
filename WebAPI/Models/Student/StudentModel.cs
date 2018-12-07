@@ -9,7 +9,8 @@ namespace WebAPI.Models.UserModels
         [Required(ErrorMessage = "Číslo študijnej skupiny je povinné")]
         public string GroupNumber { get; set; }
 
-        [Required(ErrorMessage = "Chýbajú údaje o používateľovi")]
-        public User user { get; set; }
+        [Required(ErrorMessage = "Email je povinný.")]
+        [EmailAddress(ErrorMessage = "Zadaná emailová adresa nie je validná.")]
+        public string Email { get; set; }
     }
 }

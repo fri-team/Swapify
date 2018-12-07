@@ -9,7 +9,7 @@ using System.Text;
 
 namespace FRITeam.Swapify.APIWrapper
 {
-    public class ResponseParser
+    public static class ResponseParser
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -23,7 +23,7 @@ namespace FRITeam.Swapify.APIWrapper
             {
                 var ex = new ArgumentException(report);
                 _logger.Error(ex);
-                throw ex;
+                return null;
             }
 
             var scheduleContent = (JArray)response["ScheduleContent"];
@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.APIWrapper
                     catch (Exception ex)
                     {
                         _logger.Error(ex);
-                        throw ex;
+                        return null;
                     }
 
                 }
