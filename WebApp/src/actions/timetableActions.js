@@ -170,7 +170,7 @@ export function exchangeConfirm(blockTo) {
       url: `/api/exchange/ExchangeConfirm`,
       data: body
     })
-      .then(res => {
+      .then(() => {
         dispatch(action);
       })
       .catch(() => {

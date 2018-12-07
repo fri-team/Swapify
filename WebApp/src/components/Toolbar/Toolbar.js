@@ -34,7 +34,6 @@ class AppToolbar extends PureComponent {
     }
 
     const { user, toggleSidebar } = this.props;
-    console.log(this.props);
     return (
       <ToolbarWrapper>
         <AppBar position="static">
