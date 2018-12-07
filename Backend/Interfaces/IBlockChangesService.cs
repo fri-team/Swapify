@@ -8,9 +8,8 @@ namespace FRITeam.Swapify.Backend.Interfaces
 {
     public interface IBlockChangesService
     {
-        Task AddAsync(BlockChangeRequest entityToAdd);
+        Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd);
         Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId);
-        Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request);
         
     }
 }

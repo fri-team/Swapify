@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
@@ -55,6 +56,7 @@ namespace WebAPI.Controllers
                 {
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 1,
                         StartBlock = 1,
                         EndBlock = 3,
@@ -66,6 +68,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 1,
                         StartBlock = 4,
                         EndBlock = 6,
@@ -77,6 +80,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 1,
                         StartBlock = 7,
                         EndBlock = 9,
@@ -88,6 +92,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 3,
                         StartBlock = 7,
                         EndBlock = 9,
@@ -99,6 +104,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 4,
                         StartBlock = 4,
                         EndBlock = 6,
@@ -110,6 +116,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 4,
                         StartBlock = 11,
                         EndBlock = 13,
@@ -121,6 +128,7 @@ namespace WebAPI.Controllers
                     },
                     new TimetableBlock
                     {
+                        Id= Guid.NewGuid().ToString(),
                         Day = 5,
                         StartBlock = 4,
                         EndBlock = 6,

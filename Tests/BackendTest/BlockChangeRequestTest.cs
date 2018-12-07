@@ -83,44 +83,43 @@ namespace BackendTest
             blockToChange1.BlockFrom = block1.Clone();
             blockToChange1.BlockTo = block2.Clone();
             blockToChange1.StudentId = student1.Id;
-            await blockChangeService.AddAsync(blockToChange1);
+            await blockChangeService.AddAndFindMatch(blockToChange1);
 
             BlockChangeRequest blockToChange2 = new BlockChangeRequest();
             blockToChange2.DateOfCreation = DateTime.Now;
             blockToChange2.BlockFrom = block1.Clone();
             blockToChange2.BlockTo = block3.Clone();
             blockToChange2.StudentId = student1.Id;
-            await blockChangeService.AddAsync(blockToChange2);
+            await blockChangeService.AddAndFindMatch(blockToChange2);
 
             BlockChangeRequest blockToChange3 = new BlockChangeRequest();
             blockToChange3.DateOfCreation = DateTime.Now;
             blockToChange3.BlockFrom = block1.Clone();
             blockToChange3.BlockTo = block2.Clone();
             blockToChange3.StudentId = student2.Id;
-            await blockChangeService.AddAsync(blockToChange3);
+            await blockChangeService.AddAndFindMatch(blockToChange3);
 
             BlockChangeRequest blockToChange4 = new BlockChangeRequest();
             blockToChange4.DateOfCreation = DateTime.Now;
             blockToChange4.BlockFrom = block1.Clone();
             blockToChange4.BlockTo = block3.Clone();
             blockToChange4.StudentId = student2.Id;
-            await blockChangeService.AddAsync(blockToChange4);
+            await blockChangeService.AddAndFindMatch(blockToChange4);
 
             BlockChangeRequest blockToChange5 = new BlockChangeRequest();
             blockToChange5.DateOfCreation = DateTime.Now;
             blockToChange5.BlockFrom = block4.Clone();
             blockToChange5.BlockTo = block2.Clone();
             blockToChange5.StudentId = student3.Id;
-            await blockChangeService.AddAsync(blockToChange5);
+            await blockChangeService.AddAndFindMatch(blockToChange5);
 
             BlockChangeRequest blockToChange = new BlockChangeRequest();
             blockToChange.DateOfCreation = DateTime.Now;
             blockToChange.BlockFrom = block2.Clone();
             blockToChange.BlockTo = block1.Clone();
             blockToChange.StudentId = student3.Id;
-            await blockChangeService.AddAsync(blockToChange);
-
-            (await blockChangeService.MakeExchangeAndDeleteRequests(blockToChange)).Should().Be(true);
+            
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(true);
             
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);

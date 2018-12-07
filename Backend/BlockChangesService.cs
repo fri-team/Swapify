@@ -18,10 +18,16 @@ namespace FRITeam.Swapify.Backend
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
-        public async Task AddAsync(BlockChangeRequest entityToAdd)
+        private async Task AddAsync(BlockChangeRequest entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
             await _blockChangesCollection.InsertOneAsync(entityToAdd);
+        }
+        
+        public async Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        {
+            await AddAsync(entityToAdd);
+            return await MakeExchangeAndDeleteRequests(entityToAdd);
         }
 
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
@@ -44,10 +50,10 @@ namespace FRITeam.Swapify.Backend
             return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
         }
 
-        public async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
-            if (request == null)
+            if (requestForExchange == null)
             {
                 return false;
             }
@@ -76,5 +82,6 @@ namespace FRITeam.Swapify.Backend
             request.Status = ExchangeStatus.Done;
             await _blockChangesCollection.ReplaceOneAsync(x => x.Id == request.Id, request);
         }
+
     }
 }
