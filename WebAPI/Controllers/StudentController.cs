@@ -72,8 +72,7 @@ namespace WebAPI.Controllers
             //return block with new id 
             return Ok(block);
         }
-
-        [HttpPost]
+        
         [HttpPost("removeBlock")]
         public async Task<IActionResult> RemoveBlock([FromBody]RemoveRequestModel request)
         {

@@ -142,7 +142,7 @@ export function removeBlock(course) {
   }
 
   const body = {
-    studentId: "invalidID",
+    studentId: "00000000-0000-0000-0000-000000000000",
     removeBlock: block
   }
   
