@@ -14,6 +14,7 @@ import './BlockDetail.scss';
 class BlockDetail extends PureComponent {
   handleClickOutside = () => this.props.onOutsideClick();
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
+  handleClickDelete = () => this.props.onClickDelete(this.props.course);
 
   render() {
     if (!this.props.isVisible) {
@@ -36,7 +37,7 @@ class BlockDetail extends PureComponent {
                 <IconButton onClick={this.handleClickExchange }>
                   <SwapHorizontal className="icon" />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={this.handleClickDelete}>
                   <DeleteIcon nativeColor={color} />
                 </IconButton>
               </span>

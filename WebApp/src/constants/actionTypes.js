@@ -16,3 +16,7 @@ export const HIDE_DETAIL = 'HIDE_DETAIL';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const RENEW = 'RENEW';
+
+export const REMOVE_BLOCK = 'REMOVE_BLOCK';
+export const REMOVE_BLOCK_DONE = 'REMOVE_BLOCK_DONE';
+export const REMOVE_BLOCK_FAIL = 'REMOVE_BLOCK_FAIL';

@@ -9,7 +9,10 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  SHOW_EXCHANGE_MODE_TIMETABLE
+  SHOW_EXCHANGE_MODE_TIMETABLE,
+  REMOVE_BLOCK,
+  REMOVE_BLOCK_DONE,
+  REMOVE_BLOCK_FAIL
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -125,5 +128,42 @@ export function hideCourseTimetable(course) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { course }
-  };
+  };  
+}
+
+export function removeBlock(course) {
+  const block = {
+    Day: course.day,
+    Teacher: course.teacher,
+    Room: course.room,
+    StartHour: course.startBlock + 6,
+    Duration: course.endBlock - course.startBlock,
+    Type: ((course.type == 'laboratory') ? (2) : (3))
+  }
+
+  const body = {
+    studentId: "invalidID",
+    removeBlock: block
+  }
+  
+  return dispatch => {
+    dispatch({
+      type: REMOVE_BLOCK
+    });
+    axios({
+      method: 'post',
+      url: '/api/student/removeblock',
+      data: body
+    })
+    .then(() =>{
+      dispatch({
+        type: REMOVE_BLOCK_DONE
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: REMOVE_BLOCK_FAIL
+      });
+    });
+  }; 
 }

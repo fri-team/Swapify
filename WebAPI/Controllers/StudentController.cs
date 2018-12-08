@@ -3,6 +3,9 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using WebAPI.Models.RemoveBlockModel;
+using WebAPI.Models.RemoveBlockModels;
 
 namespace WebAPI.Controllers
 {
@@ -70,10 +73,13 @@ namespace WebAPI.Controllers
             return Ok(block);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> RemoveBlock([FromBody]string studentId, [FromBody]Block block)
+        [HttpPost("removeBlock")]
+        public async Task<IActionResult> RemoveBlock([FromBody]RemoveRequestModel request)
         {
+            Block block = RemovedBlockModel.ConvertToBlock(request.RemoveBlock);
+            string studentId = request.StudentId;
+
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
@@ -101,7 +107,6 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Block {block.ToString()} does not exist in student {studentId} timetable.");
             }
-
             return Ok();
         }
     }
