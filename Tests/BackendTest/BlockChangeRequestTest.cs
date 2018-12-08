@@ -3,23 +3,24 @@ using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using MongoDB.Driver;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace BackendTest
 {
     [Collection("Database collection")]
-    public class BlockChangeRequestText : IClassFixture<Mongo2GoFixture>
+    public class BlockChangeRequestTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
 
-        public BlockChangeRequestText(Mongo2GoFixture mongoFixture)
+        public BlockChangeRequestTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
         }
 
         [Fact]
-        public async Task ExchangeRequest()
+        public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService studentSrv = new StudentService(database);
@@ -78,47 +79,49 @@ namespace BackendTest
             await studentSrv.AddAsync(student3);
 
             BlockChangeRequest blockToChange1 = new BlockChangeRequest();
+            blockToChange1.DateOfCreation = DateTime.Now;
             blockToChange1.BlockFrom = block1.Clone();
             blockToChange1.BlockTo = block2.Clone();
             blockToChange1.StudentId = student1.Id;
             await blockChangeService.AddAsync(blockToChange1);
 
             BlockChangeRequest blockToChange2 = new BlockChangeRequest();
+            blockToChange2.DateOfCreation = DateTime.Now;
             blockToChange2.BlockFrom = block1.Clone();
             blockToChange2.BlockTo = block3.Clone();
             blockToChange2.StudentId = student1.Id;
             await blockChangeService.AddAsync(blockToChange2);
 
             BlockChangeRequest blockToChange3 = new BlockChangeRequest();
+            blockToChange3.DateOfCreation = DateTime.Now;
             blockToChange3.BlockFrom = block1.Clone();
             blockToChange3.BlockTo = block2.Clone();
             blockToChange3.StudentId = student2.Id;
             await blockChangeService.AddAsync(blockToChange3);
 
             BlockChangeRequest blockToChange4 = new BlockChangeRequest();
+            blockToChange4.DateOfCreation = DateTime.Now;
             blockToChange4.BlockFrom = block1.Clone();
             blockToChange4.BlockTo = block3.Clone();
             blockToChange4.StudentId = student2.Id;
             await blockChangeService.AddAsync(blockToChange4);
 
             BlockChangeRequest blockToChange5 = new BlockChangeRequest();
+            blockToChange5.DateOfCreation = DateTime.Now;
             blockToChange5.BlockFrom = block4.Clone();
             blockToChange5.BlockTo = block2.Clone();
             blockToChange5.StudentId = student3.Id;
             await blockChangeService.AddAsync(blockToChange5);
 
             BlockChangeRequest blockToChange = new BlockChangeRequest();
+            blockToChange.DateOfCreation = DateTime.Now;
             blockToChange.BlockFrom = block2.Clone();
             blockToChange.BlockTo = block1.Clone();
             blockToChange.StudentId = student3.Id;
             await blockChangeService.AddAsync(blockToChange);
 
-            var exchange = await blockChangeService.FindExchange(blockToChange);
-            exchange.StudentId.Should().Be(student1.Id);
-
-            await blockChangeService.MakeExchangeAndDeleteRequests(exchange, blockToChange);
-
-
+            (await blockChangeService.MakeExchangeAndDeleteRequests(blockToChange)).Should().Be(true);
+            
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);

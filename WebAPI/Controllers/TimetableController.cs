@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
         {
             _logger.LogInformation($"Setting timetable for student: {body.Email}.");
-            User user = await _userService.GetUserAsync(body.Email);
+            User user = await _userService.GetUserByEmailAsync(body.Email);
             if (user == null)
             {
                 _logger.LogError($"User with email: {body.Email} does not exist.");

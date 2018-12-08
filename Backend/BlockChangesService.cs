@@ -11,12 +11,11 @@ namespace FRITeam.Swapify.Backend
 
     public class BlockChangesService : IBlockChangesService
     {
-        private readonly IMongoDatabase _database;
-        private IMongoCollection<BlockChangeRequest> _blockChangesCollection => _database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
+        private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;
 
         public BlockChangesService(IMongoDatabase database)
         {
-            _database = database;
+            _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
         public async Task AddAsync(BlockChangeRequest entityToAdd)
@@ -25,7 +24,7 @@ namespace FRITeam.Swapify.Backend
             await _blockChangesCollection.InsertOneAsync(entityToAdd);
         }
 
-        public async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
+        private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
         {
             return await _blockChangesCollection.Find(
                 x => (x.BlockTo.CourseId == blockRequest.BlockFrom.CourseId &&
@@ -37,7 +36,7 @@ namespace FRITeam.Swapify.Backend
                       x.BlockFrom.Duration == blockRequest.BlockTo.Duration &&
                       x.BlockFrom.StartHour == blockRequest.BlockTo.StartHour &&
                       x.StudentId != blockRequest.StudentId &&
-                      x.Status != ExchangeStatus.Done)).FirstOrDefaultAsync();
+                      x.Status != ExchangeStatus.Done)).SortBy(x=>x.DateOfCreation).FirstOrDefaultAsync();
         }
 
         public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
@@ -45,25 +44,34 @@ namespace FRITeam.Swapify.Backend
             return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
         }
 
-        public async Task MakeExchangeAndDeleteRequests(BlockChangeRequest from, BlockChangeRequest to)
+        public async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
-            await SetDoneStatus(from);
-            await SetDoneStatus(to);
-            await RemoveStudentRequests(from.StudentId, from.BlockFrom.CourseId);
-            await RemoveStudentRequests(to.StudentId, to.BlockFrom.CourseId);
+            var requestForExchange = await FindExchange(request);
+            if (request == null)
+            {
+                return false;
+            }
+            await SetDoneStatus(request);
+            await SetDoneStatus(requestForExchange);
+            await RemoveStudentRequests(request);
+            await RemoveStudentRequests(requestForExchange);
+            return true;
         }
 
-        private async Task RemoveStudentRequests(Guid studentId, Guid courseId)
+        private async Task RemoveStudentRequests(BlockChangeRequest request)
         {
-            await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == studentId &&
-                                                     x.BlockFrom.CourseId == courseId);
+            await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
+                                                     x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
+                                                     x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
+                                                     x.BlockFrom.Day == request.BlockFrom.Day &&
+                                                     x.BlockFrom.Duration == request.BlockFrom.Duration);
         }
 
         private async Task SetDoneStatus(BlockChangeRequest request)
         {
             if (request.Status == ExchangeStatus.Done)
             {
-                throw new ArgumentException("You cannot exchange requests which are already exchanged!");
+                await new Task(() => { throw new ArgumentException("You cannot exchange requests which are already exchanged!"); });
             }
             request.Status = ExchangeStatus.Done;
             await _blockChangesCollection.ReplaceOneAsync(x => x.Id == request.Id, request);
