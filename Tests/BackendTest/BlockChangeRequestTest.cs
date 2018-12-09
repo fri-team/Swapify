@@ -19,6 +19,7 @@ namespace BackendTest
             _mongoFixture = mongoFixture;
         }
 
+        
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
@@ -27,50 +28,15 @@ namespace BackendTest
             BlockChangesService blockChangeService = new BlockChangesService(database);
             CourseService courseService = new CourseService(database);
 
-            Course course = new Course();
-            course.CourseCode = "11111";
-            course.CourseName = "Programovanie";
-            await courseService.AddAsync(course);
+            Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
+            Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);
 
-            Course course2 = new Course();
-            course2.CourseCode = "11111";
-            course2.CourseName = "Programovanie";
-            await courseService.AddAsync(course2);
 
-            Block block1 = new Block()
-            {
-                BlockType = BlockType.Laboratory,
-                Day = Day.Monday,
-                Duration = 2,
-                StartHour = 7,
-                CourseId = course.Id
-            };
-            Block block2 = new Block()
-            {
-                BlockType = BlockType.Laboratory,
-                Day = Day.Wednesday,
-                Duration = 2,
-                StartHour = 10,
-                CourseId = course.Id
-            };
-
-            Block block3 = new Block()
-            {
-                BlockType = BlockType.Laboratory,
-                Day = Day.Tuesday,
-                Duration = 2,
-                StartHour = 15,
-                CourseId = course.Id
-            };
-
-            Block block4 = new Block()
-            {
-                BlockType = BlockType.Laboratory,
-                Day = Day.Friday,
-                Duration = 2,
-                StartHour = 18,
-                CourseId = course2.Id
-            };
+            Block block1 = CreateBlock(BlockType.Laboratory, Day.Monday, 2, 7, course.Id);
+            Block block2 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 10, course.Id);
+            Block block3 = CreateBlock(BlockType.Laboratory, Day.Tuesday, 2, 15, course.Id);
+            Block block4 = CreateBlock(BlockType.Laboratory, Day.Friday, 2, 18, course2.Id);
+            
             Student student1 = new Student();
             Student student2 = new Student();
             Student student3 = new Student();
@@ -78,52 +44,56 @@ namespace BackendTest
             await studentSrv.AddAsync(student2);
             await studentSrv.AddAsync(student3);
 
-            BlockChangeRequest blockToChange1 = new BlockChangeRequest();
-            blockToChange1.DateOfCreation = DateTime.Now;
-            blockToChange1.BlockFrom = block1.Clone();
-            blockToChange1.BlockTo = block2.Clone();
-            blockToChange1.StudentId = student1.Id;
-            await blockChangeService.AddAndFindMatch(blockToChange1);
 
-            BlockChangeRequest blockToChange2 = new BlockChangeRequest();
-            blockToChange2.DateOfCreation = DateTime.Now;
-            blockToChange2.BlockFrom = block1.Clone();
-            blockToChange2.BlockTo = block3.Clone();
-            blockToChange2.StudentId = student1.Id;
-            await blockChangeService.AddAndFindMatch(blockToChange2);
+            BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block1, block2, student1.Id);
+            BlockChangeRequest blockToChange2 = CreateBlockChangeRequest(block1, block3, student1.Id);
+            BlockChangeRequest blockToChange3 = CreateBlockChangeRequest(block1, block2, student2.Id);
+            BlockChangeRequest blockToChange4 = CreateBlockChangeRequest(block1, block3, student2.Id);
+            BlockChangeRequest blockToChange5 = CreateBlockChangeRequest(block4, block2, student3.Id);
+            BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student3.Id);
 
-            BlockChangeRequest blockToChange3 = new BlockChangeRequest();
-            blockToChange3.DateOfCreation = DateTime.Now;
-            blockToChange3.BlockFrom = block1.Clone();
-            blockToChange3.BlockTo = block2.Clone();
-            blockToChange3.StudentId = student2.Id;
-            await blockChangeService.AddAndFindMatch(blockToChange3);
-
-            BlockChangeRequest blockToChange4 = new BlockChangeRequest();
-            blockToChange4.DateOfCreation = DateTime.Now;
-            blockToChange4.BlockFrom = block1.Clone();
-            blockToChange4.BlockTo = block3.Clone();
-            blockToChange4.StudentId = student2.Id;
-            await blockChangeService.AddAndFindMatch(blockToChange4);
-
-            BlockChangeRequest blockToChange5 = new BlockChangeRequest();
-            blockToChange5.DateOfCreation = DateTime.Now;
-            blockToChange5.BlockFrom = block4.Clone();
-            blockToChange5.BlockTo = block2.Clone();
-            blockToChange5.StudentId = student3.Id;
-            await blockChangeService.AddAndFindMatch(blockToChange5);
-
-            BlockChangeRequest blockToChange = new BlockChangeRequest();
-            blockToChange.DateOfCreation = DateTime.Now;
-            blockToChange.BlockFrom = block2.Clone();
-            blockToChange.BlockTo = block1.Clone();
-            blockToChange.StudentId = student3.Id;
-            
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange2)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange3)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange4)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange5)).Should().Be(false);
             (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(true);
-            
+                                          
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
+        }
+
+        private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)
+        {
+            return new Block()
+            {
+                BlockType = blockType,
+                Day = day,
+                Duration = duration,
+                StartHour = startHour,
+                CourseId = courseId
+            };
+        }
+
+        private BlockChangeRequest CreateBlockChangeRequest(Block blockFrom, Block blockTo, Guid studentId)
+        {
+            BlockChangeRequest blockToChange = new BlockChangeRequest();
+            blockToChange.DateOfCreation = DateTime.Now;
+            blockToChange.BlockFrom = blockFrom.Clone();
+            blockToChange.BlockTo = blockTo.Clone();
+            blockToChange.StudentId = studentId;
+            return blockToChange;
+            
+        }
+
+        private async Task<Course> CreateAndAddCourse(string name, string code, CourseService service)
+        {
+            var course = new Course();
+            course.CourseName = name;
+            course.CourseCode = code;
+            await service.AddAsync(course);
+            return course;
         }
 
     }
