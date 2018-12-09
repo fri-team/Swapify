@@ -18,18 +18,24 @@ namespace FRITeam.Swapify.Backend
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
-        private async Task AddAsync(BlockChangeRequest entityToAdd)
-        {
-            entityToAdd.Id = Guid.NewGuid();
-            await _blockChangesCollection.InsertOneAsync(entityToAdd);
-        }
-        
         public async Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd)
         {
             await AddAsync(entityToAdd);
             return await MakeExchangeAndDeleteRequests(entityToAdd);
         }
 
+        public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
+        {
+            return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
+        }
+
+        private async Task AddAsync(BlockChangeRequest entityToAdd)
+        {
+            entityToAdd.Id = Guid.NewGuid();
+            await _blockChangesCollection.InsertOneAsync(entityToAdd);
+        }
+        
+ 
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
         {
             return await _blockChangesCollection.Find(
@@ -44,11 +50,7 @@ namespace FRITeam.Swapify.Backend
                       x.StudentId != blockRequest.StudentId &&
                       x.Status != ExchangeStatus.Done)).SortBy(x=>x.DateOfCreation).FirstOrDefaultAsync();
         }
-
-        public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
-        {
-            return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
-        }
+        
 
         private async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {

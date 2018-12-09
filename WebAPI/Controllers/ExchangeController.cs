@@ -23,18 +23,13 @@ namespace WebAPI.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
-        [Route("ExchangeConfirm")]
-        public async Task<IActionResult> ExchangeConfirm([FromBody]ExchangeRequest request)
+        [Route("exchangeConfirm")]
+        public async Task<IActionResult> ExchangeConfirm([FromBody]ExchangeRequestModel request)
         {
-            if (request?.BlockFrom == null || request?.BlockTo == null)
-            {
-                throw new ArgumentException("BlockFrom or BlockTo is null!");
-            }
-
+ 
             var blockChangeRequest = new BlockChangeRequest();
-            blockChangeRequest.BlockFrom = BlockForExchange.ConvertToBlock(request.BlockFrom);
-            blockChangeRequest.BlockTo = BlockForExchange.ConvertToBlock(request.BlockTo);
+            blockChangeRequest.BlockFrom = BlockForExchangeModel.ConvertToBlock(request.BlockFrom);
+            blockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
             blockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
             blockChangeRequest.DateOfCreation = DateTime.Now;
             blockChangeRequest.StudentId = Guid.Parse(request.StudentId); 
