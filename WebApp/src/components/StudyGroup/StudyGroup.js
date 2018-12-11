@@ -41,9 +41,6 @@ class StudyGroup extends React.Component {
       url: '/api/timetable/GetStudyGroupList',
       data: evt.target.value
     })
-    .then((result) => {
-      
-    })
     .catch(error => {
       alert(error.response.data.error);
     });
