@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
@@ -62,6 +63,12 @@ namespace FRITeam.Swapify.Backend
             }
 
             return group;
+        }
+
+        public virtual async Task<List<StudyGroup>> GetStudyGroupList(string studyGroupNumber)
+        {
+            var collection = _database.GetCollection<StudyGroup>(nameof(StudyGroup));
+            return await collection.Find(x => x.GroupName.StartsWith(studyGroupNumber.ToUpper())).ToListAsync();
         }
     }
 }

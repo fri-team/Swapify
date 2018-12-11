@@ -36,6 +36,18 @@ class StudyGroup extends React.Component {
 
   handleSubmit = (evt) => {
     this.setState({ group: evt.target.value });
+    axios({
+      method: 'post',
+      url: '/api/timetable/GetStudyGroupList',
+      data: evt.target.value
+    })
+    .then((result) => {
+      
+    })
+    .catch(error => {
+      alert(error.response.data.error);
+    });
+    this.setState({ group: evt.target.value });
   }
 
   canBeSubmitted = () => {
