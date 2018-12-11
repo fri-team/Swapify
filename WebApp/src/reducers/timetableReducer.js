@@ -7,7 +7,8 @@ import {
   LOAD_COURSE_TIMETABLE_DONE,
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
-  HIDE_COURSE_TIMETABLE
+  HIDE_COURSE_TIMETABLE,
+  SHOW_EXCHANGE_MODE_TIMETABLE
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -34,7 +35,8 @@ export const initState = {
   courseTimetables: {},
   displayedCourses: [],
   displayedTimetable: [],
-  addedBlocks: []
+  addedBlocks: [],
+  isExchangeMode: false,
 };
 
 export default function timetableReducer(state = initState, { type, payload }) {
@@ -91,6 +93,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
             _.concat(state.displayedCourses, payload.course)
           )
         )
+      };
+    case SHOW_EXCHANGE_MODE_TIMETABLE:
+      return {
+        ...state,
+        isExchangeMode: true,
+        displayedTimetable: _.differenceWith(state.courseTimetables[payload.course.courseName],state.myTimetable, _.isEqual)
       };
     case HIDE_COURSE_TIMETABLE:
       return {

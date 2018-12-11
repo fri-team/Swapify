@@ -14,6 +14,7 @@ namespace FRITeam.Swapify.Entities
         public Block BlockFrom { get; set; }
         public Block BlockTo { get; set; }
         public ExchangeStatus Status { get; set; }
+        public DateTime DateOfCreation { get; set; }
 
         public BlockChangeRequest()
         {
