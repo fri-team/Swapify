@@ -8,6 +8,14 @@ import {
 import Sidebar from './Sidebar';
 
 class SidebarContainer extends PureComponent {
+  state = {
+    value: 0,
+  };
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
   handleCourseToggle = (course, checked) => {
     const { dispatch } = this.props;
     if (checked) {
@@ -19,6 +27,7 @@ class SidebarContainer extends PureComponent {
 
   render() {
     const { open, onClose, myCourseNames, displayedCourses } = this.props;
+    const { value } = this.state;
     const courses = _.map(myCourseNames, course => ({
       name: course,
       checked: _.includes(displayedCourses, course)
@@ -29,6 +38,8 @@ class SidebarContainer extends PureComponent {
         onClose={onClose}
         courses={courses}
         onCourseToggle={this.handleCourseToggle}
+        handleChange={this.handleChange}
+        value={value}
       />
     );
   }
