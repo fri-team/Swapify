@@ -7,9 +7,7 @@ namespace WebAPI.Models.RemoveBlockModels
     {
         [Required(ErrorMessage = "StudentID je povinné.")]
         public string StudentId { get; set; }
-        
-        public RemovedBlockModel RemoveBlock { get; set; }
 
-        public RemoveRequestModel() { }
+        public RemovedBlockModel RemoveBlock { get; set; }
     }
 }
