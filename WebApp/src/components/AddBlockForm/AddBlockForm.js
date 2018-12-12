@@ -130,14 +130,10 @@ class AddBlockForm extends PureComponent {
         method: 'get',
         url: '/api/timetable/course/getCoursesAutoComplete/' + evt.target.value
       })
-      .then((result) => {
-        console.log(result);
+      .then(() => {
       })
       .catch(() => {
-        console.log("error");
       });
-    } else {
-      console.log("nevislo");
     }
   }
 
