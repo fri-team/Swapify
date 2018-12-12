@@ -149,17 +149,17 @@ export function exchangeConfirm(blockTo) {
     const body = {
       BlockFrom:
       {
-        "CourseId": bl.courseId,
-        "Day": bl.day,
-        "StartHour": bl.startBlock,
-        "Duration": bl.endBlock - bl.startBlock
+        courseId: bl.courseId,
+        day: bl.day,
+        startHour: bl.startBlock,
+        duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
-        "CourseId": blockTo.courseId,
-        "Day": blockTo.day,
-        "StartHour": blockTo.startBlock,
-        "Duration": blockTo.endBlock - blockTo.startBlock
+        courseId: blockTo.courseId,
+        day: blockTo.day,
+        startHour: blockTo.startBlock,
+        duration: blockTo.endBlock - blockTo.startBlock
       },
       //TODO: add real studentID
       StudentId: "00000000-0000-0000-0000-000000000000"
