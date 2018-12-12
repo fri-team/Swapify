@@ -125,6 +125,20 @@ class AddBlockForm extends PureComponent {
 
   handleCourse = (evt) => {
     this.setState({ CourseName: evt.target.value });
+    if (this.state.CourseName.length > 2) {
+      axios({
+        method: 'get',
+        url: '/api/timetable/course/getCoursesAutoComplete/' + evt.target.value
+      })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch(() => {
+        console.log("error");
+      });
+    } else {
+      console.log("nevislo");
+    }
   }
 
   handleTeacher = (evt) => {

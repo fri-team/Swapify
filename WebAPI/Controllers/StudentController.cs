@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewBlock([FromBody]User user, [FromBody]Block newBlock)
         {
-            var _user = await _userService.GetUserAsync(user.Email);
+            var _user = await _userService.GetUserByEmailAsync(user.Email);
 
             var student = _user.Student;
 

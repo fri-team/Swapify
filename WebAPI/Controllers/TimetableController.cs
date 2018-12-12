@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
         {
             StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber, _courseService, _proxy);
-            User user = await _userService.GetUserAsync(body.user.Email);
+            User user = await _userService.GetUserByEmailAsync(body.user.Email);
             if (sg == null)
             {
                 return ErrorResponse($"Study group with number: {body.GroupNumber} does not exist.");
@@ -55,6 +55,12 @@ namespace WebAPI.Controllers
 
             await _studentService.UpdateStudentTimetableAsync(student, sg);
             return Ok(student.Timetable);
+        }
+
+        [HttpGet("course/getCoursesAutoComplete/{courseStartsWith}")]
+        public IActionResult GetCoursesAutoComplete(string courseStartsWith)
+        {
+            return Ok(_courseService.FindByStartName(courseStartsWith)); 
         }
 
         [HttpGet("course/{courseId}")]
