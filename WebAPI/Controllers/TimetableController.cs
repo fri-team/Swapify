@@ -62,13 +62,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("GetStudyGroupListAsync")]
-        public async Task<List<StudyGroup>> GetStudyGroupList([FromBody] string studyGroupNumber)
-        {
-            List<StudyGroup> studyGroups = await _groupService.GetStudyGroupList(studyGroupNumber);
-            return studyGroups;
-        }
-
         [HttpGet("course/{courseId}")]
         public IActionResult GetCourseTimetable(string courseId)
         {
