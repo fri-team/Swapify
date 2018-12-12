@@ -14,11 +14,6 @@ namespace FRITeam.Swapify.Backend.Settings
         public int? MaxFailedAccessAttempts { get; set; }
         public bool? RequireUniqueEmail { get; set; }
 
-        public IdentitySettings()
-        {
-
-        }
-
         public override void Validate()
         {
             foreach (PropertyInfo info in typeof(IdentitySettings).GetProperties())
@@ -26,8 +21,6 @@ namespace FRITeam.Swapify.Backend.Settings
                 if (info.GetValue(this, null) == null)
                     Errors.AppendLine($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
             }
-
-            CheckErrors("appsettings.json");
         }
     }
 }

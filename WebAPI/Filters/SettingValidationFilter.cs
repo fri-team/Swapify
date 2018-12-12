@@ -1,3 +1,4 @@
+using FRITeam.Swapify.Backend.Exceptions;
 using FRITeam.Swapify.Backend.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +20,8 @@ namespace WebAPI.Filters
             foreach (var validatableObject in _validatableObjects)
             {
                 validatableObject.Validate();
+                if (validatableObject.Errors.Length != 0)                
+                    throw new SettingException(validatableObject.ConfigFileName, validatableObject.Errors.ToString());                
             }
 
             //don't alter the configuration
