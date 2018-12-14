@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             blockChangeRequest.StudentId = Guid.Parse(request.StudentId); 
 
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
-            return Json(res);
+            return Ok(res);
         }
     }
 }
