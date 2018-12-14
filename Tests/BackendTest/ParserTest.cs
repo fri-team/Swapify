@@ -29,47 +29,37 @@ namespace BackendTest
                 {
                 'report': null,
                 'ScheduleContent': [
-                    [
                         {
-                            'b': 0,
-                            't': '',
-                            'u': '',
-                            'r': '',
-                            's': '',
-                            'k': '',
-                            'g': '',
-                            'p': ''
+                            'b': '1',
+                            'tu': 'P',
+                            'u': 'Jan Janech',
+                            'r': 'RA045',
+                            's': 'Metaprogramovanie',
+                            'k': '1181S',
+                            'dw':'1'
                         },
                         {
-                            'b': 0,
-                            't': 'L',
+                            'b': '2',
+                            'tu': 'L',
                             'u': 'Ida Stankovianska',
                             'r': 'RB053',
-                            's': null,
-                            'k': 'pravdepodobnosť a štatistika',
-                            'g': '5ZK011, 5ZZS11, 5ZZS12, 5ZZS13, 5ZZS14',
-                            'p': '1'
+                            's': 'pravdepodobnosť a štatistika',
+                            'k': '11BA31',
+                            'dw': '3'
                         }
-                    ]   
                     ]
                 }";
 
             var parsed = ResponseParser.ParseResponse(input);
 
-            parsed.DaysInWeek[0].BlocksInDay[0].Should().BeNull();
-            parsed.DaysInWeek[0].BlocksInDay[1].BlockNumber.Should().Be(2);
-            parsed.DaysInWeek[0].BlocksInDay[1].IsBlocked.Should().Be(false);
-            parsed.DaysInWeek[0].BlocksInDay[1].LessonType.Should().Be(LessonType.Laboratory);
-            parsed.DaysInWeek[0].BlocksInDay[1].RoomName.Should().Be("RB053");
-            parsed.DaysInWeek[0].BlocksInDay[1].CourseName.Should().Be("pravdepodobnosť a štatistika");
-            parsed.DaysInWeek[0].BlocksInDay[1].CourseShortcut.Should().Be("");
-            parsed.DaysInWeek[0].BlocksInDay[1].SubjectType.Should().Be(SubjectType.Compulsory);
-            parsed.DaysInWeek[0].BlocksInDay[1].TeacherName.Should().Be("Ida Stankovianska");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZK011");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS11");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS12");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS13");
-            parsed.DaysInWeek[0].BlocksInDay[1].StudyGroups.Should().Contain("5ZZS14");
+            parsed.DaysInWeek[0].BlocksInDay[0].LessonType.Should().Be(LessonType.Lecture);
+
+            parsed.DaysInWeek[2].BlocksInDay[0].BlockNumber.Should().Be(2);
+            parsed.DaysInWeek[2].BlocksInDay[0].LessonType.Should().Be(LessonType.Laboratory);
+            parsed.DaysInWeek[2].BlocksInDay[0].RoomName.Should().Be("RB053");
+            parsed.DaysInWeek[2].BlocksInDay[0].CourseName.Should().Be("pravdepodobnosť a štatistika");
+            parsed.DaysInWeek[2].BlocksInDay[0].CourseShortcut.Should().Be("11BA31");
+            parsed.DaysInWeek[2].BlocksInDay[0].TeacherName.Should().Be("Ida Stankovianska");
         }
     }
 }
