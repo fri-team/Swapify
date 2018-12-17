@@ -19,7 +19,6 @@ namespace BackendTest
             _mongoFixture = mongoFixture;
         }
 
-        
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
@@ -36,14 +35,13 @@ namespace BackendTest
             Block block2 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 10, course.Id);
             Block block3 = CreateBlock(BlockType.Laboratory, Day.Tuesday, 2, 15, course.Id);
             Block block4 = CreateBlock(BlockType.Laboratory, Day.Friday, 2, 18, course2.Id);
-            
+
             Student student1 = new Student();
             Student student2 = new Student();
             Student student3 = new Student();
             await studentSrv.AddAsync(student1);
             await studentSrv.AddAsync(student2);
             await studentSrv.AddAsync(student3);
-
 
             BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block1, block2, student1.Id);
             BlockChangeRequest blockToChange2 = CreateBlockChangeRequest(block1, block3, student1.Id);
@@ -58,7 +56,7 @@ namespace BackendTest
             (await blockChangeService.AddAndFindMatch(blockToChange4)).Should().Be(false);
             (await blockChangeService.AddAndFindMatch(blockToChange5)).Should().Be(false);
             (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(true);
-                                          
+
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
@@ -84,7 +82,7 @@ namespace BackendTest
             blockToChange.BlockTo = blockTo.Clone();
             blockToChange.StudentId = studentId;
             return blockToChange;
-            
+
         }
 
         private async Task<Course> CreateAndAddCourse(string name, string code, CourseService service)
@@ -95,6 +93,5 @@ namespace BackendTest
             await service.AddAsync(course);
             return course;
         }
-
     }
 }

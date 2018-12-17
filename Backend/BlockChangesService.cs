@@ -34,8 +34,7 @@ namespace FRITeam.Swapify.Backend
             entityToAdd.Id = Guid.NewGuid();
             await _blockChangesCollection.InsertOneAsync(entityToAdd);
         }
-        
- 
+
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
         {
             return await _blockChangesCollection.Find(
@@ -48,9 +47,8 @@ namespace FRITeam.Swapify.Backend
                       x.BlockFrom.Duration == blockRequest.BlockTo.Duration &&
                       x.BlockFrom.StartHour == blockRequest.BlockTo.StartHour &&
                       x.StudentId != blockRequest.StudentId &&
-                      x.Status != ExchangeStatus.Done)).SortBy(x=>x.DateOfCreation).FirstOrDefaultAsync();
+                      x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
-        
 
         private async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
@@ -84,6 +82,5 @@ namespace FRITeam.Swapify.Backend
             request.Status = ExchangeStatus.Done;
             await _blockChangesCollection.ReplaceOneAsync(x => x.Id == request.Id, request);
         }
-
     }
 }

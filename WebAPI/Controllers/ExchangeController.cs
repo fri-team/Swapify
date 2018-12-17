@@ -21,18 +21,16 @@ namespace WebAPI.Controllers
             _blockChangesService = blockChangeService;
         }
 
-
         [HttpPost]
         [Route("exchangeConfirm")]
         public async Task<IActionResult> ExchangeConfirm([FromBody]ExchangeRequestModel request)
         {
- 
             var blockChangeRequest = new BlockChangeRequest();
             blockChangeRequest.BlockFrom = BlockForExchangeModel.ConvertToBlock(request.BlockFrom);
             blockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
             blockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
             blockChangeRequest.DateOfCreation = DateTime.Now;
-            blockChangeRequest.StudentId = Guid.Parse(request.StudentId); 
+            blockChangeRequest.StudentId = Guid.Parse(request.StudentId);
 
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             return Ok(res);
