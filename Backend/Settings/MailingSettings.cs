@@ -27,10 +27,8 @@ namespace FRITeam.Swapify.Backend.Settings
                 Errors.AppendLine($"Setting {nameof(SmtpPort)} is missing in {nameof(MailingSettings)} configuration section.");
 
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            if(!regex.IsMatch(Username))
+            if (!regex.IsMatch(Username))
                 Errors.AppendLine($"{Username} is not valid email address.");
-
-            CheckErrors("appsettings.json");
         }
     }
 }

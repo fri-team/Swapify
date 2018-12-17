@@ -27,41 +27,33 @@ namespace FRITeam.Swapify.APIWrapper
             }
 
             var scheduleContent = (JArray)response["ScheduleContent"];
-            var parsedResponse = new ScheduleWeekContent();
-            foreach (var blocks in scheduleContent)
-            {
-                var blockNumber = 1;
-                var daySchedule = new ScheduleDayContent();
-                foreach (var b in blocks)
-                {
-                    ScheduleHourContent sc = null;
-                    try
-                    {
-                        if (!string.IsNullOrWhiteSpace(b["t"].ToString()) && !string.IsNullOrWhiteSpace(b["p"].ToString()))
-                        {
-                            bool isBlocked = Convert.ToBoolean(int.Parse(b["b"].ToString()));
-                            LessonType lessonType = ConvertLessonType(b["t"].ToString()[0]);
-                            string teacherName = b["u"].ToString();
-                            string roomName = b["r"].ToString();
-                            string subjectShortcut = b["s"].ToString();
-                            string subjectName = b["k"].ToString();
-                            List<string> studyGroups = b["g"].ToString().Split(',').Select(x => x.Trim()).ToList();
-                            SubjectType subjectType = (SubjectType)Convert.ToInt32(b["p"].ToString());
-                            sc = new ScheduleHourContent(blockNumber, isBlocked, lessonType, teacherName, roomName, subjectShortcut, subjectName, subjectType, studyGroups);
-                        }
-                        blockNumber++;
-                        daySchedule.BlocksInDay.Add(sc);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex);
-                        throw ex;
-                    }
 
+            var weekTimetable = ScheduleWeekContent.Build();
+
+            foreach (var block in scheduleContent)
+            {
+                try
+                {
+                    {
+                        LessonType lessonType = ConvertLessonType(block["tu"].ToString()[0]);
+                        string teacherName = block["u"].ToString();
+                        string roomName = block["r"].ToString();
+                        string subjectShortcut = block["k"].ToString();
+                        string subjectName = block["s"].ToString();
+                        var sc = new ScheduleHourContent(int.Parse(block["b"].ToString()), false,
+                                                         lessonType, teacherName, roomName, subjectShortcut,
+                                                         subjectName, SubjectType.None, new List<string>());
+                        //-1 because API count day 1,2,3,4,5 and we store days at indexes 0,1,2,3,4
+                        weekTimetable.DaysInWeek[int.Parse(block["dw"].ToString()) - 1].BlocksInDay.Add(sc);
+                    }
                 }
-                parsedResponse.DaysInWeek.Add(daySchedule);
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    throw;
+                }
             }
-            return parsedResponse;
+            return weekTimetable;
         }
 
         private static LessonType ConvertLessonType(char lessonShortcutType)
