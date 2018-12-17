@@ -133,27 +133,23 @@ export function hideCourseTimetable(course) {
 
 export function removeBlock(course) {
   const block = {
-    Day: course.day,
-    Teacher: course.teacher,
-    Room: course.room,
-    StartHour: course.startBlock + 6,
-    Duration: course.endBlock - course.startBlock,
-    Type: ((course.type == 'laboratory') ? (2) : (3))
+    day: course.day,
+    teacher: course.teacher,
+    room: course.room,
+    startHour: course.startBlock + 6,
+    duration: course.endBlock - course.startBlock,
+    type: ((course.type == 'laboratory') ? (2) : (3))
   }
 
-  const body = {
-    studentId: "00000000-0000-0000-0000-000000000000",
-    removeBlock: block
-  }
+  const studentId = '00000000-0000-0000-0000-000000000000';
   
   return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
     });
     axios({
-      method: 'post',
-      url: '/api/student/removeblock',
-      data: body
+      method: 'delete',
+      url: `/api/student/${studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
     })
     .then(() =>{
       dispatch({
@@ -161,9 +157,10 @@ export function removeBlock(course) {
       });
     })
     .catch(() => {
+      window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');
       dispatch({
         type: REMOVE_BLOCK_FAIL
       });
     });
   }; 
-}
+} 

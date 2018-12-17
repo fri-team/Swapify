@@ -3,9 +3,8 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
-using WebAPI.Models.RemoveBlockModel;
-using WebAPI.Models.RemoveBlockModels;
 
 namespace WebAPI.Controllers
 {
@@ -73,11 +72,16 @@ namespace WebAPI.Controllers
             return Ok(block);
         }
         
-        [HttpPost("removeBlock")]
-        public async Task<IActionResult> RemoveBlock([FromBody]RemoveRequestModel request)
+        [HttpDelete("{studentId}/blocks/{day}/{teacher}/{room}/{startHour}/{duration}/{type}")]
+        public async Task<IActionResult> RemoveBlock(string studentId,
+                                                     Day day,
+                                                     string teacher,
+                                                     string room,
+                                                     byte startHour,
+                                                     byte duration,
+                                                     BlockType type)
         {
-            Block block = RemovedBlockModel.ConvertToBlock(request.RemoveBlock);
-            string studentId = request.StudentId;
+            Block block = new Block(type, day, startHour, duration, room, teacher);
 
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
