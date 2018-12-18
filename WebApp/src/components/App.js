@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { onlyAuth, onlyNotAuth } from '../util/auth';
-import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, STUDYGROUP, TIMETABLE, FORGOTPASSWORD, SETNEWPASSWORD } from '../util/routes';
+import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, FORGOTPASSWORD, SETNEWPASSWORD, STUDYGROUP } from '../util/routes';
+
 import {
   HomePage,
   RegisterPage,
   ConfirmEmailPage,
   LoginPage,
   TimetablePage,
-  StudyGroup,
   NotFoundPage,
   ForgotPasswordPage,
   SetNewPasswordPage,
+  StudyGroup
 } from './';
 
 // This is a class-based component because the current version of hot reloading

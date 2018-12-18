@@ -9,7 +9,7 @@ using System.Text;
 
 namespace FRITeam.Swapify.APIWrapper
 {
-    public class ResponseParser
+    public static class ResponseParser
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

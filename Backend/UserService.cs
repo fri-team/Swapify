@@ -113,5 +113,10 @@ namespace FRITeam.Swapify.Backend
             var token = (JwtSecurityToken)tokenHandler.CreateToken(tokenDescriptor);
             return token;
         }
+
+        public async Task<IdentityResult> UpdateUserAsync(User userToUpdate)
+        {
+            return await _userManager.UpdateAsync(userToUpdate);
+        }
     }
 }

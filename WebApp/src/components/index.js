@@ -37,7 +37,7 @@ export {
   TimetablePage,
   AddBlockForm,
   StudyGroup,
-  Toolbar,  
+  Toolbar,
   ForgotPasswordPage,
   SetNewPasswordPage
 };
