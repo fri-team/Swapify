@@ -23,7 +23,7 @@ namespace FRITeam.Swapify.APIWrapper
             {
                 var ex = new ArgumentException(report);
                 _logger.Error(ex);
-                return null;
+                throw ex;
             }
 
             var scheduleContent = (JArray)response["ScheduleContent"];
