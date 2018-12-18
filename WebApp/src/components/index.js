@@ -15,8 +15,9 @@ import Root from './Root';
 import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
-import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
+import AddBlockForm from './AddBlockForm/AddBlockForm';
 import StudyGroup from './StudyGroup/StudyGroup';
+import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 
 export {
   App,
@@ -34,6 +35,8 @@ export {
   Root,
   Timetable,
   TimetablePage,
+  AddBlockForm,
+  StudyGroup,
   Toolbar,  
   ForgotPasswordPage,
   SetNewPasswordPage,

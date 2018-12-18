@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
@@ -30,6 +31,11 @@ namespace FRITeam.Swapify.Backend
         public async Task<Course> FindByNameAsync(string name)
         {
             return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
+        }
+
+        public Task<List<Course>> FindByStartName(string courseStartsWith)
+        {
+            return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
         }
 
         /// <summary>
