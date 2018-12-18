@@ -9,7 +9,9 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  SHOW_EXCHANGE_MODE_TIMETABLE
+  SHOW_EXCHANGE_MODE_TIMETABLE,
+  CONFIRM_EXCHANGE_REQUEST,
+  CANCEL_EXCHANGE_MODE
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -125,5 +127,56 @@ export function hideCourseTimetable(course) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { course }
+  };
+}
+
+export function cancelExchangeMode(){
+  return {
+    type: CANCEL_EXCHANGE_MODE
+  };
+}
+
+
+export function exchangeConfirm(blockTo) {
+  var action = {
+    type: CONFIRM_EXCHANGE_REQUEST,
+    payload: { blockTo }
+  };
+
+  return (dispatch, getState) => {
+    const { timetable } = getState();
+    var bl = timetable.blockFromExchange;
+    const body = {
+      BlockFrom:
+      {
+        courseId: bl.courseId,
+        day: bl.day,
+        startHour: bl.startBlock,
+        duration: bl.endBlock - bl.startBlock
+      },
+
+      BlockTo: {
+        courseId: blockTo.courseId,
+        day: blockTo.day,
+        startHour: blockTo.startBlock,
+        duration: blockTo.endBlock - blockTo.startBlock
+      },
+      //TODO: add real studentID
+      StudentId: "00000000-0000-0000-0000-000000000000"
+    }
+
+    axios({
+      method: 'post',
+      url: `/api/exchange/ExchangeConfirm`,
+      data: body
+    })
+      .then(() => {
+        dispatch(action);
+      })
+      .catch(() => {
+        dispatch({
+          type: CANCEL_EXCHANGE_MODE
+        });
+      });
   };
 }
