@@ -13,7 +13,6 @@ import {
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
-  SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE
 } from '../constants/actionTypes';
@@ -131,7 +130,7 @@ export function hideCourseTimetable(course) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { course }
-  };  
+  };
 }
 
 export function cancelExchangeMode(){
@@ -196,7 +195,7 @@ export function removeBlock(course) {
   }
 
   const studentId = '00000000-0000-0000-0000-000000000000';
-  
+
   return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
@@ -216,5 +215,5 @@ export function removeBlock(course) {
         type: REMOVE_BLOCK_FAIL
       });
     });
-  }; 
-} 
+  };
+}
