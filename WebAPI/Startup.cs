@@ -66,6 +66,7 @@ namespace WebAPI
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IBlockChangesService, BlockChangesService>();
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
