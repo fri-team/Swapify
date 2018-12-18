@@ -8,10 +8,12 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  SHOW_EXCHANGE_MODE_TIMETABLE,
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
-  REMOVE_BLOCK_FAIL
+  REMOVE_BLOCK_FAIL,
+  SHOW_EXCHANGE_MODE_TIMETABLE,
+  CONFIRM_EXCHANGE_REQUEST,
+  CANCEL_EXCHANGE_MODE
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -40,6 +42,7 @@ export const initState = {
   displayedTimetable: [],
   isExchangeMode: false,
   isBlockRemoved: false,
+  blockFromExchange: null,
 };
 
 export default function timetableReducer(state = initState, { type, payload }) {
@@ -101,8 +104,29 @@ export default function timetableReducer(state = initState, { type, payload }) {
       return {
         ...state,
         isExchangeMode: true,
-        displayedTimetable: _.differenceWith(state.courseTimetables[payload.course.courseName],state.myTimetable, _.isEqual)
+        displayedTimetable: _.differenceWith(state.courseTimetables[payload.course.courseName], state.myTimetable, _.isEqual),
+        blockFromExchange: payload.course
       };
+    case CANCEL_EXCHANGE_MODE:
+      return {
+        ...state,
+        isExchangeMode: false,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses)
+        ),
+        courseToExchange: null
+      }
+    case CONFIRM_EXCHANGE_REQUEST:
+      return {
+        ...state,
+        isExchangeMode: false,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses)
+        ),
+        courseToExchange: null
+      }
     case HIDE_COURSE_TIMETABLE:
       return {
         ...state,

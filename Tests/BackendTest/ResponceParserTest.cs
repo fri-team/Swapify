@@ -23,7 +23,7 @@ namespace BackendTest
         }
 
         [Fact]
-        public void ParseResponce_ParseEmptyAndCorrectBlock()
+        public void ParseResponce_ParseCorrectBlocks()
         {
             var input = @"
                 {

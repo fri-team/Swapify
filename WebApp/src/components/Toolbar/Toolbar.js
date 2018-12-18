@@ -9,6 +9,9 @@ import { logout } from '../../actions/userActions';
 import UserAvatar from './UserAvatar';
 import Menu from './Menu';
 import { PullRight } from './shared';
+import { Button } from '@material-ui/core';
+import { bindActionCreators } from 'redux';
+import * as timetableActions from '../../actions/timetableActions';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -25,6 +28,11 @@ class AppToolbar extends PureComponent {
   handleLogout = () => this.props.dispatch(logout());
 
   render() {
+    let button;
+    if (this.props.timetable.isExchangeMode){
+     button = <Button variant="contained" color="default" onClick={() => this.props.timetableActions.cancelExchangeMode()}>Späť na rozvrh</Button>
+    }
+
     const { user, toggleSidebar } = this.props;
     return (
       <ToolbarWrapper>
@@ -39,6 +47,7 @@ class AppToolbar extends PureComponent {
             </IconButton>
             <IconTray>
               <PullRight />
+              {button}
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
@@ -61,6 +70,15 @@ class AppToolbar extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({ user: state.user });
 
-export default connect(mapStateToProps)(AppToolbar);
+const mapStateToProps = (state) => ({
+  user: state.user,
+  timetable: state.timetable
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  timetableActions: bindActionCreators(timetableActions, dispatch),
+});
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(AppToolbar);
