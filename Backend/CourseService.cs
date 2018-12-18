@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
@@ -32,6 +33,11 @@ namespace FRITeam.Swapify.Backend
             return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
         }
 
+        public Task<List<Course>> FindByStartName(string courseStartsWith)
+        {
+            return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
+        }
+
         /// <summary>
         /// If course with "courseName" exists function return ID, if course doesnt exist fuction
         /// save this course and return id of saved course.
@@ -48,6 +54,10 @@ namespace FRITeam.Swapify.Backend
             }
             else
             {
+                if (course.Timetable == null)
+                {
+                    course.Timetable = new Timetable();
+                }
                 if (!course.Timetable.ContainsBlock(courseBlock))
                 {
                     //if course exists but doesnt contain this block

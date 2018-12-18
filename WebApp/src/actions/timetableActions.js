@@ -11,7 +11,8 @@ import {
   HIDE_COURSE_TIMETABLE,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
-  CANCEL_EXCHANGE_MODE
+  CANCEL_EXCHANGE_MODE,
+  ADD_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -178,5 +179,12 @@ export function exchangeConfirm(blockTo) {
           type: CANCEL_EXCHANGE_MODE
         });
       });
+  };
+}
+
+export function addBlock(block) {
+  return {
+    type: ADD_BLOCK,
+    payload: { block }
   };
 }

@@ -6,6 +6,7 @@ using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models.TimetableModels;
+using WebAPI.Models.UserModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
 namespace WebAPI.Controllers
@@ -17,30 +18,49 @@ namespace WebAPI.Controllers
         private readonly ICourseService _courseService;
         private readonly ISchoolScheduleProxy _proxy;
         private readonly IStudentService _studentService;
+        private readonly IUserService _userService;
 
         public TimetableController(IStudyGroupService groupService,
                                    ICourseService courseService,
                                    ISchoolScheduleProxy proxy,
-                                   IStudentService studentService
+                                   IStudentService studentService,
+                                   IUserService userService
                                    )
         {
             _groupService = groupService;
             _courseService = courseService;
             _proxy = proxy;
             _studentService = studentService;
+            _userService = userService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetStudentTimetableFromGroup(string studyGroupNumber, Student student)
+        public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
         {
-            StudyGroup sg = await _groupService.GetStudyGroupAsync(studyGroupNumber, _courseService, _proxy);
-            if (sg == null || student == null)
+            StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber, _courseService, _proxy);
+            User user = await _userService.GetUserByEmailAsync(body.user.Email);
+            if (sg == null)
             {
-                return ErrorResponse($"Study group with number: {studyGroupNumber} does not exist.");
+                return ErrorResponse($"Study group with number: {body.GroupNumber} does not exist.");
             }
+            if (user == null)
+            {
+                return ErrorResponse($"User with email: {body.user.Email} does not exist.");
+            }
+            Student student = new Student();
+            student.StudyGroupId = sg.Id;
+            student.Timetable = sg.Timetable;
+            
+            user.Student = student;
 
             await _studentService.UpdateStudentTimetableAsync(student, sg);
             return Ok(student.Timetable);
+        }
+
+        [HttpGet("course/getCoursesAutoComplete/{courseStartsWith}")]
+        public IActionResult GetCoursesAutoComplete(string courseStartsWith)
+        {
+            return Ok(_courseService.FindByStartName(courseStartsWith)); 
         }
 
         [HttpGet("course/{courseId}")]
