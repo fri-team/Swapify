@@ -12,6 +12,7 @@ const TimetableBlock = (props) => {
     ...props.style,
     backgroundColor,
     color,
+    zIndex: '2',
   };
   const icon = props.type === 'lecture' ? <Lecture fill={myStyle.color} /> : <Laboratory fill={myStyle.color} />;
   return (

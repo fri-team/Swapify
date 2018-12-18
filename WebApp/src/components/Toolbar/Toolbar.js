@@ -12,6 +12,8 @@ import { PullRight } from './shared';
 import { Button } from '@material-ui/core';
 import { bindActionCreators } from 'redux';
 import * as timetableActions from '../../actions/timetableActions';
+import { withRouter } from 'react-router-dom';
+import { STUDYGROUP } from '../../util/routes'
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -27,6 +29,8 @@ class AppToolbar extends PureComponent {
 
   handleLogout = () => this.props.dispatch(logout());
 
+  changeGroup = () => this.props.history.push(STUDYGROUP);
+
   render() {
     let button;
     if (this.props.timetable.isExchangeMode){
@@ -36,7 +40,7 @@ class AppToolbar extends PureComponent {
     const { user, toggleSidebar } = this.props;
     return (
       <ToolbarWrapper>
-        <AppBar position="static">
+        <AppBar position="static">`
           <Toolbar>
             <IconButton
               color="inherit"
@@ -58,6 +62,7 @@ class AppToolbar extends PureComponent {
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
+                  selectStudyGroup={this.changeGroup}
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                 />
@@ -81,4 +86,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(AppToolbar);
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(AppToolbar));

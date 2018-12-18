@@ -40,6 +40,7 @@ export const initState = {
   courseTimetables: {},
   displayedCourses: [],
   displayedTimetable: [],
+  addedBlocks: [],
   isExchangeMode: false,
   isBlockRemoved: false,
   blockFromExchange: null,

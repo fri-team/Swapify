@@ -14,7 +14,8 @@ import {
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
   CONFIRM_EXCHANGE_REQUEST,
-  CANCEL_EXCHANGE_MODE
+  CANCEL_EXCHANGE_MODE,
+  ADD_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
