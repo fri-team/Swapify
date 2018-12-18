@@ -218,3 +218,10 @@ export function removeBlock(course) {
     });
   };
 }
+
+export function addBlock(block) {
+  return {
+    type: ADD_BLOCK,
+    payload: { block }
+  };
+}
