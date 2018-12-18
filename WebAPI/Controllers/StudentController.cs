@@ -3,6 +3,7 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
@@ -45,10 +46,10 @@ namespace WebAPI.Controllers
             return Ok(student.Timetable);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNewBlock([FromBody]User user, [FromBody]Block newBlock)
+        [HttpPost("addNewBlock")]
+        public async Task<IActionResult> AddNewBlock([FromBody]AddNewBlockModel newBlockModel)
         {
-            var _user = await _userService.GetUserByEmailAsync(user.Email);
+            var _user = await _userService.GetUserByEmailAsync(newBlockModel.User.Email);
 
             var student = _user.Student;
 
@@ -62,10 +63,10 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            student.Timetable.AddNewBlock(newBlock);
+            student.Timetable.AddNewBlock(newBlockModel.Block);
             await _studentService.UpdateStudentAsync(student);
             //return block with new id 
-            return Ok(newBlock);
+            return Ok(newBlockModel.Block);
         }
 
 

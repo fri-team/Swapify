@@ -11,6 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
+import { TIMETABLE } from '../../util/routes';
 
 const MenuWrapper = styled.div`
   position: absolute;
@@ -108,17 +109,17 @@ class AddBlockForm extends PureComponent {
     }
     const body = {
       user: this.state.user,
-      newBlock: block
+      block: block
     }
     
     
     axios({
       method: 'post',
-      url: '/api/student',
+      url: '/api/student/addNewBlock',
       data: body
     })
       .then(() => {
-        //this.props.history.push(TIMETABLE);
+        this.props.history.push(TIMETABLE);
       });
     
   }
