@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Entities.Enums;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
