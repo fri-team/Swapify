@@ -3,7 +3,7 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Entities.Enums;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
@@ -69,18 +69,10 @@ namespace WebAPI.Controllers
             return Ok(newBlockModel.Block);
         }
 
-        
-        [HttpDelete("{studentId}/blocks/{day}/{teacher}/{room}/{startHour}/{duration}/{type}")]
-        public async Task<IActionResult> RemoveBlock(string studentId,
-                                                     Day day,
-                                                     string teacher,
-                                                     string room,
-                                                     byte startHour,
-                                                     byte duration,
-                                                     BlockType type)
-        {
-            Block block = new Block(type, day, startHour, duration, room, teacher);
 
+        [HttpPost("addblock")]
+        public async Task<IActionResult> RemoveBlock([FromBody]string studentId, [FromBody]Block block)
+        {
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
@@ -108,6 +100,7 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Block {block.ToString()} does not exist in student {studentId} timetable.");
             }
+
             return Ok();
         }
     }

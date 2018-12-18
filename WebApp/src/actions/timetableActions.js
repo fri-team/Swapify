@@ -10,9 +10,6 @@ import {
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
   SHOW_EXCHANGE_MODE_TIMETABLE,
-  REMOVE_BLOCK,
-  REMOVE_BLOCK_DONE,
-  REMOVE_BLOCK_FAIL,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK
@@ -185,36 +182,9 @@ export function exchangeConfirm(blockTo) {
   };
 }
 
-export function removeBlock(course) {
-  const block = {
-    day: course.day,
-    teacher: course.teacher,
-    room: course.room,
-    startHour: course.startBlock + 6,
-    duration: course.endBlock - course.startBlock,
-    type: ((course.type == 'laboratory') ? (2) : (3))
-  }
-
-  const studentId = '00000000-0000-0000-0000-000000000000';
-
-  return dispatch => {
-    dispatch({
-      type: REMOVE_BLOCK
-    });
-    axios({
-      method: 'delete',
-      url: `/api/student/${studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
-    })
-    .then(() =>{
-      dispatch({
-        type: REMOVE_BLOCK_DONE
-      });
-    })
-    .catch(() => {
-      window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');
-      dispatch({
-        type: REMOVE_BLOCK_FAIL
-      });
-    });
+export function addBlock(block) {
+  return {
+    type: ADD_BLOCK,
+    payload: { block }
   };
 }

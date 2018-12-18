@@ -8,9 +8,6 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  REMOVE_BLOCK,
-  REMOVE_BLOCK_DONE,
-  REMOVE_BLOCK_FAIL,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE
@@ -42,7 +39,6 @@ export const initState = {
   displayedTimetable: [],
   addedBlocks: [],
   isExchangeMode: false,
-  isBlockRemoved: false,
   blockFromExchange: null,
 };
 
@@ -140,33 +136,6 @@ export default function timetableReducer(state = initState, { type, payload }) {
           )
         )
       };
-    case REMOVE_BLOCK:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses)
-      ),
-      isBlockRemoved: false
-    };
-    case REMOVE_BLOCK_DONE:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses)
-      ),
-      isBlockRemoved: true
-    };
-    case REMOVE_BLOCK_FAIL:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses)
-      ),
-      isBlockRemoved: false
-    };
     default:
       return state;
   }

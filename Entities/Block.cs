@@ -13,18 +13,6 @@ namespace FRITeam.Swapify.Entities
         public string Room { get; set; }
         public string Teacher { get; set; }
 
-        public Block() { }
-
-        public Block(BlockType type, Day day, byte startHour, byte duration, string room, string teacher)
-        {
-            BlockType = type;
-            Day = day;
-            StartHour = startHour;
-            Duration = duration;
-            Room = room;
-            Teacher = teacher;
-        }
-
         /// <summary>
         /// Doesnt compare course ID
         /// </summary>
