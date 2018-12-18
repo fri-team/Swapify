@@ -11,10 +11,8 @@ import {
   HIDE_COURSE_TIMETABLE,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
-  CANCEL_EXCHANGE_MODE
-  ADD_BLOCK,
-  SHOW_EXCHANGE_MODE_TIMETABLE
-
+  CANCEL_EXCHANGE_MODE,
+  ADD_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 

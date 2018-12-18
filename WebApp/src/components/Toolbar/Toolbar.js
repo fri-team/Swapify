@@ -86,4 +86,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 
-export default connect(mapStateToProps)(withRouter(AppToolbar));
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(AppToolbar));
