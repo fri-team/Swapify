@@ -25,6 +25,7 @@ using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
+using System.Threading.Tasks;
 
 namespace WebAPI
 {
@@ -82,7 +83,7 @@ namespace WebAPI
                     .AllowAnyHeader()
                     .AllowCredentials());
 
-                CreateDbSeed(app.ApplicationServices);
+                CreateDbSeedAsync(app.ApplicationServices);
             }
 
             // Serve index.html and static resources from wwwroot/
@@ -198,13 +199,13 @@ namespace WebAPI
             return bytes;
         }
 
-        private void CreateDbSeed(IServiceProvider serviceProvider)
+        private async Task CreateDbSeedAsync(IServiceProvider serviceProvider)
         {
             _logger.LogInformation("Creating DB seed");
             try
             {
                 _logger.LogInformation("Creating testing user");
-                DbSeed.CreateTestingUser(serviceProvider);
+                await DbSeed.CreateTestingUserAsync(serviceProvider);
                 _logger.LogInformation("Oleg created");
                 _logger.LogInformation("Creating courses");
                 DbSeed.CreateTestingCourses(serviceProvider);
