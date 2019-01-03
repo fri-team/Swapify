@@ -148,7 +148,7 @@ export function exchangeConfirm(blockTo) {
   };
 
   return (dispatch, getState) => {
-    const { timetable } = getState();
+    const { timetable, user } = getState();
     var bl = timetable.blockFromExchange;
     const body = {
       BlockFrom:
@@ -165,8 +165,7 @@ export function exchangeConfirm(blockTo) {
         startHour: blockTo.startBlock,
         duration: blockTo.endBlock - blockTo.startBlock
       },
-      //TODO: add real studentID
-      StudentId: "00000000-0000-0000-0000-000000000000"
+      StudentId: user.studentId
     }
 
     axios({
@@ -195,15 +194,13 @@ export function removeBlock(course) {
     type: ((course.type == 'laboratory') ? (2) : (3))
   }
 
-  const studentId = '00000000-0000-0000-0000-000000000000';
-
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch({
       type: REMOVE_BLOCK
     });
     axios({
       method: 'delete',
-      url: `/api/student/${studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
+      url: `/api/student/${getState().user.studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
     })
     .then(() =>{
       dispatch({

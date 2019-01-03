@@ -1,4 +1,5 @@
 using FRITeam.Swapify.Backend.CourseParser;
+using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -9,15 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {
     public static class DbSeed
     {
-        public static void CreateTestingUser(IServiceProvider serviceProvider)
+        public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<User>("users");
+            var usersCollection = dbService.GetCollection<User>("users");            
 
             string email = "oleg@swapify.com";
             User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
@@ -32,7 +34,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     UserName = email,
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
-                    SecurityStamp = Guid.NewGuid().ToString("D")
+                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    Student = await CreateStudentAsync(serviceProvider)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -40,6 +43,21 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 user.PasswordHash = hashed;
                 usersCollection.InsertOne(user);
             }
+        }
+
+        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider)
+        {
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var studentCollection = dbService.GetCollection<Student>(nameof(Student));
+            var studyGroupService = serviceProvider.GetRequiredService<IStudyGroupService>();
+
+            Student student = new Student();
+            StudyGroup sg = await studyGroupService.GetStudyGroupAsync("5ZZS23");
+            student.Timetable = sg.Timetable.Clone();
+            student.StudyGroup = sg;
+
+            studentCollection.InsertOne(student);
+            return student;
         }
 
         public static void CreateTestingCourses(IServiceProvider serviceProvider)
