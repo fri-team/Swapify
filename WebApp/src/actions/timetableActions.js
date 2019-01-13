@@ -19,14 +19,14 @@ import {
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
-export function loadMyTimetable() {
+export function loadMyTimetable(userEmail) {
   return dispatch => {
     dispatch({
       type: LOAD_MY_TIMETABLE
     });
     axios({
       method: 'get',
-      url: '/api/timetable'
+      url: '/api/student/getStudentTimetable/' + userEmail
     })
       .then(res => {
         dispatch({

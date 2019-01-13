@@ -5,6 +5,9 @@ using System;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Entities.Enums;
 using WebAPI.Models.UserModels;
+using System.Collections.Generic;
+using WebAPI.Models.TimetableModels;
+using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
 namespace WebAPI.Controllers
 {
@@ -15,25 +18,29 @@ namespace WebAPI.Controllers
 
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
+        private readonly ICourseService _courseService;
 
-        public StudentController(IStudentService studentService, IUserService userService)
+        public StudentController(IStudentService studentService, IUserService userService, ICourseService courseService)
         {
             _studentService = studentService;
             _userService = userService;
+            _courseService = courseService;
         }
 
 
-        [HttpGet("student/{studentId}")]
-        public async Task<IActionResult> GetStudentTimetable(string studentId)
+        [HttpGet("getStudentTimetable/{userEmail}")]
+        public async Task<IActionResult> GetStudentTimetable(string userEmail)
         {
+            User user = await _userService.GetUserByEmailAsync(userEmail);
+            string studentId = user.Student.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
                 return ErrorResponse($"Student id: {studentId} is not valid GUID.");
             }
 
-            var student = await _studentService.FindByIdAsync(guid);
-
+            //var student = await _studentService.FindByIdAsync(guid);
+            var student = user.Student;
             if (student == null)
             {
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
@@ -44,7 +51,27 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
             }
 
-            return Ok(student.Timetable);
+            var timetable = new Timetable();
+            var Blocks = new List<TimetableBlock>();
+
+            foreach (var block in user.Student.Timetable.AllBlocks)
+            {
+                TimetableBlock timetableBlock = new TimetableBlock();
+                Course course = await _courseService.FindByIdAsync(block.CourseId);
+                timetableBlock.Id = block.CourseId.ToString();
+                timetableBlock.Day = block.Day.GetHashCode();
+                timetableBlock.StartBlock = block.StartHour - 6;
+                timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
+                timetableBlock.CourseName = course.CourseName;
+                timetableBlock.CourseShortcut = course.CourseCode;
+                timetableBlock.Room = block.Room;
+                timetableBlock.Teacher = block.Teacher;
+                timetableBlock.Type = (TimetableBlockType)block.BlockType;
+                Blocks.Add(timetableBlock);
+            }
+            timetable.Blocks = Blocks;
+
+            return Ok(timetable);
         }
 
         [HttpPost("addNewBlock")]
