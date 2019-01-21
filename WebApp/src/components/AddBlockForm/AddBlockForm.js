@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import onClickOutside from 'react-onclickoutside';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { PullRight, Shaddow } from '../Toolbar/shared';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { Shaddow } from '../Toolbar/shared';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -41,7 +40,7 @@ const PadBox = styled.div`
 
 const FlexBox = styled.div`
   display: flex;
-  left:inherit;
+  align-items: center;
   > * + * {
     margin-left: 1em;
   }
