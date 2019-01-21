@@ -14,9 +14,12 @@ $border: $border-width solid $border-color;
 
 .border-cell {
     padding: 1em;
-    text-align: center;
     border: $border;
     background-color: $background-color;
+}
+
+.centered {
+    text-align: center;
 }
 
 .border-cells,

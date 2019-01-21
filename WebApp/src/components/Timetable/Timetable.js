@@ -23,6 +23,7 @@ class Block extends React.Component {
       >
        {this.state.showBlockForm && (
           <AddBlockForm
+            className="left"
             user={user}
             day={i}
             start={j+6}
@@ -43,7 +44,7 @@ const ConnectedBlock = connect(mapDispatchToProps)(Block);
 
 const Timetable = props => {
   const hours = _.map(props.colHeadings, (col, idx) => (
-    <div key={idx} className="border-cell">
+    <div key={idx} className="border-cell centered">
       {col}
     </div>
   ));

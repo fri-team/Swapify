@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import onClickOutside from 'react-onclickoutside';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { PullRight, Shaddow } from '../Toolbar/shared';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { Shaddow } from '../Toolbar/shared';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -241,18 +240,16 @@ class AddBlockForm extends PureComponent {
                 
                 
               </RadioGroup>
-              <PullRight>
+
+
               <Button 
-                variant="extendedFab" 
-                color="primary" 
-                className="save"
-                onClick={this.SubmitBlockChange} 
-                disabled={!this.canBeSubmitted()}
-              >
-                <NavigationIcon className="save" />
-                 Ulozit
-              </Button>
-              </PullRight>
+                    onClick={this.SubmitBlockChange}
+                    disabled={!this.canBeSubmitted()}
+                    color="primary" 
+                    variant="contained"
+                >
+                  Uloziť
+                </Button>
               </form>
               </FlexBox>
             </PadBox>
