@@ -2,7 +2,6 @@ import React from 'react';
 import Toolbar from '../Toolbar/Toolbar';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import NavigationIcon from '@material-ui/icons/Navigation';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import './StudyGroup.scss';
@@ -64,15 +63,13 @@ class StudyGroup extends React.Component {
                       helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý format štud. skupiny' : ' '}
                     />
                 </FormControl>
-                <Button
-                    color="primary"
-                    variant="fab"
-                    mini
-                    className="fab"
+                <Button 
                     onClick={this.Submit}
                     disabled={!this.canBeSubmitted()}
+                    color="primary" 
+                    variant="contained"
                 >
-                    <NavigationIcon />
+                  Uloziť
                 </Button>
                 </div>
             </div>

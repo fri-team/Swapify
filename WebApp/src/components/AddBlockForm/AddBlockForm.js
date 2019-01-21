@@ -41,7 +41,7 @@ const PadBox = styled.div`
 
 const FlexBox = styled.div`
   display: flex;
-  align-items: center;
+  left:inherit;
   > * + * {
     margin-left: 1em;
   }
@@ -241,18 +241,16 @@ class AddBlockForm extends PureComponent {
                 
                 
               </RadioGroup>
-              <PullRight>
+
+
               <Button 
-                variant="extendedFab" 
-                color="primary" 
-                className="save"
-                onClick={this.SubmitBlockChange} 
-                disabled={!this.canBeSubmitted()}
-              >
-                <NavigationIcon className="save" />
-                 Ulozit
-              </Button>
-              </PullRight>
+                    onClick={this.SubmitBlockChange}
+                    disabled={!this.canBeSubmitted()}
+                    color="primary" 
+                    variant="contained"
+                >
+                  Uloziť
+                </Button>
               </form>
               </FlexBox>
             </PadBox>
