@@ -11,7 +11,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
-import { TIMETABLE } from '../../util/routes';
 
 const MenuWrapper = styled.div`
   position: absolute;
@@ -104,12 +103,12 @@ class AddBlockForm extends PureComponent {
       Teacher: this.state.Teacher,
       Room: this.state.Room,
       StartBlock: this.props.start,
-      EndBlock: this.props.start + this.state.Length,
+      EndBlock: parseInt(this.props.start) + parseInt(this.state.Length),
       Type: this.state.Type
     }
     const body = {
       user: this.state.user,
-      block: block
+      timetableBlock: block
     }
     
     
@@ -119,7 +118,7 @@ class AddBlockForm extends PureComponent {
       data: body
     })
       .then(() => {
-        this.props.history.push(TIMETABLE);
+        window.location.reload();
       });
     
   }

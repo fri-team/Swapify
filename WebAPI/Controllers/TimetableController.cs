@@ -18,14 +18,16 @@ namespace WebAPI.Controllers
         private readonly IStudyGroupService _groupService;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
+        private readonly ICourseService _courseService;
 
         public TimetableController(ILogger<TimetableController> logger, IStudyGroupService groupService,
-            IStudentService studentService, IUserService userService)
+            IStudentService studentService, IUserService userService, ICourseService courseService)
         {
             _logger = logger;
             _groupService = groupService;
             _studentService = studentService;
             _userService = userService;
+            _courseService = courseService;
         }
 
         [HttpPost("setStudentTimetableFromGroup")]
@@ -46,8 +48,9 @@ namespace WebAPI.Controllers
             if (student == null)
             {
                 student = new Student();
-                user.Student = student;
+                await _studentService.AddAsync(student);
                 await _studentService.UpdateStudentTimetableAsync(student, sg);
+                user.Student = student;
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
@@ -61,6 +64,12 @@ namespace WebAPI.Controllers
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
+        }
+
+        [HttpGet("course/getCoursesAutoComplete/{courseName}")]
+        public IActionResult GetCoursesAutoComplete(string courseName)
+        {
+            return Ok(this._courseService.FindByStartName(courseName));
         }
 
         [HttpGet("course/{courseId}")]
