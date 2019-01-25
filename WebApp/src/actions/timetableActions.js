@@ -185,7 +185,7 @@ export function exchangeConfirm(blockTo) {
   };
 }
 
-export function removeBlock(course) {
+export function removeBlock(course, userEmail) {
   const block = {
     day: course.day,
     teacher: course.teacher,
@@ -195,15 +195,13 @@ export function removeBlock(course) {
     type: ((course.type == 'laboratory') ? (2) : (3))
   }
 
-  const studentId = '00000000-0000-0000-0000-000000000000';
-
   return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
     });
     axios({
       method: 'delete',
-      url: `/api/student/${studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
+      url: `/api/student/${userEmail}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
     })
     .then(() =>{
       dispatch({

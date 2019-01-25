@@ -17,8 +17,8 @@ class BlockDetailContainer extends Component {
     this.props.actions.hideDetail();
   }
 
-  onClickDelete = (course) => {
-    this.props.timetableActions.removeBlock(course);
+  onClickDelete = (course, userEmail) => {
+    this.props.timetableActions.removeBlock(course, userEmail);
     this.props.actions.hideDetail();
   }
 

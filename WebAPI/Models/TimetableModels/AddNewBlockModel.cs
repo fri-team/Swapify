@@ -1,5 +1,6 @@
 using FRITeam.Swapify.Entities;
 using System.ComponentModel.DataAnnotations;
+using WebAPI.Models.TimetableModels;
 
 namespace WebAPI.Models.UserModels
 {
@@ -8,6 +9,6 @@ namespace WebAPI.Models.UserModels
         [Required(ErrorMessage = "Používateľ je povinný.")]
         public User User { get; set; }
         [Required(ErrorMessage = "Blok je povinný.")]
-        public Block Block { get; set; }
+        public TimetableBlock TimetableBlock { get; set; }
     }
 }
