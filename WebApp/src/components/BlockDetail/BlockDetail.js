@@ -16,6 +16,8 @@ class BlockDetail extends PureComponent {
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
   handleClickDelete = () => this.props.onClickDelete(this.props.course);
 
+  
+
   render() {
     if (!this.props.isVisible) {
       return null;

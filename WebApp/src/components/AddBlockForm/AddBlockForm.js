@@ -58,7 +58,9 @@ class AddBlockForm extends PureComponent {
     StartBlock: this.props.start,
     Length: 2,
     Type: '',
-    user: this.props.user};
+    user: this.props.user,
+    CourseShortcut: ''
+  };
 
   componentDidMount() {
     this.calcPosition();
@@ -101,6 +103,7 @@ class AddBlockForm extends PureComponent {
     const block = {
       Day : this.props.day,
       CourseName : this.state.CourseName,
+      CourseShortcut: this.state.CourseShortcut,
       Teacher: this.state.Teacher,
       Room: this.state.Room,
       StartBlock: this.props.start,
@@ -158,12 +161,17 @@ class AddBlockForm extends PureComponent {
     this.setState({ value: event.target.value });
   };
 
+  handleShortcut = event => {
+    this.setState({ value: event.target.value });
+  };
+
   canBeSubmitted = () => {
     return this.state.Length !== '' && 
            this.state.CourseName !== '' && 
            this.state.Teacher !== '' &&
            this.state.Room !== '' && 
-           this.state.Type !== '';
+           this.state.Type !== '' &&
+           this.state.CourseShortcut !== '';
   }
 
   render() {
@@ -182,6 +190,15 @@ class AddBlockForm extends PureComponent {
                 placeholder="Zadajte nazov predmetu"
                 onChange={this.handleCourse}
                 value={this.state.CourseName}
+                margin="normal"
+                fullWidth
+              />
+               <TextField
+                id="CourseShorcut"
+                label="Skratka predmetu"
+                placeholder="Zadajte skratku predmetu"
+                onChange={this.handleShortcut}
+                value={this.state.CourseShortcut}
                 margin="normal"
                 fullWidth
               />
