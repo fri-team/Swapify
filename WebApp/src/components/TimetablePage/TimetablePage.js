@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import Toolbar from '../Toolbar/Toolbar';
+import { connect } from 'react-redux';
 import TimetableContainer from '../../containers/TimetableContainer/TimetableContainer';
 import BlockDetailContainer from '../../containers/BlockDetailContainer/BlockDetailContainer';
 import SidebarContainer from '../Sidebar/SidebarContainer';
 
-export default class TimetablePage extends PureComponent {
-  state = { sidebarOpen: false };
-
+class TimetablePage extends PureComponent {
+  state = { sidebarOpen: false, user: this.props.user };
+  
   render() {
     return (
       <div className="container">
@@ -22,8 +23,15 @@ export default class TimetablePage extends PureComponent {
           onClose={() => this.setState({ sidebarOpen: false })}
         />
         <TimetableContainer />
-        <BlockDetailContainer />
+        <BlockDetailContainer 
+          user={this.state.user}
+         />
       </div>
     );
   }
 }
+
+
+const mapStateToProps = state => ({ user: state.user });
+
+export default connect(mapStateToProps)(TimetablePage);
