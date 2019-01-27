@@ -3,6 +3,10 @@ services:
 
 script:
   - docker-compose up ci
+  - dotnet tool install --global dotnet-sonarscanner
+  - dotnet sonarscanner begin /k:"Swapify" /d:sonar.organization="fri-team-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$SONAR_TOKEN /d:sonar.branch.name=$TRAVIS_BRANCH
+  - dotnet build ./Swapify.sln
+  - dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
   
 deploy:  
   provider: elasticbeanstalk
