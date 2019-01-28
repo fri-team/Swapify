@@ -29,7 +29,7 @@ class StudyGroup extends React.Component {
     .then(() => {
       this.props.history.push(TIMETABLE);
     })
-    .catch(error => {
+    .catch(() => {
       alert("Neexistujúca štud. skupina");
     })
   }
