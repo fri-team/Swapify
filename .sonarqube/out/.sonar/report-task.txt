@@ -1,0 +1,8 @@
+organization=fri-team-github
+projectKey=Swapify
+serverUrl=https://sonarcloud.io
+serverVersion=7.6.0.21426
+branch=master
+dashboardUrl=https://sonarcloud.io/dashboard?id=Swapify&branch=master
+ceTaskId=AWiWQYtBXg09RutGM5rI
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWiWQYtBXg09RutGM5rI
