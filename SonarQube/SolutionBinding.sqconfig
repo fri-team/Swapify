@@ -1,5 +1,5 @@
 {
-  "ServerUri": "https://sonarcloud.io",
+  "ServerUri": "https://sonarcloud.io/",
   "Organization": {
     "Key": "fri-team-github",
     "Name": "fri-team"
@@ -8,7 +8,7 @@
   "Profiles": {
     "CSharp": {
       "ProfileKey": "AWJsM4328586_vYMdVQp",
-      "ProfileTimestamp": "2018-09-06T11:06:47+02:00"
+      "ProfileTimestamp": "2019-01-14T10:58:53+01:00"
     }
   }
 }
