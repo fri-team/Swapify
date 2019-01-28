@@ -29,7 +29,7 @@ class BlockDetail extends PureComponent {
     const { backgroundColor, color } = toMaterialStyle(
       course.courseShortcut || ''
     );
-    const style = { top: `${top}px`, left: `${left}px` };
+    const style = { top: `${top}px`, left: `${left}px`, position: `absolute` };
     return (
       <div className="block-detail" style={style}>
         <div className="header" style={{ backgroundColor }}>

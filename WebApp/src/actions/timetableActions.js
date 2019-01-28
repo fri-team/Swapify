@@ -207,6 +207,7 @@ export function removeBlock(course, userEmail) {
       dispatch({
         type: REMOVE_BLOCK_DONE
       });
+      window.location.reload();
     })
     .catch(() => {
       window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');
