@@ -6,6 +6,7 @@ import toMaterialStyle from 'material-color-hash';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ClearIcon from '@material-ui/icons/Clear';
+import SwapIcon from '@material-ui/icons/SwapHorizSharp';
 import SwapHorizontal from '../svg/SwapHorizontal';
 import Location from '../svg/Location';
 import Person from '../svg/Person';
@@ -37,7 +38,7 @@ class BlockDetail extends PureComponent {
             {course.type !== 'lecture' && (
               <span>
                 <IconButton onClick={this.handleClickExchange }>
-                  <SwapHorizontal className="icon" />
+                  <SwapIcon nativeColor={color} />
                 </IconButton>
                 <IconButton onClick={this.handleClickDelete}>
                   <DeleteIcon nativeColor={color} />

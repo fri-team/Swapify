@@ -49,8 +49,10 @@ namespace WebAPI.Controllers
             {
                 student = new Student();
                 await _studentService.AddAsync(student);
-                await _studentService.UpdateStudentTimetableAsync(student, sg);
+
                 user.Student = student;
+                await _studentService.UpdateStudentTimetableAsync(student, sg);
+
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }

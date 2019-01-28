@@ -12,6 +12,7 @@ namespace WebAPI.Models.UserModels
         public string Surname { get; set; }
         public string Token { get; set; }
         public DateTime ValidTo { get; set; }
+        public string StudentId { get; set; }
 
         public AuthenticatedUserModel(User user, JwtSecurityToken token)
         {
@@ -21,9 +22,10 @@ namespace WebAPI.Models.UserModels
                 Email = user.Email;
                 Name = user.Name;
                 Surname = user.Surname;
-            }
+                StudentId = user.Student?.Id.ToString();
+                }
             Token = token.RawData;
-            ValidTo = token.ValidTo;
+            ValidTo = token.ValidTo;            
         }
 
         public AuthenticatedUserModel(JwtSecurityToken token) : this(null, token)

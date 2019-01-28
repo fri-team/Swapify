@@ -7,13 +7,12 @@ import Tab from '@material-ui/core/Tab';
 import ListItem from '@material-ui/core/ListItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid';
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
+
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { CardHeader } from '@material-ui/core';
 
 const Sidebar = ({ open, onClose, courses, onCourseToggle,handleChange, value }) => (
   <Drawer open={open} onClose={onClose}>
@@ -49,72 +48,39 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle,handleChange, value })
           alignItems="stretch"
         >
           <Card>
-            <CardContent>
-              <Typography variant="h5" component="h2">
-                Teoria informacie (TI)
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Tomas Majer
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Pondelok 11:00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button 
-                variant="extendedFab" 
-                color="primary"
-                size="small">
-                <DeleteRoundedIcon className="delete" />
-                Zrusit
-              </Button>
-            </CardActions>
+            <CardHeader
+              action={
+                <IconButton>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              title="Teoria informacie (TI)"
+              subheader=" Pondelok 11:00"
+            />
           </Card>
           <br />
           <Card>
-            <CardContent>
-              <Typography variant="h5" component="h2">
-                Teoria informacie (TI)
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Tomas Majer
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Pondelok 15:00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button 
-                variant="extendedFab" 
-                color="primary"
-                size="small">
-                <DeleteRoundedIcon className="delete" />
-                Zrusit
-              </Button>
-            </CardActions>
+            <CardHeader
+              action={
+                <IconButton>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              title="Teoria informacie (TI)"
+              subheader=" Pondelok 15:00"
+            />
           </Card>
           <br />
           <Card>
-            <CardContent>
-              <Typography variant="h5" component="h2">
-                Diskretna simulacia (Diss)
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Peter Jankovic
-              </Typography>
-              <Typography  color="textSecondary" gutterBottom>
-                Streda 15:00
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button 
-                variant="extendedFab" 
-                color="primary"
-                size="small">
-                <DeleteRoundedIcon className="delete" />
-                Zrusit
-              </Button>
-            </CardActions>
+            <CardHeader
+              action={
+                <IconButton>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              title=" Diskretna simulacia (Diss)"
+              subheader="Streda 15:00"
+            />
           </Card>
         </Grid>
       }

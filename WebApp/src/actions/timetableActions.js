@@ -148,7 +148,7 @@ export function exchangeConfirm(blockTo) {
   };
 
   return (dispatch, getState) => {
-    const { timetable } = getState();
+    const { timetable, user } = getState();
     var bl = timetable.blockFromExchange;
     const body = {
       BlockFrom:
@@ -165,8 +165,7 @@ export function exchangeConfirm(blockTo) {
         startHour: blockTo.startBlock,
         duration: blockTo.endBlock - blockTo.startBlock
       },
-      //TODO: add real studentID
-      StudentId: "00000000-0000-0000-0000-000000000000"
+      StudentId: user.studentId
     }
 
     axios({
