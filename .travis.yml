@@ -6,7 +6,7 @@ services:
 
 script:
   - docker-compose up ci
-  - dotnet ./SonarQube/sonar-scanner-msbuild-4.5.0.1761-netcoreapp2.0SonarScanner.MSBuild.dll begin /k:"Swapify" /d:sonar.organization="fri-team-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$SONAR_TOKEN /d:sonar.branch.name=$TRAVIS_BRANCH
+  - dotnet ./SonarQube/sonar-scanner-msbuild-4.5.0.1761-netcoreapp2.0/SonarScanner.MSBuild.dll begin /k:"Swapify" /d:sonar.organization="fri-team-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$SONAR_TOKEN /d:sonar.branch.name=$TRAVIS_BRANCH
   - dotnet build ../../Swapify.sln
   - dotnet SonarScanner.MSBuild.dll end /d:sonar.login=$SONAR_TOKEN
   
