@@ -113,7 +113,6 @@ class AddBlockForm extends PureComponent {
       timetableBlock: block
     }
     
-    
     axios({
       method: 'post',
       url: '/api/student/addNewBlock',
@@ -159,8 +158,8 @@ class AddBlockForm extends PureComponent {
     this.setState({ value: event.target.value });
   };
 
-  handleShortcut = event => {
-    this.setState({ value: event.target.value });
+  handleShortcut = (evt) => {
+    this.setState({ CourseShortcut: evt.target.value });
   };
 
   canBeSubmitted = () => {

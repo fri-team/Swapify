@@ -11,7 +11,6 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 class Block extends React.Component {
   state = { showBlockForm: false};
 
-  
   render() {
     const {i,j, user} = this.props;
     return (
@@ -35,7 +34,6 @@ class Block extends React.Component {
   }
 }
 
-
 const mapDispatchToProps = (state,dispatch) => ({ 
   addBlock: (block) => dispatch(addBlock(block)),
   user: state.user });
@@ -50,7 +48,7 @@ const Timetable = props => {
   ));
   const days = _.map(props.rowHeadings, (row, idx) => (
     <div key={idx} className="border-cell">
-      {row}
+      {row }
     </div>
   ));
   const borderCells = [];

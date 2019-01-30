@@ -24,7 +24,6 @@ class BlockDetailContainer extends Component {
   onClickDelete = (course) => {
     this.props.timetableActions.removeBlock(course, this.state.user.email);
     this.props.actions.hideDetail();
-    window.location.reload();
   }
 
   render() {

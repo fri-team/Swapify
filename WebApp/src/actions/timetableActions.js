@@ -40,6 +40,7 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
+        window.location.replace("http://localhost:3000/study-group");
         // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
@@ -206,7 +207,18 @@ export function removeBlock(course, userEmail) {
       dispatch({
         type: REMOVE_BLOCK_DONE
       });
-      window.location.reload();
+      axios({
+        method: 'get',
+        url: '/api/student/getStudentTimetable/' + userEmail
+      })
+        .then(res => {
+          dispatch({
+            type: LOAD_MY_TIMETABLE_DONE,
+            payload: {
+              timetable: res.data.blocks
+            }
+          });
+        })
     })
     .catch(() => {
       window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');
