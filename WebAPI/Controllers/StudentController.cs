@@ -63,7 +63,15 @@ namespace WebAPI.Controllers
                 timetableBlock.StartBlock = block.StartHour - 6;
                 timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
                 timetableBlock.CourseName = course.CourseName;
-                timetableBlock.CourseShortcut = course.CourseCode;
+                if (course.CourseCode == null)
+                {
+                    timetableBlock.CourseShortcut = "";
+                }
+                else
+                {
+                    timetableBlock.CourseShortcut = course.CourseCode;
+                }
+                
                 timetableBlock.Room = block.Room;
                 timetableBlock.Teacher = block.Teacher;
                 timetableBlock.Type = (TimetableBlockType)block.BlockType;
