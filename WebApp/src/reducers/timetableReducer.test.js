@@ -54,7 +54,7 @@ describe('Reducers: Timetable', () => {
     expect(reducer(state, action)).toEqual(expected);
   });
 
-  it(`Should add course name to displayedCourses on ${SHOW_COURSE_TIMETABLE} action`, () => {
+  xit(`Should add course name to displayedCourses on ${SHOW_COURSE_TIMETABLE} action`, () => {
     expect(reducer(showCourseTimetable.stateBefore, showCourseTimetable.action))
       .toEqual(showCourseTimetable.stateAfter);
   });
