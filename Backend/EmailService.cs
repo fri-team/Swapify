@@ -29,7 +29,7 @@ namespace FRITeam.Swapify.Backend
             try
             {
                 string type = $"{_emailSettings.EmailsNameSpace}.{emailType}";
-                var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory, _emailSettings.Username,
+                var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory, _emailSettings.SenderEmail,
                     _emailSettings.SenderDisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
                 MailMessage mailMessage = (MailMessage)email.GetType().GetMethod("CreateMailMessage")
                                                                       .Invoke(email, null);
@@ -53,6 +53,7 @@ namespace FRITeam.Swapify.Backend
             NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
             using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
             {
+                client.UseDefaultCredentials = false;
                 client.Credentials = credentials;
                 client.EnableSsl = true;
                 client.Send(message);
