@@ -1,104 +1,81 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { map, merge } from 'lodash';
+import { connect } from 'react-redux';
 import TimetableBlocks from './TimetableBlocks';
-import './Timetable.scss';
-import {connect} from 'react-redux';
-import {addBlock} from '../../actions/timetableActions'
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
+import './Timetable.scss';
 
+const Block = ({ i, j, openAddBlock }) => (
+  <div
+    className="border-cell"
+    style={{ gridRow: i, gridColumn: j }}
+    onClick={() => openAddBlock(i, j)}
+  />
+)
 
-class Block extends React.Component {
-  state = { showBlockForm: false};
+class Timetable extends React.Component {
+  state = {
+    day: null,
+    start: null,
+    dialogOpen: false
+  }
+
+  openAddBlock = (i, j) => {
+    this.setState({ day: i, start: j + 6, dialogOpen: true })
+  }
 
   render() {
-    const {i,j, user} = this.props;
+    const { colHeadings, rowHeadings, items, user } = this.props
+    const { day, start, dialogOpen } = this.state
+    const hours = map(colHeadings, (col, idx) => (
+      <div key={idx} className="border-cell centered">
+        {col}
+      </div>
+    ));
+    const days = map(rowHeadings, (row, idx) => (
+      <div key={idx} className="border-cell">
+        {row}
+      </div>
+    ));
+    const borderCells = [];
+    for (let i = 1; i <= days.length; i++) {
+      for (let j = 1; j <= hours.length; j++) {
+        borderCells.push(
+          <Block key={`${i}x${j}`} i={i} j={j} openAddBlock={this.openAddBlock} />
+        );
+      }
+    }
+    const hoursStyle = {
+      display: 'grid',
+      gridTemplateColumns: `repeat(${hours.length}, 1fr)`
+    };
+    const daysStyle = {
+      display: 'grid',
+      gridTemplateRows: `repeat(${days.length}, 1fr)`
+    };
+    const style = merge({}, hoursStyle, daysStyle);
+
     return (
-      <div
-        ref={ref => (this.anchor = ref)}
-        className="border-cell"
-        style={{ gridRow: i, gridColumn: j}}
-        onClick={() => this.setState({ showBlockForm: true })}
-      >
-       {this.state.showBlockForm && (
-          <AddBlockForm
-            className="left"
-            user={user}
-            day={i}
-            start={j+6}
-            onClose={() => this.setState({ showBlockForm: false })}
-          />
+      <div className="timetable">
+        <div className="border-cell" />
+        <div style={hoursStyle}>{hours}</div>
+        <div style={daysStyle}>{days}</div>
+        <TimetableBlocks
+          columns={hours.length}
+          rows={days.length}
+          items={items}
+        />
+        <div className="border-cells" style={style}>
+          {borderCells}
+        </div>
+        {dialogOpen && (
+          <AddBlockForm user={user} day={day} start={start} onClose={() => this.setState({ dialogOpen: false })} />
         )}
-      </div>       
-    )
+      </div>
+    );
   }
 }
 
-const mapDispatchToProps = (state,dispatch) => ({ 
-  addBlock: (block) => dispatch(addBlock(block)),
-  user: state.user });
-
-const ConnectedBlock = connect(mapDispatchToProps)(Block);
-
-const Timetable = props => {
-  const hours = _.map(props.colHeadings, (col, idx) => (
-    <div key={idx} className="border-cell centered">
-      {col}
-    </div>
-  ));
-  const days = _.map(props.rowHeadings, (row, idx) => (
-    <div key={idx} className="border-cell">
-      {row }
-    </div>
-  ));
-  const borderCells = [];
-  for (let i = 1; i <= days.length; i++) {
-    for (let j = 1; j <= hours.length; j++) {
-      borderCells.push(
-        <ConnectedBlock
-          key={`${i}x${j}`}
-          i={i}
-          j={j}
-        />
-      );
-    }
-  }
-  const hoursStyle = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(${hours.length}, 1fr)`
-  };
-  const daysStyle = {
-    display: 'grid',
-    gridTemplateRows: `repeat(${days.length}, 1fr)`
-  };
-  const style = _.merge({}, hoursStyle, daysStyle);
-  
-  return (
-    <div className="timetable">
-      <div className="border-cell" />
-      <div style={hoursStyle}>{hours}</div>
-      <div style={daysStyle}>{days}</div>
-      <TimetableBlocks
-        columns={hours.length}
-        rows={days.length}
-        items={props.items}
-      />
-      <div className="border-cells" style={style}>
-        {borderCells}
-      </div>
-    </div>
-  );
-};
-
-Timetable.propTypes = {
-  colHeadings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  rowHeadings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  items: PropTypes.arrayOf(PropTypes.shape({}))
-};
-
-Timetable.defaultProps = {
-  items: []
-};
-
-
-export default Timetable;
+export default connect(state => ({
+  user: state.user
+}))(Timetable);
