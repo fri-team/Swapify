@@ -19,14 +19,14 @@ import {
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
-export function loadMyTimetable() {
+export function loadMyTimetable(userEmail) {
   return dispatch => {
     dispatch({
       type: LOAD_MY_TIMETABLE
     });
     axios({
       method: 'get',
-      url: '/api/timetable'
+      url: '/api/student/getStudentTimetable/' + userEmail
     })
       .then(res => {
         dispatch({
@@ -184,7 +184,7 @@ export function exchangeConfirm(blockTo) {
   };
 }
 
-export function removeBlock(course) {
+export function removeBlock(course, userEmail) {
   const block = {
     day: course.day,
     teacher: course.teacher,
@@ -194,18 +194,19 @@ export function removeBlock(course) {
     type: ((course.type == 'laboratory') ? (2) : (3))
   }
 
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
     });
     axios({
       method: 'delete',
-      url: `/api/student/${getState().user.studentId}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
+      url: `/api/student/${userEmail}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
     })
     .then(() =>{
       dispatch({
         type: REMOVE_BLOCK_DONE
       });
+      window.location.reload();
     })
     .catch(() => {
       window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');

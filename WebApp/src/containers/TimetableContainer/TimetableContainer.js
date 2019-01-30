@@ -7,7 +7,7 @@ import Timetable from '../../components/Timetable/Timetable';
 
 class TimetableContainer extends Component {
   componentWillMount() {
-    this.props.actions.loadMyTimetable();
+    this.props.actions.loadMyTimetable(this.props.user.email);
   }
 
   render() {
@@ -32,6 +32,7 @@ TimetableContainer.propTypes = {
 
 const mapStateToProps = (state) => ({
   ...state.timetable,
+  user: state.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
