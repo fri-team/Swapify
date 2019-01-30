@@ -5,15 +5,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { logout } from '../../actions/userActions';
 import UserAvatar from './UserAvatar';
 import Menu from './Menu';
 import { PullRight } from './shared';
 import { Button } from '@material-ui/core';
 import { bindActionCreators } from 'redux';
+import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
-import { STUDYGROUP } from '../../util/routes'
+import { STUDYGROUP } from '../../util/routes';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -27,20 +27,28 @@ const IconTray = styled.div`
 class AppToolbar extends PureComponent {
   state = { showMenu: false };
 
-  handleLogout = () => this.props.dispatch(logout());
+  handleLogout = () => this.props.userActions.logout();
 
   changeGroup = () => this.props.history.push(STUDYGROUP);
 
   render() {
     let button;
-    if (this.props.timetable.isExchangeMode){
-     button = <Button variant="contained" color="default" onClick={() => this.props.timetableActions.cancelExchangeMode()}>Späť na rozvrh</Button>
+    if (this.props.timetable.isExchangeMode) {
+      button = (
+        <Button
+          variant="contained"
+          color="default"
+          onClick={() => this.props.timetableActions.cancelExchangeMode()}
+        >
+          Späť na rozvrh
+        </Button>
+      );
     }
 
     const { user, toggleSidebar } = this.props;
     return (
       <ToolbarWrapper>
-        <AppBar position="static">`
+        <AppBar position="static">
           <Toolbar>
             <IconButton
               color="inherit"
@@ -75,15 +83,17 @@ class AppToolbar extends PureComponent {
   }
 }
 
-
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   user: state.user,
   timetable: state.timetable
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  timetableActions: bindActionCreators(timetableActions, dispatch),
+const mapDispatchToProps = dispatch => ({
+  userActions: bindActionCreators(userActions, dispatch),
+  timetableActions: bindActionCreators(timetableActions, dispatch)
 });
 
-
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(AppToolbar));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(AppToolbar));
