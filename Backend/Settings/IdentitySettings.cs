@@ -13,14 +13,5 @@ namespace FRITeam.Swapify.Backend.Settings
         public int? DefaultLockoutTimeSpan { get; set; }
         public int? MaxFailedAccessAttempts { get; set; }
         public bool? RequireUniqueEmail { get; set; }
-
-        public override void Validate()
-        {
-            foreach (PropertyInfo info in typeof(IdentitySettings).GetProperties())
-            {
-                if (info.GetValue(this, null) == null)
-                    Errors.AppendLine($"Setting {info.Name} is missing in {nameof(IdentitySettings)} configuration section.");
-            }
-        }
     }
 }
