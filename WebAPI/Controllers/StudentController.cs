@@ -119,8 +119,8 @@ namespace WebAPI.Controllers
                 block.Teacher = timetableBlock.Teacher;
                 block.BlockType = (BlockType) timetableBlock.Type;
 
-                course.Timetable.AllBlocks.Add(block);
                 await _courseService.AddAsync(course);
+                course.Timetable.AllBlocks.Add(block);
             }
             else
             {
