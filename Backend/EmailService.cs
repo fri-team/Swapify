@@ -1,10 +1,10 @@
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using System;
-using System.Net;
-using System.Net.Mail;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -31,7 +31,7 @@ namespace FRITeam.Swapify.Backend
                 string type = $"{_emailSettings.EmailsNameSpace}.{emailType}";
                 var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory, _emailSettings.SenderEmail,
                     _emailSettings.SenderDisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
-                MailMessage mailMessage = (MailMessage)email.GetType().GetMethod("CreateMailMessage")
+                MimeMessage mailMessage = (MimeMessage)email.GetType().GetMethod("CreateMailMessage")
                                                                       .Invoke(email, null);
                 if (mailMessage == null)
                 {
@@ -48,15 +48,14 @@ namespace FRITeam.Swapify.Backend
             }
         }
 
-        private void SendEmail(MailMessage message)
+        private void SendEmail(MimeMessage message)
         {
-            NetworkCredential credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
-            using (SmtpClient client = new SmtpClient(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort))
+            using (SmtpClient client = new SmtpClient())
             {
-                client.UseDefaultCredentials = false;
-                client.Credentials = credentials;
-                client.EnableSsl = true;
+                client.Connect(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort, true);
+                client.Authenticate(_emailSettings.Username, _emailSettings.Password);
                 client.Send(message);
+                client.Disconnect(true);
             }
         }
     }

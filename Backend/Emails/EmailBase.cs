@@ -1,38 +1,46 @@
+using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Utils;
 using System.IO;
-using System.Net.Mail;
-using System.Net.Mime;
 using System.Reflection;
 
 namespace FRITeam.Swapify.Backend.Emails
 {
     public abstract class EmailBase
     {
-        protected string OutputDirLocation { get; }
         protected abstract string PathToTemplate { get; }
         protected abstract string Subject { get; }
-        protected MailAddress Sender { get; set; }
-        protected MailAddress Receiver { get; set; }        
-        protected string BaseUrl { get; set; }
-        protected string Body { get; set; }
 
-        protected EmailBase(string sender, string senderDisplayName, string receiver, string baseUrl)
+        protected ILogger Logger { get; }
+        protected string OutputDirLocation { get; }
+        protected MailboxAddress Sender { get; set; }
+        protected MailboxAddress Receiver { get; set; }
+        protected string BaseUrl { get; set; }
+        protected BodyBuilder BodyBuilder { get; set; }
+
+        protected EmailBase(ILoggerFactory loggerFactory, string sender, string senderDisplayName, string receiver, string baseUrl)
         {
-            Sender = new MailAddress(sender, senderDisplayName);
-            Receiver = new MailAddress(receiver);
+            Logger = loggerFactory.CreateLogger(GetType().FullName);
             OutputDirLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Sender = new MailboxAddress(senderDisplayName, sender);
+            Receiver = new MailboxAddress(receiver);
             BaseUrl = baseUrl;
+            BodyBuilder = new BodyBuilder();
         }
-                
-        public abstract MailMessage CreateMailMessage();
+
+        public abstract MimeMessage CreateMailMessage();
         protected abstract bool CreateEmailBody();
 
-        protected Attachment CreateImgAttachment(string pathToAttachment, string contentId)
+        protected string AddImgToBodyBuilder(string imgPath)
         {
-            Attachment attachment = new Attachment(pathToAttachment);
-            attachment.ContentId = contentId;
-            attachment.ContentDisposition.Inline = true;
-            attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-            return attachment;
+            if (!File.Exists(imgPath))
+            {
+                Logger.LogWarning($"Unable to load img {imgPath}.");
+                return string.Empty;
+            }
+            MimeEntity entity = BodyBuilder.LinkedResources.Add(imgPath);
+            entity.ContentId = MimeUtils.GenerateMessageId();
+            return entity.ContentId;
         }
     }
 }
