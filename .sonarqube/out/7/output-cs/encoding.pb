@@ -1,0 +1,14 @@
+3
+*C:\Projects\Swapify\Entities\BaseEntity.csutf-8.
+%C:\Projects\Swapify\Entities\Block.csutf-8;
+2C:\Projects\Swapify\Entities\BlockChangeRequest.csutf-8/
+&C:\Projects\Swapify\Entities\Course.csutf-88
+/C:\Projects\Swapify\Entities\Enums\BlockType.csutf-89
+0C:\Projects\Swapify\Entities\Enums\CourseType.csutf-82
+)C:\Projects\Swapify\Entities\Enums\Day.csutf-8=
+4C:\Projects\Swapify\Entities\Enums\ExchangeStatus.csutf-89
+0C:\Projects\Swapify\Entities\Enums\StatusType.csutf-80
+'C:\Projects\Swapify\Entities\Student.csutf-83
+*C:\Projects\Swapify\Entities\StudyGroup.csutf-82
+)C:\Projects\Swapify\Entities\Timetable.csutf-8-
+$C:\Projects\Swapify\Entities\User.csutf-8

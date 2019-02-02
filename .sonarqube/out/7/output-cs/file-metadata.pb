@@ -1,0 +1,16 @@
+,
+*C:\Projects\Swapify\Entities\BaseEntity.cs'
+%C:\Projects\Swapify\Entities\Block.cs4
+2C:\Projects\Swapify\Entities\BlockChangeRequest.cs(
+&C:\Projects\Swapify\Entities\Course.cs1
+/C:\Projects\Swapify\Entities\Enums\BlockType.cs2
+0C:\Projects\Swapify\Entities\Enums\CourseType.cs+
+)C:\Projects\Swapify\Entities\Enums\Day.cs6
+4C:\Projects\Swapify\Entities\Enums\ExchangeStatus.cs2
+0C:\Projects\Swapify\Entities\Enums\StatusType.cs)
+'C:\Projects\Swapify\Entities\Student.cs,
+*C:\Projects\Swapify\Entities\StudyGroup.cs+
+)C:\Projects\Swapify\Entities\Timetable.cs&
+$C:\Projects\Swapify\Entities\User.csV
+RC:\Users\ZVARKO\AppData\Local\Temp\.NETStandard,Version=v2.0.AssemblyAttributes.csR
+NC:\Projects\Swapify\Entities\obj\Debug\netstandard2.0\Entities.AssemblyInfo.cs

@@ -6,7 +6,7 @@
   <SonarScannerWorkingDirectory>C:\Projects\Swapify</SonarScannerWorkingDirectory>
   <HasBeginStepCommandLineCredentials>true</HasBeginStepCommandLineCredentials>
   <SonarQubeHostUrl>https://sonarcloud.io</SonarQubeHostUrl>
-  <SonarQubeVersion>7.6.0.21426</SonarQubeVersion>
+  <SonarQubeVersion>7.7.0.21605</SonarQubeVersion>
   <SonarProjectKey>Swapify</SonarProjectKey>
   <AdditionalConfig>
     <ConfigSetting Id="BuildUri" />
@@ -54,6 +54,7 @@
     <Property Name="sonar.dbcleaner.weeksBeforeKeepingOnlyOneSnapshotByMonth">4</Property>
     <Property Name="sonar.lf.gravatarServerUrl">https://secure.gravatar.com/avatar/{EMAIL_MD5}.jpg?s={SIZE}&amp;d=identicon</Property>
     <Property Name="sonar.notifications.runningDelayBeforeReportingStatus">600</Property>
+    <Property Name="sonar.jsp.file.suffixes">.jsp,.jspf,.jspx</Property>
     <Property Name="sonar.javascript.environments">amd, applescript, atomtest, browser, commonjs, couch, embertest, flow, greasemonkey, jasmine, jest, jquery, meteor, mocha, mongo, nashorn, node, phantomjs, prototypejs, protractor, qunit, rhino, serviceworker, shared-node-browser, shelljs, webextensions, worker, wsh, yui</Property>
     <Property Name="sonar.scm.disabled">false</Property>
     <Property Name="sonar.typescript.exclusions">**/node_modules/**,**/bower_components/**</Property>
@@ -138,12 +139,14 @@ Select your &lt;a href="https://about.sonarcloud.io"&gt;plan&lt;/a&gt; and start
   &lt;/div&gt;
 &lt;/div&gt;</Property>
     <Property Name="sonar.core.id">BD367519-AWHW8ct9-T_TB3XqouNu</Property>
-    <Property Name="sonar.core.startTime">28. 1. 2019 11:19:46</Property>
+    <Property Name="sonar.core.startTime">31. 1. 2019 9:10:08</Property>
   </ServerSettings>
   <LocalSettings>
     <Property Name="sonar.organization">fri-team-github</Property>
     <Property Name="sonar.host.url">https://sonarcloud.io</Property>
-    <Property Name="sonar.branch.name">master</Property>
+    <Property Name="sonar.branch.name">test2</Property>
+    <Property Name="sonar.cs.opencover.reportsPaths">Tests/BackendTest/coverage.opencover.xml</Property>
+    <Property Name="sonar.coverage.exclusions">**Test*.cs</Property>
   </LocalSettings>
   <AnalyzersSettings>
     <AnalyzerSettings>
