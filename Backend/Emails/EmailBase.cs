@@ -28,14 +28,24 @@ namespace FRITeam.Swapify.Backend.Emails
             BodyBuilder = new BodyBuilder();
         }
 
-        public abstract MimeMessage CreateMailMessage();
-        protected abstract bool CreateEmailBody();
+        public MimeMessage CreateMailMessage()
+        {
+            CreateEmailBody();
+            MimeMessage mailMessage = new MimeMessage();
+            mailMessage.From.Add(Sender);
+            mailMessage.To.Add(Receiver);
+            mailMessage.Subject = Subject;
+            mailMessage.Body = BodyBuilder.ToMessageBody();
+            return mailMessage;
+        }
+
+        protected abstract void CreateEmailBody();
 
         protected string AddImgToBodyBuilder(string imgPath)
         {
             if (!File.Exists(imgPath))
             {
-                Logger.LogWarning($"Unable to load img {imgPath}.");
+                Logger.LogError($"Unable to load img '{imgPath}'.");
                 return string.Empty;
             }
             MimeEntity entity = BodyBuilder.LinkedResources.Add(imgPath);

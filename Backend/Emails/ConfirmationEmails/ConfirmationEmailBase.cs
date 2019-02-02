@@ -1,3 +1,4 @@
+using FRITeam.Swapify.Backend.Exceptions;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using Mustache;
@@ -17,28 +18,9 @@ namespace FRITeam.Swapify.Backend.Emails
             ConfirmationLink = confirmationLink;
         }
 
-        public override MimeMessage CreateMailMessage()
+        protected override void CreateEmailBody()
         {
-            if (!CreateEmailBody())
-            {
-                Logger.LogError($"Unable to create email body.");
-                return null;
-            }
-
-            MimeMessage mailMessage = new MimeMessage();
-            mailMessage.From.Add(Sender);
-            mailMessage.To.Add(Receiver);
-            mailMessage.Subject = Subject;
-            mailMessage.Body = BodyBuilder.ToMessageBody();
-            return mailMessage;
-        }
-
-        protected override bool CreateEmailBody()
-        {
-            BodyBuilder.HtmlBody = ReadTemplate();
-            if (string.IsNullOrEmpty(BodyBuilder.HtmlBody))
-                return false;
-
+            ReadTemplate();
             string logoImgContentId = AddImgToBodyBuilder(Path.GetFullPath(Path.Combine(OutputDirLocation, PathToLogo)));
 
             var compiler = new HtmlFormatCompiler();
@@ -49,26 +31,24 @@ namespace FRITeam.Swapify.Backend.Emails
                 confirmationLink = ConfirmationLink,
                 img1 = logoImgContentId
             });
-            return true;
         }
 
-        private string ReadTemplate()
+        private void ReadTemplate()
         {
-            string templatePath = Path.Combine(OutputDirLocation, PathToTemplate);
+            string templatePath = Path.GetFullPath(Path.Combine(OutputDirLocation, PathToTemplate));
             if (!File.Exists(templatePath))
-            {
-                Logger.LogError($"Email template {templatePath} does not exists.");
-                return null;
-            }
+                throw new EmailException(GetType().Name, $"Email template '{templatePath}' does not exists.");
             try
             {
-                return File.ReadAllText(templatePath);
+                BodyBuilder.HtmlBody = File.ReadAllText(templatePath);
             }
             catch (Exception e)
             {
-                Logger.LogError($"Error when reading file {templatePath}.\n {e.ToString()}.");
-                return null;
+                Logger.LogError($"Error when reading file '{templatePath}'. {e.Message}.");
+                throw;
             }
+            if (string.IsNullOrEmpty(BodyBuilder.HtmlBody))
+                throw new EmailException(GetType().Name, $"Email template '{templatePath}' is null or empty.");
         }
     }
 }
