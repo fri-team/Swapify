@@ -31,4 +31,4 @@ Web based application enabling students of [University of Zilina](http://www.uni
 * [Docker](https://www.docker.com) - Container technology for packaging application together with it's dependencies
 * [React](https://github.com/facebook/react) - JavaScript library for building user interfaces
 * [React Slingshot](https://github.com/coryhouse/react-slingshot) - Boilerplate for React + Redux development
-* [SonarQube] (https://www.sonarqube.org/) - Continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
+* [SonarQube](https://www.sonarqube.org/) - Continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.

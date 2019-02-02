@@ -1,9 +1,0 @@
-;
-2C:\Projects\Swapify\APIWrapper\Enums\LessonType.csutf-8<
-3C:\Projects\Swapify\APIWrapper\Enums\SubjectType.csutf-8?
-6C:\Projects\Swapify\APIWrapper\ISchoolScheduleProxy.csutf-8E
-<C:\Projects\Swapify\APIWrapper\Objects\ScheduleDayContent.csutf-8F
-=C:\Projects\Swapify\APIWrapper\Objects\ScheduleHourContent.csutf-8F
-=C:\Projects\Swapify\APIWrapper\Objects\ScheduleWeekContent.csutf-89
-0C:\Projects\Swapify\APIWrapper\ResponseParser.csutf-8>
-5C:\Projects\Swapify\APIWrapper\SchoolScheduleProxy.csutf-8
