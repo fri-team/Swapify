@@ -1,6 +1,7 @@
 # Swapify
 
 [![Build Status](https://travis-ci.org/fri-team/Swapify.svg?branch=master)](https://travis-ci.org/fri-team/Swapify)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Swapify&metric=alert_status)](https://sonarcloud.io/dashboard?id=Swapify)
 
 Web based application enabling students of [University of Zilina](http://www.uniza.sk/) to exchange course time blocks.
 
