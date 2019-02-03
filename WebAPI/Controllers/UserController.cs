@@ -60,6 +60,7 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+            var test = "aaa";
             return Ok();
         }
 
