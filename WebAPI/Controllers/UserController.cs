@@ -59,8 +59,7 @@ namespace WebAPI.Controllers
                     _logger.LogInformation($"User {body.Email} deleted.");
                 return BadRequest();
             }
-            _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
-            var test = "aaa";
+            _logger.LogInformation($"Confirmation email to user {user.Email} sent.");            
             return Ok();
         }
 
