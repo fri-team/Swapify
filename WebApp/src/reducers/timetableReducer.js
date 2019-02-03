@@ -58,7 +58,9 @@ export default function timetableReducer(state = initState, { type, payload }) {
         ...state,
         isLoadingMyTimetable: false,
         myTimetable: payload.timetable,
-        myCourseNames: _.sortBy(_.uniq(_.map(payload.timetable, 'courseName'))),
+        myCourseNames: _.sortBy(_.uniqBy(_.map(payload.timetable, function(item) {
+          return {courseId: item.id,courseName: item.courseName};
+        }), 'courseId'), 'courseName'),
         displayedTimetable: mergeTimetables(
           payload.timetable,
           _.pick(state.courseTimetables, state.displayedCourses)
@@ -81,7 +83,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
         courseTimetables: _.merge(
           {},
           state.courseTimetables,
-          _.set({}, payload.course.courseName, payload.course.timetable)
+          _.set({}, payload.course.courseId, payload.course.timetable)
         )
       };
     case LOAD_COURSE_TIMETABLE_FAIL:
@@ -92,12 +94,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
     case SHOW_COURSE_TIMETABLE:
       return {
         ...state,
-        displayedCourses: _.concat(state.displayedCourses, payload.course),
+        displayedCourses: _.concat(state.displayedCourses, payload.courseId),
         displayedTimetable: mergeTimetables(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.concat(state.displayedCourses, payload.course)
+            _.concat(state.displayedCourses, payload.courseId)
           )
         )
       };
@@ -131,12 +133,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
     case HIDE_COURSE_TIMETABLE:
       return {
         ...state,
-        displayedCourses: _.without(state.displayedCourses, payload.course),
+        displayedCourses: _.without(state.displayedCourses, payload.courseId),
         displayedTimetable: mergeTimetables(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.without(state.displayedCourses, payload.course)
+            _.without(state.displayedCourses, payload.courseId)
           )
         )
       };

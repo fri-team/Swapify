@@ -75,102 +75,41 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("course/{courseId}")]
-        public IActionResult GetCourseTimetable(string courseId)
+        public async Task<IActionResult> GetCourseTimetable(string courseId)
         {
-            if (!string.Equals(courseId, "DISS"))
+            bool isValidGUID = Guid.TryParse(courseId, out Guid guid);
+            var _course = await this._courseService.FindByIdAsync(guid);
+
+            if (!isValidGUID)
+            {
+                return ErrorResponse($"Course id: {courseId} is not valid GUID.");
+            }
+            if (_course == null)
             {
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
-            var timetable = new Timetable
+            
+            var timetable = new Timetable();
+            var Blocks = new List<TimetableBlock>();
+
+            foreach (var block in _course.Timetable.AllBlocks)
             {
-                Blocks = new List<TimetableBlock>
+                TimetableBlock timetableBlock = new TimetableBlock
                 {
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 1,
-                        StartBlock = 1,
-                        EndBlock = 3,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Peter Jankovič",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 1,
-                        StartBlock = 4,
-                        EndBlock = 6,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Peter Jankovič",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 1,
-                        StartBlock = 7,
-                        EndBlock = 9,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Peter Jankovič",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 3,
-                        StartBlock = 7,
-                        EndBlock = 9,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Boris Bučko",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 4,
-                        StartBlock = 4,
-                        EndBlock = 6,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Boris Bučko",
-                        Type = TimetableBlockType.Laboratory
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 4,
-                        StartBlock = 11,
-                        EndBlock = 13,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "AF3A6",
-                        Teacher = "Norbert Adamko",
-                        Type = TimetableBlockType.Lecture
-                    },
-                    new TimetableBlock
-                    {
-                        Id= Guid.NewGuid().ToString(),
-                        Day = 5,
-                        StartBlock = 4,
-                        EndBlock = 6,
-                        CourseName = "Diskrétna simulácia",
-                        CourseShortcut = "DISS",
-                        Room = "RB054",
-                        Teacher = "Boris Bučko",
-                        Type = TimetableBlockType.Laboratory
-                    }
-                }
-            };
+                    Id = _course.Id.ToString(),
+                    Day = block.Day.GetHashCode(),
+                    StartBlock = block.StartHour - 6,
+                    EndBlock = block.StartHour - 6 + block.Duration,
+                    CourseName = _course.CourseName,
+                    CourseShortcut = _course.CourseCode ?? "",
+                    Room = block.Room,
+                    Teacher = block.Teacher,
+                    Type = (TimetableBlockType)block.BlockType
+                };
+                Blocks.Add(timetableBlock);
+            }
+            timetable.Blocks = Blocks;
+
             return Ok(timetable);
         }
     }
