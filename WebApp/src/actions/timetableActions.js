@@ -69,7 +69,7 @@ function loadCourseTimetableAsync(dispatch, id, name) {
           course: {
             courseId: id,
             courseName: name,
-            timetable: data.courses[course]
+            timetable: data.courses[id]
           }
         }
       });
