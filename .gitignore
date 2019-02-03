@@ -326,3 +326,6 @@ logs/
 
 # Ignore archives
 *.zip
+
+# Include SonarScanner files
+!SonarQube/**
