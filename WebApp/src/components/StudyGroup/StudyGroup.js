@@ -12,7 +12,8 @@ import { TIMETABLE } from '../../util/routes';
 class StudyGroup extends React.Component {
   state = {
     group: '',
-    user: this.props.user
+    user: this.props.user,
+    existing: false
   }
 
   Submit = () => {
@@ -29,13 +30,16 @@ class StudyGroup extends React.Component {
       this.props.history.push(TIMETABLE);
     })
     .catch(() => {
-      alert("Neexistujúca štud. skupina");
+      this.setState({existing: true});
     })
   }
 
   handleSubmit = (evt) => {
     this.setState({ group: evt.target.value });
+    this.setState({existing: false});
   }
+
+
 
   canBeSubmitted = () => {
     return this.state.group.length === 6;
@@ -51,7 +55,7 @@ class StudyGroup extends React.Component {
                     fullWidth
                 >
                     <TextField
-                      error={this.state.group.length !== 6 && this.state.group !== ""}
+                      error={(this.state.group.length !== 6 && this.state.group !== "") || this.state.existing}
                       id="group"
                       value={this.state.group}
                       onChange={this.handleSubmit}
@@ -60,7 +64,7 @@ class StudyGroup extends React.Component {
                       margin="normal"
                       fullWidth
                       multiline
-                      helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý format štud. skupiny' : ' '}
+                      helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý formát štud. skupiny' : this.state.existing ? 'Neexistujúca štud. skupina' : ''}
                     />
                 </FormControl>
                 <Button 
