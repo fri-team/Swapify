@@ -43,8 +43,23 @@ namespace FRITeam.Swapify.APIWrapper
                         var sc = new ScheduleHourContent(int.Parse(block["b"].ToString()), false,
                                                          lessonType, teacherName, roomName, subjectShortcut,
                                                          subjectName, SubjectType.None, new List<string>());
+
                         //-1 because API count day 1,2,3,4,5 and we store days at indexes 0,1,2,3,4
-                        weekTimetable.DaysInWeek[int.Parse(block["dw"].ToString()) - 1].BlocksInDay.Add(sc);
+                        var weekday = weekTimetable.DaysInWeek[int.Parse(block["dw"].ToString()) - 1];
+                        bool inserted = false;
+                        for (int curBlockIndex = 0; curBlockIndex < weekday.BlocksInDay.Count; curBlockIndex++)
+                        {
+                            if (weekday.BlocksInDay[curBlockIndex].IsSameBlockAs(sc))
+                            {
+                                weekday.BlocksInDay.Insert(curBlockIndex + 1, sc);
+                                inserted = true;
+                                break;
+                            }
+                        }
+                        if (!inserted)
+                        {
+                            weekday.BlocksInDay.Add(sc);
+                        }
                     }
                 }
                 catch (Exception ex)
