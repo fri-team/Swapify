@@ -46,19 +46,15 @@ namespace FRITeam.Swapify.APIWrapper
 
                         //-1 because API count day 1,2,3,4,5 and we store days at indexes 0,1,2,3,4
                         var weekday = weekTimetable.DaysInWeek[int.Parse(block["dw"].ToString()) - 1];
-                        bool inserted = false;
-                        for (int curBlockIndex = 0; curBlockIndex < weekday.BlocksInDay.Count; curBlockIndex++)
-                        {
-                            if (weekday.BlocksInDay[curBlockIndex].IsSameBlockAs(sc))
-                            {
-                                weekday.BlocksInDay.Insert(curBlockIndex + 1, sc);
-                                inserted = true;
-                                break;
-                            }
-                        }
-                        if (!inserted)
+
+                        int index = sc.GetIndexOfSameBlockInList(weekday.BlocksInDay);
+                        if(index < 0)
                         {
                             weekday.BlocksInDay.Add(sc);
+                        }
+                        else
+                        {
+                            weekday.BlocksInDay.Insert(index + 1, sc);
                         }
                     }
                 }
