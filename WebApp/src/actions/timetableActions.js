@@ -93,7 +93,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/course/${id}`
+        url: `/api/timetable/getCourseTimetable/${id}`
       })
         .then(res => {
           dispatch({

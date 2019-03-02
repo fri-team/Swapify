@@ -74,43 +74,26 @@ namespace WebAPI.Controllers
             return Ok(this._courseService.FindByStartName(courseName));
         }
 
-        [HttpGet("course/{courseId}")]
+        [HttpGet("getCourseTimetable/{courseId}")]
         public async Task<IActionResult> GetCourseTimetable(string courseId)
         {
             bool isValidGUID = Guid.TryParse(courseId, out Guid guid);
-            var _course = await this._courseService.FindByIdAsync(guid);
-
-            if (!isValidGUID)
+            Course course = await this._courseService.FindByIdAsync(guid);
+            if (course == null)
             {
-                return ErrorResponse($"Course id: {courseId} is not valid GUID.");
-            }
-            if (_course == null)
-            {
+                _logger.LogError($"Course with id: {courseId} does not exist.");
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
-            
-            var timetable = new Timetable();
-            var Blocks = new List<TimetableBlock>();
 
-            foreach (var block in _course.Timetable.AllBlocks)
+            if (course.Timetable == null)
             {
-                TimetableBlock timetableBlock = new TimetableBlock
-                {
-                    Id = _course.Id.ToString(),
-                    Day = block.Day.GetHashCode(),
-                    StartBlock = block.StartHour - 6,
-                    EndBlock = block.StartHour - 6 + block.Duration,
-                    CourseName = _course.CourseName,
-                    CourseShortcut = _course.CourseCode ?? "",
-                    Room = block.Room,
-                    Teacher = block.Teacher,
-                    Type = (TimetableBlockType)block.BlockType
-                };
-                Blocks.Add(timetableBlock);
+                _logger.LogError($"Course with id: {courseId} does not have timetable.");
+                return ErrorResponse($"Course with id: {courseId} does not have timetable.");
             }
-            timetable.Blocks = Blocks;
-
-            return Ok(timetable);
+            else
+            {
+                return Ok(course.Timetable);
+            }
         }
     }
 }
