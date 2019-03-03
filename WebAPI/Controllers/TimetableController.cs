@@ -78,9 +78,8 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetCourseTimetable(string courseId)
         {
             bool isValidGUID = Guid.TryParse(courseId, out Guid guid);
-            //var _course = await _courseService.FindByIdAsync(guid);
-            Course _course = await _courseService.FindCourseTimetableFromProxy(guid);
-
+            var _course = await _courseService.FindByIdAsync(guid);
+            
             if (!isValidGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
@@ -89,6 +88,8 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
+
+            //Course _course = await _courseService.FindCourseTimetableFromProxy(guid); // pre najdenie rozvrhu predmetu z API ... nefunguje pre skratku kurzu
 
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();

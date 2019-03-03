@@ -6,6 +6,9 @@ using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using Moq;
+using Microsoft.Extensions.Logging;
+using FRITeam.Swapify.APIWrapper;
 
 namespace BackendTest
 {
@@ -13,10 +16,13 @@ namespace BackendTest
     public class BlockChangeRequestTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
+        private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public BlockChangeRequestTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+            _loggerMockCourse = new Mock<ILogger<CourseService>>();
+
         }
 
         [Fact]
@@ -25,7 +31,8 @@ namespace BackendTest
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
-            CourseService courseService = new CourseService(database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
             Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);

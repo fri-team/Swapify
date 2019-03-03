@@ -23,19 +23,21 @@ namespace BackendTest
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
         private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
+        private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public ConverterTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
         [Fact]
         public async Task ConvertTest_ValidStudyGroup()
         {
-            var serviceCourse = new CourseService(_database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
+            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
             var service = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
             StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13");
             grp.Should().NotBeNull();
@@ -44,8 +46,8 @@ namespace BackendTest
         [Fact]
         public async Task ConvertTest_NotValidStudyGroup()
         {
-            var serviceCourse = new CourseService(_database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
+            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
             var serviceMock = new Mock<StudyGroupService>(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
             serviceMock.Setup(x => x.GetStudyGroupAsync(It.IsAny<string>()))
                        .Returns(Task.FromResult<StudyGroup>(null));
@@ -59,7 +61,8 @@ namespace BackendTest
         [Fact]
         public async Task ConvertTest_ValidStudyGroup1()
         {
-            var serviceCourse = new CourseService(_database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
 
             ScheduleDayContent day = new ScheduleDayContent();
             var grps = new List<string>();
