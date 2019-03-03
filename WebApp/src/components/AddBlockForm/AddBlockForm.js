@@ -178,7 +178,7 @@ export default class AddBlockForm extends PureComponent {
               >
                 <FormControlLabel label="Prednáška" value="Lecture" control={<Radio />} />
                 <FormControlLabel label="Laboratórium" value="Laboratory" control={<Radio />} />
-                <FormControlLabel label="Cvičenie" value="Exercise" control={<Radio />} />
+                <FormControlLabel label="Cvičenie" value="Excercise" control={<Radio />} />
               </RadioGroup>
             </FlexBox>
           </DialogContent>
