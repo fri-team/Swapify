@@ -114,7 +114,7 @@ namespace WebAPI.Controllers
                 block.CourseId = course.Id;
                 block.Day = (Day)timetableBlock.Day;
                 block.StartHour = (byte) timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
+                block.Duration = (byte) (timetableBlock.EndBlock - timetableBlock.StartBlock);
                 block.Room = timetableBlock.Room;
                 block.Teacher = timetableBlock.Teacher;
                 block.BlockType = (BlockType)timetableBlock.Type;
@@ -127,7 +127,7 @@ namespace WebAPI.Controllers
                 block.CourseId = course.Id;
                 block.Day = (Day)timetableBlock.Day;
                 block.StartHour = (byte) timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
+                block.Duration = (byte) (timetableBlock.EndBlock - timetableBlock.StartBlock);
                 block.Room = timetableBlock.Room;
                 block.Teacher = timetableBlock.Teacher;
                 block.BlockType = (BlockType)timetableBlock.Type;
