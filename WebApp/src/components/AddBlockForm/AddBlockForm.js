@@ -17,6 +17,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from './Autocomplete';
+import * as timetableActions from '../../actions/timetableActions';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -65,7 +66,7 @@ export default class AddBlockForm extends PureComponent {
   submit = () => {
     const { onClose } = this.props;
     const { startBlock, length, ...restState } = this.state;
-    const start = parseInt(replace(startBlock, /[^1-9]/, ''));
+    const start = parseInt(replace(startBlock, /[^1-9]/, '')) / 100;
     const body = {
       user: this.props.user,
       timetableBlock: {
@@ -76,6 +77,7 @@ export default class AddBlockForm extends PureComponent {
     };
     axios.post('/api/student/addNewBlock', body).then(() => {
       onClose();
+      timetableActions.loadMyTimetable(this.props.user.email);
     });
   }
 
