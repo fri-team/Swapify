@@ -78,22 +78,40 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetCourseTimetable(string courseId)
         {
             bool isValidGUID = Guid.TryParse(courseId, out Guid guid);
-            Course course = await this._courseService.FindByIdAsync(guid);
-            if (course == null)
+            //var _course = await _courseService.FindByIdAsync(guid);
+            Course _course = await _courseService.FindCourseTimetableFromProxy(guid);
+
+            if (!isValidGUID)
             {
-                _logger.LogError($"Course with id: {courseId} does not exist.");
+                return ErrorResponse($"Course id: {courseId} is not valid GUID.");
+            }
+            if (_course == null)
+            {
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
 
-            if (course.Timetable == null)
+            var timetable = new Timetable();
+            var Blocks = new List<TimetableBlock>();
+
+            foreach (var block in _course.Timetable.AllBlocks)
             {
-                _logger.LogError($"Course with id: {courseId} does not have timetable.");
-                return ErrorResponse($"Course with id: {courseId} does not have timetable.");
+                TimetableBlock timetableBlock = new TimetableBlock
+                {
+                    Id = _course.Id.ToString(),
+                    Day = block.Day.GetHashCode(),
+                    StartBlock = block.StartHour - 6,
+                    EndBlock = block.StartHour - 6 + block.Duration,
+                    CourseName = _course.CourseName,
+                    CourseShortcut = _course.CourseCode ?? "",
+                    Room = block.Room,
+                    Teacher = block.Teacher,
+                    Type = (TimetableBlockType)block.BlockType
+                };
+                Blocks.Add(timetableBlock);
             }
-            else
-            {
-                return Ok(course.Timetable);
-            }
+            timetable.Blocks = Blocks;
+
+            return Ok(timetable);
         }
     }
 }
