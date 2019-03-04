@@ -9,7 +9,6 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  SHOW_EXCHANGE_MODE_TIMETABLE,
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
@@ -53,7 +52,6 @@ export function loadMyTimetable(userEmail) {
 }
 
 export function showExchangeModeTimetable(course) {
-  console.log(course.id);
   var courseId = course.id;
   const action = {
     type: SHOW_COURSE_TIMETABLE,
