@@ -53,11 +53,13 @@ export function loadMyTimetable(userEmail) {
 }
 
 export function showExchangeModeTimetable(course) {
-  var action = {
-    type: SHOW_EXCHANGE_MODE_TIMETABLE,
-    payload: { course }
+  console.log(course.id);
+  var courseId = course.id;
+  const action = {
+    type: SHOW_COURSE_TIMETABLE,
+    payload: { courseId }
   };
-  return dowloadCourseTimetableIfNeeded(course.courseId, course.courseName, action);
+  return dowloadCourseTimetableIfNeeded(course.id, course.courseName, action);
 }
 
 function loadCourseTimetableAsync(dispatch, id, name) {
