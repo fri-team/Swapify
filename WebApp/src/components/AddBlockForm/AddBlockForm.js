@@ -1,4 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/blockDetailActions';
 import { map, padStart, parseInt, replace } from 'lodash';
 import styled from 'styled-components';
 import { throttle } from "throttle-debounce";
@@ -25,7 +28,7 @@ const FlexBox = styled.div`
   flex-direction: column;
 `;
 
-export default class AddBlockForm extends PureComponent {
+class AddBlockForm extends Component {
   state = {
     courseName: '',
     courseShortcut: '',
@@ -75,10 +78,11 @@ export default class AddBlockForm extends PureComponent {
         endBlock: start + parseInt(length)
       }
     };
-    axios.post('/api/student/addNewBlock', body).then(() => {
+    this.props.timetableActions.addBlock(body, this.props.user.email);
+    //axios.post('/api/student/addNewBlock', body).then(() => {
       onClose();
-      timetableActions.loadMyTimetable(this.props.user.email);
-    });
+     // return this.props.store.dispatch(timetableActions.loadMyTimetable(this.props.user.email));
+    //});
   }
 
   render() {
@@ -197,3 +201,16 @@ export default class AddBlockForm extends PureComponent {
     );
   }
 }
+
+AddBlockForm.defaultProps = {};
+
+const mapStateToProps = (state) => ({
+  ...state.timetable,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  timetableActions: bindActionCreators(timetableActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddBlockForm);
