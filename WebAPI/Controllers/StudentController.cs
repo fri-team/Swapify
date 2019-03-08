@@ -98,7 +98,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            Block block = new Block();
+            Block block;
             TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
             Course course = await _courseService.FindByNameAsync(timetableBlock.CourseName);
             if (course == null)
@@ -111,26 +111,14 @@ namespace WebAPI.Controllers
                     Timetable = new FRITeam.Swapify.Entities.Timetable()
                 };
 
-                block.CourseId = course.Id;
-                block.Day = (Day)timetableBlock.Day;
-                block.StartHour = (byte)timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
-                block.Room = timetableBlock.Room;
-                block.Teacher = timetableBlock.Teacher;
-                block.BlockType = (BlockType)timetableBlock.Type;
+                block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
 
                 await _courseService.AddAsync(course);
                 course.Timetable.AllBlocks.Add(block);
             }
             else
             {
-                block.CourseId = course.Id;
-                block.Day = (Day)timetableBlock.Day;
-                block.StartHour = (byte)timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
-                block.Room = timetableBlock.Room;
-                block.Teacher = timetableBlock.Teacher;
-                block.BlockType = (BlockType)timetableBlock.Type;
+                block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
             }
 
             student.Timetable.AddNewBlock(block);
@@ -180,14 +168,13 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [HttpPut("editBlock")]
-        public async Task<IActionResult> EditBlock([FromBody]AddNewBlockModel newBlockModel)
+        [HttpPut("editblock")]
+        public async Task<IActionResult> EditBlock([FromBody] UpdateBlockModel updateBlockModel)
         {
-            var student = await _studentService.FindByIdAsync(newBlockModel.User.Student.Id);
-
+            var student = await _studentService.FindByIdAsync(updateBlockModel.User.Student.Id);
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {newBlockModel.User.Student.Id} does not exist.");
+                return ErrorResponse($"Student with id: {updateBlockModel.User.Student.Id} does not exist.");
             }
 
             if (student.Timetable == null)
@@ -195,45 +182,44 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            Block block = new Block();
-            TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
-            Course course = await _courseService.FindByNameAsync(timetableBlock.CourseName);
-            if (course == null)
+            TimetableBlock newTimetableBlock = updateBlockModel.NewTimetableBlock;
+            TimetableBlock oldTimetableBlock = updateBlockModel.OldTimetableBlock;
+            Course newCourse = await _courseService.FindByNameAsync(newTimetableBlock.CourseName);
+            Course oldCourse = await _courseService.FindByNameAsync(oldTimetableBlock.CourseName);
+            Block newBlock;
+            Block oldBlock = TimetableBlock.ConvertToBlock(oldTimetableBlock, oldCourse.Id);
+
+            if (newCourse == null)
             {
-                course = new Course
+                newCourse = new Course
                 {
                     Id = Guid.NewGuid(),
-                    CourseName = timetableBlock.CourseName,
+                    CourseName = newTimetableBlock.CourseName,
                     CourseCode = "",
                     Timetable = new FRITeam.Swapify.Entities.Timetable()
                 };
 
-                block.CourseId = course.Id;
-                block.Day = (Day)timetableBlock.Day;
-                block.StartHour = (byte)timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
-                block.Room = timetableBlock.Room;
-                block.Teacher = timetableBlock.Teacher;
-                block.BlockType = (BlockType)timetableBlock.Type;
+                newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
 
-                await _courseService.AddAsync(course);
-                course.Timetable.AllBlocks.Add(block);
+                await _courseService.AddAsync(newCourse);
+                newCourse.Timetable.AllBlocks.Add(newBlock);
             }
             else
             {
-                block.CourseId = course.Id;
-                block.Day = (Day)timetableBlock.Day;
-                block.StartHour = (byte)timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
-                block.Room = timetableBlock.Room;
-                block.Teacher = timetableBlock.Teacher;
-                block.BlockType = (BlockType)timetableBlock.Type;
+                newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
             }
 
-            student.Timetable.AddNewBlock(block);
-            await _studentService.UpdateStudentAsync(student);
 
-            return Ok(newBlockModel.TimetableBlock);
+            if (student.Timetable.UpdateBlock(oldBlock, newBlock))
+            {
+                await _studentService.UpdateStudentAsync(student);
+            }
+            else
+            {
+                return ErrorResponse($"Block {oldBlock.ToString()} is not updated");
+            }
+
+            return Ok(newBlock);
         }
     }
 }
