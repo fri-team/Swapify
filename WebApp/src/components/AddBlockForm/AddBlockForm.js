@@ -1,4 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/blockDetailActions';
 import { map, padStart, parseInt, replace } from 'lodash';
 import styled from 'styled-components';
 import { throttle } from "throttle-debounce";
@@ -17,6 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from './Autocomplete';
+import * as timetableActions from '../../actions/timetableActions';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -24,7 +28,7 @@ const FlexBox = styled.div`
   flex-direction: column;
 `;
 
-export default class AddBlockForm extends PureComponent {
+class AddBlockForm extends Component {
   state = {
     courseName: '',
     courseShortcut: '',
@@ -65,7 +69,7 @@ export default class AddBlockForm extends PureComponent {
   submit = () => {
     const { onClose } = this.props;
     const { startBlock, length, ...restState } = this.state;
-    const start = parseInt(replace(startBlock, /[^1-9]/, ''));
+    const start = parseInt(replace(startBlock, /[^1-9]/, '')) / 100;
     const body = {
       user: this.props.user,
       timetableBlock: {
@@ -74,9 +78,11 @@ export default class AddBlockForm extends PureComponent {
         endBlock: start + parseInt(length)
       }
     };
-    axios.post('/api/student/addNewBlock', body).then(() => {
+    this.props.timetableActions.addBlock(body, this.props.user.email);
+    //axios.post('/api/student/addNewBlock', body).then(() => {
       onClose();
-    });
+     // return this.props.store.dispatch(timetableActions.loadMyTimetable(this.props.user.email));
+    //});
   }
 
   render() {
@@ -176,7 +182,7 @@ export default class AddBlockForm extends PureComponent {
               >
                 <FormControlLabel label="Prednáška" value="Lecture" control={<Radio />} />
                 <FormControlLabel label="Laboratórium" value="Laboratory" control={<Radio />} />
-                <FormControlLabel label="Cvičenie" value="Exercise" control={<Radio />} />
+                <FormControlLabel label="Cvičenie" value="Excercise" control={<Radio />} />
               </RadioGroup>
             </FlexBox>
           </DialogContent>
@@ -195,3 +201,16 @@ export default class AddBlockForm extends PureComponent {
     );
   }
 }
+
+AddBlockForm.defaultProps = {};
+
+const mapStateToProps = (state) => ({
+  ...state.timetable,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  timetableActions: bindActionCreators(timetableActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddBlockForm);

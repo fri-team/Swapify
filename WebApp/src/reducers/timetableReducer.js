@@ -13,7 +13,10 @@ import {
   REMOVE_BLOCK_FAIL,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
-  CANCEL_EXCHANGE_MODE
+  CANCEL_EXCHANGE_MODE,
+  ADD_BLOCK,
+  ADD_BLOCK_DONE,
+  ADD_BLOCK_FAIL
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -166,6 +169,33 @@ export default function timetableReducer(state = initState, { type, payload }) {
         _.pick(state.courseTimetables, state.displayedCourses)
       ),
       isBlockRemoved: false
+    };
+    case ADD_BLOCK:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: false
+    };
+    case ADD_BLOCK_DONE:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: true
+    };
+    case ADD_BLOCK_FAIL:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: false
     };
     default:
       return state;

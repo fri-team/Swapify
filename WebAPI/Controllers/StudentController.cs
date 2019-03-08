@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
                 {
                     timetableBlock.CourseShortcut = course.CourseCode;
                 }
-                
+
                 timetableBlock.Room = block.Room;
                 timetableBlock.Teacher = block.Teacher;
                 timetableBlock.Type = (TimetableBlockType)block.BlockType;
@@ -112,12 +112,12 @@ namespace WebAPI.Controllers
                 };
 
                 block.CourseId = course.Id;
-                block.Day = (Day) timetableBlock.Day;
+                block.Day = (Day)timetableBlock.Day;
                 block.StartHour = (byte) timetableBlock.StartBlock;
                 block.Duration = (byte) (timetableBlock.EndBlock - timetableBlock.StartBlock);
                 block.Room = timetableBlock.Room;
                 block.Teacher = timetableBlock.Teacher;
-                block.BlockType = (BlockType) timetableBlock.Type;
+                block.BlockType = (BlockType)timetableBlock.Type;
 
                 await _courseService.AddAsync(course);
                 course.Timetable.AllBlocks.Add(block);
@@ -127,7 +127,7 @@ namespace WebAPI.Controllers
                 block.CourseId = course.Id;
                 block.Day = (Day)timetableBlock.Day;
                 block.StartHour = (byte) timetableBlock.StartBlock;
-                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
+                block.Duration = (byte) (timetableBlock.EndBlock - timetableBlock.StartBlock);
                 block.Room = timetableBlock.Room;
                 block.Teacher = timetableBlock.Teacher;
                 block.BlockType = (BlockType)timetableBlock.Type;
@@ -139,7 +139,6 @@ namespace WebAPI.Controllers
             return Ok(newBlockModel.TimetableBlock);
         }
 
-        
         [HttpDelete("{studentEmail}/blocks/{day}/{teacher}/{room}/{startHour}/{duration}/{type}")]
         public async Task<IActionResult> RemoveBlock(string studentEmail,
                                                      Day day,
@@ -179,6 +178,62 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Block {block.ToString()} does not exist in student {student.Id} timetable.");
             }
             return Ok();
+        }
+
+        [HttpPut("editBlock")]
+        public async Task<IActionResult> EditBlock([FromBody]AddNewBlockModel newBlockModel)
+        {
+            var student = await _studentService.FindByIdAsync(newBlockModel.User.Student.Id);
+
+            if (student == null)
+            {
+                return ErrorResponse($"Student with id: {newBlockModel.User.Student.Id} does not exist.");
+            }
+
+            if (student.Timetable == null)
+            {
+                return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
+            }
+
+            Block block = new Block();
+            TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
+            Course course = await _courseService.FindByNameAsync(timetableBlock.CourseName);
+            if (course == null)
+            {
+                course = new Course
+                {
+                    Id = Guid.NewGuid(),
+                    CourseName = timetableBlock.CourseName,
+                    CourseCode = "",
+                    Timetable = new FRITeam.Swapify.Entities.Timetable()
+                };
+
+                block.CourseId = course.Id;
+                block.Day = (Day)timetableBlock.Day;
+                block.StartHour = (byte)timetableBlock.StartBlock;
+                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
+                block.Room = timetableBlock.Room;
+                block.Teacher = timetableBlock.Teacher;
+                block.BlockType = (BlockType)timetableBlock.Type;
+
+                await _courseService.AddAsync(course);
+                course.Timetable.AllBlocks.Add(block);
+            }
+            else
+            {
+                block.CourseId = course.Id;
+                block.Day = (Day)timetableBlock.Day;
+                block.StartHour = (byte)timetableBlock.StartBlock;
+                block.Duration = (byte)(timetableBlock.EndBlock - timetableBlock.StartBlock);
+                block.Room = timetableBlock.Room;
+                block.Teacher = timetableBlock.Teacher;
+                block.BlockType = (BlockType)timetableBlock.Type;
+            }
+
+            student.Timetable.AddNewBlock(block);
+            await _studentService.UpdateStudentAsync(student);
+
+            return Ok(newBlockModel.TimetableBlock);
         }
     }
 }

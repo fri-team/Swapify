@@ -24,4 +24,8 @@ export const REMOVE_BLOCK_DONE = 'REMOVE_BLOCK_DONE';
 export const REMOVE_BLOCK_FAIL = 'REMOVE_BLOCK_FAIL';
 
 export const ADD_BLOCK = 'ADD_BLOCK';
+export const ADD_BLOCK_DONE = 'ADD_BLOCK_DONE';
+export const ADD_BLOCK_FAIL = 'ADD_BLOCK_FAIL';
 export const HIDE_ADD_BLOCK = 'ADD_BLOCK';
+
+
