@@ -190,8 +190,8 @@ export function exchangeConfirm(blockTo) {
 export function removeBlock(course, userEmail) {
   const block = {
     day: course.day,
-    teacher: course.teacher,
-    room: course.room,
+    teacher: (course.teacher === '') ? null : course.teacher,
+    room: (course.room === '') ? null : course,
     startHour: course.startBlock + 6,
     duration: course.endBlock - course.startBlock,
     type: ((course.type == 'laboratory') ? (2) : (3))

@@ -44,7 +44,8 @@ class AddBlockForm extends Component {
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
       axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
-        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName })) })
+        console.log(data);
+        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) })
       });
     })
     return courseName => {
@@ -58,18 +59,23 @@ class AddBlockForm extends Component {
 
   handleChange = evt => {
     const { name, value } = evt.target;
+    //console.log(value);
     this.setState({ [name]: value });
   }
 
   canSubmit = () => {
-    const { courseName, teacher, room, startBlock, length, type, courseShortcut } = this.state;
-    return courseName && teacher && room && startBlock && length && type && courseShortcut;
+    const { courseName, startBlock, length, type } = this.state;
+    return courseName && startBlock && length && type;
   }
 
   submit = () => {
     const { onClose } = this.props;
+    this.state.courseShortcut = this.state.courseName.split(' (').pop().split(')')[0];
+    this.state.courseName = this.state.courseName.split(' (')[0];
+
     const { startBlock, length, ...restState } = this.state;
-    const start = parseInt(replace(startBlock, /[^1-9]/, '')) / 100;
+
+    const start = parseInt(replace(startBlock, /[^0-9]/, '')) / 100;
     const body = {
       user: this.props.user,
       timetableBlock: {
@@ -79,15 +85,12 @@ class AddBlockForm extends Component {
       }
     };
     this.props.timetableActions.addBlock(body, this.props.user.email);
-    //axios.post('/api/student/addNewBlock', body).then(() => {
-      onClose();
-     // return this.props.store.dispatch(timetableActions.loadMyTimetable(this.props.user.email));
-    //});
+    onClose();
   }
 
   render() {
     const { onClose } = this.props
-    const { day, courseName, teacher, room, startBlock, length, type, courseShortcut, suggestions } = this.state;
+    const { day, courseName, teacher, room, startBlock, length, type, suggestions } = this.state;
     return (
       <form>
         <Dialog open onClose={evt => {
@@ -110,16 +113,6 @@ class AddBlockForm extends Component {
                 required
               />
               <TextField
-                label="Skratka predmetu"
-                placeholder="Zadajte skratku predmetu"
-                name="courseShortcut"
-                value={courseShortcut}
-                onChange={this.handleChange}
-                margin="normal"
-                fullWidth
-                required
-              />
-              <TextField
                 label="Profesor"
                 placeholder="Meno profesora"
                 name="teacher"
@@ -127,7 +120,6 @@ class AddBlockForm extends Component {
                 onChange={this.handleChange}
                 margin="normal"
                 fullWidth
-                required
               />
               <TextField
                 label="Miestnosť"
@@ -137,7 +129,6 @@ class AddBlockForm extends Component {
                 onChange={this.handleChange}
                 margin="normal"
                 fullWidth
-                required
               />
               <FormControl fullWidth required>
                 <InputLabel>Deň</InputLabel>
