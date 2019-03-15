@@ -98,28 +98,15 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            Block block;
             TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
             Course course = await _courseService.FindByNameAsync(timetableBlock.CourseName);
+
             if (course == null)
             {
-                course = new Course
-                {
-                    Id = Guid.NewGuid(),
-                    CourseName = timetableBlock.CourseName,
-                    CourseCode = "",
-                    Timetable = new FRITeam.Swapify.Entities.Timetable()
-                };
-
-                block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
-
-                await _courseService.AddAsync(course);
-                course.Timetable.AllBlocks.Add(block);
+                return ErrorResponse($"Course: {timetableBlock.CourseName} does not exist.");
             }
-            else
-            {
-                block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
-            }
+
+            Block block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
 
             student.Timetable.AddNewBlock(block);
             await _studentService.UpdateStudentAsync(student);
@@ -184,30 +171,22 @@ namespace WebAPI.Controllers
 
             TimetableBlock newTimetableBlock = updateBlockModel.NewTimetableBlock;
             TimetableBlock oldTimetableBlock = updateBlockModel.OldTimetableBlock;
+
             Course newCourse = await _courseService.FindByNameAsync(newTimetableBlock.CourseName);
             Course oldCourse = await _courseService.FindByNameAsync(oldTimetableBlock.CourseName);
-            Block newBlock;
-            Block oldBlock = TimetableBlock.ConvertToBlock(oldTimetableBlock, oldCourse.Id);
 
             if (newCourse == null)
             {
-                newCourse = new Course
-                {
-                    Id = Guid.NewGuid(),
-                    CourseName = newTimetableBlock.CourseName,
-                    CourseCode = "",
-                    Timetable = new FRITeam.Swapify.Entities.Timetable()
-                };
-
-                newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
-
-                await _courseService.AddAsync(newCourse);
-                newCourse.Timetable.AllBlocks.Add(newBlock);
+                return ErrorResponse($"New course: {newTimetableBlock.CourseName} does not exist.");
             }
-            else
+
+            if (oldCourse == null)
             {
-                newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
+                return ErrorResponse($"Old course: {oldTimetableBlock.CourseName} does not exist.");
             }
+
+            Block newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
+            Block oldBlock = TimetableBlock.ConvertToBlock(oldTimetableBlock, oldCourse.Id);
 
 
             if (student.Timetable.UpdateBlock(oldBlock, newBlock))
