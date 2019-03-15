@@ -35,5 +35,13 @@ namespace WebAPI.Controllers
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             return Ok(res);
         }
+
+        [HttpGet]
+        [Route("userExchanges/{userId}")]
+        public async Task<IActionResult> GetUserExchanges(Guid userId)
+        {            
+            var res = await _blockChangesService.FindAllStudentRequests(userId);
+            return Ok(res);
+        }
     }
 }
