@@ -9,7 +9,6 @@ import {
   LOAD_COURSE_TIMETABLE_FAIL,
   SHOW_COURSE_TIMETABLE,
   HIDE_COURSE_TIMETABLE,
-  SHOW_EXCHANGE_MODE_TIMETABLE,
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
@@ -53,22 +52,24 @@ export function loadMyTimetable(userEmail) {
 }
 
 export function showExchangeModeTimetable(course) {
-  var action = {
-    type: SHOW_EXCHANGE_MODE_TIMETABLE,
-    payload: { course }
+  var courseId = course.id;
+  const action = {
+    type: SHOW_COURSE_TIMETABLE,
+    payload: { courseId }
   };
-  return dowloadCourseTimetableIfNeeded(course.courseName, action);
+  return dowloadCourseTimetableIfNeeded(course.id, course.courseName, action);
 }
 
-function loadCourseTimetableAsync(dispatch, course) {
+function loadCourseTimetableAsync(dispatch, id, name) {
   return new Promise(resolve => {
     setTimeout(() => {
       dispatch({
         type: LOAD_COURSE_TIMETABLE_DONE,
         payload: {
           course: {
-            courseName: course,
-            timetable: data.courses[course]
+            courseId: id,
+            courseName: name,
+            timetable: data.courses[id]
           }
         }
       });
@@ -77,40 +78,42 @@ function loadCourseTimetableAsync(dispatch, course) {
   });
 }
 
-export function loadCourseTimetable(course) {
+export function loadCourseTimetable(courseId, courseName) {
   return dispatch => {
     dispatch({
       type: LOAD_COURSE_TIMETABLE
     });
-    loadCourseTimetableAsync(dispatch, course);
+    loadCourseTimetableAsync(dispatch, courseId, courseName);
   };
 }
 
-function dowloadCourseTimetableIfNeeded(course, action) {
+function dowloadCourseTimetableIfNeeded(id, name, action) {
   return (dispatch, getState) => {
     const { timetable } = getState();
-    if (!_.has(timetable.courseTimetables, course)) {
+    if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/course/${course}`
+        url: `/api/timetable/getCourseTimetable/${id}`
       })
         .then(res => {
           dispatch({
             type: LOAD_COURSE_TIMETABLE_DONE,
             payload: {
               course: {
-                courseName: course,
+                courseId: id,
+                courseName: name,
                 timetable: res.data.blocks
               }
             }
           });
+          dispatch(action);
         })
         .catch(() => {
           dispatch({
             type: LOAD_COURSE_TIMETABLE_FAIL
           });
           // fallback, TODO: modify logic to return data from API
-          loadCourseTimetableAsync(dispatch, course).then(() => {
+          loadCourseTimetableAsync(dispatch, id, name).then(() => {
             dispatch(action);
           });
         });
@@ -120,18 +123,18 @@ function dowloadCourseTimetableIfNeeded(course, action) {
   };
 }
 
-export function showCourseTimetable(course) {
+export function showCourseTimetable(courseId, courseName) {
   const action = {
     type: SHOW_COURSE_TIMETABLE,
-    payload: { course }
+    payload: { courseId }
   };
-  return dowloadCourseTimetableIfNeeded(course, action);
+  return dowloadCourseTimetableIfNeeded(courseId, courseName, action);
 }
 
-export function hideCourseTimetable(course) {
+export function hideCourseTimetable(courseId) {
   return {
     type: HIDE_COURSE_TIMETABLE,
-    payload: { course }
+    payload: { courseId }
   };
 }
 

@@ -24,16 +24,16 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle,handleChange, value })
         </AppBar>
         {value === 0 && 
           <List>
-            {courses.map(({ name, checked }) => (
-              <ListItem button key={name}>
+            {courses.map(({ courseId, courseName, checked }) => (
+              <ListItem button key={courseId}>
                 <FormControlLabel
                   control={
                     <Switch
                       checked={checked}
-                      onChange={(_, checked) => onCourseToggle(name, checked)}
+                      onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
                     />
                   }
-                  label={name}
+                  label={courseName}
                 />
               </ListItem>
               
