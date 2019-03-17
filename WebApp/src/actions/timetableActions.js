@@ -14,7 +14,9 @@ import {
   REMOVE_BLOCK_FAIL,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE,
-  ADD_BLOCK
+  ADD_BLOCK,
+  ADD_BLOCK_DONE,
+  ADD_BLOCK_FAIL
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -191,8 +193,8 @@ export function exchangeConfirm(blockTo) {
 export function removeBlock(course, userEmail) {
   const block = {
     day: course.day,
-    teacher: course.teacher,
-    room: course.room,
+    teacher: (course.teacher === '') ? null : course.teacher,
+    room: (course.room === '') ? null : course,
     startHour: course.startBlock + 6,
     duration: course.endBlock - course.startBlock,
     type: ((course.type == 'laboratory') ? (2) : (3))
@@ -232,9 +234,38 @@ export function removeBlock(course, userEmail) {
   };
 }
 
-export function addBlock(block) {
-  return {
-    type: ADD_BLOCK,
-    payload: { block }
+export function addBlock(body, userEmail) {
+  return dispatch => {
+    dispatch({
+      type: ADD_BLOCK
+    });
+    axios({
+      method: 'post',
+      url: `/api/student/addNewBlock`,
+      data: body
+    })
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/student/getStudentTimetable/' + userEmail
+      })
+        .then(res => {
+          dispatch({
+            type: LOAD_MY_TIMETABLE_DONE,
+            payload: {
+              timetable: res.data.blocks
+            }
+          });
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
+      });
+    });
   };
 }
