@@ -210,6 +210,8 @@ namespace WebAPI
                 _logger.LogInformation("Creating courses");
                 DbSeed.CreateTestingCourses(serviceProvider);
                 _logger.LogInformation("Courses created");
+                await DbSeed.CreateTestingExchangesAsync(serviceProvider);
+                _logger.LogInformation("Testing exchanges created.");
             }
             catch (Exception e)
             {

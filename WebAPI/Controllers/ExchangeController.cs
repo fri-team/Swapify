@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class ExchangeController : Controller
+    public class ExchangeController : BaseController
     {
         private readonly IBlockChangesService _blockChangesService;
         public ExchangeController(IBlockChangesService blockChangeService) : base()
@@ -34,6 +34,19 @@ namespace WebAPI.Controllers
 
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             return Ok(res);
+        }
+        
+        [HttpPost("userWaitingExchanges")]
+        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
+        {
+            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
+            if (!isValidGUID)
+            {
+                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
+            }
+
+            var response = await _blockChangesService.FindWaitingStudentRequests(guid);
+            return Ok(response);
         }
     }
 }
