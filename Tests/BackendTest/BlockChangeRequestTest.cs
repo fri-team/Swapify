@@ -67,6 +67,13 @@ namespace BackendTest
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
+
+            BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, student1.Id);
+            (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be(false);
+            blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
+
         }
 
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)

@@ -2,6 +2,7 @@ using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.Entities.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -42,6 +43,24 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
                 usersCollection.InsertOne(user);
+            }
+        }
+
+        public static async Task CreateTestingExchangesAsync(IServiceProvider serviceProvider)
+        {
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var blockExchangeCollection = dbService.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
+            var usersCollection = dbService.GetCollection<User>("users");
+
+            string email = "oleg@swapify.com";
+            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();                        
+            if (oleg != null)
+            {                
+                blockExchangeCollection.InsertOne(new BlockChangeRequest {
+                    StudentId = oleg.Id,
+                    Status = ExchangeStatus.WaitingForExchange,
+                    DateOfCreation = DateTime.Now
+                });
             }
         }
 
