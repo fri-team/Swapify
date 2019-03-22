@@ -5,12 +5,21 @@ import {
   showCourseTimetable,
   hideCourseTimetable
 } from '../../actions/timetableActions';
+
+import {
+  loadExchangeRequests
+} from '../../actions/exchangeActions'
+
 import Sidebar from './Sidebar';
 
 class SidebarContainer extends PureComponent {
   state = {
     value: 0,
   };
+
+  componentWillMount() {
+    props.loadWaitingExchangeRequests();  
+  }
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -46,6 +55,11 @@ class SidebarContainer extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({ ...state.timetable });
+const mapStateToProps = state => ({ ...state.timetable, exchangeRequests: state.exchangeRequests.exchangeRequests });
+const mapDispatchToProps = dispatch => {
+  return {
+    loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()) 
+  }
+}
 
 export default connect(mapStateToProps)(SidebarContainer);
