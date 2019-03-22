@@ -74,6 +74,9 @@ namespace BackendTest
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
 
+            await blockChangeService.CancelExchangeRequest(blockToChange3);
+            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(1);
+
         }
 
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)
