@@ -15,10 +15,12 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ExchangeController : BaseController
     {
+        private readonly IUserService _userService;
         private readonly IBlockChangesService _blockChangesService;
-        public ExchangeController(IBlockChangesService blockChangeService) : base()
+        public ExchangeController(IBlockChangesService blockChangeService, IUserService userService) : base()
         {
             _blockChangesService = blockChangeService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -36,9 +38,11 @@ namespace WebAPI.Controllers
             return Ok(res);
         }
         
-        [HttpPost("userWaitingExchanges")]
-        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
+        [HttpGet("userWaitingExchanges/{userEmail}")]
+        public async Task<IActionResult> GetUserWaitingExchanges(string userEmail)
         {
+            User user = await _userService.GetUserByEmailAsync(userEmail);
+            string studentId = user.Student.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
