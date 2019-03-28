@@ -10,11 +10,11 @@ export function loadExchangeRequests() {
     return (dispatch, getState) => {
         dispatch({
             type: LOAD_EXCHANGE_REQUESTS
-        });
-        studentId = getstate().user.studentId;
-        api.exchangeRequests.getAllWaiting(studentId)
-            .then(requests => {
-                dispatch(loadExchangeRequestsDone(requests))
+        });        
+        let userEmail = getState().user.email;
+        api.exchangeRequests.getAllWaiting(userEmail)
+            .then(response => {
+                dispatch(loadExchangeRequestsDone(response.data))
             })
             .catch(() => { 
                 dispatch({
