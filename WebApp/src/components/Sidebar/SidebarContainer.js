@@ -17,8 +17,8 @@ class SidebarContainer extends PureComponent {
     value: 0,
   };
 
-  componentWillMount() {
-    props.loadWaitingExchangeRequests();  
+  componentDidMount() {
+    this.props.loadWaitingExchangeRequests();  
   }
 
   handleChange = (event, value) => {
@@ -35,7 +35,7 @@ class SidebarContainer extends PureComponent {
   };
 
   render() {
-    const { open, onClose, myCourseNames, displayedCourses } = this.props;
+    const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
     const { value } = this.state;
     const courses = _.map(myCourseNames, course => ({
       courseName: course.courseName,
@@ -50,16 +50,17 @@ class SidebarContainer extends PureComponent {
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}
+        exchangeRequests={exchangeRequests}
       />
     );
   }
 }
 
-const mapStateToProps = state => ({ ...state.timetable, exchangeRequests: state.exchangeRequests.exchangeRequests });
+const mapStateToProps = state => ({ ...state.timetable, ...state.exchangeRequests });
 const mapDispatchToProps = dispatch => {
   return {
     loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()) 
   }
 }
 
-export default connect(mapStateToProps)(SidebarContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarContainer);

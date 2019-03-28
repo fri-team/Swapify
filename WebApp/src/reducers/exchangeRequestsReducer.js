@@ -11,7 +11,9 @@ export default function exchangeRequestsReducer(state = initState, {type, payloa
         case LOAD_EXCHANGE_REQUESTS_DONE:
             return {
                 ...state,
-                exchangeRequests = payload.exchangeRequests
-            }    
+                exchangeRequests: payload.exchangeRequests
+            } 
+        default:
+            return state;    
     }
 }
