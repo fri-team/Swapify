@@ -16,12 +16,12 @@ class SidebarContainer extends PureComponent {
     this.setState({ value });
   };
 
-  handleCourseToggle = (course, checked) => {
+  handleCourseToggle = (courseId, courseName, checked) => {
     const { dispatch } = this.props;
     if (checked) {
-      dispatch(showCourseTimetable(course));
+      dispatch(showCourseTimetable(courseId, courseName));
     } else {
-      dispatch(hideCourseTimetable(course));
+      dispatch(hideCourseTimetable(courseId));
     }
   };
 
@@ -29,8 +29,9 @@ class SidebarContainer extends PureComponent {
     const { open, onClose, myCourseNames, displayedCourses } = this.props;
     const { value } = this.state;
     const courses = _.map(myCourseNames, course => ({
-      name: course,
-      checked: _.includes(displayedCourses, course)
+      courseName: course.courseName,
+      courseId: course.courseId,
+      checked: _.includes(displayedCourses, course.courseId)
     }));
     return (
       <Sidebar

@@ -19,12 +19,14 @@ namespace BackendTest
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
         private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
+        private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _mongoFixture = mongoFixture;
             _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
@@ -32,8 +34,8 @@ namespace BackendTest
         [Fact]
         public async Task AssingTimetableToStudent()
         {
-            var serviceCourse = new CourseService(_database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
             StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
 
             StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZZS14");
@@ -55,8 +57,8 @@ namespace BackendTest
         [Fact]
         public async Task AddStudentTest()
         {
-            var serviceCourse = new CourseService(_database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
             StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
             StudentService stSer = new StudentService(_database);
             

@@ -4,17 +4,24 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using MongoDB.Driver;
+using FRITeam.Swapify.APIWrapper;
+using Microsoft.Extensions.Logging;
+using FRITeam.Swapify.Backend.Converter;
 
 namespace FRITeam.Swapify.Backend
 {
     public class CourseService : ICourseService
     {
+        private readonly ILogger<CourseService> _logger;
         private readonly IMongoDatabase _database;
         private IMongoCollection<Course> _courseCollection => _database.GetCollection<Course>(nameof(Course));
+        private readonly ISchoolScheduleProxy _scheduleProxy;
 
-        public CourseService(IMongoDatabase database)
+        public CourseService(ILogger<CourseService> logger, IMongoDatabase database, ISchoolScheduleProxy scheduleProxy)
         {
+            _logger = logger;
             _database = database;
+            _scheduleProxy = scheduleProxy;
         }
 
         public async Task AddAsync(Course entityToAdd)
@@ -68,6 +75,26 @@ namespace FRITeam.Swapify.Backend
             }
             return course.Id;
 
+        }
+
+        public async Task<Course> FindCourseTimetableFromProxy(Guid guid)
+        {
+            Course course = await _courseCollection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
+            if (course == null)
+            {
+                _logger.LogError($"Course with id {guid.ToString()} not exist");
+                return null;
+            }
+            var schedule = _scheduleProxy.GetBySubjectCode(course.CourseName);
+            if (schedule == null)
+            {
+                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
+                return null;
+            }
+            Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
+            course = new Course();
+            course.Timetable = t;
+            return course;
         }
 
         public async Task UpdateAsync(Course course)

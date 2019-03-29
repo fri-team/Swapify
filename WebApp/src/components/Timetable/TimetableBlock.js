@@ -29,7 +29,7 @@ const TimetableBlock = (props) => {
       </div>
       <div className="room">{props.room}</div>
       <div className="teacher">{props.teacher}</div>
-      {!props.isMine && <div className="opacity" />}
+      {!props.isGrey && props.isMine  && <div className="opacity" />}
     </div>
   );
 };
@@ -40,6 +40,7 @@ TimetableBlock.propTypes = {
   teacher: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   isMine: PropTypes.bool,
+  isGrey: PropTypes.bool,
   cssClasses: PropTypes.arrayOf(PropTypes.string),
   style: PropTypes.shape({}),
   onClick: PropTypes.func.isRequired,
@@ -47,6 +48,7 @@ TimetableBlock.propTypes = {
 
 TimetableBlock.defaultProps = {
   isMine: false,
+  isGrey: false,
   cssClasses: [],
   style: {},
 };

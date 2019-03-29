@@ -1,4 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/blockDetailActions';
 import { map, padStart, parseInt, replace } from 'lodash';
 import styled from 'styled-components';
 import { throttle } from "throttle-debounce";
@@ -17,6 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from './Autocomplete';
+import * as timetableActions from '../../actions/timetableActions';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -24,7 +28,7 @@ const FlexBox = styled.div`
   flex-direction: column;
 `;
 
-export default class AddBlockForm extends PureComponent {
+class AddBlockForm extends Component {
   state = {
     courseName: '',
     courseShortcut: '',
@@ -40,7 +44,7 @@ export default class AddBlockForm extends PureComponent {
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
       axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
-        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName })) })
+        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) })
       });
     })
     return courseName => {
@@ -50,7 +54,10 @@ export default class AddBlockForm extends PureComponent {
     }
   }
 
-  handleCourse = courseName => this.setState({ courseName });
+  handleCourse = courseName => {
+    this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
+    this.setState({courseName: courseName.split(' (')[0]});
+  } 
 
   handleChange = evt => {
     const { name, value } = evt.target;
@@ -58,14 +65,14 @@ export default class AddBlockForm extends PureComponent {
   }
 
   canSubmit = () => {
-    const { courseName, teacher, room, startBlock, length, type, courseShortcut } = this.state;
-    return courseName && teacher && room && startBlock && length && type && courseShortcut;
+    const { courseName, startBlock, length, type } = this.state;
+    return courseName && startBlock && length && type;
   }
 
   submit = () => {
     const { onClose } = this.props;
     const { startBlock, length, ...restState } = this.state;
-    const start = parseInt(replace(startBlock, /[^1-9]/, ''));
+    const start = parseInt(replace(startBlock, /[^0-9]/, '')) / 100;
     const body = {
       user: this.props.user,
       timetableBlock: {
@@ -74,14 +81,13 @@ export default class AddBlockForm extends PureComponent {
         endBlock: start + parseInt(length)
       }
     };
-    axios.post('/api/student/addNewBlock', body).then(() => {
-      onClose();
-    });
+    this.props.timetableActions.addBlock(body, this.props.user.email);
+    onClose();
   }
 
   render() {
     const { onClose } = this.props
-    const { day, courseName, teacher, room, startBlock, length, type, courseShortcut, suggestions } = this.state;
+    const { day, courseName, teacher, room, startBlock, length, type, suggestions } = this.state;
     return (
       <form>
         <Dialog open onClose={evt => {
@@ -104,16 +110,6 @@ export default class AddBlockForm extends PureComponent {
                 required
               />
               <TextField
-                label="Skratka predmetu"
-                placeholder="Zadajte skratku predmetu"
-                name="courseShortcut"
-                value={courseShortcut}
-                onChange={this.handleChange}
-                margin="normal"
-                fullWidth
-                required
-              />
-              <TextField
                 label="Profesor"
                 placeholder="Meno profesora"
                 name="teacher"
@@ -121,7 +117,6 @@ export default class AddBlockForm extends PureComponent {
                 onChange={this.handleChange}
                 margin="normal"
                 fullWidth
-                required
               />
               <TextField
                 label="Miestnosť"
@@ -131,7 +126,6 @@ export default class AddBlockForm extends PureComponent {
                 onChange={this.handleChange}
                 margin="normal"
                 fullWidth
-                required
               />
               <FormControl fullWidth required>
                 <InputLabel>Deň</InputLabel>
@@ -176,7 +170,7 @@ export default class AddBlockForm extends PureComponent {
               >
                 <FormControlLabel label="Prednáška" value="Lecture" control={<Radio />} />
                 <FormControlLabel label="Laboratórium" value="Laboratory" control={<Radio />} />
-                <FormControlLabel label="Cvičenie" value="Exercise" control={<Radio />} />
+                <FormControlLabel label="Cvičenie" value="Excercise" control={<Radio />} />
               </RadioGroup>
             </FlexBox>
           </DialogContent>
@@ -195,3 +189,16 @@ export default class AddBlockForm extends PureComponent {
     );
   }
 }
+
+AddBlockForm.defaultProps = {};
+
+const mapStateToProps = (state) => ({
+  ...state.timetable,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  timetableActions: bindActionCreators(timetableActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddBlockForm);

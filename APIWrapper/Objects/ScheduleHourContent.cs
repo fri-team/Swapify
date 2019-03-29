@@ -1,5 +1,6 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FRITeam.Swapify.APIWrapper.Objects
 {
@@ -75,6 +76,21 @@ namespace FRITeam.Swapify.APIWrapper.Objects
                     (RoomName == b2?.RoomName) &&
                     (LessonType == b2?.LessonType) &&
                     (StudyGroups.SetEquals(b2?.StudyGroups));
+        }
+
+        public int GetIndexOfSameBlockInList(List<ScheduleHourContent> blocksInDay)
+        {
+            if (!blocksInDay.Any()) return -2;
+
+            for (int curBlockIndex = 0; curBlockIndex < blocksInDay.Count; curBlockIndex++)
+            {
+                if (blocksInDay[curBlockIndex].IsSameBlockAs(this))
+                {
+                    return curBlockIndex;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -6,6 +6,9 @@ using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using Moq;
+using Microsoft.Extensions.Logging;
+using FRITeam.Swapify.APIWrapper;
 
 namespace BackendTest
 {
@@ -13,10 +16,13 @@ namespace BackendTest
     public class BlockChangeRequestTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
+        private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public BlockChangeRequestTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
+            _loggerMockCourse = new Mock<ILogger<CourseService>>();
+
         }
 
         [Fact]
@@ -25,7 +31,8 @@ namespace BackendTest
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
-            CourseService courseService = new CourseService(database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
             Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);
@@ -60,6 +67,13 @@ namespace BackendTest
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
+
+            BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, student1.Id);
+            (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be(false);
+            blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
+
         }
 
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)

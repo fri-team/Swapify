@@ -13,7 +13,10 @@ import {
   REMOVE_BLOCK_FAIL,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
-  CANCEL_EXCHANGE_MODE
+  CANCEL_EXCHANGE_MODE,
+  ADD_BLOCK,
+  ADD_BLOCK_DONE,
+  ADD_BLOCK_FAIL
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -58,7 +61,9 @@ export default function timetableReducer(state = initState, { type, payload }) {
         ...state,
         isLoadingMyTimetable: false,
         myTimetable: payload.timetable,
-        myCourseNames: _.sortBy(_.uniq(_.map(payload.timetable, 'courseName'))),
+        myCourseNames: _.sortBy(_.uniqBy(_.map(payload.timetable, function(item) {
+          return {courseId: item.id,courseName: item.courseName};
+        }), 'courseId'), 'courseName'),
         displayedTimetable: mergeTimetables(
           payload.timetable,
           _.pick(state.courseTimetables, state.displayedCourses)
@@ -81,7 +86,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
         courseTimetables: _.merge(
           {},
           state.courseTimetables,
-          _.set({}, payload.course.courseName, payload.course.timetable)
+          _.set({}, payload.course.courseId, payload.course.timetable)
         )
       };
     case LOAD_COURSE_TIMETABLE_FAIL:
@@ -92,22 +97,27 @@ export default function timetableReducer(state = initState, { type, payload }) {
     case SHOW_COURSE_TIMETABLE:
       return {
         ...state,
-        displayedCourses: _.concat(state.displayedCourses, payload.course),
-        displayedTimetable: mergeTimetables(
+        displayedCourses: _.concat(state.displayedCourses, payload.courseId),
+        displayedTimetable: mergeTimerablesShow(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.concat(state.displayedCourses, payload.course)
+            _.concat(state.displayedCourses, payload.courseId)
           )
         )
       };
     case SHOW_EXCHANGE_MODE_TIMETABLE:
-      return {
-        ...state,
-        isExchangeMode: true,
-        displayedTimetable: _.differenceWith(state.courseTimetables[payload.course.courseName], state.myTimetable, _.isEqual),
-        blockFromExchange: payload.course
-      };
+    return {
+      ...state,
+      displayedCourses: _.concat(state.displayedCourses, payload.courseId),
+      displayedTimetable: mergeTimerablesShow(
+        state.myTimetable,
+        _.pick(
+          state.courseTimetables,
+          _.concat(state.displayedCourses, payload.courseId)
+        )
+      )
+    };
     case CANCEL_EXCHANGE_MODE:
       return {
         ...state,
@@ -131,12 +141,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
     case HIDE_COURSE_TIMETABLE:
       return {
         ...state,
-        displayedCourses: _.without(state.displayedCourses, payload.course),
+        displayedCourses: _.without(state.displayedCourses, payload.courseId),
         displayedTimetable: mergeTimetables(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.without(state.displayedCourses, payload.course)
+            _.without(state.displayedCourses, payload.courseId)
           )
         )
       };
@@ -167,6 +177,33 @@ export default function timetableReducer(state = initState, { type, payload }) {
       ),
       isBlockRemoved: false
     };
+    case ADD_BLOCK:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: false
+    };
+    case ADD_BLOCK_DONE:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: true
+    };
+    case ADD_BLOCK_FAIL:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses)
+      ),
+      isAdded: false
+    };
     default:
       return state;
   }
@@ -180,7 +217,20 @@ export function mergeTimetables(myTimetable, courseTimetables) {
     _.differenceWith(cTimetable, myTimetable, _.isEqual)
   );
   const myFlaggedTimetable = _.map(myTimetable, b =>
-    _.merge({}, b, { isMine: true })
+    _.merge({}, b, { isGrey: true, isMine: true })
+  );
+  return _.concat(myFlaggedTimetable, _.flatten(coursesWithoutMyLabs));
+}
+
+export function mergeTimerablesShow(myTimetable, courseTimetables) {
+  if (_.isNil(courseTimetables)) {
+    return myTimetable;
+  }
+  const coursesWithoutMyLabs = _.map(courseTimetables, cTimetable =>
+    _.differenceWith(cTimetable, myTimetable, _.isEqual)
+  );
+  const myFlaggedTimetable = _.map(myTimetable, b =>
+    _.merge({}, b, { isGrey: false, isMine: true })
   );
   return _.concat(myFlaggedTimetable, _.flatten(coursesWithoutMyLabs));
 }

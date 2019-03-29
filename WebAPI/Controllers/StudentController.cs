@@ -123,6 +123,14 @@ namespace WebAPI.Controllers
                                                      byte duration,
                                                      BlockType type)
         {
+            if (teacher.Equals("null"))
+            {
+                teacher = null;
+            }
+            if (room.Equals("null"))
+            {
+                room = null;
+            }
             Block block = new Block(type, day, startHour, duration, room, teacher);
             var _user = await _userService.GetUserByEmailAsync(studentEmail);
             bool isValidGUID = Guid.TryParse(_user.Student.Id.ToString(), out Guid guid);
@@ -142,6 +150,8 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
+
+            
 
 
             if (student.Timetable.RemoveBlock(block))
