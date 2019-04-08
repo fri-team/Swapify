@@ -52,8 +52,12 @@ namespace WebAPI.Controllers
         [HttpPost("cancelExchangeRequest")]
         public async Task<IActionResult> CancelExchangeRequest([FromBody] BlockChangeRequest request)
         {
-            var response = _blockChangesService.CancelExchangeRequest(request);
-            return Ok(response);
+            var response = await _blockChangesService.CancelExchangeRequest(request);
+            if (response)
+            {
+                return Ok(response);
+            }
+            return ErrorResponse($"Cannot cancel request from student {request.StudentId}");
         }
     }
 }

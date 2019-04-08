@@ -11,6 +11,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd);
         Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId);
         Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId);
-        Task CancelExchangeRequest(BlockChangeRequest request);
+        Task<bool> CancelExchangeRequest(BlockChangeRequest request);
     }
 }

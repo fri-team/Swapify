@@ -36,13 +36,21 @@ namespace FRITeam.Swapify.Backend
             return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
         }
 
-        public async Task CancelExchangeRequest(BlockChangeRequest request)
+        public async Task<bool> CancelExchangeRequest(BlockChangeRequest request)
         {
-            await _blockChangesCollection.DeleteOneAsync(
-                x => (x.StudentId == request.StudentId &&
-                      x.BlockFrom.Equals(request.BlockFrom) &&
-                      x.BlockTo.Equals(request.BlockTo) &&
-                      x.Status == request.Status));
+            DeleteResult a = null;
+            if (request.Status == ExchangeStatus.WaitingForExchange)
+            {
+                a = await _blockChangesCollection.DeleteOneAsync(
+                    x => x.StudentId == request.StudentId &&
+                           x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
+                           x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
+                           x.BlockFrom.Day == request.BlockFrom.Day &&
+                           x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                           x.Status == request.Status);
+            }
+
+            return (a != null);
         }
 
         private async Task AddAsync(BlockChangeRequest entityToAdd)
