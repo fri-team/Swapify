@@ -50,7 +50,7 @@ class SidebarContainer extends PureComponent {
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}
-        exchangeRequests={exchangeRequests}
+        exchangeRequests={exchangeRequests}        
       />
     );
   }

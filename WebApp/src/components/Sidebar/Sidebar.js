@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { dayHourToString } from '../../util/dateTimeFormatter';
 import { CardHeader } from '@material-ui/core';
 
 const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
@@ -47,23 +48,29 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
         justify="space-around"
         alignItems="stretch"
       >
-        {exchangeRequests.map(({ dateOfCreation }) => (
-          <Card>
-            <CardHeader
-              action={
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              }
-              title="Teoria informacie (TI)"
-              subheader={dateOfCreation}
-            />
-          </Card>
-        ))}
+        {createExchangeRequestsList(exchangeRequests, courses)}
       </Grid>
     }
 
   </Drawer>
 );
+
+const createExchangeRequestsList = (exchangeRequests, courses) => {
+  return exchangeRequests.map((exchangeRequest) => createExchangeRequestListItem(exchangeRequest, courses));
+}
+
+const createExchangeRequestListItem = (exchangeRequest, courses) => {
+  var course = courses.find(course => course.courseId == exchangeRequest.blockFrom.courseId)
+
+  return (
+    <Card>
+      <CardHeader        
+        title={course.courseName}
+        subheader={dayHourToString(exchangeRequest.blockFrom.day, exchangeRequest.blockFrom.startHour)
+          + " -> " + dayHourToString(exchangeRequest.blockTo.day, exchangeRequest.blockTo.startHour)}
+      />
+    </Card>
+  )
+}
 
 export default Sidebar;
