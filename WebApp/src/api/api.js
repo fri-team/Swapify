@@ -6,8 +6,14 @@ const USER_WAITING_EXCHANGES = "userWaitingExchanges/";
 
 export default {    
     exchangeRequests: {
-        getAllWaiting: (userEmail) => axios.get(
-            API + EXCHANGES + USER_WAITING_EXCHANGES + userEmail                        
+        getAllWaiting: (studentId) => axios.post(
+            API + EXCHANGES + USER_WAITING_EXCHANGES,
+            `"${studentId}"`,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
         )
     }
 }

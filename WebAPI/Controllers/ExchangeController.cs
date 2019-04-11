@@ -14,13 +14,11 @@ namespace WebAPI.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class ExchangeController : BaseController
-    {
-        private readonly IUserService _userService;
+    {        
         private readonly IBlockChangesService _blockChangesService;
-        public ExchangeController(IBlockChangesService blockChangeService, IUserService userService) : base()
+        public ExchangeController(IBlockChangesService blockChangeService) : base()
         {
-            _blockChangesService = blockChangeService;
-            _userService = userService;
+            _blockChangesService = blockChangeService;           
         }
 
         [HttpPost]
@@ -37,12 +35,11 @@ namespace WebAPI.Controllers
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             return Ok(res);
         }
-        
-        [HttpGet("userWaitingExchanges/{userEmail}")]
-        public async Task<IActionResult> GetUserWaitingExchanges(string userEmail)
-        {
-            User user = await _userService.GetUserByEmailAsync(userEmail);
-            string studentId = user.Student.Id.ToString();
+
+        [AllowAnonymous]
+        [HttpPost("userWaitingExchanges")]
+        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
+        {            
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
