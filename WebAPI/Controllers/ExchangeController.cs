@@ -35,8 +35,7 @@ namespace WebAPI.Controllers
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             return Ok(res);
         }
-
-        [AllowAnonymous]
+        
         [HttpPost("userWaitingExchanges")]
         public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
         {            
