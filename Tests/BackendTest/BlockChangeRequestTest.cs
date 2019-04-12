@@ -99,6 +99,7 @@ namespace BackendTest
             (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(false);
             (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
 
+            blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(2);
             (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);
             blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(1);
         }

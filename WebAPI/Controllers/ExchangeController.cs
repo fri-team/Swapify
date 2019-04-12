@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(response);
             }
-            return ErrorResponse($"Cannot cancel request from student {request.StudentId}");
+            return ErrorResponse($"Cannot cancel request from student {request.StudentId} because it was changed");
         }
     }
 }

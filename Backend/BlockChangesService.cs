@@ -3,6 +3,7 @@ using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using MongoDB.Driver;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace FRITeam.Swapify.Backend
     public class BlockChangesService : IBlockChangesService
     {
         private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;
+        private static ConcurrentDictionary<BlockChangeRequest, object> _lockObjects = new ConcurrentDictionary<BlockChangeRequest, object>();
 
         public BlockChangesService(IMongoDatabase database)
         {
@@ -39,17 +41,27 @@ namespace FRITeam.Swapify.Backend
         public async Task<bool> CancelExchangeRequest(BlockChangeRequest request)
         {
             DeleteResult a = null;
-            if (request.Status == ExchangeStatus.WaitingForExchange)
+            var lockObject = _lockObjects.GetOrAdd(request, new object());
+            lock (lockObject)
             {
-                a = await _blockChangesCollection.DeleteOneAsync(
-                    x => x.StudentId == request.StudentId &&
-                           x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
-                           x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
-                           x.BlockFrom.Day == request.BlockFrom.Day &&
-                           x.BlockFrom.Duration == request.BlockFrom.Duration &&
-                           x.Status == request.Status);
+                try
+                {
+                    if (request.Status == ExchangeStatus.WaitingForExchange)
+                    {
+                        a = _blockChangesCollection.DeleteOneAsync(
+                            x => x.StudentId == request.StudentId &&
+                                 x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
+                                 x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
+                                 x.BlockFrom.Day == request.BlockFrom.Day &&
+                                 x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                                 x.Status == request.Status).Result;
+                    }
+                }
+                finally
+                {
+                    _lockObjects.TryRemove(request, out _);
+                }
             }
-
             return (a != null);
         }
 
