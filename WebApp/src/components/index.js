@@ -16,6 +16,7 @@ import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
 import AddBlockForm from './AddBlockForm/AddBlockForm';
+import EditBlockForm from './EditBlockForm/EditBlockForm';
 import StudyGroup from './StudyGroup/StudyGroup';
 import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 
@@ -36,6 +37,7 @@ export {
   Timetable,
   TimetablePage,
   AddBlockForm,
+  EditBlockForm,
   StudyGroup,
   Toolbar,
   ForgotPasswordPage,
