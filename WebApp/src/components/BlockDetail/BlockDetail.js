@@ -8,7 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
 import SwapIcon from '@material-ui/icons/SwapHorizSharp';
-import EditBlockForm from '../EditBlockForm/EditBlockForm'
+import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import SwapHorizontal from '../svg/SwapHorizontal';
 import Location from '../svg/Location';
 import Person from '../svg/Person';
@@ -17,7 +17,8 @@ import './BlockDetail.scss';
 class BlockDetail extends PureComponent {
 
   state = {
-    dialogOpen: false
+    dialogOpen: false,
+    course: {...this.props.course}
   };
 
   handleClickOutside = () => {
@@ -27,7 +28,11 @@ class BlockDetail extends PureComponent {
   }
 
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
-  handleClickDelete = () => this.props.onClickDelete(this.props.course);
+
+  handleClickDelete = () => {
+    this.props.onClickDelete(this.props.course);
+    this.setState({dialogOpen:false})
+  }
 
   onClickEditBlock = () => {
     this.setState({dialogOpen:true})
@@ -100,7 +105,7 @@ class BlockDetail extends PureComponent {
           </div>
         </div>
         {dialogOpen && (
-          <EditBlockForm 
+          <AddBlockForm 
           user={user} 
           course={course} 
           onSubmitClick={this.handleClickDelete}

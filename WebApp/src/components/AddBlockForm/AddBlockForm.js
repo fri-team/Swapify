@@ -18,7 +18,8 @@ import Select from '@material-ui/core/Select';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import ClearIcon from '@material-ui/icons/Clear';
 import Autocomplete from './Autocomplete';
 import * as timetableActions from '../../actions/timetableActions';
 
@@ -30,16 +31,23 @@ const FlexBox = styled.div`
 
 class AddBlockForm extends Component {
   state = {
-    courseName: '',
-    courseShortcut: '',
-    teacher: '',
-    room: '',
-    day: this.props.day,
-    startBlock: padStart(`${this.props.start || '07'}:00`, 5, '0'),
-    length: 2,
-    type: '',
-    suggestions: []
+    courseName: this.props.course.courseName,
+    courseShortcut: this.props.course.courseShortcut,
+    teacher: this.props.course.teacher,
+    room: this.props.course.room,
+    day: this.props.course.day,
+    startBlock: padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'),
+    length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
+    type: this.props.course.type,
+    suggestions: [],
+    user: this.props.user
   };
+
+  handleCloseClick = () => this.props.onCloseEditBlock();
+  
+  handleSubmitClick = () => this.props.onSubmitClick();
+
+  handleClickOutside = () =>  this.props.onCloseEditBlock();
 
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
@@ -81,25 +89,31 @@ class AddBlockForm extends Component {
         endBlock: start + parseInt(length)
       }
     };
+    this.handleSubmitClick();
     this.props.timetableActions.addBlock(body, this.props.user.email);
+    
     onClose();
   }
 
   render() {
     const { onClose } = this.props
-    const { day, courseName, teacher, room, startBlock, length, type, suggestions } = this.state;
+    const { day, courseName, courseShortcut, teacher, room, startBlock, length, type, suggestions } = this.state;
     return (
       <form>
         <Dialog open onClose={evt => {
           evt.stopPropagation();
           onClose();
         }}>
-          <DialogTitle>Pridanie bloku</DialogTitle>
+            <div className="buttons">
+        
+        <IconButton onClick={this.handleCloseClick}>
+          <ClearIcon nativeColor="black" />
+        </IconButton>
+      </div>
           <DialogContent>
             <FlexBox>
               <Autocomplete
-                label="Predmet"
-                placeholder="Zadajte názov predmetu"
+                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseShortcut + ")"}
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}
@@ -168,9 +182,9 @@ class AddBlockForm extends Component {
                 value={type}
                 onChange={this.handleChange}
               >
-                <FormControlLabel label="Prednáška" value="Lecture" control={<Radio />} />
-                <FormControlLabel label="Laboratórium" value="Laboratory" control={<Radio />} />
-                <FormControlLabel label="Cvičenie" value="Excercise" control={<Radio />} />
+                <FormControlLabel label="Prednáška" value="lecture" control={<Radio />} />
+                <FormControlLabel label="Laboratórium" value="laboratory" control={<Radio />} />
+                <FormControlLabel label="Cvičenie" value="excercise" control={<Radio />} />
               </RadioGroup>
             </FlexBox>
           </DialogContent>
