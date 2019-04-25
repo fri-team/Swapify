@@ -1,4 +1,4 @@
-import reducer, { initState } from './exchangeRequestsReducer';
+import reducer from './exchangeRequestsReducer';
 import loadExchangeRequestsDone from './__test__/loadExchangeRequestsDone';
 
 
