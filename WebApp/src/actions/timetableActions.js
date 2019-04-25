@@ -16,7 +16,8 @@ import {
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK,
   ADD_BLOCK_DONE,
-  ADD_BLOCK_FAIL
+  ADD_BLOCK_FAIL,
+  CHOOSE_EXCHANGE_FROM_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 
@@ -146,6 +147,14 @@ export function cancelExchangeMode(){
   };
 }
 
+export function chooseExchangeFromBlock(course) {
+  return {
+    type: CHOOSE_EXCHANGE_FROM_BLOCK,
+    payload: {
+      course
+    }
+  }  
+}
 
 export function exchangeConfirm(blockTo) {
   var action = {
@@ -159,20 +168,20 @@ export function exchangeConfirm(blockTo) {
     const body = {
       BlockFrom:
       {
-        courseId: bl.courseId,
+        courseId: bl.id,
         day: bl.day,
         startHour: bl.startBlock,
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
-        courseId: blockTo.courseId,
+        courseId: blockTo.id,
         day: blockTo.day,
         startHour: blockTo.startBlock,
         duration: blockTo.endBlock - blockTo.startBlock
       },
       StudentId: user.studentId
-    }
+    }    
 
     axios({
       method: 'post',

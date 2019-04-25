@@ -16,7 +16,8 @@ import {
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK,
   ADD_BLOCK_DONE,
-  ADD_BLOCK_FAIL
+  ADD_BLOCK_FAIL,
+  CHOOSE_EXCHANGE_FROM_BLOCK
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -204,6 +205,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
       ),
       isAdded: false
     };
+    case CHOOSE_EXCHANGE_FROM_BLOCK:
+      return {
+        ...state,
+        isExchangeMode: true,
+        blockFromExchange: payload.course // TODO choose only required attributes (id - courseId, day, startBlock, endBlock)
+      }
     default:
       return state;
   }
