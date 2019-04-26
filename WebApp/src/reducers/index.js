@@ -5,6 +5,7 @@ import createEncryptor from 'redux-persist-transform-encrypt';
 import storage from 'redux-persist/lib/storage';
 import timetable from './timetableReducer';
 import blockDetail from './blockDetailReducer';
+import exchangeRequests from './exchangeRequestsReducer'
 import user, { getUserData } from './userReducer';
 
 const transforms = [
@@ -37,7 +38,8 @@ const rootReducer = persistReducer(
     routing: routerReducer,
     timetable,
     blockDetail,
-    user
+    user,
+    exchangeRequests
   })
 );
 
