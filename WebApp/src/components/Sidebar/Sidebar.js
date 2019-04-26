@@ -59,6 +59,9 @@ const createExchangeRequestsList = (exchangeRequests, courses) => {
 const createExchangeRequestListItem = (exchangeRequest, courses) => {
   var course = courses.find(course => course.courseId == exchangeRequest.blockFrom.courseId)
 
+  if (course == null) {
+    return null;
+  }
   return (
     <Card>
       <CardHeader        
