@@ -20,6 +20,7 @@ import {
   CHOOSE_EXCHANGE_FROM_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
+import { loadExchangeRequests } from './exchangeActions';
 
 export function loadMyTimetable(userEmail) {
   return dispatch => {
@@ -191,7 +192,8 @@ export function exchangeConfirm(blockTo) {
       .then(() => {
         //TODO hide course timetable    
         dispatch(hideCourseTimetable(blockTo.id));
-        dispatch(action);            
+        dispatch(action);  
+        dispatch(loadExchangeRequests());
       })
       .catch(() => {
         dispatch(hideCourseTimetable(blockTo.id));
