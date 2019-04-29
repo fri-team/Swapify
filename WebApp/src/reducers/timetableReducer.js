@@ -127,7 +127,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
           state.myTimetable,
           _.pick(state.courseTimetables, state.displayedCourses)
         ),
-        courseToExchange: null
+        blockFromExchange: null
       }
     case CONFIRM_EXCHANGE_REQUEST:
       return {
@@ -137,7 +137,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
           state.myTimetable,
           _.pick(state.courseTimetables, state.displayedCourses)
         ),
-        courseToExchange: null
+        blockFromExchange: null
       }
     case HIDE_COURSE_TIMETABLE:
       return {
@@ -204,12 +204,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
         _.pick(state.courseTimetables, state.displayedCourses)
       ),
       isAdded: false
-    };
+    };n
     case CHOOSE_EXCHANGE_FROM_BLOCK:
       return {
         ...state,
         isExchangeMode: true,
-        blockFromExchange: payload.course // TODO choose only required attributes (id - courseId, day, startBlock, endBlock)
+        blockFromExchange: payload.course
       }
     default:
       return state;

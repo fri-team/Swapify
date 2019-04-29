@@ -189,12 +189,15 @@ export function exchangeConfirm(blockTo) {
       data: body
     })
       .then(() => {
-        dispatch(action);
+        //TODO hide course timetable    
+        dispatch(hideCourseTimetable(blockTo.id));
+        dispatch(action);            
       })
       .catch(() => {
+        dispatch(hideCourseTimetable(blockTo.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
-        });
+        });        
       });
   };
 }
