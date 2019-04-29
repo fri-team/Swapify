@@ -73,7 +73,35 @@ namespace BackendTest
             blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
+        }
 
+        [Fact]
+        public async Task CancelExchangeTest()
+        {
+            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+            StudentService studentSrv = new StudentService(database);
+            BlockChangesService blockChangeService = new BlockChangesService(database);
+            var schoolScheduleProxy = new SchoolScheduleProxy();
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
+
+            Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
+
+            Block block1 = CreateBlock(BlockType.Laboratory, Day.Monday, 2, 7, course.Id);
+            Block block2 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 10, course.Id);
+            Block block3 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 8, course.Id);
+            
+            Student student = new Student();
+            await studentSrv.AddAsync(student);
+
+            BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student.Id);
+            BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block3, block1, student.Id);
+
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
+
+            blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(2);
+            (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);
+            blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(1);
         }
 
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)

@@ -5,23 +5,48 @@ import _ from 'lodash';
 import toMaterialStyle from 'material-color-hash';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
 import SwapIcon from '@material-ui/icons/SwapHorizSharp';
+import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import SwapHorizontal from '../svg/SwapHorizontal';
 import Location from '../svg/Location';
 import Person from '../svg/Person';
 import './BlockDetail.scss';
 
 class BlockDetail extends PureComponent {
-  handleClickOutside = () => this.props.onOutsideClick();
+
+  state = {
+    dialogOpen: false,
+    course: {...this.props.course}
+  };
+
+  handleClickOutside = () => {
+    if(!this.state.dialogOpen) {
+      this.props.onOutsideClick();
+    }
+  }
+
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
-  handleClickDelete = () => this.props.onClickDelete(this.props.course);
+
+  handleClickDelete = () => {
+    this.props.onClickDelete(this.props.course);
+    this.setState({dialogOpen:false})
+  }
+
+  onClickEditBlock = () => {
+    this.setState({dialogOpen:true})
+  }
+
+  onCloseEditBlock = () => {
+    this.setState({dialogOpen:false})
+  }
 
   render() {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course } = this.props;
+    const { top, left, course,user } = this.props;
     const email =
       _.replace(_.lowerCase(_.deburr(course.teacher)), ' ', '.') +
       '@fri.uniza.sk';
@@ -29,12 +54,16 @@ class BlockDetail extends PureComponent {
       course.courseShortcut || ''
     );
     const style = { top: `${top}px`, left: `${left}px`, position: `absolute` };
+    const dialogOpen = this.state.dialogOpen;
     return (
       <div className="block-detail" style={style}>
         <div className="header" style={{ backgroundColor }}>
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
+                <IconButton onClick={this.onClickEditBlock }>
+                  <EditIcon nativeColor={color} />
+                </IconButton>
                 <IconButton onClick={this.handleClickExchange }>
                   <SwapIcon nativeColor={color} />
                 </IconButton>
@@ -75,6 +104,14 @@ class BlockDetail extends PureComponent {
             </div>
           </div>
         </div>
+        {dialogOpen && (
+          <AddBlockForm 
+          user={user} 
+          course={course} 
+          onSubmitClick={this.handleClickDelete}
+          onCloseEditBlock={this.onCloseEditBlock} 
+          onClose={this.handleClickOutside} />
+        )}
       </div>
     );
   }

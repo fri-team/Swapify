@@ -8,7 +8,7 @@ import * as timetableActions from '../../actions/timetableActions';
 
 class BlockDetailContainer extends Component {
   state = {
-    user: this.props.user
+    user: this.props.user,
   };
 
   onOutsideClick = () => {
@@ -35,6 +35,7 @@ class BlockDetailContainer extends Component {
         top={top}
         left={left}
         course={course}
+        user={this.state.user}
         onOutsideClick={this.onOutsideClick}
         onExchangeRequest={this.exchangeRequest}
         onClickDelete={this.onClickDelete}

@@ -206,7 +206,7 @@ export function removeBlock(course, userEmail) {
   const block = {
     day: course.day,
     teacher: (course.teacher === '') ? null : course.teacher,
-    room: (course.room === '') ? null : course,
+    room: (course.room === '') ? null : course.room,
     startHour: course.startBlock + 6,
     duration: course.endBlock - course.startBlock,
     type: ((course.type == 'laboratory') ? (2) : (3))

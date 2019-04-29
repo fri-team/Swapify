@@ -14,11 +14,11 @@ namespace WebAPI.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class ExchangeController : BaseController
-    {
+    {        
         private readonly IBlockChangesService _blockChangesService;
         public ExchangeController(IBlockChangesService blockChangeService) : base()
         {
-            _blockChangesService = blockChangeService;
+            _blockChangesService = blockChangeService;           
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
         
         [HttpPost("userWaitingExchanges")]
         public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
-        {
+        {            
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
@@ -47,6 +47,17 @@ namespace WebAPI.Controllers
 
             var response = await _blockChangesService.FindWaitingStudentRequests(guid);
             return Ok(response);
+        }
+        
+        [HttpPost("cancelExchangeRequest")]
+        public async Task<IActionResult> CancelExchangeRequest([FromBody] BlockChangeRequest request)
+        {
+            var response = await _blockChangesService.CancelExchangeRequest(request);
+            if (response)
+            {
+                return Ok(response);
+            }
+            return ErrorResponse($"Cannot cancel request from student {request.StudentId} because it was changed");
         }
     }
 }

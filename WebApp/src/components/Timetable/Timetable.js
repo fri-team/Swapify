@@ -15,18 +15,40 @@ const Block = ({ i, j, openAddBlock }) => (
 
 class Timetable extends React.Component {
   state = {
+    course: {
+      courseName: '',
+      courseShortcut: '',
+      teacher: '',
+      room: '',
+      day: null,
+      startBlock: null,
+      length: 2,
+      type: '',
+    },
     day: null,
     start: null,
     dialogOpen: false
   }
 
   openAddBlock = (i, j) => {
-    this.setState({ day: i, start: j + 6, dialogOpen: true })
+    let course = {...this.state.course}
+    course.day = i;
+    course.startBlock = j;
+    this.setState({course});
+    this.setState({ day: i, start: j, dialogOpen: true })
   }
+
+  handleSumbitClick = () => {
+    this.setState({dialogOpen:false})
+  };
+
+  handleClickOutside = () => {
+    this.setState({dialogOpen:false})
+  };
 
   render() {
     const { colHeadings, rowHeadings, items, user } = this.props
-    const { day, start, dialogOpen } = this.state
+    const { dialogOpen, course } = this.state
     const hours = map(colHeadings, (col, idx) => (
       <div key={idx} className="border-cell centered">
         {col}
@@ -69,7 +91,12 @@ class Timetable extends React.Component {
           {borderCells}
         </div>
         {dialogOpen && (
-          <AddBlockForm user={user} day={day} start={start} onClose={() => this.setState({ dialogOpen: false })} />
+          <AddBlockForm 
+          user={user}
+          course={course}
+          onSubmitClick={this.handleSumbitClick}
+          onCloseEditBlock={this.handleSumbitClick} 
+          onClose={this.handleClickOutside} />
         )}
       </div>
     );
