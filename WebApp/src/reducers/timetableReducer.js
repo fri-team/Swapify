@@ -213,7 +213,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
         _.pick(state.courseTimetables, state.displayedCourses)
       ),
       isAdded: false
-    };n
+    };
     case CHOOSE_EXCHANGE_FROM_BLOCK:
       return {
         ...state,
