@@ -189,10 +189,16 @@ export function exchangeConfirm(blockTo) {
       url: `/api/exchange/ExchangeConfirm`,
       data: body
     })
-      .then(() => {
-        //TODO hide course timetable    
+      .then((response) => { 
+        var exchangeMade = response.data;
+        if (exchangeMade === false) {
+          window.alert("Žiadosť o výmenu bola evidovaná.");          
+        } else {          
+          window.alert("Výmena bola vykonaná.");  
+          dispatch(loadMyTimetable(user.email));
+        }
         dispatch(hideCourseTimetable(blockTo.id));
-        dispatch(action);  
+        dispatch(action);        
         dispatch(loadExchangeRequests());
       })
       .catch(() => {
