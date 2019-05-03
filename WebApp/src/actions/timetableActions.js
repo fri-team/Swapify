@@ -135,7 +135,7 @@ export function showCourseTimetable(courseId, courseName) {
   return dowloadCourseTimetableIfNeeded(courseId, courseName, action);
 }
 
-export function hideCourseTimetable(courseId) {
+export function hideCourseTimetable(courseId = null) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { courseId }

@@ -140,14 +140,23 @@ export default function timetableReducer(state = initState, { type, payload }) {
         blockFromExchange: null
       }
     case HIDE_COURSE_TIMETABLE:
+      var displayedCourses;
+      // if course id set to null hide all courses
+      if (payload.courseId == null)
+      {
+        displayedCourses = [];
+      } else {
+        displayedCourses = _.without(state.displayedCourses, payload.courseId);
+      }
+
       return {
         ...state,
-        displayedCourses: _.without(state.displayedCourses, payload.courseId),
+        displayedCourses: displayedCourses,
         displayedTimetable: mergeTimetables(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.without(state.displayedCourses, payload.courseId)
+            displayedCourses
           )
         )
       };

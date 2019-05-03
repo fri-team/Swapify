@@ -38,7 +38,10 @@ class AppToolbar extends PureComponent {
         <Button
           variant="contained"
           color="default"
-          onClick={() => this.props.timetableActions.cancelExchangeMode()}
+          onClick={() => {
+            this.props.timetableActions.cancelExchangeMode();
+            this.props.timetableActions.hideCourseTimetable();
+          }}
         >
           Späť na rozvrh
         </Button>
