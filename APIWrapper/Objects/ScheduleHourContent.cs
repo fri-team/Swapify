@@ -69,12 +69,13 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             StudyGroups.UnionWith(studyGroups);
         }
 
+        // TODO blocks with same time, course and place are also same
         public bool IsSameBlockAs(ScheduleHourContent b2)
         {
             return (CourseName == b2?.CourseName) &&
                     (TeacherName == b2?.TeacherName) &&
                     (RoomName == b2?.RoomName) &&
-                    (LessonType == b2?.LessonType) &&
+                    (LessonType == b2?.LessonType) &&                    
                     (StudyGroups.SetEquals(b2?.StudyGroups));
         }
 
