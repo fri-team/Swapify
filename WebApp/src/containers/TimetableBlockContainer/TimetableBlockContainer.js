@@ -8,7 +8,7 @@ import * as timetableActions from '../../actions/timetableActions';
 
 class TimetableBlockContainer extends Component {
   onBlockClick = (evt, course) => {
-    if (this.props.timetable.isExchangeMode) {
+    if (this.props.timetable.isExchangeMode && !course.isMine) {
         this.props.timetableActions.exchangeConfirm(course);
     } else {
         const { offsetTop, offsetLeft, offsetWidth } = evt.currentTarget;
