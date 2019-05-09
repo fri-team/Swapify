@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions.Common;
 using Xunit;
 
 namespace BackendTest
@@ -133,6 +134,132 @@ namespace BackendTest
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher13");
             blok.Duration.Should().Be(1);
+        }
+
+        [Fact]
+        public void ConvertTest_MergeSameBlocksWithDifferentTeacher()
+        {
+            var blocks = new List<Block>()
+            {
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 8,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Tuesday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Tuesday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher2",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Wednesday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Wednesday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room201",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                }
+            };
+
+            var timetable = ConverterApiToDomain.MergeSameBlocksWithDifferentTeacher(blocks);
+
+            var mergedBlocks =  new List<Block>()
+            {
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },                
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 8,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Tuesday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1,teacher2",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },                
+                new Block()
+                {
+                    Day = Day.Wednesday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                },
+                new Block()
+                {
+                    Day = Day.Wednesday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room201",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = Guid.Empty
+                }
+            };
+
+            timetable.AllBlocks.Should().BeEquivalentTo(mergedBlocks);            
         }
     }
 

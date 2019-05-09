@@ -14,10 +14,9 @@ namespace FRITeam.Swapify.Backend.Converter
 {
     public static class ConverterApiToDomain
     {
-        public static Timetable MergeSameBlocksWithDifferentTeacher(Timetable timetable)
+        public static Timetable MergeSameBlocksWithDifferentTeacher(IEnumerable<Block> blocks)
         {            
-            var sortedBlocks =
-                timetable.AllBlocks
+            var sortedBlocks = blocks
                     .OrderBy(b => b.Day)
                     .ThenBy(b => b.StartHour)
                     .ThenBy(b => b.Duration)
@@ -26,7 +25,7 @@ namespace FRITeam.Swapify.Backend.Converter
                     .ThenBy(b => b.CourseId)
                     .ToList();
             
-            List<Block> mergedBlocks = Merge(sortedBlocks,
+            IEnumerable<Block> mergedBlocks = Merge(sortedBlocks,
                 (b1, b2) => b1.Day == b2.Day
                             && b1.StartHour == b2.StartHour
                             && b1.Duration == b2.Duration
@@ -42,7 +41,10 @@ namespace FRITeam.Swapify.Backend.Converter
             );
 
             Timetable mergedTimetable = new Timetable();
-            mergedBlocks.ForEach(b => mergedTimetable.AddNewBlock(b));            
+            foreach (var mergedBlock in mergedBlocks)
+            {
+                mergedTimetable.AddNewBlock(mergedBlock);
+            }            
             return mergedTimetable;
         }
 
@@ -54,10 +56,9 @@ namespace FRITeam.Swapify.Backend.Converter
         /// <param name="inSameGroup">If next element from sortedList and last element from actual group are in same group.</param>
         /// <param name="mergeElementsGroup">Merge group of elements to one element.</param>
         /// <returns></returns>
-        public static List<T> Merge<T>(List<T> sortedElements, Func<T,T,bool> inSameGroup, Func<List<T>, T> mergeElementsGroup)
+        public static IEnumerable<T> Merge<T>(IEnumerable<T> sortedElements, Func<T,T,bool> inSameGroup, Func<List<T>, T> mergeElementsGroup)
         {            
-            List<T> elementsGroup = new List<T>();
-            List<T> mergedElements = new List<T>();
+            List<T> elementsGroup = new List<T>();            
             
             foreach (var element in sortedElements)
             {
@@ -67,7 +68,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 }
                 else
                 {
-                    mergedElements.Add(mergeElementsGroup(elementsGroup));
+                    yield return mergeElementsGroup(elementsGroup);
                     elementsGroup.Clear();
                     elementsGroup.Add(element);
                 }                
@@ -75,10 +76,8 @@ namespace FRITeam.Swapify.Backend.Converter
 
             if (elementsGroup.Count > 0)
             {
-                mergedElements.Add(mergeElementsGroup(elementsGroup));
-            }
-
-            return mergedElements;
+                yield return mergeElementsGroup(elementsGroup);
+            }            
         }
 
         public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
