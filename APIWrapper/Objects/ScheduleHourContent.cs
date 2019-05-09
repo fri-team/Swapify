@@ -68,8 +68,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             StudyGroups = new HashSet<string>();
             StudyGroups.UnionWith(studyGroups);
         }
-
-        // TODO blocks with same time, course and place are also same
+        
         public bool IsSameBlockAs(ScheduleHourContent b2)
         {
             return (CourseName == b2?.CourseName) &&

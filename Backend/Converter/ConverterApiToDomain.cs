@@ -90,8 +90,7 @@ namespace FRITeam.Swapify.Backend.Converter
         {
             return await ConvertTimetableAsync(courseTimetable, courseServ, true);
         }
-
-        // TODO handle blocks with same time, place and course
+       
         private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, bool isTimetableForCourse)
         {
             Timetable timetable = new Timetable();
