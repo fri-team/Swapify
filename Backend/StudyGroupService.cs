@@ -53,10 +53,12 @@ namespace FRITeam.Swapify.Backend
                     return null;
                 }
                 Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, _courseService);
+                Timetable mergedTimetable = ConverterApiToDomain.MergeSameBlocksWithDifferentTeacher(t.AllBlocks);
+
                 group = new StudyGroup();
-                group.Timetable = t;
+                group.Timetable = mergedTimetable;
                 group.GroupName = studyGroupNumber;
-                group.Courses = t.AllBlocks.Select(x => x.CourseId).ToList();
+                group.Courses = mergedTimetable.AllBlocks.Select(x => x.CourseId).ToList();
                 await AddAsync(group);
 
             }
