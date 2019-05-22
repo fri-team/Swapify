@@ -9,6 +9,7 @@ RUN npm run build:CI
 # Build .NET Code app
 FROM microsoft/aspnetcore-build:2.0 AS dotnet-build
 WORKDIR /src
+ENV ASPNETCORE_ENVIRONMENT=Production
 COPY ./ ./
 RUN dotnet restore
 RUN mkdir -p /src/WebAPI/wwwroot/
@@ -20,7 +21,8 @@ RUN dotnet publish -c Release -o /app
 # Assemble final container
 FROM microsoft/aspnetcore:2.0 AS final
 WORKDIR /app
+ENV ASPNETCORE_ENVIRONMENT=Production
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "WebAPI.dll"]

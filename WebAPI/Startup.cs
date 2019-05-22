@@ -171,7 +171,11 @@ namespace WebAPI
                     DatabaseName = DatabaseName
                 };
             else
-                configuration.MongoDbSettings = new MongoDbSettings();
+                configuration.MongoDbSettings = new MongoDbSettings
+                {
+                    ConnectionString = "mongodb://localhost:27017",
+                    DatabaseName = DatabaseName
+                };
 
             configuration.IdentityOptionsAction = options =>
             {
