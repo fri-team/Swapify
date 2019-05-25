@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import axios from 'axios';
-import '../RegisterPage/RegisterPage.scss';
 import FormValidator from '../FormValidator/FormValidator';
 import { Button, TextField}   from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { ElevatedBox, MacBackground } from '../';
 import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
@@ -23,13 +21,21 @@ const validator = new FormValidator([
   }
 ]);
 class ForgotPasswordPage extends Component {
-  state = {
-    email: '',    
-    validation: validator.valid(),
-    submitted: false,
-    success: false,
-    serverErrors: ''
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      email: '',    
+      validation: validator.valid(),
+      submitted: false,
+      success: false,
+      serverErrors: ''
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+ 
 
   handleInputChange = event => {
     event.preventDefault();
@@ -60,16 +66,15 @@ class ForgotPasswordPage extends Component {
   }
 
   render() {
-    let validation = this.state.submitted
-      ? validator.validate(this.state)
-      : this.state.validation;
+   // let validation = this.state.submitted
+    //  ? validator.validate(this.state)
+     // : this.state.validation;
 
-    const formStyle = this.state.success ? {display: 'none'} : {}
-    const messageStyle = !this.state.success ? {display: 'none'} : {}
+   // const formStyle = this.state.success ? {display: 'none'} : {}
+   // const messageStyle = !this.state.success ? {display: 'none'} : {}
 
-    return (
-      <MacBackground>
-        <ElevatedBox>        
+    return (   
+      /*
           <div className='register-form' style={formStyle}>
             Zabudnuté heslo
             <div className="register-form-spacer">
@@ -105,8 +110,29 @@ class ForgotPasswordPage extends Component {
               Domov
             </Button>
           </div>
-        </ElevatedBox>
-      </MacBackground>
+          */
+         <div className="FormCenter">
+         <form onSubmit={this.onSubmit} className="FormFields" onSubmit={this.onSubmit}>
+             <div className="FormField">
+               <TextField
+                 label="E-Mailová adresa"
+                 type="email"
+                 required
+                 name="email"
+                 className="FormField__Label"
+                 value={this.state.email}
+                 onChange={this.handleInputChange}
+                 fullWidth
+               />
+             </div>
+   
+             <div className="FormField">
+               <button className="FormField__Button mr-20">Prihlasiť sa</button> <Link to="/" className="FormField__Link">Ak si zabudol heslo klinki na tento link</Link>
+               
+             </div>
+           </form>
+       }
+         </div>
     );
   }
 }

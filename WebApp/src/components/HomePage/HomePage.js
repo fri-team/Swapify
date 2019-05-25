@@ -1,30 +1,40 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import { ElevatedBox, MacBackground } from '../';
-import { LOGIN, REGISTER } from '../../util/routes';
+
+
+import React, { Component } from 'react';
+import { HashRouter as Router, Route, Link, NavLink } from 'react-router-dom';
+import LoginPage from '../LoginPage/LoginPage';
+import ForgotPasswordPage from '../ForgotPasswordPage/ForgotPasswordPage';
+import { connect } from 'react-redux';
 import './HomePage.scss';
 
-const HomePage = ({ history }) => (
-  <MacBackground>
-    <ElevatedBox className="home-content">
-      <h1>Swapify</h1>
-      <h3>Spravuj svoj rozvrh na jednom mieste!</h3>
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={() => history.push(REGISTER)}
-      >
-        Registrovať sa
-      </Button>
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={() => history.push(LOGIN)}
-      >
-        Prihlásiť sa
-      </Button>
-    </ElevatedBox>
-  </MacBackground>
-);
+class HomePage extends Component {
+  render() {
+    return (
+        <div className="App">
+          <div className="App__Aside"></div>
+          <div className="App__Form">
+            <div className="PageSwitcher">
+                <NavLink to="/" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Prihlásiť sa</NavLink>
+                <NavLink exact to="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrovať sa</NavLink>
+              </div>
 
-export default HomePage;
+              <div className="FormTitle">
+                  <NavLink to="/" activeClassName="FormTitle__Link--Active" className="FormTitle__Link">
+                  Prihlásiť sa
+                  </NavLink> alebo <NavLink exact to="/forgot-password" activeClassName="FormTitle__Link--Active" className="FormTitle__Link">Registrovať sa</NavLink>
+              </div>
+
+              <Route exact path="/" component={LoginPage}>
+              </Route>
+              <Route path="/register" component={LoginPage}>
+              </Route>
+              <Route path="/forgot-password" component={ForgotPasswordPage}>
+              </Route>
+          </div>
+
+        </div>
+    );
+  }
+}
+
+export default (HomePage);
