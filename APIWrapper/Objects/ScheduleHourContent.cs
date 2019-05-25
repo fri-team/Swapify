@@ -46,7 +46,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         /// <summary>
         /// All study groups which have lesson in the same time
         /// </summary>
-        public HashSet<string> StudyGroups { get; }
+        public HashSet<string> StudentNumbers { get; }
 
         /// <summary>
         /// Type of subject - compulsory, optional, compulsoryElective
@@ -65,8 +65,8 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             CourseShortcut = subjectShortcut;
             CourseName = subjectName;
             SubjectType = subjectType;
-            StudyGroups = new HashSet<string>();
-            StudyGroups.UnionWith(studyGroups);
+            StudentNumbers = new HashSet<string>();
+            StudentNumbers.UnionWith(studyGroups);
         }
         
         public bool IsSameBlockAs(ScheduleHourContent b2)
@@ -75,7 +75,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
                     (TeacherName == b2?.TeacherName) &&
                     (RoomName == b2?.RoomName) &&
                     (LessonType == b2?.LessonType) &&                    
-                    (StudyGroups.SetEquals(b2?.StudyGroups));
+                    (StudentNumbers.SetEquals(b2?.StudentNumbers));
         }
 
         public int GetIndexOfSameBlockInList(List<ScheduleHourContent> blocksInDay)

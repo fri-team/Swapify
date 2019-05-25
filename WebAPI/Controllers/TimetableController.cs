@@ -15,23 +15,23 @@ namespace WebAPI.Controllers
     public class TimetableController : BaseController
     {
         private readonly ILogger<TimetableController> _logger;
-        private readonly IStudyGroupService _groupService;
+        private readonly IStudentNumberService _studentNumberService;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
 
-        public TimetableController(ILogger<TimetableController> logger, IStudyGroupService groupService,
+        public TimetableController(ILogger<TimetableController> logger, IStudentNumberService studentNumberService,
             IStudentService studentService, IUserService userService, ICourseService courseService)
         {
             _logger = logger;
-            _groupService = groupService;
+            _studentNumberService = studentNumberService;
             _studentService = studentService;
             _userService = userService;
             _courseService = courseService;
         }
 
-        [HttpPost("setStudentTimetableFromGroup")]
-        public async Task<IActionResult> SetStudentTimetableFromGroup([FromBody] StudentModel body)
+        [HttpPost("setStudentTimetableFromStudentNumber")]
+        public async Task<IActionResult> SetStudentTimetableFromStudentNumber([FromBody] StudentModel body)
         {
             _logger.LogInformation($"Setting timetable for student: {body.Email}.");
             User user = await _userService.GetUserByEmailAsync(body.Email);
@@ -40,9 +40,9 @@ namespace WebAPI.Controllers
                 _logger.LogError($"User with email: {body.Email} does not exist.");
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
-            StudyGroup sg = await _groupService.GetStudyGroupAsync(body.GroupNumber);
-            if (sg == null)
-                return ErrorResponse($"Study group with number: {body.GroupNumber} does not exist.");
+            StudentNumber number = await _studentNumberService.GetStudentNumberAsync(body.StudentNumber);
+            if (number == null)
+                return ErrorResponse($"Student with number: {body.StudentNumber} does not exist.");
 
             Student student = user.Student;
             if (student == null)
@@ -51,18 +51,18 @@ namespace WebAPI.Controllers
                 await _studentService.AddAsync(student);
 
                 user.Student = student;
-                await _studentService.UpdateStudentTimetableAsync(student, sg);
+                await _studentService.UpdateStudentTimetableAsync(student, number);
 
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
-            if (student.StudyGroup.Equals(sg))
+            if (student.StudentNumber.Equals(number))
             {
                 return Ok(student.Timetable);
             }
             else
             {
-                await _studentService.UpdateStudentTimetableAsync(student, sg);
+                await _studentService.UpdateStudentTimetableAsync(student, number);
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }

@@ -18,14 +18,14 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
-        private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
+        private readonly Mock<ILogger<StudentNumberService>> _loggerMock;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _mongoFixture = mongoFixture;
-            _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _loggerMock = new Mock<ILogger<StudentNumberService>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
@@ -36,16 +36,16 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            StudentNumberService service = new StudentNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
 
-            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZZS14");
+            StudentNumber studentNumber = await service.GetStudentNumberAsync("558188");
             Student student = new Student();
-            student.Timetable = studyGroup.Timetable.Clone();
-            student.StudyGroup = studyGroup;
+            student.Timetable = studentNumber.Timetable.Clone();
+            student.StudentNumber = studentNumber;
 
             var newBlock = new Block();
-            var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
-            studyGroup.Timetable.AddNewBlock(newBlock);
+            var countShouldBe = studentNumber.Timetable.AllBlocks.Count;
+            studentNumber.Timetable.AddNewBlock(newBlock);
 
             student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
 
@@ -59,12 +59,12 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            StudentNumberService stnsrvc = new StudentNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
             StudentService stSer = new StudentService(_database);
             
             Student st = new Student();
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
-            StudyGroup gr = new StudyGroup() { GroupName = "5ZZS14" };
+            StudentNumber number = new StudentNumber() { Number = "558188" };
             Timetable tt = new Timetable();
             Block bl = new Block();
             bl.BlockType = BlockType.Lecture;
@@ -73,17 +73,17 @@ namespace BackendTest
             bl.Duration = 2;
             bl.Day = Day.Thursday;
             tt.AddNewBlock(bl);
-            gr.Timetable = tt;
+            number.Timetable = tt;
 
 
-            await grpsrvc.AddAsync(gr);
-            st.StudyGroup = gr;
+            await stnsrvc.AddAsync(number);
+            st.StudentNumber = number;
             await stSer.AddAsync(st);
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Id.Should().NotBeEmpty(); // id was set?
-            var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
-            studyGroup.GroupName.Should().Be("5ZZS14");
+            var studyGroup = await stnsrvc.FindByIdAsync(number.Id);
+            studyGroup.Number.Should().Be("558188");
             studyGroup.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
             studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
             studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);

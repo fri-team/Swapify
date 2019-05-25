@@ -23,68 +23,68 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
-        private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
+        private readonly Mock<ILogger<StudentNumberService>> _loggerMock;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public ConverterTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
-            _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _loggerMock = new Mock<ILogger<StudentNumberService>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
         [Fact]
-        public async Task ConvertTest_ValidStudyGroup()
+        public async Task ConvertTest_ValidStudentNumber()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            var service = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
-            StudyGroup grp = await service.GetStudyGroupAsync("5ZZS13");
+            var service = new StudentNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            StudentNumber grp = await service.GetStudentNumberAsync("558188");
             grp.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task ConvertTest_NotValidStudyGroup()
+        public async Task ConvertTest_NotValidStudentNumber()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            var serviceMock = new Mock<StudyGroupService>(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
-            serviceMock.Setup(x => x.GetStudyGroupAsync(It.IsAny<string>()))
-                       .Returns(Task.FromResult<StudyGroup>(null));
+            var serviceMock = new Mock<StudentNumberService>(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            serviceMock.Setup(x => x.GetStudentNumberAsync(It.IsAny<string>()))
+                       .Returns(Task.FromResult<StudentNumber>(null));
 
-            var result = await serviceMock.Object.GetStudyGroupAsync("5ZZS99");
+            var result = await serviceMock.Object.GetStudentNumberAsync("000000");
 
             Assert.Null(result);
         }
 
 
-        [Fact]
+        /*[Fact]
         public async Task ConvertTest_ValidStudyGroup1()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
 
             ScheduleDayContent day = new ScheduleDayContent();
-            var grps = new List<string>();
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS13");
-            grps.Add("5ZZS14");
+            var nmbrs = new List<string>();
+            nmbrs.Add("5ZZS12");
+            nmbrs.Add("5ZZS12");
+            nmbrs.Add("5ZZS13");
+            nmbrs.Add("5ZZS14");
 
-            ScheduleHourContent slot1 = new ScheduleHourContent(1, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot2 = new ScheduleHourContent(2, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
+            ScheduleHourContent slot1 = new ScheduleHourContent(1, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, nmbrs);
+            ScheduleHourContent slot2 = new ScheduleHourContent(2, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, nmbrs);
             ScheduleHourContent slot3 = null;
             ScheduleHourContent slot4 = null;
-            ScheduleHourContent slot5 = new ScheduleHourContent(5, false, LessonType.Excercise, "teacher5", "room2005", "AA5", "sbj5", SubjectType.Optional, grps);
+            ScheduleHourContent slot5 = new ScheduleHourContent(5, false, LessonType.Excercise, "teacher5", "room2005", "AA5", "sbj5", SubjectType.Optional, nmbrs);
             ScheduleHourContent slot6 = null;
-            ScheduleHourContent slot7 = new ScheduleHourContent(7, false, LessonType.Excercise, "teacher7", "room2007", "AA7", "sbj7", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot8 = new ScheduleHourContent(8, false, LessonType.Laboratory, "teacher8", "room2008", "AA8", "sbj8", SubjectType.Compulsory, grps);
+            ScheduleHourContent slot7 = new ScheduleHourContent(7, false, LessonType.Excercise, "teacher7", "room2007", "AA7", "sbj7", SubjectType.Compulsory, nmbrs);
+            ScheduleHourContent slot8 = new ScheduleHourContent(8, false, LessonType.Laboratory, "teacher8", "room2008", "AA8", "sbj8", SubjectType.Compulsory, nmbrs);
             ScheduleHourContent slot9 = null;
-            ScheduleHourContent slot10 = new ScheduleHourContent(10, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot11 = new ScheduleHourContent(11, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
+            ScheduleHourContent slot10 = new ScheduleHourContent(10, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, nmbrs);
+            ScheduleHourContent slot11 = new ScheduleHourContent(11, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, nmbrs);
             ScheduleHourContent slot12 = null;
-            ScheduleHourContent slot13 = new ScheduleHourContent(13, false, LessonType.Excercise, "teacher13", "room20013", "AA13", "sbj13", SubjectType.Elective, grps);
+            ScheduleHourContent slot13 = new ScheduleHourContent(13, false, LessonType.Excercise, "teacher13", "room20013", "AA13", "sbj13", SubjectType.Elective, nmbrs);
 
             day.BlocksInDay.Add(slot1);
             day.BlocksInDay.Add(slot2);
@@ -102,7 +102,7 @@ namespace BackendTest
 
             ScheduleWeekContent week = new ScheduleWeekContent();
             week.DaysInWeek.Add(day);
-            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse);
+            var timetable = await ConverterApiToDomain.ConvertTimetableForStudentNumberAsync(week, serviceCourse);
 
             timetable.AllBlocks.Count.Should().Be(6);
             var blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 7);
@@ -134,7 +134,7 @@ namespace BackendTest
             blok.Day.Should().Be(Day.Monday);
             blok.Teacher.Should().Be("teacher13");
             blok.Duration.Should().Be(1);
-        }
+        }*/
 
         [Fact]
         public void ConvertTest_MergeSameBlocksWithDifferentTeacher()
@@ -270,7 +270,7 @@ namespace BackendTest
             return GetSchedule();
         }
 
-        public ScheduleWeekContent GetByStudyGroup(string studyGroupNumber)
+        public ScheduleWeekContent GetByStudentNumber(string studentNumber)
         {
             return GetSchedule();
         }

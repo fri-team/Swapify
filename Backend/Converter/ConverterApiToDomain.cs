@@ -80,7 +80,7 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
         }
 
-        public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForStudentNumberAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
         {
             return await ConvertTimetableAsync(groupTimetable, courseServ, false);
         }
@@ -119,7 +119,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName, bl);
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName == "" ? block.CourseShortcut : block.CourseName, bl, block.CourseName != "");
                             }
                             timetable.AddNewBlock(bl);
                         }
@@ -138,7 +138,26 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName, bl);
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName == "" ? blockBefore.CourseShortcut : blockBefore.CourseName, bl, blockBefore.CourseName != "");
+                        }
+
+                        timetable.AddNewBlock(bl);
+                        startingBlock = (byte)blckIdx;
+                    }
+                    if (blckIdx == maxBlocks - 1)
+                    {
+                        var bl = new Block()
+                        {
+                            BlockType = ConvertToBlockType(blockBefore.LessonType),
+                            Day = ConvertToDay(idxDay),
+                            Teacher = blockBefore.TeacherName,
+                            Room = blockBefore.RoomName,
+                            StartHour = (byte)(schedule.DaysInWeek[idxDay].BlocksInDay[startingBlock].BlockNumber + 6), //blocknumber start 1 but starting hour in school is 7:00
+                            Duration = (byte)(maxBlocks - startingBlock)
+                        };
+                        if (!isTimetableForCourse)
+                        {
+                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName == "" ? blockBefore.CourseShortcut : blockBefore.CourseName, bl, blockBefore.CourseName != "");
                         }
 
                         timetable.AddNewBlock(bl);

@@ -4,26 +4,33 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
-import './StudyGroup.scss';
+import './StudentNumber.scss';
 import axios from 'axios';
-import { MacBackground } from '../';
+import { MacBackground } from '..';
 import { TIMETABLE } from '../../util/routes';
 
-class StudyGroup extends React.Component {
+class StudentNumber extends React.Component {
   state = {
     group: '',
     user: this.props.user,
     existing: false
   }
 
+  onKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.Submit();
+    }
+  }
+
   Submit = () => {
     const body = {
-      groupNumber: this.state.group,
+      studentNumber: this.state.group,
       email: this.state.user.email
     }
     axios({
       method: 'post',
-      url: '/api/timetable/setStudentTimetableFromGroup',
+      url: '/api/timetable/setStudentTimetableFromStudentNumber',
       data: body
     })
     .then(() => {
@@ -39,8 +46,6 @@ class StudyGroup extends React.Component {
     this.setState({existing: false});
   }
 
-
-
   canBeSubmitted = () => {
     return this.state.group.length === 6;
   }
@@ -50,7 +55,7 @@ class StudyGroup extends React.Component {
         <MacBackground>
             <div className="container home">
                  <Toolbar />
-                <div className="StudyGroup-wrapper">
+                <div className="StudentNumber-wrapper">
                 <FormControl
                     fullWidth
                 >
@@ -59,12 +64,14 @@ class StudyGroup extends React.Component {
                       id="group"
                       value={this.state.group}
                       onChange={this.handleSubmit}
-                      label="Zadajte štud. skupinu"
-                      placeholder="Príklad 5ZZS12"
+                      label="Zadajte osobné čislo"
+                      placeholder="Príklad 555000"
                       margin="normal"
                       fullWidth
                       multiline
-                      helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý formát štud. skupiny' : this.state.existing ? 'Neexistujúca štud. skupina' : ''}
+                      autoFocus
+                      onKeyDown={this.onKeyDown}
+                      helperText={this.state.group.length !== 6 && this.state.group !== "" ? 'Zlý formát osobného čísla' : this.state.existing ? 'Neexistujúce osobné číslo' : ''}
                     />
                 </FormControl>
                 <Button 
@@ -84,4 +91,4 @@ class StudyGroup extends React.Component {
 
 const mapStateToProps = state => ({ user: state.user });
 
-export default connect(mapStateToProps)(StudyGroup);
+export default connect(mapStateToProps)(StudentNumber);

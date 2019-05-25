@@ -7,4 +7,4 @@ export const TIMETABLE = '/timetable';
 export const FORGOTPASSWORD = '/forgot-password';
 export const RESETPASSWORD = '/reset-password';
 export const SETNEWPASSWORD = '/set-new-password';
-export const STUDYGROUP = '/study-group';
+export const STUDENTNUMBER = '/student-number';

@@ -62,7 +62,7 @@ namespace WebAPI
 
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<IStudyGroupService, StudyGroupService>();
+            services.AddSingleton<IStudentNumberService, StudentNumberService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();

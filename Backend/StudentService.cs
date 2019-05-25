@@ -33,10 +33,10 @@ namespace FRITeam.Swapify.Backend
             await _studentCollection.ReplaceOneAsync(x => x.Id == loadedStudent.Id, loadedStudent);
         }
 
-        public async Task UpdateStudentTimetableAsync(Student studentToUpdate, StudyGroup studyGroup)
+        public async Task UpdateStudentTimetableAsync(Student studentToUpdate, StudentNumber studentNumber)
         {
-            studentToUpdate.Timetable = studyGroup.Timetable.Clone();
-            studentToUpdate.StudyGroup = studyGroup;
+            studentToUpdate.Timetable = studentNumber.Timetable.Clone();
+            studentToUpdate.StudentNumber = studentNumber;
             await this.UpdateStudentAsync(studentToUpdate);
         }
                 
