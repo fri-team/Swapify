@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login } from '../../actions/userActions';
 import TextField from '@material-ui/core/TextField';
-import { FORGOTPASSWORD } from '../../util/routes';
 import axios from 'axios';
 class LoginPage extends Component {
   constructor() {
@@ -15,7 +13,8 @@ class LoginPage extends Component {
       submitted: false,
       serverErrors: '',
       emailNotConfirmed: false,
-      sendConfirmEmailAgainResult: ''
+      sendConfirmEmailAgainResult: '',
+      resetingPassword: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,6 +29,16 @@ class LoginPage extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  changeForm = () => {
+    if(this.state.resetingPassword) {
+      this.setState({ resetingPassword: false });
+    }
+    else {
+      this.setState({ resetingPassword: true });
+    }
+    
   }
 
   handleSubmit(e) {
@@ -52,7 +61,6 @@ class LoginPage extends Component {
         dispatch(login(data));
       }) 
       .catch(error => {
-        console.log(error);
         if (error.response.status === 403) {
           this.setState({ serverErrors: error.response.data });
           this.setState({ emailNotConfirmed: true });
@@ -67,7 +75,7 @@ class LoginPage extends Component {
     return (
       <div className="FormCenter">
       { this.state.sendConfirmEmailAgainResult === ''
-      ? <form onSubmit={this.handleSubmit} className="FormFields" onSubmit={this.handleSubmit}>
+      ? <form onSubmit={this.handleSubmit} className="FormFields">
           <div className="FormField">
             <TextField
               label="E-Mailová adresa"
@@ -81,6 +89,7 @@ class LoginPage extends Component {
             />
           </div>
 
+          { !this.state.resetingPassword &&
           <div className="FormField">
             <TextField
               label="Heslo"
@@ -93,9 +102,20 @@ class LoginPage extends Component {
               fullWidth
             />
           </div>
+          }
 
           <div className="FormField">
-            <button className="FormField__Button mr-20">Prihlasiť sa</button> <NavLink exact to={FORGOTPASSWORD} className="FormField__Link">Ak si zabudol heslo klinki na tento link</NavLink>
+            <button className="FormField__Button">
+            { !this.state.resetingPassword ?
+            "Prihlasiť sa" : "Resetovat Heslo" }
+            </button> 
+          </div>
+          
+          <div className="FormField">
+          <a onClick={this.changeForm} className="FormField__Link">
+              { !this.state.resetingPassword ?
+              " Ak si zabudol heslo klinki na tento link" : " Spat na login" }
+            </a>
             
           </div>
         </form>

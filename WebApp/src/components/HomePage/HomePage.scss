@@ -5,12 +5,12 @@
 }
 
 .App__Aside {
-  width: 70%;
+  width: 60%;
   background-color: white;
 }
 
 .App__Form {
-  width: 30%;
+  width: 40%;
   background-color: #a3e0ff;
   padding: 25px 40px;
   overflow: auto;
@@ -37,15 +37,6 @@
 .PageSwitcher__Item--Active {
   background-color: white;
   color: #4699c4;
-}
-
-.PageSwitcher__Item:first-child {
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-}
-.PageSwitcher__Item:last-child {
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
 }
 
 .FormCenter {
@@ -109,7 +100,6 @@
   color: white;
   border: none;
   outline: none;
-  border-radius: 25px;
   padding: 15px 70px;
   font-size: .9em;
   font-weight: 500;
