@@ -15,5 +15,12 @@ export default {
                 }
             }
         )
+    },
+    notifications: {
+        getMine:  (userId) => 
+            axios.get('api/notification/' + userId, {
+                contentType: 'application/json',
+                responseType: 'json'                
+            })        
     }
 }
