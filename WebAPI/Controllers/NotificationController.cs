@@ -12,7 +12,12 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class NotificationController: BaseController
     {
-        [AllowAnonymous]
+        [HttpPut]
+        public async Task<IActionResult> UpdateNotification([FromBody] Notification notification)
+        {
+            return Ok();
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserNotifications(string userId)
         {
@@ -42,6 +47,14 @@ namespace WebAPI.Controllers
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
+                new Notification()
+                {
+                    NotificationId = Guid.NewGuid(),
+                    Type = "1",
+                    Text = "ahoj2",
+                    CreatedAt = DateTime.Now,
+                    Read = true
+                }
             };
 
             return Ok(notifications);

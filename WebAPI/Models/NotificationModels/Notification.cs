@@ -9,17 +9,13 @@ namespace WebAPI.Models.NotificationModels
     {
         public Guid NotificationId { get; set; }
 
+        public Guid RecipientId { get; set; }
+
         public string Type { get; set; }
 
-        public string Text { get; set; }
+        public string Text { get; set; }        
 
-        //public string Photo { get; set; }
-
-        public bool Read { get; set; }
-
-        // public User Sender { get; set; }
-
-        //public IEnumerable<User> Recipients { get; set; }
+        public bool Read { get; set; }                
 
         public DateTime CreatedAt { get; set; }        
     }
