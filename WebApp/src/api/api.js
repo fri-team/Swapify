@@ -21,6 +21,14 @@ export default {
             axios.get('api/notification/' + userId, {
                 contentType: 'application/json',
                 responseType: 'json'                
-            })        
+            }),
+        setRead: (userId, notificationId, read) =>
+            axios.put(
+                'api/notification/',
+                {
+                    NotificationId: notificationId,
+                    RecipientId: userId,
+                    Read: read
+                })            
     }
 }

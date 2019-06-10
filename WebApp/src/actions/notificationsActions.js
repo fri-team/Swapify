@@ -3,7 +3,8 @@ import api from '../api/api';
 import {
 	NOTIFICATIONS_FETCH_START,
 	NOTIFICATIONS_FETCH_FAIL,
-	NOTIFICATIONS_FETCH_DONE
+	NOTIFICATIONS_FETCH_DONE,
+	NOTIFICATION_READ_CHANGED
 } from '../constants/actionTypes';
 
 function fetchNotificationsStart() {
@@ -30,6 +31,17 @@ function fetchNotificationsFail(error) {
 	};
 }
 
+function notificationReadChanged(notificationId, read)
+{
+	return {
+		type: NOTIFICATION_READ_CHANGED,
+		payload: {
+			notificationId,
+			read
+		}
+	}
+}
+
 export function fetchNotifications() {
     return (dispatch, getState) => {        
         dispatch(fetchNotificationsStart());
@@ -44,3 +56,16 @@ export function fetchNotifications() {
 		});
 	};
 }
+
+export function setRead(notificationId, read) {
+	return (dispatch, getState) => {
+		let studentId = getState().user.studentId;
+
+		api.notifications.setRead(studentId, notificationId, read)
+			.then((response) => {
+				dispatch(notificationReadChanged(notificationId, read));
+			})
+		//TODO catch error 	
+	}
+}
+
