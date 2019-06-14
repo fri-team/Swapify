@@ -16,27 +16,27 @@ namespace FRITeam.Swapify.APIWrapper
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ScheduleWeekContent GetByTeacherName(string teacherNumber)
+        public IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber)
         {
             return CallScheduleContentApi(1, teacherNumber);
         }
 
-        public ScheduleWeekContent GetByStudyGroup(string studyGroupNumber)
+        public IEnumerable<ScheduleHourContent> GetByStudyGroup(string studyGroupNumber)
         {
             return CallScheduleContentApi(2, studyGroupNumber);
         }
 
-        public ScheduleWeekContent GetByRoomNumber(string roomNumber)
+        public IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber)
         {
             return CallScheduleContentApi(3, roomNumber);
         }
 
-        public ScheduleWeekContent GetBySubjectCode(string subjectCode)
+        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
         {
             return CallScheduleContentApi(4, subjectCode);
         }
 
-        private ScheduleWeekContent CallScheduleContentApi(int type, string requestContent)
+        private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
         {
             var address = $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
             var myResponse = "";
