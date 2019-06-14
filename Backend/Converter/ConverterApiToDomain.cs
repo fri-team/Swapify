@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -47,6 +48,95 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
             return mergedTimetable;
         }
+        
+        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(IEnumerable<ScheduleHourContent> blocks, ICourseService courseService, bool isTimetableForCourse)
+        {                        
+            var sortedBlocks = blocks
+                .OrderBy(b => b.Day)
+                .ThenBy(b => b.CourseName)                                
+                .ThenBy(b => b.TeacherName)
+                .ThenBy(b => b.RoomName)
+                .ThenBy(b => b.LessonType)
+                .ThenBy(b => b.BlockNumber)
+                .ToList();
+
+            IEnumerable<Task<Block>> mergedBlocks = MergeAsync(sortedBlocks,
+                (group, b2) =>
+                {
+                    ScheduleHourContent b1 = group.Last();
+                    return b1.Day == b2.Day
+                        && b1.CourseName == b2.CourseName
+                        && b1.TeacherName == b2.TeacherName
+                        && b1.RoomName == b2.RoomName
+                        && b1.LessonType == b2.LessonType
+                        && b1.BlockNumber == b2.BlockNumber - 1;
+                },
+                async (group) =>
+                {
+                    ScheduleHourContent firstInGroup = group.First();
+                    var block = new Block()
+                    {
+                        BlockType = ConvertToBlockType(firstInGroup.LessonType),
+                        Day = ConvertToDay(firstInGroup.Day),
+                        Teacher = firstInGroup.TeacherName,
+                        Room = firstInGroup.RoomName,
+                        StartHour = (byte)(firstInGroup.BlockNumber + 6), // block number start 1 but starting hour in school is 7:00
+                        Duration = (byte)(group.Count)
+                    };
+
+                    if (!isTimetableForCourse)
+                    {
+                        block.CourseId = await courseService.GetOrAddNotExistsCourseId(firstInGroup.CourseName, block);
+                    }
+
+                    return block;
+                }                
+            );
+
+            Timetable mergedTimetable = new Timetable();
+            foreach (var mergedBlock in mergedBlocks)
+            {
+                mergedTimetable.AddNewBlock(await mergedBlock);
+            }
+
+            return mergedTimetable;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TElement"></typeparam>
+        /// <typeparam name="TMerged"></typeparam>
+        /// <param name="sortedElements">Order has to be such that elements from same group are in list together.</param>
+        /// <param name="isInGroup">If next element from sortedList is in the group.</param>
+        /// <param name="mergeElementsGroup">Merge group of elements to one element.</param>
+        /// <returns></returns>
+        public static IEnumerable<Task<TMerged>> MergeAsync<TElement, TMerged>(
+            IEnumerable<TElement> sortedElements,
+            Func<List<TElement>, TElement, bool> isInGroup,
+            Func<List<TElement>, Task<TMerged>> mergeElementsAsync)
+        {
+            List<TElement> elementsGroup = new List<TElement>();
+
+            foreach (var element in sortedElements)
+            {
+                if (elementsGroup.Count == 0 || isInGroup(elementsGroup, element))
+                {
+                    elementsGroup.Add(element);
+                }
+                else
+                {
+                    yield return mergeElementsAsync(elementsGroup);
+                    elementsGroup.Clear();
+                    elementsGroup.Add(element);
+                }
+            }
+
+            if (elementsGroup.Count > 0)
+            {
+                yield return mergeElementsAsync(elementsGroup);
+            }
+        }
 
         /// <summary>
         /// 
@@ -79,17 +169,18 @@ namespace FRITeam.Swapify.Backend.Converter
                 yield return mergeElementsGroup(elementsGroup);
             }            
         }
-
-        public static async Task<Timetable> ConvertTimetableForGroupAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
+        
+        public static async Task<Timetable> ConvertTimetableForGroupAsync(IEnumerable<ScheduleHourContent> groupTimetable, ICourseService courseServ)
         {
-            return await ConvertTimetableAsync(groupTimetable, courseServ, false);
+            return await ConvertAndMergeSameConsecutiveBlocks(groupTimetable, courseServ, false);            
+        }
+        
+        public static async Task<Timetable> ConvertTimetableForCourseAsync(IEnumerable<ScheduleHourContent> courseTimetable, ICourseService courseServ)
+        {
+            return await ConvertAndMergeSameConsecutiveBlocks(courseTimetable, courseServ, true);            
         }
 
-        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ)
-        {
-            return await ConvertTimetableAsync(courseTimetable, courseServ, true);
-        }
-       
+        // TODO rewrite
         private static async Task<Timetable> ConvertTimetableAsync(ScheduleWeekContent schedule, ICourseService courseServ, bool isTimetableForCourse)
         {
             Timetable timetable = new Timetable();
