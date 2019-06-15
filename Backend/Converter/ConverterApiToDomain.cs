@@ -69,7 +69,8 @@ namespace FRITeam.Swapify.Backend.Converter
                         && b1.TeacherName == b2.TeacherName
                         && b1.RoomName == b2.RoomName
                         && b1.LessonType == b2.LessonType
-                        && b1.BlockNumber == b2.BlockNumber - 1;
+                        && (b1.BlockNumber == b2.BlockNumber - 1
+                            || b1.BlockNumber == b2.BlockNumber); // || b1.BlockNumber == b2.BlockNumber to eliminate duplicates (same blocks) 
                 },
                 async (group) =>
                 {
@@ -81,7 +82,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         Teacher = firstInGroup.TeacherName,
                         Room = firstInGroup.RoomName,
                         StartHour = (byte)(firstInGroup.BlockNumber + 6), // block number start 1 but starting hour in school is 7:00
-                        Duration = (byte)(group.Count)
+                        Duration = (byte)(group.Last().BlockNumber - firstInGroup.BlockNumber + 1)
                     };
 
                     if (!isTimetableForCourse)
