@@ -93,7 +93,8 @@ namespace FRITeam.Swapify.Backend
                                                      x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
                                                      x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
                                                      x.BlockFrom.Day == request.BlockFrom.Day &&
-                                                     x.BlockFrom.Duration == request.BlockFrom.Duration);
+                                                     x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                                                     x.Status == ExchangeStatus.WaitingForExchange);
         }
 
         private async Task SetDoneStatus(BlockChangeRequest request)

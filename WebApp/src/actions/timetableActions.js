@@ -171,14 +171,14 @@ export function exchangeConfirm(blockTo) {
       {
         courseId: bl.id,
         day: bl.day,
-        startHour: bl.startBlock,
+        startHour: bl.startBlock + 6,
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
         courseId: blockTo.id,
         day: blockTo.day,
-        startHour: blockTo.startBlock,
+        startHour: blockTo.startBlock + 6,
         duration: blockTo.endBlock - blockTo.startBlock
       },
       StudentId: user.studentId
