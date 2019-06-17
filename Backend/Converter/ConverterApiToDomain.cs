@@ -27,12 +27,16 @@ namespace FRITeam.Swapify.Backend.Converter
                     .ToList();
             
             IEnumerable<Block> mergedBlocks = Merge(sortedBlocks,
-                (b1, b2) => b1.Day == b2.Day
-                            && b1.StartHour == b2.StartHour
-                            && b1.Duration == b2.Duration
-                            && b1.Room == b2.Room
-                            && b1.BlockType == b2.BlockType
-                            && b1.CourseId == b2.CourseId,
+                (group, b2) =>
+                {
+                    Block b1 = group.Last();
+                    return b1.Day == b2.Day
+                           && b1.StartHour == b2.StartHour
+                           && b1.Duration == b2.Duration
+                           && b1.Room == b2.Room
+                           && b1.BlockType == b2.BlockType
+                           && b1.CourseId == b2.CourseId;
+                },
                 (blocksGroup) =>
                 {
                     Block block = blocksGroup[0].Clone();
@@ -60,7 +64,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 .ThenBy(b => b.BlockNumber)
                 .ToList();
 
-            IEnumerable<Task<Block>> mergedBlocks = MergeAsync(sortedBlocks,
+            IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
                 {
                     ScheduleHourContent b1 = group.Last();
@@ -101,59 +105,27 @@ namespace FRITeam.Swapify.Backend.Converter
             }
 
             return mergedTimetable;
-        }
+        }        
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TElement"></typeparam>
-        /// <typeparam name="TMerged"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         /// <param name="sortedElements">Order has to be such that elements from same group are in list together.</param>
         /// <param name="isInGroup">If next element from sortedList is in the group.</param>
-        /// <param name="mergeElementsAsync">Merge group of elements to one element.</param>
-        /// <returns></returns>
-        public static IEnumerable<Task<TMerged>> MergeAsync<TElement, TMerged>(
-            IEnumerable<TElement> sortedElements,
-            Func<List<TElement>, TElement, bool> isInGroup,
-            Func<List<TElement>, Task<TMerged>> mergeElementsAsync)
-        {
-            List<TElement> elementsGroup = new List<TElement>();
-
-            foreach (var element in sortedElements)
-            {
-                if (elementsGroup.Count == 0 || isInGroup(elementsGroup, element))
-                {
-                    elementsGroup.Add(element);
-                }
-                else
-                {
-                    yield return mergeElementsAsync(elementsGroup);
-                    elementsGroup.Clear();
-                    elementsGroup.Add(element);
-                }
-            }
-
-            if (elementsGroup.Count > 0)
-            {
-                yield return mergeElementsAsync(elementsGroup);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sortedElements">Order has to be such that elements from same group are in list together.</param>
-        /// <param name="inSameGroup">If next element from sortedList and last element from actual group are in same group.</param>
         /// <param name="mergeElementsGroup">Merge group of elements to one element.</param>
         /// <returns></returns>
-        public static IEnumerable<T> Merge<T>(IEnumerable<T> sortedElements, Func<T,T,bool> inSameGroup, Func<List<T>, T> mergeElementsGroup)
+        public static IEnumerable<TResult> Merge<TElement, TResult>(
+            IEnumerable<TElement> sortedElements,
+            Func<List<TElement>, TElement, bool> isInGroup,
+            Func<List<TElement>, TResult> mergeElementsGroup)
         {            
-            List<T> elementsGroup = new List<T>();            
+            List<TElement> elementsGroup = new List<TElement>();            
             
             foreach (var element in sortedElements)
             {
-                if (elementsGroup.Count == 0 || inSameGroup(elementsGroup[elementsGroup.Count - 1], element))
+                if (elementsGroup.Count == 0 || isInGroup(elementsGroup, element))
                 {
                     elementsGroup.Add(element);                    
                 }
