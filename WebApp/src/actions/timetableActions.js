@@ -21,6 +21,7 @@ import {
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 import { loadExchangeRequests } from './exchangeActions';
+import { blockNumberToHour } from '../util/convertFunctions';
 
 export function loadMyTimetable(userEmail) {
   return dispatch => {
@@ -171,14 +172,14 @@ export function exchangeConfirm(blockTo) {
       {
         courseId: bl.id,
         day: bl.day,
-        startHour: bl.startBlock + 6,
+        startHour: blockNumberToHour(bl.startBlock),
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
         courseId: blockTo.id,
         day: blockTo.day,
-        startHour: blockTo.startBlock + 6,
+        startHour: blockNumberToHour(blockTo.startBlock),
         duration: blockTo.endBlock - blockTo.startBlock
       },
       StudentId: user.studentId
