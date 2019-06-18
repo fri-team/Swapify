@@ -17,6 +17,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
 {
     public static class DbSeed
     {
+        private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
+        
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
@@ -28,6 +30,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 User user = new User
                 {
+                    Id = OlegGuid,
                     Name = "Oleg",
                     Surname = "Dementov",
                     Email = email,
@@ -35,7 +38,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     UserName = email,
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
-                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    SecurityStamp = OlegGuid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider)
                 };
 
@@ -99,6 +102,54 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     }
                 });                
             }
+        }
+
+        public static async Task CreateTestingNotifications(IServiceProvider serviceProvider)
+        {
+            var db = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var notificationsCollection = db.GetCollection<Notification>(nameof(Notification));
+
+            var notifications = new List<Notification>
+            {
+                new Notification()
+                {
+                    Id = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75"),
+                    RecipientId = OlegGuid,
+                    Type = "1",
+                    Text = "ahoj",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new Notification()
+                {
+                    Id = Guid.Parse("6ed215e5-3e84-4487-b397-afe626f37a8f"),
+                    RecipientId = OlegGuid,
+                    Type = "1",
+                    Text = "ahoj1",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new Notification()
+                {
+                    Id = Guid.Parse("4e6cc595-5a84-4184-b06d-363d341ddbfb"),
+                    RecipientId = OlegGuid,
+                    Type = "1",
+                    Text = "ahoj2",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new Notification()
+                {
+                    Id = Guid.Parse("321996ff-2881-4cb8-bc55-b19f2935ae7e"),
+                    RecipientId = OlegGuid,
+                    Type = "1",
+                    Text = "ahoj2",
+                    CreatedAt = DateTime.Now,
+                    Read = true
+                }
+            };
+
+            await notificationsCollection.InsertManyAsync(notifications);
         }
 
         private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider)
