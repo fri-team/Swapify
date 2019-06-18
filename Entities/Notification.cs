@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace WebAPI.Models.NotificationModels
+namespace FRITeam.Swapify.Entities
 {
-    public class Notification
-    {
-        public Guid NotificationId { get; set; }
-
+    public class Notification: BaseEntity
+    {        
         public Guid RecipientId { get; set; }
 
         public string Type { get; set; }
