@@ -17,18 +17,13 @@ export default {
         )
     },
     notifications: {
-        getMine:  (userId) => 
-            axios.get('api/notification/' + userId, {
+        getMine:  (email) => 
+            axios.get('api/notification/' + email, {
                 contentType: 'application/json',
                 responseType: 'json'                
             }),
-        setRead: (userId, notificationId, read) =>
-            axios.put(
-                'api/notification/',
-                {
-                    NotificationId: notificationId,
-                    RecipientId: userId,
-                    Read: read
-                })            
+        setRead: (notificationId, read) =>
+            axios.put(`api/notification/${notificationId}/${read}`)
+        
     }
 }

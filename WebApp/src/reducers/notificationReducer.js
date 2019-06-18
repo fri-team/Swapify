@@ -45,7 +45,7 @@ export default function notificationReducer(state = initState, { type, payload }
 function setNotificationRead(notifications, notificationId, read)
 {	
 	var nextNotifications = notifications.map(notification => {
-		if (notification.notificationId == notificationId) {
+		if (notification.id == notificationId) {
 			return {
 				...notification,
 				read

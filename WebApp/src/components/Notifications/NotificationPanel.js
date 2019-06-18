@@ -41,8 +41,8 @@ class NotificationPanel extends Component {
             this.props.notifications.forEach(notification => {
                 notificationComponents.push(
                     <Notification
-                        key={notification.notificationId}
-                        id={notification.notificationId}
+                        key={notification.id}
+                        id={notification.id}
                         text={notification.text}
                         read={notification.read}
                         //date={moment(notification.createdAt).format("ddd, Do MMM YYYY - HH:mm")}

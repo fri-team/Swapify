@@ -46,9 +46,9 @@ export function fetchNotifications() {
     return (dispatch, getState) => {        
         dispatch(fetchNotificationsStart());
         
-        let studentId = getState().user.studentId;        
+        let email = getState().user.email;        
 
-        api.notifications.getMine(studentId)
+        api.notifications.getMine(email)
 		.then((response) => {
 			dispatch(fetchNotificationsDone(response.data));
 		}).catch((error) => {
@@ -58,10 +58,8 @@ export function fetchNotifications() {
 }
 
 export function setRead(notificationId, read) {
-	return (dispatch, getState) => {
-		let studentId = getState().user.studentId;
-
-		api.notifications.setRead(studentId, notificationId, read)
+	return (dispatch, getState) => {		
+		api.notifications.setRead(notificationId, read)
 			.then((response) => {
 				dispatch(notificationReadChanged(notificationId, read));
 			})
