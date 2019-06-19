@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions.Common;
+using FRITeam.Swapify.Backend.Interfaces;
 using Xunit;
 
 namespace BackendTest
@@ -58,82 +59,113 @@ namespace BackendTest
             Assert.Null(result);
         }
 
-
         [Fact]
-        public async Task ConvertTest_ValidStudyGroup1()
+        public async void ConvertTest_ConvertAndMergeSameConsecutiveBlocks()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
 
-            ScheduleDayContent day = new ScheduleDayContent();
-            var grps = new List<string>();
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS13");
-            grps.Add("5ZZS14");
+            // define schedule hour content for 4 blocks
+            var block1Hour1 =
+                new ScheduleHourContent(0, 1, false,
+                    LessonType.Laboratory, "teacher1",
+                    "room200", "sub1", "subject1", SubjectType.None);
 
-            ScheduleHourContent slot1 = new ScheduleHourContent(1, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot2 = new ScheduleHourContent(2, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot3 = null;
-            ScheduleHourContent slot4 = null;
-            ScheduleHourContent slot5 = new ScheduleHourContent(5, false, LessonType.Excercise, "teacher5", "room2005", "AA5", "sbj5", SubjectType.Optional, grps);
-            ScheduleHourContent slot6 = null;
-            ScheduleHourContent slot7 = new ScheduleHourContent(7, false, LessonType.Excercise, "teacher7", "room2007", "AA7", "sbj7", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot8 = new ScheduleHourContent(8, false, LessonType.Laboratory, "teacher8", "room2008", "AA8", "sbj8", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot9 = null;
-            ScheduleHourContent slot10 = new ScheduleHourContent(10, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot11 = new ScheduleHourContent(11, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot12 = null;
-            ScheduleHourContent slot13 = new ScheduleHourContent(13, false, LessonType.Excercise, "teacher13", "room20013", "AA13", "sbj13", SubjectType.Elective, grps);
+            var block1Hour2 =
+                new ScheduleHourContent(0, 2, false,
+                    LessonType.Laboratory, "teacher1",
+                    "room200", "sub1", "subject1", SubjectType.None);
 
-            day.BlocksInDay.Add(slot1);
-            day.BlocksInDay.Add(slot2);
-            day.BlocksInDay.Add(slot3);
-            day.BlocksInDay.Add(slot4);
-            day.BlocksInDay.Add(slot5);
-            day.BlocksInDay.Add(slot6);
-            day.BlocksInDay.Add(slot7);
-            day.BlocksInDay.Add(slot8);
-            day.BlocksInDay.Add(slot9);
-            day.BlocksInDay.Add(slot10);
-            day.BlocksInDay.Add(slot11);
-            day.BlocksInDay.Add(slot12);
-            day.BlocksInDay.Add(slot13);
+            // block with different course ant time
+            var block2Hour1 =
+                new ScheduleHourContent(0, 3, false,
+                    LessonType.Laboratory, "teacher1",
+                    "room200", "sub2", "subject2", SubjectType.None);
 
-            ScheduleWeekContent week = new ScheduleWeekContent();
-            week.DaysInWeek.Add(day);
-            var timetable = await ConverterApiToDomain.ConvertTimetableForGroupAsync(week, serviceCourse);
+            var block2Hour2 =
+                new ScheduleHourContent(0, 4, false,
+                    LessonType.Laboratory, "teacher1",
+                    "room200", "sub2", "subject2", SubjectType.None);
 
-            timetable.AllBlocks.Count.Should().Be(6);
-            var blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 7);
-            blok.Room.Should().Be("room200");
-            blok.StartHour.Should().Be(7);
-            blok.Teacher.Should().Be("teacher1");
-            blok.Duration.Should().Be(2);
+            // same time as block 2
+            var block3Hour1 =
+                new ScheduleHourContent(0, 3, false,
+                    LessonType.Laboratory, "teacher2",
+                    "room201", "sub2", "subject2", SubjectType.None);
 
-            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 11);
-            blok.Room.Should().Be("room2005");
-            blok.Day.Should().Be(Day.Monday);
-            blok.Teacher.Should().Be("teacher5");
-            blok.Duration.Should().Be(1);
+            var block3Hour2 =
+                new ScheduleHourContent(0, 4, false,
+                    LessonType.Laboratory, "teacher2",
+                    "room201", "sub2", "subject2", SubjectType.None);
 
-            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 13);
-            blok.Room.Should().Be("room2007");
-            blok.Day.Should().Be(Day.Monday);
-            blok.Teacher.Should().Be("teacher7");
-            blok.Duration.Should().Be(1);
+            var block4Hour1 =
+                new ScheduleHourContent(4, 5, false,
+                    LessonType.Laboratory, "teacher2",
+                    "room201", "sub2", "subject2", SubjectType.None);
 
-            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 16);
-            blok.Room.Should().Be("room20010");
-            blok.Day.Should().Be(Day.Monday);
-            blok.Teacher.Should().Be("teacher10");
-            blok.Duration.Should().Be(2);
+            var block4Hour2 =
+                new ScheduleHourContent(4, 6, false,
+                    LessonType.Laboratory, "teacher2",
+                    "room201", "sub2", "subject2", SubjectType.None);
 
-            blok = timetable.AllBlocks.FirstOrDefault(x => x.StartHour == 19);
-            blok.Room.Should().Be("room20013");
-            blok.Day.Should().Be(Day.Monday);
-            blok.Teacher.Should().Be("teacher13");
-            blok.Duration.Should().Be(1);
+
+            var scheduleHourContents = new List<ScheduleHourContent>()
+            {
+                block3Hour1, block1Hour1, block4Hour2, block2Hour2, block1Hour2, block3Hour2, block4Hour1, block2Hour1
+            };
+
+            // create course service mock
+            var guid = Guid.NewGuid();
+            var courseServiceMock = new Mock<ICourseService>();
+            courseServiceMock.Setup(m => m.GetOrAddNotExistsCourseId(It.IsAny<string>(), It.IsAny<Block>())).ReturnsAsync(guid);
+
+            // execute
+            var timetable = await ConverterApiToDomain.ConvertAndMergeSameConsecutiveBlocks(scheduleHourContents, courseServiceMock.Object, false);
+
+            // define result blocks
+            var expectedResult = new List<Block>()
+            {
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 7,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = guid
+                },
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room200",
+                    Teacher = "teacher1",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = guid
+                },
+                new Block()
+                {
+                    Day = Day.Monday,
+                    StartHour = 9,
+                    Duration = 2,
+                    Room = "room201",
+                    Teacher = "teacher2",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = guid                   
+                },
+                new Block()
+                {
+                    Day = Day.Friday,
+                    StartHour = 11,
+                    Duration = 2,
+                    Room = "room201",
+                    Teacher = "teacher2",
+                    BlockType = BlockType.Laboratory,
+                    CourseId = guid
+                },                
+            };
+            
+            timetable.AllBlocks.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
@@ -261,115 +293,5 @@ namespace BackendTest
 
             timetable.AllBlocks.Should().BeEquivalentTo(mergedBlocks);            
         }
-    }
-
-    public class FakeProxy : ISchoolScheduleProxy
-    {
-        public ScheduleWeekContent GetByRoomNumber(string roomNumber)
-        {
-            return GetSchedule();
-        }
-
-        public ScheduleWeekContent GetByStudyGroup(string studyGroupNumber)
-        {
-            return GetSchedule();
-        }
-
-        public ScheduleWeekContent GetBySubjectCode(string subjectCode)
-        {
-            return GetScheduleForSubject();
-        }
-
-        public ScheduleWeekContent GetByTeacherName(string teacherNumber)
-        {
-            return GetSchedule();
-        }
-        private ScheduleWeekContent GetScheduleForSubject()
-        {
-            ScheduleDayContent day = new ScheduleDayContent();
-            var grps = new List<string>();
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS13");
-            grps.Add("5ZZS14");
-
-            var grps2 = new List<string>();
-            grps.Add("5ZZS18");
-            grps.Add("5ZZS17");
-
-            ScheduleHourContent slot1 = new ScheduleHourContent(1, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot2 = new ScheduleHourContent(2, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot3 = null;
-            ScheduleHourContent slot4 = null;
-            ScheduleHourContent slot5 = null;
-            ScheduleHourContent slot6 = null;
-            ScheduleHourContent slot7 = new ScheduleHourContent(7, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot8 = new ScheduleHourContent(8, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot9 = null;
-            ScheduleHourContent slot10 = new ScheduleHourContent(10, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps2);
-            ScheduleHourContent slot11 = new ScheduleHourContent(11, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps2);
-            ScheduleHourContent slot12 = new ScheduleHourContent(12, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot13 = new ScheduleHourContent(13, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-
-            day.BlocksInDay.Add(slot1);
-            day.BlocksInDay.Add(slot2);
-            day.BlocksInDay.Add(slot3);
-            day.BlocksInDay.Add(slot4);
-            day.BlocksInDay.Add(slot5);
-            day.BlocksInDay.Add(slot6);
-            day.BlocksInDay.Add(slot7);
-            day.BlocksInDay.Add(slot8);
-            day.BlocksInDay.Add(slot9);
-            day.BlocksInDay.Add(slot10);
-            day.BlocksInDay.Add(slot11);
-            day.BlocksInDay.Add(slot12);
-            day.BlocksInDay.Add(slot13);
-
-            ScheduleWeekContent week = new ScheduleWeekContent();
-            week.DaysInWeek.Add(day);
-            return week;
-        }
-
-        private ScheduleWeekContent GetSchedule()
-        {
-            ScheduleDayContent day = new ScheduleDayContent();
-            var grps = new List<string>();
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS12");
-            grps.Add("5ZZS13");
-            grps.Add("5ZZS14");
-
-            ScheduleHourContent slot1 = new ScheduleHourContent(1, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot2 = new ScheduleHourContent(2, false, LessonType.Excercise, "teacher1", "room200", "AA", "sbj", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot3 = null;
-            ScheduleHourContent slot4 = null;
-            ScheduleHourContent slot5 = new ScheduleHourContent(5, false, LessonType.Excercise, "teacher5", "room2005", "AA5", "sbj5", SubjectType.Optional, grps);
-            ScheduleHourContent slot6 = null;
-            ScheduleHourContent slot7 = new ScheduleHourContent(7, false, LessonType.Excercise, "teacher7", "room2007", "AA7", "sbj7", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot8 = new ScheduleHourContent(8, false, LessonType.Laboratory, "teacher8", "room2008", "AA8", "sbj8", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot9 = null;
-            ScheduleHourContent slot10 = new ScheduleHourContent(10, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot11 = new ScheduleHourContent(11, false, LessonType.Excercise, "teacher10", "room20010", "AA10", "sbj10", SubjectType.Compulsory, grps);
-            ScheduleHourContent slot12 = null;
-            ScheduleHourContent slot13 = new ScheduleHourContent(13, false, LessonType.Excercise, "teacher13", "room20013", "AA13", "sbj13", SubjectType.Elective, grps);
-
-            day.BlocksInDay.Add(slot1);
-            day.BlocksInDay.Add(slot2);
-            day.BlocksInDay.Add(slot3);
-            day.BlocksInDay.Add(slot4);
-            day.BlocksInDay.Add(slot5);
-            day.BlocksInDay.Add(slot6);
-            day.BlocksInDay.Add(slot7);
-            day.BlocksInDay.Add(slot8);
-            day.BlocksInDay.Add(slot9);
-            day.BlocksInDay.Add(slot10);
-            day.BlocksInDay.Add(slot11);
-            day.BlocksInDay.Add(slot12);
-            day.BlocksInDay.Add(slot13);
-
-            ScheduleWeekContent week = new ScheduleWeekContent();
-            week.DaysInWeek.Add(day);
-            return week;
-        }
-    }
+    }    
 }

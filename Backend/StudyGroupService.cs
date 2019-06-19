@@ -52,6 +52,7 @@ namespace FRITeam.Swapify.Backend
                     _logger.LogError($"Unable to load schedule for study group {studyGroupNumber}. Schedule proxy returned null");
                     return null;
                 }
+
                 Timetable t = await ConverterApiToDomain.ConvertTimetableForGroupAsync(schedule, _courseService);
                 Timetable mergedTimetable = ConverterApiToDomain.MergeSameBlocksWithDifferentTeacher(t.AllBlocks);
 
