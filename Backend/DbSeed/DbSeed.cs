@@ -105,12 +105,12 @@ namespace FRITeam.Swapify.Backend.DbSeed
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
-            var studentNumberService = serviceProvider.GetRequiredService<IStudentNumberService>();
+            var studentNumberService = serviceProvider.GetRequiredService<IPersonalNumberService>();
 
             Student student = new Student();
-            StudentNumber sg = await studentNumberService.GetStudentNumberAsync("558188");
+            PersonalNumber sg = await studentNumberService.GetPersonalNumberAsync("558188");
             student.Timetable = sg.Timetable.Clone();
-            student.StudentNumber = sg;
+            student.PersonalNumber = sg;
 
             studentCollection.InsertOne(student);
             return student;

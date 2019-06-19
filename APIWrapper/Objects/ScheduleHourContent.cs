@@ -44,9 +44,9 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         public string CourseName { get; }
 
         /// <summary>
-        /// All study groups which have lesson in the same time
+        /// All personal numbers which have lesson in the same time
         /// </summary>
-        public HashSet<string> StudentNumbers { get; }
+        public HashSet<string> PersonalNumbers { get; }
 
         /// <summary>
         /// Type of subject - compulsory, optional, compulsoryElective
@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
 
         public ScheduleHourContent(int blockNumber, bool isBlocked, LessonType lessonType,
             string teacherName, string roomName, string subjectShortcut, string subjectName,
-            SubjectType subjectType, List<string> studyGroups)
+            SubjectType subjectType, List<string> personalNumbers)
         {
             BlockNumber = blockNumber;
             IsBlocked = isBlocked;
@@ -65,8 +65,8 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             CourseShortcut = subjectShortcut;
             CourseName = subjectName;
             SubjectType = subjectType;
-            StudentNumbers = new HashSet<string>();
-            StudentNumbers.UnionWith(studyGroups);
+            PersonalNumbers = new HashSet<string>();
+            PersonalNumbers.UnionWith(personalNumbers);
         }
         
         public bool IsSameBlockAs(ScheduleHourContent b2)
@@ -75,7 +75,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
                     (TeacherName == b2?.TeacherName) &&
                     (RoomName == b2?.RoomName) &&
                     (LessonType == b2?.LessonType) &&                    
-                    (StudentNumbers.SetEquals(b2?.StudentNumbers));
+                    (PersonalNumbers.SetEquals(b2?.PersonalNumbers));
         }
 
         public int GetIndexOfSameBlockInList(List<ScheduleHourContent> blocksInDay)

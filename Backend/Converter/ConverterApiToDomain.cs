@@ -80,9 +80,9 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
         }
 
-        public static async Task<Timetable> ConvertTimetableForStudentNumberAsync(ScheduleWeekContent groupTimetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleWeekContent timetable, ICourseService courseServ)
         {
-            return await ConvertTimetableAsync(groupTimetable, courseServ, false);
+            return await ConvertTimetableAsync(timetable, courseServ, false);
         }
 
         public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleWeekContent courseTimetable, ICourseService courseServ)
@@ -119,7 +119,7 @@ namespace FRITeam.Swapify.Backend.Converter
                             };
                             if (!isTimetableForCourse)
                             {
-                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(block.CourseName == "" ? block.CourseShortcut : block.CourseName, bl, block.CourseName != "");
+                                bl.CourseId = await (block.CourseName == "" ? courseServ.GetOrAddNotExistsCourseIdByShortcut(block.CourseShortcut, bl) : courseServ.GetOrAddNotExistsCourseIdByName(block.CourseName, bl));
                             }
                             timetable.AddNewBlock(bl);
                         }
@@ -138,7 +138,14 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName == "" ? blockBefore.CourseShortcut : blockBefore.CourseName, bl, blockBefore.CourseName != "");
+                            if (blockBefore.CourseName == "")
+                            {
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseIdByShortcut(blockBefore.CourseShortcut, bl);
+                            }
+                            else
+                            {
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseIdByName(blockBefore.CourseName, bl);
+                            }
                         }
 
                         timetable.AddNewBlock(bl);
@@ -157,7 +164,14 @@ namespace FRITeam.Swapify.Backend.Converter
                         };
                         if (!isTimetableForCourse)
                         {
-                            bl.CourseId = await courseServ.GetOrAddNotExistsCourseId(blockBefore.CourseName == "" ? blockBefore.CourseShortcut : blockBefore.CourseName, bl, blockBefore.CourseName != "");
+                            if (blockBefore.CourseName == "")
+                            {
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseIdByShortcut(blockBefore.CourseShortcut, bl);
+                            }
+                            else
+                            {
+                                bl.CourseId = await courseServ.GetOrAddNotExistsCourseIdByName(blockBefore.CourseName, bl);
+                            }
                         }
 
                         timetable.AddNewBlock(bl);

@@ -4,14 +4,14 @@ using System.Text;
 
 namespace FRITeam.Swapify.Entities
 {
-    public class StudyGroup : BaseEntity
+    public class PersonalNumber : BaseEntity
     {
-        public string GroupName { get; set; }
+        public string Number { get; set; }
         public List<Guid> Courses { get; set; }
         public Timetable Timetable { get; set; }
 
 
-        public StudyGroup()
+        public PersonalNumber()
         {
             Courses = new List<Guid>();
         }

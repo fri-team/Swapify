@@ -7,8 +7,8 @@ namespace FRITeam.Swapify.APIWrapper
         /// <summary>
         /// Return schedule for whole week by student number
         /// </summary>
-        /// <param name="studentNumber">student number</param>
-        ScheduleWeekContent GetByStudentNumber(string studentNumber);
+        /// <param name="personalNumber">student number</param>
+        ScheduleWeekContent GetByPersonalNumber(string personalNumber);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number

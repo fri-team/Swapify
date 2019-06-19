@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend
 {
-    public class StudentNumberService : IStudentNumberService
+    public class PersonalNumberService : IPersonalNumberService
     {
-        private readonly ILogger<StudentNumberService> _logger;
+        private readonly ILogger<PersonalNumberService> _logger;
         private readonly IMongoDatabase _database;
         private readonly ISchoolScheduleProxy _scheduleProxy;
         private readonly ICourseService _courseService;
 
-        public StudentNumberService(ILogger<StudentNumberService> logger, IMongoDatabase database,
+        public PersonalNumberService(ILogger<PersonalNumberService> logger, IMongoDatabase database,
             ISchoolScheduleProxy scheduleProxy, ICourseService courseService)
         {
             _logger = logger;
@@ -28,37 +28,37 @@ namespace FRITeam.Swapify.Backend
             _courseService = courseService;
         }
 
-        public async Task AddAsync(StudentNumber entityToAdd)
+        public async Task AddAsync(PersonalNumber entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
-            await _database.GetCollection<StudentNumber>(nameof(StudentNumber)).InsertOneAsync(entityToAdd);
+            await _database.GetCollection<PersonalNumber>(nameof(PersonalNumber)).InsertOneAsync(entityToAdd);
         }
 
-        public async Task<StudentNumber> FindByIdAsync(Guid guid)
+        public async Task<PersonalNumber> FindByIdAsync(Guid guid)
         {
-            var collection = _database.GetCollection<StudentNumber>(nameof(StudentNumber));
+            var collection = _database.GetCollection<PersonalNumber>(nameof(PersonalNumber));
             return await collection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public virtual async Task<StudentNumber> GetStudentNumberAsync(string studentNumber)
+        public virtual async Task<PersonalNumber> GetPersonalNumberAsync(string personalNumber)
         {
-            var collection = _database.GetCollection<StudentNumber>(nameof(StudentNumber));
-            var number = await collection.Find(x => x.Number.Equals(studentNumber.ToUpper())).FirstOrDefaultAsync();
+            var collection = _database.GetCollection<PersonalNumber>(nameof(PersonalNumber));
+            var number = await collection.Find(x => x.Number.Equals(personalNumber.ToUpper())).FirstOrDefaultAsync();
 
             if (number == null)
             {
-                var schedule = _scheduleProxy.GetByStudentNumber(studentNumber);
+                var schedule = _scheduleProxy.GetByPersonalNumber(personalNumber);
                 if (schedule == null)
                 {
-                    _logger.LogError($"Unable to load schedule for student number {studentNumber}. Schedule proxy returned null");
+                    _logger.LogError($"Unable to load schedule for student number {personalNumber}. Schedule proxy returned null");
                     return null;
                 }
-                Timetable t = await ConverterApiToDomain.ConvertTimetableForStudentNumberAsync(schedule, _courseService);
+                Timetable t = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(schedule, _courseService);
                 Timetable mergedTimetable = ConverterApiToDomain.MergeSameBlocksWithDifferentTeacher(t.AllBlocks);
 
-                number = new StudentNumber();
+                number = new PersonalNumber();
                 number.Timetable = mergedTimetable;
-                number.Number = studentNumber;
+                number.Number = personalNumber;
                 number.Courses = mergedTimetable.AllBlocks.Select(x => x.CourseId).ToList();
                 await AddAsync(number);
             }

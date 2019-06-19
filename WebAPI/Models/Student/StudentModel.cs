@@ -7,7 +7,7 @@ namespace WebAPI.Models.UserModels
     public class StudentModel
     {
         [Required(ErrorMessage = "Osobné číslo študenta je povinné.")]
-        public string StudentNumber { get; set; }
+        public string PersonalNumber { get; set; }
 
         [Required(ErrorMessage = "Email je povinný.")]
         [EmailAddress(ErrorMessage = "Zadaná emailová adresa nie je validná.")]

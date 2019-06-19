@@ -18,14 +18,14 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
-        private readonly Mock<ILogger<StudentNumberService>> _loggerMock;
+        private readonly Mock<ILogger<PersonalNumberService>> _loggerMock;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _mongoFixture = mongoFixture;
-            _loggerMock = new Mock<ILogger<StudentNumberService>>();
+            _loggerMock = new Mock<ILogger<PersonalNumberService>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
@@ -36,16 +36,16 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudentNumberService service = new StudentNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            PersonalNumberService service = new PersonalNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
 
-            StudentNumber studentNumber = await service.GetStudentNumberAsync("558188");
+            PersonalNumber personalNumber = await service.GetPersonalNumberAsync("558188");
             Student student = new Student();
-            student.Timetable = studentNumber.Timetable.Clone();
-            student.StudentNumber = studentNumber;
+            student.Timetable = personalNumber.Timetable.Clone();
+            student.PersonalNumber = personalNumber;
 
             var newBlock = new Block();
-            var countShouldBe = studentNumber.Timetable.AllBlocks.Count;
-            studentNumber.Timetable.AddNewBlock(newBlock);
+            var countShouldBe = personalNumber.Timetable.AllBlocks.Count;
+            personalNumber.Timetable.AddNewBlock(newBlock);
 
             student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
 
@@ -59,12 +59,12 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudentNumberService stnsrvc = new StudentNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            PersonalNumberService stnsrvc = new PersonalNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
             StudentService stSer = new StudentService(_database);
             
             Student st = new Student();
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
-            StudentNumber number = new StudentNumber() { Number = "558188" };
+            PersonalNumber number = new PersonalNumber() { Number = "558188" };
             Timetable tt = new Timetable();
             Block bl = new Block();
             bl.BlockType = BlockType.Lecture;
@@ -77,17 +77,17 @@ namespace BackendTest
 
 
             await stnsrvc.AddAsync(number);
-            st.StudentNumber = number;
+            st.PersonalNumber = number;
             await stSer.AddAsync(st);
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Id.Should().NotBeEmpty(); // id was set?
-            var studyGroup = await stnsrvc.FindByIdAsync(number.Id);
-            studyGroup.Number.Should().Be("558188");
-            studyGroup.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
-            studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
-            studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
-            studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
+            var personalNumber = await stnsrvc.FindByIdAsync(number.Id);
+            personalNumber.Number.Should().Be("558188");
+            personalNumber.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
+            personalNumber.Timetable.AllBlocks.First().Duration.Should().Be(2);
+            personalNumber.Timetable.AllBlocks.First().StartHour.Should().Be(16);
+            personalNumber.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
 
 

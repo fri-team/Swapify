@@ -16,7 +16,7 @@ import Timetable from './Timetable/Timetable';
 import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
 import AddBlockForm from './AddBlockForm/AddBlockForm';
-import StudentNumber from './StudentNumber/StudentNumber';
+import PersonalNumber from './PersonalNumber/PersonalNumber';
 import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 
 export {
@@ -36,7 +36,7 @@ export {
   Timetable,
   TimetablePage,
   AddBlockForm,
-  StudentNumber,
+  PersonalNumber,
   Toolbar,
   ForgotPasswordPage,
   SetNewPasswordPage

@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
-import { STUDENTNUMBER } from '../../util/routes';
+import { PERSONALNUMBER } from '../../util/routes';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -29,7 +29,7 @@ class AppToolbar extends PureComponent {
 
   handleLogout = () => this.props.userActions.logout();
 
-  changeGroup = () => this.props.history.push(STUDENTNUMBER);
+  changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
   render() {
     let button;
@@ -73,7 +73,7 @@ class AppToolbar extends PureComponent {
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
-                  selectStudentNumber={this.changeGroup}
+                  selectPersonalNumber={this.changePersonalNumber}
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                 />
