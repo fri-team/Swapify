@@ -4,6 +4,7 @@ using FRITeam.Swapify.APIWrapper.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FRITeam.Swapify.APIWrapper.Objects;
 using Xunit;
 
 namespace BackendTest
@@ -52,14 +53,19 @@ namespace BackendTest
 
             var parsed = ResponseParser.ParseResponse(input);
 
-            parsed.DaysInWeek[0].BlocksInDay[0].LessonType.Should().Be(LessonType.Lecture);
+            var expectedResult = new List<ScheduleHourContent>()
+            {
+                new ScheduleHourContent(0, 1, false,
+                    LessonType.Lecture, "Jan Janech",
+                    "RA045", "1181S",
+                    "Metaprogramovanie", SubjectType.None),
+                new ScheduleHourContent(2, 2, false,
+                    LessonType.Laboratory, "Ida Stankovianska",
+                    "RB053", "11BA31",
+                    "pravdepodobnosť a štatistika", SubjectType.None)
+            };
 
-            parsed.DaysInWeek[2].BlocksInDay[0].BlockNumber.Should().Be(2);
-            parsed.DaysInWeek[2].BlocksInDay[0].LessonType.Should().Be(LessonType.Laboratory);
-            parsed.DaysInWeek[2].BlocksInDay[0].RoomName.Should().Be("RB053");
-            parsed.DaysInWeek[2].BlocksInDay[0].CourseName.Should().Be("pravdepodobnosť a štatistika");
-            parsed.DaysInWeek[2].BlocksInDay[0].CourseShortcut.Should().Be("11BA31");
-            parsed.DaysInWeek[2].BlocksInDay[0].TeacherName.Should().Be("Ida Stankovianska");
+            parsed.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

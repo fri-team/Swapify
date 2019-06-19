@@ -2,6 +2,7 @@ using FRITeam.Swapify.APIWrapper.Objects;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -13,27 +14,27 @@ namespace FRITeam.Swapify.APIWrapper
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ScheduleWeekContent GetByTeacherName(string teacherNumber)
-        {
-            return CallScheduleContentApi(1, teacherNumber);
-        }
-
-        public ScheduleWeekContent GetByPersonalNumber(string personalNumber)
+        public IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber)
         {
             return CallScheduleContentApi(5, personalNumber);
         }
 
-        public ScheduleWeekContent GetByRoomNumber(string roomNumber)
+        public IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber)
+        {
+            return CallScheduleContentApi(1, teacherNumber);
+        }
+
+        public IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber)
         {
             return CallScheduleContentApi(3, roomNumber);
         }
 
-        public ScheduleWeekContent GetBySubjectCode(string subjectCode)
+        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
         {
             return CallScheduleContentApi(4, subjectCode);
         }
 
-        private ScheduleWeekContent CallScheduleContentApi(int type, string requestContent)
+        private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
         {
             string semester = getCurrentSemesterShortCut();
             string address = string.IsNullOrEmpty(semester)
