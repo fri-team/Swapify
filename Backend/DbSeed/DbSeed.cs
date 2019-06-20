@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Entities.Notifications;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {
@@ -111,39 +112,39 @@ namespace FRITeam.Swapify.Backend.DbSeed
 
             var notifications = new List<Notification>
             {
-                new Notification()
+                new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75"),
                     RecipientId = OlegGuid,
-                    Type = "1",
-                    Text = "ahoj",
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "ahoj",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
-                new Notification()
+                new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("6ed215e5-3e84-4487-b397-afe626f37a8f"),
                     RecipientId = OlegGuid,
-                    Type = "1",
-                    Text = "ahoj1",
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "ahoj1",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
-                new Notification()
+                new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("4e6cc595-5a84-4184-b06d-363d341ddbfb"),
                     RecipientId = OlegGuid,
-                    Type = "1",
-                    Text = "ahoj2",
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "ahoj2",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
-                new Notification()
+                new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("321996ff-2881-4cb8-bc55-b19f2935ae7e"),
                     RecipientId = OlegGuid,
-                    Type = "1",
-                    Text = "ahoj2",
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "ahoj2",
                     CreatedAt = DateTime.Now,
                     Read = true
                 }
