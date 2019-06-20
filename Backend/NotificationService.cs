@@ -4,22 +4,21 @@ using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.Entities.Notifications;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace FRITeam.Swapify.Backend
 {
     public class NotificationService: INotificationService
-    {
-        private readonly ILogger<StudyGroupService> _logger;
+    {        
         private readonly IMongoDatabase _database;
 
         private IMongoCollection<Notification> NotificationCollection  => _database.GetCollection<Notification>(nameof(Notification));
 
         public NotificationService(IMongoDatabase database, ILogger<StudyGroupService> logger)
         {
-            _database = database;
-            _logger = logger;            
+            _database = database;            
         }        
 
         public async Task UpdateNotificationReadState(Guid notificationId, bool read)
