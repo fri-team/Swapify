@@ -9,7 +9,6 @@ using MongoDB.Driver;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace BackendTest
@@ -19,39 +18,15 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
-        private readonly Mock<ILogger<PersonalNumberService>> _loggerMock;
+        private readonly Mock<ILogger<SchoolScheduleProxy>> _loggerMockSchedule;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public ConverterTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
-            _loggerMock = new Mock<ILogger<PersonalNumberService>>();
+            _loggerMockSchedule = new Mock<ILogger<SchoolScheduleProxy>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-        }
-
-        [Fact]
-        public async Task ConvertTest_ValidPersonalNumber()
-        {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            var service = new PersonalNumberService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
-            PersonalNumber grp = await service.GetPersonalNumberAsync("558188");
-            grp.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async Task ConvertTest_NotValidPersonalNumber()
-        {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            var serviceMock = new Mock<PersonalNumberService>(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
-            serviceMock.Setup(x => x.GetPersonalNumberAsync(It.IsAny<string>()))
-                       .Returns(Task.FromResult<PersonalNumber>(null));
-
-            var result = await serviceMock.Object.GetPersonalNumberAsync("000000");
-
-            Assert.Null(result);
         }
         
         [Fact]

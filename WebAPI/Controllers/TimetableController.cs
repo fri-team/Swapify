@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +17,16 @@ namespace WebAPI.Controllers
     public class TimetableController : BaseController
     {
         private readonly ILogger<TimetableController> _logger;
-        private readonly IPersonalNumberService _studentNumberService;
+        private readonly ISchoolScheduleProxy _schoolScheduleProxy;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
 
-        public TimetableController(ILogger<TimetableController> logger, IPersonalNumberService studentNumberService,
+        public TimetableController(ILogger<TimetableController> logger, ISchoolScheduleProxy schoolScheduleProxy,
             IStudentService studentService, IUserService userService, ICourseService courseService)
         {
             _logger = logger;
-            _studentNumberService = studentNumberService;
+            _schoolScheduleProxy = schoolScheduleProxy;
             _studentService = studentService;
             _userService = userService;
             _courseService = courseService;
@@ -40,29 +42,35 @@ namespace WebAPI.Controllers
                 _logger.LogError($"User with email: {body.Email} does not exist.");
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
-            PersonalNumber number = await _studentNumberService.GetPersonalNumberAsync(body.PersonalNumber);
-            if (number == null)
+            var timetable = _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
+            if (timetable == null)
                 return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
+
+            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
 
             Student student = user.Student;
             if (student == null)
             {
-                student = new Student();
+                student = new Student
+                {
+                    PersonalNumber = body.PersonalNumber
+                };
                 await _studentService.AddAsync(student);
 
                 user.Student = student;
-                await _studentService.UpdateStudentTimetableAsync(student, number);
 
+                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
-            if (student.PersonalNumber.Equals(number))
+            if (student.PersonalNumber != null && student.PersonalNumber.Equals(body.PersonalNumber))
             {
                 return Ok(student.Timetable);
             }
             else
             {
-                await _studentService.UpdateStudentTimetableAsync(student, number);
+                student.PersonalNumber = body.PersonalNumber;
+                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }

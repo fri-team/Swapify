@@ -1,5 +1,4 @@
 using FRITeam.Swapify.APIWrapper.Objects;
-using Microsoft.Extensions.Configuration;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -58,7 +57,7 @@ namespace FRITeam.Swapify.APIWrapper
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                throw ex;
+                throw;
             }
             return ResponseParser.ParseResponse(myResponse);
         }
