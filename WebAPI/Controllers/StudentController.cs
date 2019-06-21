@@ -40,7 +40,6 @@ namespace WebAPI.Controllers
             }
 
             var student = await _studentService.FindByIdAsync(guid);
-            //var student = user.Student;
             if (student == null)
             {
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
