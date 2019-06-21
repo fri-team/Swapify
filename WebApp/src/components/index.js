@@ -17,7 +17,6 @@ import TimetablePage from './TimetablePage/TimetablePage';
 import Toolbar from './Toolbar/Toolbar';
 import AddBlockForm from './AddBlockForm/AddBlockForm';
 import StudyGroup from './StudyGroup/StudyGroup';
-import ForgotPasswordPage from './ForgotPasswordPage/ForgotPasswordPage';
 
 export {
   App,
@@ -38,6 +37,5 @@ export {
   AddBlockForm,
   StudyGroup,
   Toolbar,
-  ForgotPasswordPage,
   SetNewPasswordPage
 };

@@ -11,6 +11,7 @@ class LoginPage extends Component {
       email: '',
       password: '',
       submitted: false,
+      success: false,
       serverErrors: '',
       emailNotConfirmed: false,
       sendConfirmEmailAgainResult: '',
@@ -44,6 +45,9 @@ class LoginPage extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    if(!this.state.resetingPassword) {
+
+    
     const { dispatch } = this.props;
     this.setState({ emailNotConfirmed: false });
 
@@ -68,10 +72,29 @@ class LoginPage extends Component {
         else
           this.setState({ serverErrors: error.response.data.error });
       });
+    } else {
+
+      const body = {      
+        email: this.state.email      
+      };
+  
+        axios({
+          method: 'post',
+          url: '/api/user/resetPassword',
+          data: body
+        })
+          .then(() => {
+            this.setState({ success: true });
+        })
+          .catch(error => {          
+            this.setState({ serverErrors : error.response.data.error });
+        });
+    }
 
   }
 
   render() {
+    const messageStyle = !this.state.success ? {display: 'none'} : {}
     return (
       <div className="FormCenter">
       { this.state.sendConfirmEmailAgainResult === ''
@@ -88,7 +111,9 @@ class LoginPage extends Component {
               fullWidth
             />
           </div>
-
+          <div style={messageStyle}>
+            <p>Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.</p>
+          </div>
           { !this.state.resetingPassword &&
           <div className="FormField">
             <TextField
@@ -114,7 +139,7 @@ class LoginPage extends Component {
           <div className="FormField">
           <a onClick={this.changeForm} className="FormField__Link">
               { !this.state.resetingPassword ?
-              " Ak si zabudol heslo klinki na tento link" : " Spat na login" }
+              " Ak si zabudol heslo klikni na tento link" : " Späť na login" }
             </a>
             
           </div>

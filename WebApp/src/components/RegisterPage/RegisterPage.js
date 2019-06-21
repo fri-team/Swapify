@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
-import axios from 'axios';
-import './RegisterPage.scss';
 import FormValidator from '../FormValidator/FormValidator';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { ElevatedBox, Form, MacBackground } from '../';
 import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([
@@ -81,25 +79,37 @@ const validator = new FormValidator([
     message: 'Heslá sa nezhodujú'
   }
 ]);
-class RegisterPage extends Component {
-  state = {
-    name: '',
-    surname: '',
-    email: '',
-    password: '',
-    passwordAgain: '',
-    validation: validator.valid(),
-    submitted: false,
-    serverErrors: []
-  };
 
-  handleInputChange = event => {
+class RegisterPage extends Component {
+  constructor() {
+
+    super();
+
+    this.state = {
+      name: '',
+      surname: '',
+      email: '',
+      password: '',
+      passwordAgain: '',
+      validation: validator.valid(),
+      submitted: false,
+      serverErrors: [],
+      hasAgreed: false
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+
+  handleChange = event => {
     event.preventDefault();
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  onSubmit = () => {
-    const data = {
+  handleSubmit = event => {
+    event.preventDefault();
+    const body = {
       name: this.state.name,
       surname: this.state.surname,
       email: this.state.email,
@@ -107,109 +117,133 @@ class RegisterPage extends Component {
       passwordAgain: this.state.passwordAgain
     };
 
-    const validation = validator.validate(data);
+    const validation = validator.validate(body);
     this.setState({ validation, submitted: true });
 
     if (validation.isValid) {
-      axios({
-        method: 'post',
-        url: '/api/user/register',
-        data
+    axios({
+      method: 'post',
+      url: '/api/user/register',
+      data: body
+    })
+      .then(() => {
+        this.props.history.push(HOME);
       })
-        .then(() => {
-          this.props.history.push(HOME);
-        })
-        .catch(error => {
-          var serverErrors = _.flatten(_.values(error.response.data.errors));
-          this.setState({ serverErrors });
-        });
+      .catch(error => {
+        var serverErrors = _.flatten(_.values(error.response.data.errors));
+        this.setState({ serverErrors });
+      });
     }
   };
 
   render() {
     let validation = this.state.submitted
-      ? validator.validate(this.state)
-      : this.state.validation;
+    ? validator.validate(this.state)
+    : this.state.validation;
 
     const serverErrors = this.state.serverErrors;
     const serverErrorsList = serverErrors.map(e => <li key={e}>{e}</li>);
-
     return (
-      <MacBackground>
-        <ElevatedBox>
-          <Form className="register-form" onSubmit={this.onSubmit}>
-            Registrácia
-            <div className="register-form-spacer">
-              <TextField
-                label="Meno"
-                required
-                name="name"
-                error={!!validation.name.message}
-                helperText={validation.name.message}
-                value={this.state.name}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+      <div className="FormCenter">
+        <form onSubmit={this.handleSubmit} className="FormFields">
+          <div className="FormField">
+            <TextField
+              label="Meno"
+              type="text"
+              required
+              name="name"
+              className="FormField__Label"
+              error={!!validation.name.message}
+              helperText={validation.name.message}
+              value={this.state.name}
+              onChange={this.handleChange}
+              fullWidth
+            />
+          </div>
 
-            <div className="register-form-spacer">
-              <TextField
-                label="Priezvisko"
-                required
-                name="surname"
-                error={!!validation.surname.message}
-                helperText={validation.surname.message}
-                value={this.state.surname}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+          <div className="FormField">
+            <TextField
+              label="Priezvisko"
+              type="text"
+              required
+              name="surname"
+              className="FormField__Label"
+              error={!!validation.surname.message}
+              helperText={validation.surname.message}
+              value={this.state.surname}
+              onChange={this.handleChange}
+              fullWidth
+            />
+          </div>
 
-            <div className="register-form-spacer">
-              <TextField
-                label="Email"
-                required
-                name="email"
-                error={!!validation.email.message}
-                helperText={validation.email.message}
-                value={this.state.email}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+          <div className="FormField">
+            <TextField
+              label="E-Mailová adresa"
+              type="email"
+              required
+              name="email"
+              className="FormField__Label"
+              error={!!validation.email.message}
+              helperText={validation.email.message}
+              value={this.state.email}
+              onChange={this.handleChange}
+              fullWidth
+            />
+          </div>
 
-            <div className="register-form-spacer">
-              <TextField
-                label="Heslo"
-                type="password"
-                required
-                name="password"
-                error={!!validation.password.message}
-                helperText={validation.password.message}
-                value={this.state.password}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+          <div className="FormField">
+            <TextField
+              label="Heslo"
+              type="password"
+              required
+              name="password"
+              className="FormField__Label"
+              error={!!validation.password.message}
+              helperText={validation.password.message}
+              value={this.state.password}
+              onChange={this.handleChange}
+              fullWidth
+            />
+          </div>
 
-            <div className="register-form-spacer">
-              <TextField
-                label="Potvrdenie hesla"
-                type="password"
-                required
-                name="passwordAgain"
-                error={!!validation.passwordAgain.message}
-                helperText={validation.passwordAgain.message}
-                value={this.state.passwordAgain}
-                fullWidth
-                onChange={this.handleInputChange}
-              />
-            </div>
+          <div className="FormField">
+            <TextField
+              label="Potvrdenie hesla"
+              type="password"
+              required
+              name="passwordAgain"
+              className="FormField__Label"
+              error={!!validation.passwordAgain.message}
+              helperText={validation.passwordAgain.message}
+              value={this.state.passwordAgain}
+              onChange={this.handleChange}
+              fullWidth
+            />
+          </div>
 
-            <Button type="submit" color="primary" variant="contained">
-              Registrovať
-            </Button>
-            <div
+          <div className="FormField">
+            <label 
+              className="FormField__CheckboxLabel"
+            >
+              <input 
+                className="FormField__Checkbox" 
+                type="checkbox" name="hasAgreed" 
+                value={this.state.hasAgreed} 
+                onChange={this.handleChange} 
+                required 
+              />
+                {'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so Zmluvnými podmienkami a Zásadami ochrany osobných údajov.'}
+              </label>
+          </div>
+
+
+          <div className="FormField">
+            <button className="FormField__Button">
+              Registrovať sa
+            </button>
+          </div>
+
+          <div
               className={classNames({
                 'server-error':
                   this.state.submitted && this.state.serverErrors.length > 0
@@ -217,9 +251,10 @@ class RegisterPage extends Component {
             >
               <ul>{serverErrorsList}</ul>
             </div>
-          </Form>
-        </ElevatedBox>
-      </MacBackground>
+
+        </form>
+      </div>
+
     );
   }
 }
@@ -230,4 +265,4 @@ RegisterPage.propTypes = {
   }).isRequired
 };
 
-export default RegisterPage;
+export default connect()(RegisterPage);
