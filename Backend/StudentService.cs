@@ -28,17 +28,15 @@ namespace FRITeam.Swapify.Backend
             return await _studentCollection.Find(x => x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateStudentAsync(Student loadedStudent)
+        public async Task UpdateStudentAsync(Student studentToUpdate)
         {
-            await _studentCollection.ReplaceOneAsync(x => x.Id == loadedStudent.Id, loadedStudent);
+            await _studentCollection.ReplaceOneAsync(x => x.Id == studentToUpdate.Id, studentToUpdate);
         }
 
-        public async Task UpdateStudentTimetableAsync(Student studentToUpdate, StudyGroup studyGroup)
+        public async Task UpdateStudentTimetableAsync(Student studentToUpdate, Timetable studentTimetable)
         {
-            studentToUpdate.Timetable = studyGroup.Timetable.Clone();
-            studentToUpdate.StudyGroup = studyGroup;
-            await this.UpdateStudentAsync(studentToUpdate);
-        }
-                
+            studentToUpdate.Timetable = studentTimetable.Clone();
+            await UpdateStudentAsync(studentToUpdate);
+        }      
     }
 }

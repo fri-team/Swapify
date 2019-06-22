@@ -16,7 +16,7 @@ namespace FRITeam.Swapify.Backend
 
         private IMongoCollection<Notification> NotificationCollection  => _database.GetCollection<Notification>(nameof(Notification));
 
-        public NotificationService(IMongoDatabase database, ILogger<StudyGroupService> logger)
+        public NotificationService(IMongoDatabase database)
         {
             _database = database;            
         }        

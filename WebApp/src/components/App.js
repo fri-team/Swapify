@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { onlyAuth, onlyNotAuth } from '../util/auth';
-import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, FORGOTPASSWORD, SETNEWPASSWORD, STUDYGROUP } from '../util/routes';
+import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, FORGOTPASSWORD, SETNEWPASSWORD, PERSONALNUMBER } from '../util/routes';
 
 import {
   HomePage,
@@ -12,7 +12,7 @@ import {
   NotFoundPage,
   ForgotPasswordPage,
   SetNewPasswordPage,
-  StudyGroup
+  PersonalNumber
 } from './';
 
 // This is a class-based component because the current version of hot reloading
@@ -26,7 +26,7 @@ export default class App extends Component {
           <Switch>
             <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
             <Route path={LOGIN} component={onlyNotAuth(LoginPage)} />
-            <Route path={STUDYGROUP} component={onlyAuth(StudyGroup)} />
+            <Route path={PERSONALNUMBER} component={onlyAuth(PersonalNumber)} />
             <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
             <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
             <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />

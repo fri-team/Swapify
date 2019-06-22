@@ -182,12 +182,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
-            var studyGroupService = serviceProvider.GetRequiredService<IStudyGroupService>();
 
             Student student = new Student();
-            StudyGroup sg = await studyGroupService.GetStudyGroupAsync("5ZZS23");
-            student.Timetable = sg.Timetable.Clone();
-            student.StudyGroup = sg;
+            student.Timetable = null;
+            student.PersonalNumber = null;
 
             studentCollection.InsertOne(student);
             return student;

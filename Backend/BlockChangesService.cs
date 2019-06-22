@@ -11,10 +11,10 @@ namespace FRITeam.Swapify.Backend
 
     public class BlockChangesService : IBlockChangesService
     {
-        private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;        
-
-        public BlockChangesService(IMongoDatabase database, INotificationService notificationService)
-        {            
+        private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;
+        
+        public BlockChangesService(IMongoDatabase database)
+        {
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
@@ -87,18 +87,19 @@ namespace FRITeam.Swapify.Backend
             }
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
-            await RemoveStudentRequests(request);
-            await RemoveStudentRequests(requestForExchange);
+            await RemoveNotRealizedRequests(request);
+            await RemoveNotRealizedRequests(requestForExchange);
             return (true, requestForExchange);
         }
 
-        private async Task RemoveStudentRequests(BlockChangeRequest request)
+        private async Task RemoveNotRealizedRequests(BlockChangeRequest request)
         {
             await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
                                                      x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
                                                      x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
                                                      x.BlockFrom.Day == request.BlockFrom.Day &&
-                                                     x.BlockFrom.Duration == request.BlockFrom.Duration);
+                                                     x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                                                     x.Status == ExchangeStatus.WaitingForExchange);
         }
 
         private async Task SetDoneStatus(BlockChangeRequest request)

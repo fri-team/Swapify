@@ -65,7 +65,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             RoomName = roomName;
             CourseShortcut = subjectShortcut;
             CourseName = subjectName;
-            SubjectType = subjectType;            
+            SubjectType = subjectType;
         }
         
         public bool IsSameBlockAs(ScheduleHourContent b2)
@@ -74,6 +74,8 @@ namespace FRITeam.Swapify.APIWrapper.Objects
                     (TeacherName == b2?.TeacherName) &&
                     (RoomName == b2?.RoomName) &&
                     (LessonType == b2?.LessonType);
-        }        
+        }
+
+        
     }
 }

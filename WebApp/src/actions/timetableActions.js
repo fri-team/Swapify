@@ -21,6 +21,7 @@ import {
 } from '../constants/actionTypes';
 import data from './timetableData.json';
 import { loadExchangeRequests } from './exchangeActions';
+import { blockNumberToHour } from '../util/convertFunctions';
 
 export function loadMyTimetable(userEmail) {
   return dispatch => {
@@ -43,7 +44,7 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        window.location.replace("http://localhost:3000/study-group");
+        window.location.replace("http://localhost:3000/personal-number");
         // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
@@ -171,14 +172,14 @@ export function exchangeConfirm(blockTo) {
       {
         courseId: bl.id,
         day: bl.day,
-        startHour: bl.startBlock,
+        startHour: blockNumberToHour(bl.startBlock),
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
         courseId: blockTo.id,
         day: blockTo.day,
-        startHour: blockTo.startBlock,
+        startHour: blockNumberToHour(blockTo.startBlock),
         duration: blockTo.endBlock - blockTo.startBlock
       },
       StudentId: user.studentId

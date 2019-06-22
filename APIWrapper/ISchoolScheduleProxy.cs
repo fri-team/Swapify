@@ -6,10 +6,10 @@ namespace FRITeam.Swapify.APIWrapper
     public interface ISchoolScheduleProxy
     {
         /// <summary>
-        /// Return schedule for whole week by study group
+        /// Return schedule for whole week by student number
         /// </summary>
-        /// <param name="studyGroupNumber">study group</param>
-        IEnumerable<ScheduleHourContent> GetByStudyGroup(string studyGroupNumber);
+        /// <param name="personalNumber">student number</param>
+        IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number

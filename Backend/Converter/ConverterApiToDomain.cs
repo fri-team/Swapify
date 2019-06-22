@@ -91,7 +91,7 @@ namespace FRITeam.Swapify.Backend.Converter
 
                     if (!isTimetableForCourse)
                     {
-                        block.CourseId = await courseService.GetOrAddNotExistsCourseId(firstInGroup.CourseName, block);
+                        block.CourseId = await (string.IsNullOrEmpty(firstInGroup.CourseName) ? courseService.GetOrAddNotExistsCourseIdByShortcut(firstInGroup.CourseShortcut, block) : courseService.GetOrAddNotExistsCourseIdByName(firstInGroup.CourseName, block));
                     }
 
                     return block;
@@ -142,15 +142,15 @@ namespace FRITeam.Swapify.Backend.Converter
                 yield return mergeElementsGroup(elementsGroup);
             }            
         }
-        
-        public static async Task<Timetable> ConvertTimetableForGroupAsync(IEnumerable<ScheduleHourContent> groupTimetable, ICourseService courseServ)
+
+        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(IEnumerable<ScheduleHourContent> timetable, ICourseService courseServ)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(groupTimetable, courseServ, false);            
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false);
         }
         
-        public static async Task<Timetable> ConvertTimetableForCourseAsync(IEnumerable<ScheduleHourContent> courseTimetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForCourseAsync(IEnumerable<ScheduleHourContent> timetable, ICourseService courseServ)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(courseTimetable, courseServ, true);            
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, true);            
         }
         
         private static Day ConvertToDay(int idxDay)
