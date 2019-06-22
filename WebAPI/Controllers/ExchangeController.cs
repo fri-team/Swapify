@@ -38,12 +38,15 @@ namespace WebAPI.Controllers
 
             var (exchangeWasMade, otherUserBlockChangeRequest) = await _blockChangesService.AddAndFindMatch(currentUserBlockChangeRequest);
 
-            await _notificationService.AddNotification(
-                SuccessfulExchangeNotification.Create(currentUserBlockChangeRequest, otherUserBlockChangeRequest));
+            if (exchangeWasMade)
+            {
+                await _notificationService.AddNotification(
+                    SuccessfulExchangeNotification.Create(currentUserBlockChangeRequest, otherUserBlockChangeRequest));
 
-            await _notificationService.AddNotification(
-                SuccessfulExchangeNotification.Create(otherUserBlockChangeRequest, currentUserBlockChangeRequest));
-
+                await _notificationService.AddNotification(
+                    SuccessfulExchangeNotification.Create(otherUserBlockChangeRequest, currentUserBlockChangeRequest));
+            }
+            
             return Ok(exchangeWasMade);
         }
         
