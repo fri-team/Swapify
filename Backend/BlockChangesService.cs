@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Backend.Model;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -18,7 +19,7 @@ namespace FRITeam.Swapify.Backend
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
-        public async Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        public async Task<IDsOfExchangeStudents> AddAndFindMatch(BlockChangeRequest entityToAdd)
         {
             await AddAsync(entityToAdd);
             return await MakeExchangeAndDeleteRequests(entityToAdd);
@@ -57,18 +58,19 @@ namespace FRITeam.Swapify.Backend
                       x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
 
-        private async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<IDsOfExchangeStudents> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
             if (requestForExchange == null)
             {
-                return false;
+                return null;
             }
+            IDsOfExchangeStudents ids = new IDsOfExchangeStudents(request.StudentId.ToString(), requestForExchange.StudentId.ToString());
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
             await RemoveStudentRequests(request);
             await RemoveStudentRequests(requestForExchange);
-            return true;
+            return ids;
         }
 
         private async Task RemoveStudentRequests(BlockChangeRequest request)
