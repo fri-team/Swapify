@@ -19,7 +19,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
     public static class DbSeed
     {
         private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        
+        private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
+
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
@@ -40,6 +41,30 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = OlegGuid.ToString("D"),
+                    Student = await CreateStudentAsync(serviceProvider)
+                };
+
+                var password = new PasswordHasher<User>();
+                var hashed = password.HashPassword(user, "Heslo123");
+                user.PasswordHash = hashed;
+                usersCollection.InsertOne(user);
+            }
+
+            email = "oleg2@swapify.com";
+            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            if (oleg == null)
+            {
+                User user = new User
+                {
+                    Id = Oleg2Guid,
+                    Name = "Oleg2",
+                    Surname = "Dementov",
+                    Email = email,
+                    NormalizedEmail = email.ToUpper(),
+                    UserName = email,
+                    NormalizedUserName = email.ToUpper(),
+                    EmailConfirmed = true,
+                    SecurityStamp = Oleg2Guid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider)
                 };
 
