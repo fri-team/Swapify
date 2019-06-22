@@ -12,11 +12,11 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task UpdateNotificationReadState(Guid notificationId, bool read);
 
         /// <summary>
-        /// Get all notifications where user with userId is recipient.
+        /// Get all notifications where user with studentId is recipient.
         /// </summary>
-        /// <param name="userId">Notification's recipientId.</param>
+        /// <param name="studentId">Notification's recipientId.</param>
         /// <returns></returns>
-        Task<IEnumerable<Notification>> GetUserNotifications(Guid userId);
+        Task<IEnumerable<Notification>> GetStudentNotifications(Guid studentId);
         Task AddNotification(Notification notification);
     }
 }

@@ -5,7 +5,7 @@ namespace FRITeam.Swapify.Entities.Notifications
 {
     public class SuccessfulExchangeNotification: Notification
     {
-        private readonly Guid _successfulExchangeRequestId;
+        public Guid ExchangeRequestId { get; set; }
 
         public static SuccessfulExchangeNotification Create(BlockChangeRequest requestOfUserToNotify,
             BlockChangeRequest requestOfOtherUser)
@@ -17,15 +17,15 @@ namespace FRITeam.Swapify.Entities.Notifications
         {
         }        
 
-        private SuccessfulExchangeNotification(Guid recipientId, Guid successfulExchangeRequestId)
+        private SuccessfulExchangeNotification(Guid recipientId, Guid exchangeRequestId)
         {
             Type = NotificationType.SuccessfulExchangeNotification;
             CreatedAt = DateTime.Now;
             Read = false;
             RecipientId = recipientId;
-            _successfulExchangeRequestId = successfulExchangeRequestId;
+            ExchangeRequestId = exchangeRequestId;
         }
 
-        public override string Text => $"Výmena {_successfulExchangeRequestId} bola vykonaná.";
+        public override string Text => "Výmena bola vykonaná.";
     }
 }

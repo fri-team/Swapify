@@ -30,10 +30,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{email}")]
-        public async Task<IActionResult> GetUserNotifications(string email)
+        public async Task<IActionResult> GetStudentNotifications(string email)
         {
             User user = await _userService.GetUserByEmailAsync(email);
-            var notifications = await _notificationService.GetUserNotifications(user.Id);
+            var notifications = await _notificationService.GetStudentNotifications(user.Student.Id);
             return Ok(notifications);
         }
     }
