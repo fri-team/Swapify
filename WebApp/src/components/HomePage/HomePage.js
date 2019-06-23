@@ -24,9 +24,7 @@ class HomePage extends Component {
       <Router>
         <div className="App">
           <div className="App__Aside">
-
             <div className="logo"></div>
-
             <div className="slide-container">
               <Fade {...properties}>
                 <div className="each-slide">
@@ -52,7 +50,6 @@ class HomePage extends Component {
               <NavLink exact to="/" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Prihlásiť sa</NavLink>
               <NavLink to="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrovať sa</NavLink>
             </div>
-
             <Route exact path="/" component={LoginPage}>
             </Route>
             <Route path="/register" component={RegisterPage}>

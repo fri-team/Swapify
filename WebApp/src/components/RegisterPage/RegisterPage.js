@@ -121,25 +121,25 @@ class RegisterPage extends Component {
     this.setState({ validation, submitted: true });
 
     if (validation.isValid) {
-    axios({
-      method: 'post',
-      url: '/api/user/register',
-      data: body
-    })
-      .then(() => {
-        this.props.history.push(HOME);
+      axios({
+        method: 'post',
+        url: '/api/user/register',
+        data: body
       })
-      .catch(error => {
-        var serverErrors = _.flatten(_.values(error.response.data.errors));
-        this.setState({ serverErrors });
-      });
+        .then(() => {
+          this.props.history.push(HOME);
+        })
+        .catch(error => {
+          var serverErrors = _.flatten(_.values(error.response.data.errors));
+          this.setState({ serverErrors });
+        });
     }
   };
 
   render() {
     let validation = this.state.submitted
-    ? validator.validate(this.state)
-    : this.state.validation;
+      ? validator.validate(this.state)
+      : this.state.validation;
 
     const serverErrors = this.state.serverErrors;
     const serverErrorsList = serverErrors.map(e => <li key={e}>{e}</li>);
@@ -222,20 +222,19 @@ class RegisterPage extends Component {
           </div>
 
           <div className="FormField">
-            <label 
+            <label
               className="FormField__CheckboxLabel"
             >
-              <input 
-                className="FormField__Checkbox" 
-                type="checkbox" name="hasAgreed" 
-                value={this.state.hasAgreed} 
-                onChange={this.handleChange} 
-                required 
+              <input
+                className="FormField__Checkbox"
+                type="checkbox" name="hasAgreed"
+                value={this.state.hasAgreed}
+                onChange={this.handleChange}
+                required
               />
-                {'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so Zmluvnými podmienkami a Zásadami ochrany osobných údajov.'}
-              </label>
+              {'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so Zmluvnými podmienkami a Zásadami ochrany osobných údajov.'}
+            </label>
           </div>
-
 
           <div className="FormField">
             <button className="FormField__Button">
@@ -244,13 +243,13 @@ class RegisterPage extends Component {
           </div>
 
           <div
-              className={classNames({
-                'server-error':
-                  this.state.submitted && this.state.serverErrors.length > 0
-              })}
-            >
-              <ul>{serverErrorsList}</ul>
-            </div>
+            className={classNames({
+              'server-error':
+                this.state.submitted && this.state.serverErrors.length > 0
+            })}
+          >
+            <ul>{serverErrorsList}</ul>
+          </div>
 
         </form>
       </div>
