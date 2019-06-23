@@ -16,9 +16,12 @@ import {
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK,
   ADD_BLOCK_DONE,
-  ADD_BLOCK_FAIL
+  ADD_BLOCK_FAIL,
+  CHOOSE_EXCHANGE_FROM_BLOCK
 } from '../constants/actionTypes';
 import data from './timetableData.json';
+import { loadExchangeRequests } from './exchangeActions';
+import { blockNumberToHour } from '../util/convertFunctions';
 
 export function loadMyTimetable(userEmail) {
   return dispatch => {
@@ -41,7 +44,7 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        window.location.replace("http://localhost:3000/study-group");
+        window.location.replace("http://localhost:3000/personal-number");
         // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
@@ -133,7 +136,7 @@ export function showCourseTimetable(courseId, courseName) {
   return dowloadCourseTimetableIfNeeded(courseId, courseName, action);
 }
 
-export function hideCourseTimetable(courseId) {
+export function hideCourseTimetable(courseId = null) {
   return {
     type: HIDE_COURSE_TIMETABLE,
     payload: { courseId }
@@ -146,6 +149,14 @@ export function cancelExchangeMode(){
   };
 }
 
+export function chooseExchangeFromBlock(course) {
+  return {
+    type: CHOOSE_EXCHANGE_FROM_BLOCK,
+    payload: {
+      course
+    }
+  }  
+}
 
 export function exchangeConfirm(blockTo) {
   var action = {
@@ -159,33 +170,43 @@ export function exchangeConfirm(blockTo) {
     const body = {
       BlockFrom:
       {
-        courseId: bl.courseId,
+        courseId: bl.id,
         day: bl.day,
-        startHour: bl.startBlock,
+        startHour: blockNumberToHour(bl.startBlock),
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
-        courseId: blockTo.courseId,
+        courseId: blockTo.id,
         day: blockTo.day,
-        startHour: blockTo.startBlock,
+        startHour: blockNumberToHour(blockTo.startBlock),
         duration: blockTo.endBlock - blockTo.startBlock
       },
       StudentId: user.studentId
-    }
+    }    
 
     axios({
       method: 'post',
       url: `/api/exchange/ExchangeConfirm`,
       data: body
     })
-      .then(() => {
-        dispatch(action);
+      .then((response) => { 
+        var exchangeMade = response.data;
+        if (exchangeMade === false) {
+          window.alert("Žiadosť o výmenu bola evidovaná.");          
+        } else {          
+          window.alert("Výmena bola vykonaná.");  
+          dispatch(loadMyTimetable(user.email));
+        }
+        dispatch(hideCourseTimetable(blockTo.id));
+        dispatch(action);        
+        dispatch(loadExchangeRequests());
       })
       .catch(() => {
+        dispatch(hideCourseTimetable(blockTo.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
-        });
+        });        
       });
   };
 }

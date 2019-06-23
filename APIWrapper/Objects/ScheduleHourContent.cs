@@ -7,6 +7,11 @@ namespace FRITeam.Swapify.APIWrapper.Objects
     public class ScheduleHourContent
     {
         /// <summary>
+        /// from 1 (monday) to 5 (friday)
+        /// </summary>
+        public int Day { get; }
+
+        /// <summary>
         /// Every day has 13 blocks(1-13)
         /// block 1 starts at 7:00
         /// block 13 starts at 19:00
@@ -41,22 +46,18 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         /// <summary>
         /// Full name of subject
         /// </summary>
-        public string CourseName { get; }
-
-        /// <summary>
-        /// All study groups which have lesson in the same time
-        /// </summary>
-        public HashSet<string> StudyGroups { get; }
+        public string CourseName { get; }        
 
         /// <summary>
         /// Type of subject - compulsory, optional, compulsoryElective
         /// </summary>
         public SubjectType SubjectType { get; }
 
-        public ScheduleHourContent(int blockNumber, bool isBlocked, LessonType lessonType,
+        public ScheduleHourContent(int day, int blockNumber, bool isBlocked, LessonType lessonType,
             string teacherName, string roomName, string subjectShortcut, string subjectName,
-            SubjectType subjectType, List<string> studyGroups)
+            SubjectType subjectType)
         {
+            Day = day;
             BlockNumber = blockNumber;
             IsBlocked = isBlocked;
             LessonType = lessonType;
@@ -65,32 +66,16 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             CourseShortcut = subjectShortcut;
             CourseName = subjectName;
             SubjectType = subjectType;
-            StudyGroups = new HashSet<string>();
-            StudyGroups.UnionWith(studyGroups);
         }
-
+        
         public bool IsSameBlockAs(ScheduleHourContent b2)
         {
             return (CourseName == b2?.CourseName) &&
                     (TeacherName == b2?.TeacherName) &&
                     (RoomName == b2?.RoomName) &&
-                    (LessonType == b2?.LessonType) &&
-                    (StudyGroups.SetEquals(b2?.StudyGroups));
+                    (LessonType == b2?.LessonType);
         }
 
-        public int GetIndexOfSameBlockInList(List<ScheduleHourContent> blocksInDay)
-        {
-            if (!blocksInDay.Any()) return -2;
-
-            for (int curBlockIndex = 0; curBlockIndex < blocksInDay.Count; curBlockIndex++)
-            {
-                if (blocksInDay[curBlockIndex].IsSameBlockAs(this))
-                {
-                    return curBlockIndex;
-                }
-            }
-
-            return -1;
-        }
+        
     }
 }

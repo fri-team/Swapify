@@ -10,6 +10,7 @@ using MongoDB.Driver;
 using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
+using FRITeam.Swapify.Backend.Converter;
 
 namespace BackendTest
 {
@@ -18,14 +19,14 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
-        private readonly Mock<ILogger<StudyGroupService>> _loggerMock;
+        private readonly Mock<ILogger<SchoolScheduleProxy>> _loggerMockSchedule;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
         public StudentServiceTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _mongoFixture = mongoFixture;
-            _loggerMock = new Mock<ILogger<StudyGroupService>>();
+            _loggerMockSchedule = new Mock<ILogger<SchoolScheduleProxy>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
@@ -36,16 +37,16 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
-
-            StudyGroup studyGroup = await grpsrvc.GetStudyGroupAsync("5ZZS14");
+            SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
+            
             Student student = new Student();
-            student.Timetable = studyGroup.Timetable.Clone();
-            student.StudyGroup = studyGroup;
+            var timetable = serviceSchedule.GetByPersonalNumber("558188");
+            student.Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse);
+            student.PersonalNumber = "558188";
 
             var newBlock = new Block();
-            var countShouldBe = studyGroup.Timetable.AllBlocks.Count;
-            studyGroup.Timetable.AddNewBlock(newBlock);
+            var countShouldBe = student.Timetable.AllBlocks.Count;
+            student.Timetable.AddNewBlock(newBlock);
 
             student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
 
@@ -59,35 +60,36 @@ namespace BackendTest
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
-            StudyGroupService grpsrvc = new StudyGroupService(_loggerMock.Object, _database, schoolScheduleProxy, serviceCourse);
+            SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
             StudentService stSer = new StudentService(_database);
-            
-            Student st = new Student();
+
+            var timetable = serviceSchedule.GetByPersonalNumber("558188");
+            Student st = new Student
+            {
+                PersonalNumber = "558188",
+                Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
+        };
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
-            StudyGroup gr = new StudyGroup() { GroupName = "5ZZS14" };
             Timetable tt = new Timetable();
-            Block bl = new Block();
-            bl.BlockType = BlockType.Lecture;
-            bl.CourseId = cr.Id;
-            bl.StartHour = 16;
-            bl.Duration = 2;
-            bl.Day = Day.Thursday;
+            Block bl = new Block
+            {
+                BlockType = BlockType.Lecture,
+                CourseId = cr.Id,
+                StartHour = 16,
+                Duration = 2,
+                Day = Day.Thursday
+            };
             tt.AddNewBlock(bl);
-            gr.Timetable = tt;
-
-
-            await grpsrvc.AddAsync(gr);
-            st.StudyGroup = gr;
+            
             await stSer.AddAsync(st);
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Id.Should().NotBeEmpty(); // id was set?
-            var studyGroup = await grpsrvc.FindByIdAsync(gr.Id);
-            studyGroup.GroupName.Should().Be("5ZZS14");
-            studyGroup.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
-            studyGroup.Timetable.AllBlocks.First().Duration.Should().Be(2);
-            studyGroup.Timetable.AllBlocks.First().StartHour.Should().Be(16);
-            studyGroup.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
+            st.PersonalNumber.Should().Be("558188");
+            st.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
+            st.Timetable.AllBlocks.First().Duration.Should().Be(2);
+            st.Timetable.AllBlocks.First().StartHour.Should().Be(16);
+            st.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
         }
 
 

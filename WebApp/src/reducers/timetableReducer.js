@@ -16,7 +16,8 @@ import {
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK,
   ADD_BLOCK_DONE,
-  ADD_BLOCK_FAIL
+  ADD_BLOCK_FAIL,
+  CHOOSE_EXCHANGE_FROM_BLOCK
 } from '../constants/actionTypes';
 
 export const initState = {
@@ -126,7 +127,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
           state.myTimetable,
           _.pick(state.courseTimetables, state.displayedCourses)
         ),
-        courseToExchange: null
+        blockFromExchange: null
       }
     case CONFIRM_EXCHANGE_REQUEST:
       return {
@@ -136,17 +137,26 @@ export default function timetableReducer(state = initState, { type, payload }) {
           state.myTimetable,
           _.pick(state.courseTimetables, state.displayedCourses)
         ),
-        courseToExchange: null
+        blockFromExchange: null
       }
     case HIDE_COURSE_TIMETABLE:
+      var displayedCourses;
+      // if course id set to null hide all courses
+      if (payload.courseId == null)
+      {
+        displayedCourses = [];
+      } else {
+        displayedCourses = _.without(state.displayedCourses, payload.courseId);
+      }
+
       return {
         ...state,
-        displayedCourses: _.without(state.displayedCourses, payload.courseId),
+        displayedCourses: displayedCourses,
         displayedTimetable: mergeTimetables(
           state.myTimetable,
           _.pick(
             state.courseTimetables,
-            _.without(state.displayedCourses, payload.courseId)
+            displayedCourses
           )
         )
       };
@@ -204,6 +214,12 @@ export default function timetableReducer(state = initState, { type, payload }) {
       ),
       isAdded: false
     };
+    case CHOOSE_EXCHANGE_FROM_BLOCK:
+      return {
+        ...state,
+        isExchangeMode: true,
+        blockFromExchange: payload.course
+      }
     default:
       return state;
   }

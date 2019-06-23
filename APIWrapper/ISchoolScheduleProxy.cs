@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FRITeam.Swapify.APIWrapper.Objects;
 
 namespace FRITeam.Swapify.APIWrapper
@@ -5,27 +6,27 @@ namespace FRITeam.Swapify.APIWrapper
     public interface ISchoolScheduleProxy
     {
         /// <summary>
-        /// Return schedule for whole week by study group
+        /// Return schedule for whole week by student number
         /// </summary>
-        /// <param name="studyGroupNumber">study group</param>
-        ScheduleWeekContent GetByStudyGroup(string studyGroupNumber);
+        /// <param name="personalNumber">student number</param>
+        IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number
         /// </summary>
         /// <param name="teacherNumber">teacher unique number</param>
-        ScheduleWeekContent GetByTeacherName(string teacherNumber);
+        IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber);
 
         /// <summary>
         /// Return schedule for whole week by room number
         /// </summary>
         /// <param name="roomNumber">room number</param>
-        ScheduleWeekContent GetByRoomNumber(string roomNumber);
+        IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber);
 
         /// <summary>
         /// Return schedule for whole week by subject code
         /// </summary>
         /// <param name="subjectCode">subject code</param>
-        ScheduleWeekContent GetBySubjectCode(string subjectCode);
+        IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode);
     }
 }
