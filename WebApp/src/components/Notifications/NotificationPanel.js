@@ -2,8 +2,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import Notification from './Notification';
-import './NotificationPanel.scss';
+import NotificationIcon from '../svg/NotificationIcon';
 import { fetchNotifications, setRead } from '../../actions/notificationsActions';
+import './NotificationPanel.scss';
 
 class NotificationPanel extends Component {
     state = {
@@ -44,14 +45,13 @@ class NotificationPanel extends Component {
                         key={notification.id}
                         id={notification.id}
                         text={notification.text}
-                        read={notification.read}
-                        //date={moment(notification.createdAt).format("ddd, Do MMM YYYY - HH:mm")}
+                        read={notification.read}                        
                         setNotificationRead = {this.props.setNotificationRead}
                     />
                 );                                
             });
         } else {
-            notificationComponents = <div className="empty-notifications">There are currently no notifications</div>;            
+            notificationComponents = <div className="empty-notifications">Momentálne nemáte žiadne notifikácie.</div>;            
         }
 
         let unreadNotificationsCount = this.countUnreadNotifications(this.props.notifications);
@@ -64,20 +64,16 @@ class NotificationPanel extends Component {
         }        
 
         return (
-            <div className="notification-wrapper">                                  
-                <div className="notification-icon" onClick={this.onProfileClick}></div>                
+            <div className="notification-wrapper">                                                                  
                 <div className={"notification-badge" + badge} onClick={this.onProfileClick}>{unreadNotificationsCount}</div>
+                <NotificationIcon onClick={this.onProfileClick}/>
                 <div className={"notification-panel " + this.state.notificationPanelVisibility}>
                     <div className="notification-panel-header clearfix">
-                        <strong>Notifications</strong>
-                        <p>Mark All as Read</p>
+                        <strong>Notifikácie</strong>                        
                     </div>
                     <div className="notification-panel-content">
                         {notificationComponents}
-                    </div>
-                    <div className="notification-panel-footer clearfix">
-                        <strong>Show all notifications</strong>
-                    </div>
+                    </div>                    
                 </div>
             </div>
         );
