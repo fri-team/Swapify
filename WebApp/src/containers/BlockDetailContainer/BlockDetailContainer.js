@@ -8,17 +8,18 @@ import * as timetableActions from '../../actions/timetableActions';
 
 class BlockDetailContainer extends Component {
   state = {
-    user: this.props.user
+    user: this.props.user,
   };
 
   onOutsideClick = () => {
     this.props.actions.hideDetail();
   }
-
+  
   exchangeRequest = (course) =>
   {
     this.props.timetableActions.showExchangeModeTimetable(course);
-    this.props.actions.hideDetail();
+    this.props.timetableActions.chooseExchangeFromBlock(course);
+    this.props.actions.hideDetail();    
   }
 
   onClickDelete = (course) => {
@@ -34,6 +35,7 @@ class BlockDetailContainer extends Component {
         top={top}
         left={left}
         course={course}
+        user={this.state.user}
         onOutsideClick={this.onOutsideClick}
         onExchangeRequest={this.exchangeRequest}
         onClickDelete={this.onClickDelete}

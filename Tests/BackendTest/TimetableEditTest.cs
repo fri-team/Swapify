@@ -43,22 +43,28 @@ namespace BackendTest
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
             updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
 
+            Block updtBlock = new Block { BlockType = BlockType.Excercise, Day = Day.Friday, StartHour = 9 };
+            // update blckToAdd to updtBlock
+            updatedStudent.Timetable.UpdateBlock(blckToAdd, updtBlock);
+            //save updated block
+            await stserv.UpdateStudentAsync(updatedStudent);
+            //load from db
+            updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            //test
+            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(1);
 
             //delete added block
-            updatedStudent.Timetable.RemoveBlock(blckToAdd);
+            updatedStudent.Timetable.RemoveBlock(updtBlock);
             //save deleted
             await stserv.UpdateStudentAsync(updatedStudent);
             //load from db
             updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
-            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(0);
-            updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(false);
+            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(0);
+            updatedStudent.Timetable.ContainsBlock(updtBlock).Should().Be(false);
         }
-
-
-
-
     }
+
     public class FakeTimetable
     {
         public static Timetable GetFakeTimetable()

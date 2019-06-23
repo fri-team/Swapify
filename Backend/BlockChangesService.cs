@@ -13,7 +13,7 @@ namespace FRITeam.Swapify.Backend
     public class BlockChangesService : IBlockChangesService
     {
         private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;
-
+        
         public BlockChangesService(IMongoDatabase database)
         {
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
@@ -35,6 +35,22 @@ namespace FRITeam.Swapify.Backend
         public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
         {
             return _blockChangesCollection.Find(x => x.StudentId == studentId).ToListAsync();
+        }
+
+        public async Task<bool> CancelExchangeRequest(BlockChangeRequest request)
+        {
+            BlockChangeRequest a = null;
+            if (request.Status == ExchangeStatus.WaitingForExchange)
+            {
+                a = _blockChangesCollection.FindOneAndDelete(
+                    x => x.StudentId == request.StudentId &&
+                         x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
+                         x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
+                         x.BlockFrom.Day == request.BlockFrom.Day &&
+                         x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                         x.Status == request.Status);
+            }
+            return (a != null);
         }
 
         private async Task AddAsync(BlockChangeRequest entityToAdd)
@@ -73,13 +89,14 @@ namespace FRITeam.Swapify.Backend
             return ids;
         }
 
-        private async Task RemoveStudentRequests(BlockChangeRequest request)
+        private async Task RemoveNotRealizedRequests(BlockChangeRequest request)
         {
             await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
                                                      x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
                                                      x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
                                                      x.BlockFrom.Day == request.BlockFrom.Day &&
-                                                     x.BlockFrom.Duration == request.BlockFrom.Duration);
+                                                     x.BlockFrom.Duration == request.BlockFrom.Duration &&
+                                                     x.Status == ExchangeStatus.WaitingForExchange);
         }
 
         private async Task SetDoneStatus(BlockChangeRequest request)

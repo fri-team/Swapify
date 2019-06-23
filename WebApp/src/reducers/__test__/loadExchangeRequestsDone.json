@@ -1,0 +1,26 @@
+{
+    "action": {
+        "type": "LOAD_EXCHANGE_REQUESTS_DONE",
+        "payload": {
+            "exchangeRequests": [
+                {
+                    "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
+                },
+                {
+                    "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
+                }
+            ]
+        }
+    },
+    "stateBefore": {},
+    "stateAfter": {
+        "exchangeRequests": [
+            {
+                "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
+            },
+            {
+                "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
+            }
+        ]
+    }
+}

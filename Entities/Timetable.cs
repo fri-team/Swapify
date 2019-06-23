@@ -8,7 +8,7 @@ namespace FRITeam.Swapify.Entities
     public class Timetable : BaseEntity
     {
         private List<Block> _blocks;
-        
+
         public virtual IList<Block> AllBlocks
         {
             get => _blocks.AsReadOnly();
@@ -48,11 +48,25 @@ namespace FRITeam.Swapify.Entities
             return false;
         }
 
+        public bool UpdateBlock(Block oldBlock, Block newBlock)
+        {
+            for (int i = 0; i < _blocks.Count; i++)
+            {
+                if (_blocks[i].IsSameAs(oldBlock))
+                {
+                    _blocks[i] = newBlock;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool ContainsBlock(Block bl)
         {
             return _blocks.Any(x => x.IsSameAs(bl));
         }
 
-       
+
     }
 }

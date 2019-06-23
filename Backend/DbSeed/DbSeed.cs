@@ -53,14 +53,51 @@ namespace FRITeam.Swapify.Backend.DbSeed
             var usersCollection = dbService.GetCollection<User>("users");
 
             string email = "oleg@swapify.com";
-            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();                        
+            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+
+            var courseService = serviceProvider.GetRequiredService<ICourseService>();
+            var course1 = await courseService.FindByNameAsync("technické prostriedky PC");
+            var course2 = await courseService.FindByNameAsync("multimediálne informačné systémy");
+
             if (oleg != null)
-            {                
-                blockExchangeCollection.InsertOne(new BlockChangeRequest {
-                    StudentId = oleg.Id,
+            {
+                blockExchangeCollection.InsertOne(new BlockChangeRequest
+                {
+                    StudentId = oleg.Student.Id,
                     Status = ExchangeStatus.WaitingForExchange,
-                    DateOfCreation = DateTime.Now
+                    DateOfCreation = DateTime.Now,
+                    BlockFrom = new Block
+                    {                                              
+                        CourseId = course1.Id,
+                        Day = Day.Wednesday,
+                        StartHour = 8
+                    },
+                    BlockTo = new Block
+                    {
+                        CourseId = course1.Id,
+                        Day = Day.Thursday,
+                        StartHour = 12
+                    }
                 });
+
+                blockExchangeCollection.InsertOne(new BlockChangeRequest
+                {
+                    StudentId = oleg.Student.Id,
+                    Status = ExchangeStatus.WaitingForExchange,
+                    DateOfCreation = DateTime.Now,
+                    BlockFrom = new Block
+                    {
+                        CourseId = course2.Id,
+                        Day = Day.Thursday,
+                        StartHour = 9
+                    },
+                    BlockTo = new Block
+                    {
+                        CourseId = course2.Id,
+                        Day = Day.Friday,
+                        StartHour = 15
+                    }
+                });                
             }
         }
 
@@ -68,12 +105,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
-            var studyGroupService = serviceProvider.GetRequiredService<IStudyGroupService>();
 
             Student student = new Student();
-            StudyGroup sg = await studyGroupService.GetStudyGroupAsync("5ZZS23");
-            student.Timetable = sg.Timetable.Clone();
-            student.StudyGroup = sg;
+            student.Timetable = null;
+            student.PersonalNumber = null;
 
             studentCollection.InsertOne(student);
             return student;

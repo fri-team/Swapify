@@ -9,83 +9,68 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { dayHourToString } from '../../util/dateTimeFormatter';
 import { CardHeader } from '@material-ui/core';
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle,handleChange, value }) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
-  <AppBar position="static">
-          <Tabs value={value} onChange={handleChange}>
-            <Tab label="Predmety" />
-            <Tab label="Vymeny" />
-          </Tabs>
-        </AppBar>
-        {value === 0 && 
-          <List>
-            {courses.map(({ courseId, courseName, checked }) => (
-              <ListItem button key={courseId}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={checked}
-                      onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
-                    />
-                  }
-                  label={courseName}
+    <AppBar position="static">
+      <Tabs value={value} onChange={handleChange}>
+        <Tab label="Predmety" />
+        <Tab label="Vymeny" />
+      </Tabs>
+    </AppBar>
+    {value === 0 &&
+      <List>
+        {courses.map(({ courseId, courseName, checked }) => (
+          <ListItem button key={courseId}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={checked}
+                  onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
                 />
-              </ListItem>
-              
-            ))}
-          </List>
-        }
-        {value === 1 && 
-        <Grid
-          container
-          direction="column"
-          justify="space-around"
-          alignItems="stretch"
-        >
-          <Card>
-            <CardHeader
-              action={
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
               }
-              title="Teoria informacie (TI)"
-              subheader=" Pondelok 11:00"
+              label={courseName}
             />
-          </Card>
-          <br />
-          <Card>
-            <CardHeader
-              action={
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              }
-              title="Teoria informacie (TI)"
-              subheader=" Pondelok 15:00"
-            />
-          </Card>
-          <br />
-          <Card>
-            <CardHeader
-              action={
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              }
-              title=" Diskretna simulacia (Diss)"
-              subheader="Streda 15:00"
-            />
-          </Card>
-        </Grid>
-      }
+          </ListItem>
+
+        ))}
+      </List>
+    }
+    {value === 1 &&
+      <Grid
+        container
+        direction="column"
+        justify="space-around"
+        alignItems="stretch"
+      >
+        {createExchangeRequestsList(exchangeRequests, courses)}
+      </Grid>
+    }
 
   </Drawer>
 );
+
+const createExchangeRequestsList = (exchangeRequests, courses) => {
+  return exchangeRequests.map((exchangeRequest) => createExchangeRequestListItem(exchangeRequest, courses));
+}
+
+const createExchangeRequestListItem = (exchangeRequest, courses) => {
+  var course = courses.find(course => course.courseId == exchangeRequest.blockFrom.courseId)
+
+  if (course == null) {
+    return null;
+  }
+  return (
+    <Card>
+      <CardHeader        
+        title={course.courseName}
+        subheader={dayHourToString(exchangeRequest.blockFrom.day, exchangeRequest.blockFrom.startHour)
+          + " -> " + dayHourToString(exchangeRequest.blockTo.day, exchangeRequest.blockTo.startHour)}
+      />
+    </Card>
+  )
+}
 
 export default Sidebar;
