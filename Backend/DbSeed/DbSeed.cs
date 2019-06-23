@@ -20,6 +20,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
     {
         private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
         private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
+        private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -41,7 +42,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = OlegGuid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider)
+                    Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -140,36 +141,36 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75"),
-                    RecipientId = OlegGuid,
+                    RecipientId = OlegStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "ahoj",
+                    Message = "notifikacia 1",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
                 new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("6ed215e5-3e84-4487-b397-afe626f37a8f"),
-                    RecipientId = OlegGuid,
+                    RecipientId = OlegStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "ahoj1",
+                    Message = "notifikacia 2",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
                 new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("4e6cc595-5a84-4184-b06d-363d341ddbfb"),
-                    RecipientId = OlegGuid,
+                    RecipientId = OlegStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "ahoj2",
+                    Message = "notifikacia 3",
                     CreatedAt = DateTime.Now,
                     Read = false
                 },
                 new SimpleMessageNotification()
                 {
                     Id = Guid.Parse("321996ff-2881-4cb8-bc55-b19f2935ae7e"),
-                    RecipientId = OlegGuid,
+                    RecipientId = OlegStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "ahoj2",
+                    Message = "notifikacia 4",
                     CreatedAt = DateTime.Now,
                     Read = true
                 }
@@ -178,12 +179,21 @@ namespace FRITeam.Swapify.Backend.DbSeed
             await notificationsCollection.InsertManyAsync(notifications);
         }
 
-        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider)
+        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid))
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
 
-            Student student = new Student();
+            if (studentId == default(Guid))
+            {
+                studentId = Guid.NewGuid();
+            }
+
+            Student student = new Student()
+            {
+                Id = studentId
+            };
+
             student.Timetable = null;
             student.PersonalNumber = null;
 
