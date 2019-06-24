@@ -82,7 +82,6 @@ const validator = new FormValidator([
 
 class RegisterPage extends Component {
   constructor() {
-
     super();
 
     this.state = {
