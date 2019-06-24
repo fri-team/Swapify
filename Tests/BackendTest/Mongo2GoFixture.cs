@@ -1,6 +1,8 @@
 using System;
 using Backend;
 using Mongo2Go;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Xunit;
 
@@ -20,6 +22,9 @@ namespace BackendTest
 
         public Mongo2GoFixture()
         {
+            // to return local DateTime
+            BsonSerializer.RegisterSerializer(DateTimeSerializer.LocalInstance);
+
             DbRegistration.Init();
             _runner = RUN_WITH_STANDARD_PORT ? MongoDbRunner.StartForDebugging() : MongoDbRunner.Start();
             MongoClient = new MongoClient(_runner.ConnectionString);
