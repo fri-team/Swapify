@@ -23,8 +23,7 @@ namespace BackendTest
         private IList<Notification> _notifications;
         private static readonly Guid NotificationId = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75");
         private static readonly Guid TestStudentGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly Guid TestUserGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly DateTime DateTime = DateTime.Parse("2019-06-24 10:26:55");
+        private static readonly Guid TestUserGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");        
 
         public NotificationServiceTest(Mongo2GoFixture mongo2GoFixture)
         {
@@ -41,6 +40,8 @@ namespace BackendTest
             var notifications = await notificationService.GetStudentNotifications(TestStudentGuid);
 
             notifications.Should().BeEquivalentTo(_notifications);
+
+            await _mongoClient.DropDatabaseAsync(TestingDatabaseName);
         }
 
         [Fact]
@@ -57,6 +58,8 @@ namespace BackendTest
             _notifications.First(notification => notification.Id == NotificationId).Read = true; ;
                         
             notifications.Should().BeEquivalentTo(_notifications);
+
+            await _mongoClient.DropDatabaseAsync(TestingDatabaseName);
         }
 
         [Fact]
@@ -70,8 +73,7 @@ namespace BackendTest
                 Id = Guid.NewGuid(),
                 RecipientId = TestStudentGuid,
                 Type = NotificationType.SimpleMessageNotification,
-                Message = "nova notifikacia",
-                CreatedAt = DateTime,
+                Message = "nova notifikacia",                
                 Read = true
             };
             
@@ -81,12 +83,12 @@ namespace BackendTest
 
             notifications.Should().BeEquivalentTo(
                 _notifications.Concat(new List<Notification>() { newNotification }));
+
+            await _mongoClient.DropDatabaseAsync(TestingDatabaseName);
         }
 
         private async Task<IMongoDatabase> InitializeDatabaseWithNotifications(IMongoClient mongoClient, string testingDatabaseName)
-        {
-            await _mongoClient.DropDatabaseAsync(testingDatabaseName);
-
+        {            
             IMongoDatabase testingDatabase = _mongoClient.GetDatabase(testingDatabaseName);            
             await CreateTestingNotificationsAsync(testingDatabase);
 
@@ -94,9 +96,7 @@ namespace BackendTest
         }
 
         private async Task<IMongoDatabase> InitializeDatabaseWithNotificationsUserStudent(IMongoClient mongoClient, string testingDatabaseName)
-        {
-            await _mongoClient.DropDatabaseAsync(testingDatabaseName);
-
+        {            
             IMongoDatabase testingDatabase = _mongoClient.GetDatabase(testingDatabaseName);
 
             await CreateTestingUserAsync(testingDatabase);
@@ -114,8 +114,7 @@ namespace BackendTest
                     Id = NotificationId,
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 1",
-                    CreatedAt = DateTime,
+                    Message = "notifikacia 1",                    
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -123,8 +122,7 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 2",
-                    CreatedAt = DateTime,
+                    Message = "notifikacia 2",                    
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -132,8 +130,7 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 3",
-                    CreatedAt = DateTime,
+                    Message = "notifikacia 3",                    
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -141,8 +138,7 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 4",
-                    CreatedAt = DateTime,
+                    Message = "notifikacia 4",                    
                     Read = true
                 }
             };
