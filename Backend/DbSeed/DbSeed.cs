@@ -184,18 +184,12 @@ namespace FRITeam.Swapify.Backend.DbSeed
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
 
-            if (studentId == default(Guid))
+            Student student = new Student
             {
-                studentId = Guid.NewGuid();
-            }
-
-            Student student = new Student()
-            {
-                Id = studentId
+                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Timetable = null,
+                PersonalNumber = null
             };
-
-            student.Timetable = null;
-            student.PersonalNumber = null;
 
             studentCollection.InsertOne(student);
             return student;
