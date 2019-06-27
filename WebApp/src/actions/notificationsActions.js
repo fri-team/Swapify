@@ -58,9 +58,9 @@ export function fetchNotifications() {
 }
 
 export function setRead(notificationId, read) {
-	return (dispatch, getState) => {		
+	return (dispatch) => {		
 		api.notifications.setRead(notificationId, read)
-			.then((response) => {
+			.then(() => {
 				dispatch(notificationReadChanged(notificationId, read));
 			})
 		//TODO catch error 	

@@ -1,5 +1,4 @@
-import { PureComponent } from "react";
-import React from "react";
+import React, { PureComponent } from "react";
 import './NotificationPanel.scss';
 
 export default class Notification extends PureComponent {

@@ -36,15 +36,15 @@ namespace WebAPI.Controllers
             currentUserBlockChangeRequest.DateOfCreation = DateTime.Now;
             currentUserBlockChangeRequest.StudentId = Guid.Parse(request.StudentId);
 
-            var (exchangeWasMade, otherUserBlockChangeRequest) = await _blockChangesService.AddAndFindMatch(currentUserBlockChangeRequest);
+            var (exchangeWasMade, foundMatch) = await _blockChangesService.AddAndFindMatch(currentUserBlockChangeRequest);
 
             if (exchangeWasMade)
             {
                 await _notificationService.AddNotification(
-                    SuccessfulExchangeNotification.Create(currentUserBlockChangeRequest, otherUserBlockChangeRequest));
+                    SuccessfulExchangeNotification.Create(currentUserBlockChangeRequest, foundMatch));
 
                 await _notificationService.AddNotification(
-                    SuccessfulExchangeNotification.Create(otherUserBlockChangeRequest, currentUserBlockChangeRequest));
+                    SuccessfulExchangeNotification.Create(foundMatch, currentUserBlockChangeRequest));
             }
             
             return Ok(exchangeWasMade);

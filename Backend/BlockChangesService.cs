@@ -23,7 +23,7 @@ namespace FRITeam.Swapify.Backend
         /// </summary>
         /// <param name="blockChangeRequest"></param>
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
-        public async Task<(bool exchangeMade, BlockChangeRequest otherChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
+        public async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
             await AddAsync(blockChangeRequest);
             return await MakeExchangeAndDeleteRequests(blockChangeRequest);                        
@@ -78,7 +78,7 @@ namespace FRITeam.Swapify.Backend
                       x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
 
-        private async Task<(bool exchangeMade, BlockChangeRequest otherChangeRequest)> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
             if (requestForExchange == null)

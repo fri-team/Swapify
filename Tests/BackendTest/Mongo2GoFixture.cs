@@ -21,8 +21,7 @@ namespace BackendTest
         public IMongoClient MongoClient { get; }
 
         public Mongo2GoFixture()
-        {
-            // to return local DateTime                               
+        {                                           
             DbRegistration.Init();
             _runner = RUN_WITH_STANDARD_PORT ? MongoDbRunner.StartForDebugging() : MongoDbRunner.Start();
             MongoClient = new MongoClient(_runner.ConnectionString);

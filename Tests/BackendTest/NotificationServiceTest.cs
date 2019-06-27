@@ -183,14 +183,9 @@ namespace BackendTest
         {            
             var studentCollection = database.GetCollection<Student>(nameof(Student));
 
-            if (studentId == default(Guid))
-            {
-                studentId = Guid.NewGuid();
-            }
-
             Student student = new Student
             {
-                Id = studentId,
+                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
                 Timetable = null,
                 PersonalNumber = null
             };
