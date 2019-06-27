@@ -14,8 +14,8 @@ using Xunit;
 
 namespace BackendTest
 {
-    [CollectionDefinition("Database collection")]
-    public class NotificationServiceTest : IClassFixture<Mongo2GoFixture>
+    [Collection("Database collection")]
+    public class NotificationServiceTest
     {        
         private IMongoClient _mongoClient;
         private const string TestingDatabaseName = "TestingDatabaseName";
