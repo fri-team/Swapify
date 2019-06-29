@@ -89,7 +89,7 @@ namespace FRITeam.Swapify.Backend
             return ids;
         }
 
-        private async Task RemoveNotRealizedRequests(BlockChangeRequest request)
+        private async Task RemoveStudentRequests(BlockChangeRequest request)
         {
             await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
                                                      x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
