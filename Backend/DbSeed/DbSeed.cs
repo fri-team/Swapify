@@ -136,6 +136,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
             var db = serviceProvider.GetRequiredService<IMongoDatabase>();
             var notificationsCollection = db.GetCollection<Notification>(nameof(Notification));
 
+            // insert testing notification only if notifications collection is empty
+            if (notificationsCollection.CountDocuments(notification => true) > 0)
+                return;
+
             var notifications = new List<Notification>
             {
                 new SimpleMessageNotification()
