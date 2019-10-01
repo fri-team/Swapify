@@ -1,0 +1,53 @@
+{
+    "action": {
+        "type": "NOTIFICATIONS_FETCH_DONE",
+        "payload": {
+            "notifications": [
+                {
+                    "id":"2548a9d8-c5dc-4598-9240-c41f2a677c75",
+                    "recipientId":"180ce481-85a3-4246-93b5-ba0a0229c59f",
+                    "type":"SimpleMessageNotification",
+                    "message":"notifikacia 1", 
+                    "createdAt":"2019-06-23T19:23:55.165Z",                   
+                    "read":false
+                },
+                {
+                    "id":"2548a9d8-c5dc-4598-9240-c41f2a677c76",
+                    "recipientId":"180ce481-85a3-4246-93b5-ba0a0229c59f",
+                    "type":"SimpleMessageNotification",
+                    "message":"notifikacia 2",   
+                    "createdAt":"2019-06-23T19:23:55.165Z",                 
+                    "read":false
+                }
+            ]
+        }
+    },
+    "stateBefore": {
+        "isFetching": false,
+        "error": null,
+        "notifications": [            
+        ]
+    },
+    "stateAfter": {        
+        "isFetching": false,
+        "error": null,
+        "notifications": [
+            {
+                "id":"2548a9d8-c5dc-4598-9240-c41f2a677c75",
+                "recipientId":"180ce481-85a3-4246-93b5-ba0a0229c59f",
+                "type":"SimpleMessageNotification",
+                "message":"notifikacia 1",
+                "createdAt":"2019-06-23T19:23:55.165Z",                    
+                "read":false
+            },
+            {
+                "id":"2548a9d8-c5dc-4598-9240-c41f2a677c76",
+                "recipientId":"180ce481-85a3-4246-93b5-ba0a0229c59f",
+                "type":"SimpleMessageNotification",
+                "message":"notifikacia 2",
+                "createdAt":"2019-06-23T19:23:55.165Z",                    
+                "read":false
+            }
+        ]			
+    }
+}

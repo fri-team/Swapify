@@ -12,11 +12,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Entities.Notifications;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {
     public static class DbSeed
     {
+        private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
+        private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
+        private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
@@ -28,6 +33,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 User user = new User
                 {
+                    Id = OlegGuid,
                     Name = "Oleg",
                     Surname = "Dementov",
                     Email = email,
@@ -35,7 +41,31 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     UserName = email,
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
-                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    SecurityStamp = OlegGuid.ToString("D"),
+                    Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid)
+                };
+
+                var password = new PasswordHasher<User>();
+                var hashed = password.HashPassword(user, "Heslo123");
+                user.PasswordHash = hashed;
+                usersCollection.InsertOne(user);
+            }
+
+            email = "oleg2@swapify.com";
+            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            if (oleg == null)
+            {
+                User user = new User
+                {
+                    Id = Oleg2Guid,
+                    Name = "Oleg2",
+                    Surname = "Dementov",
+                    Email = email,
+                    NormalizedEmail = email.ToUpper(),
+                    UserName = email,
+                    NormalizedUserName = email.ToUpper(),
+                    EmailConfirmed = true,
+                    SecurityStamp = Oleg2Guid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider)
                 };
 
@@ -101,14 +131,69 @@ namespace FRITeam.Swapify.Backend.DbSeed
             }
         }
 
-        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider)
+        public static async Task CreateTestingNotifications(IServiceProvider serviceProvider)
+        {
+            var db = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var notificationsCollection = db.GetCollection<Notification>(nameof(Notification));
+
+            // insert testing notification only if notifications collection is empty
+            if (notificationsCollection.CountDocuments(notification => true) > 0)
+                return;
+
+            var notifications = new List<Notification>
+            {
+                new SimpleMessageNotification()
+                {
+                    Id = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75"),
+                    RecipientId = OlegStudentGuid,
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "notifikacia 1",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new SimpleMessageNotification()
+                {
+                    Id = Guid.Parse("6ed215e5-3e84-4487-b397-afe626f37a8f"),
+                    RecipientId = OlegStudentGuid,
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "notifikacia 2",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new SimpleMessageNotification()
+                {
+                    Id = Guid.Parse("4e6cc595-5a84-4184-b06d-363d341ddbfb"),
+                    RecipientId = OlegStudentGuid,
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "notifikacia 3",
+                    CreatedAt = DateTime.Now,
+                    Read = false
+                },
+                new SimpleMessageNotification()
+                {
+                    Id = Guid.Parse("321996ff-2881-4cb8-bc55-b19f2935ae7e"),
+                    RecipientId = OlegStudentGuid,
+                    Type = NotificationType.SimpleMessageNotification,
+                    Message = "notifikacia 4",
+                    CreatedAt = DateTime.Now,
+                    Read = true
+                }
+            };
+
+            await notificationsCollection.InsertManyAsync(notifications);
+        }
+
+        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid))
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var studentCollection = dbService.GetCollection<Student>(nameof(Student));
 
-            Student student = new Student();
-            student.Timetable = null;
-            student.PersonalNumber = null;
+            Student student = new Student
+            {
+                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Timetable = null,
+                PersonalNumber = null
+            };
 
             studentCollection.InsertOne(student);
             return student;
