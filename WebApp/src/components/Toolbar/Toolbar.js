@@ -61,7 +61,9 @@ class AppToolbar extends PureComponent {
               <MenuIcon />
             </IconButton>
             <IconTray>
+             
               <PullRight />
+              
               {button}
               <NotificationPanel/>
               <UserAvatar
@@ -80,6 +82,11 @@ class AppToolbar extends PureComponent {
                 />
               )}
             </IconTray>
+            &nbsp;
+            <p>
+              {user.name} {user.surname}
+            </p>
+            
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>
