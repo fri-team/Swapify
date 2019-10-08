@@ -15,5 +15,15 @@ export default {
                 }
             }
         )
+    },
+    notifications: {
+        getMine:  (email) => 
+            axios.get('api/notification/' + email, {
+                contentType: 'application/json',
+                responseType: 'json'                
+            }),
+        setRead: (notificationId, read) =>
+            axios.put(`api/notification/${notificationId}/${read}`)
+        
     }
 }

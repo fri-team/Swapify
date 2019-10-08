@@ -18,10 +18,15 @@ namespace FRITeam.Swapify.Backend
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
-        public async Task<bool> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blockChangeRequest"></param>
+        /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
+        public async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            await AddAsync(entityToAdd);
-            return await MakeExchangeAndDeleteRequests(entityToAdd);
+            await AddAsync(blockChangeRequest);
+            return await MakeExchangeAndDeleteRequests(blockChangeRequest);                        
         }
 
         public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
@@ -73,18 +78,18 @@ namespace FRITeam.Swapify.Backend
                       x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
 
-        private async Task<bool> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
             if (requestForExchange == null)
             {
-                return false;
+                return (false, null);
             }
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
             await RemoveNotRealizedRequests(request);
             await RemoveNotRealizedRequests(requestForExchange);
-            return true;
+            return (true, requestForExchange);
         }
 
         private async Task RemoveNotRealizedRequests(BlockChangeRequest request)

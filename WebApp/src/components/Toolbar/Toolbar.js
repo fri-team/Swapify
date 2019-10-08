@@ -14,7 +14,7 @@ import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
 import { PERSONALNUMBER } from '../../util/routes';
-
+import NotificationPanel from '../Notifications/NotificationPanel';
 const ToolbarWrapper = styled.div`
   width: 100%;
 `;
@@ -65,7 +65,7 @@ class AppToolbar extends PureComponent {
               <PullRight />
               
               {button}
-
+              <NotificationPanel/>
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
