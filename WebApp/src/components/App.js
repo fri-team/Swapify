@@ -7,7 +7,7 @@ import {
   HomePage,
   RegisterPage,
   ConfirmEmailPage,
-  LoginPage,
+  //LoginPage,
   TimetablePage,
   NotFoundPage,
   SetNewPasswordPage,
@@ -24,7 +24,7 @@ export default class App extends Component {
         <div className="container">
           <Switch>
             <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
-            <Route path={LOGIN} component={onlyNotAuth(LoginPage)} />
+            <Route path={LOGIN} component={onlyNotAuth(HomePage)} />
             <Route path={PERSONALNUMBER} component={onlyAuth(PersonalNumber)} />
             <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
             <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
