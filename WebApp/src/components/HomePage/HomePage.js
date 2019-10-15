@@ -1,7 +1,7 @@
 
 
 import React, { Component } from 'react';
-import { HashRouter as Router, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import { Fade } from 'react-slideshow-image';
