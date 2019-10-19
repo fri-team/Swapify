@@ -13,7 +13,7 @@ namespace FRITeam.Swapify.APIWrapper
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public static ScheduleWeekContent ParseResponse(string myResponse)
+        public static IEnumerable<ScheduleHourContent> ParseResponse(string myResponse)
         {
 
             var response = JObject.Parse(myResponse);
@@ -28,7 +28,7 @@ namespace FRITeam.Swapify.APIWrapper
 
             var scheduleContent = (JArray)response["ScheduleContent"];
 
-            var weekTimetable = ScheduleWeekContent.Build();
+            var weekTimetable = new List<ScheduleHourContent>();
 
             foreach (var block in scheduleContent)
             {
@@ -40,22 +40,11 @@ namespace FRITeam.Swapify.APIWrapper
                         string roomName = block["r"].ToString();
                         string subjectShortcut = block["k"].ToString();
                         string subjectName = block["s"].ToString();
-                        var sc = new ScheduleHourContent(int.Parse(block["b"].ToString()), false,
-                                                         lessonType, teacherName, roomName, subjectShortcut,
-                                                         subjectName, SubjectType.None, new List<string>());
+                        var hourContent = new ScheduleHourContent(int.Parse(block["dw"].ToString()) - 1, int.Parse(block["b"].ToString()), false,
+                                                         lessonType, teacherName, roomName,
+                                                         subjectShortcut, subjectName, SubjectType.None);
 
-                        //-1 because API count day 1,2,3,4,5 and we store days at indexes 0,1,2,3,4
-                        var weekday = weekTimetable.DaysInWeek[int.Parse(block["dw"].ToString()) - 1];
-
-                        int index = sc.GetIndexOfSameBlockInList(weekday.BlocksInDay);
-                        if(index < 0)
-                        {
-                            weekday.BlocksInDay.Add(sc);
-                        }
-                        else
-                        {
-                            weekday.BlocksInDay.Insert(index + 1, sc);
-                        }
+                        weekTimetable.Add(hourContent);                        
                     }
                 }
                 catch (Exception ex)

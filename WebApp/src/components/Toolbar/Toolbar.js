@@ -13,8 +13,8 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
-import { STUDYGROUP } from '../../util/routes';
-
+import { PERSONALNUMBER } from '../../util/routes';
+import NotificationPanel from '../Notifications/NotificationPanel';
 const ToolbarWrapper = styled.div`
   width: 100%;
 `;
@@ -29,7 +29,7 @@ class AppToolbar extends PureComponent {
 
   handleLogout = () => this.props.userActions.logout();
 
-  changeGroup = () => this.props.history.push(STUDYGROUP);
+  changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
   render() {
     let button;
@@ -38,7 +38,10 @@ class AppToolbar extends PureComponent {
         <Button
           variant="contained"
           color="default"
-          onClick={() => this.props.timetableActions.cancelExchangeMode()}
+          onClick={() => {
+            this.props.timetableActions.cancelExchangeMode();
+            this.props.timetableActions.hideCourseTimetable();
+          }}
         >
           Späť na rozvrh
         </Button>
@@ -58,8 +61,11 @@ class AppToolbar extends PureComponent {
               <MenuIcon />
             </IconButton>
             <IconTray>
+             
               <PullRight />
+              
               {button}
+              <NotificationPanel/>
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
@@ -70,12 +76,17 @@ class AppToolbar extends PureComponent {
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
-                  selectStudyGroup={this.changeGroup}
+                  selectPersonalNumber={this.changePersonalNumber}
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                 />
               )}
             </IconTray>
+            &nbsp;
+            <p>
+              {user.name} {user.surname}
+            </p>
+            
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>

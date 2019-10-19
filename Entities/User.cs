@@ -10,6 +10,7 @@ namespace FRITeam.Swapify.Entities
 
         public User()
         {
+
         }
 
         public User(string email, string name, string surname)

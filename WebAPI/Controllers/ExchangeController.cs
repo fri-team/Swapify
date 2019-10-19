@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Entities.Notifications;
 using WebAPI.Models.Exchanges;
 
 namespace WebAPI.Controllers
@@ -16,24 +17,37 @@ namespace WebAPI.Controllers
     public class ExchangeController : BaseController
     {        
         private readonly IBlockChangesService _blockChangesService;
-        public ExchangeController(IBlockChangesService blockChangeService) : base()
+        private readonly INotificationService _notificationService;
+
+        public ExchangeController(IBlockChangesService blockChangeService, INotificationService notificationService) : base()
         {
-            _blockChangesService = blockChangeService;           
+            _blockChangesService = blockChangeService;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
         [Route("exchangeConfirm")]
         public async Task<IActionResult> ExchangeConfirm([FromBody]ExchangeRequestModel request)
         {
-            var blockChangeRequest = new BlockChangeRequest();
-            blockChangeRequest.BlockFrom = BlockForExchangeModel.ConvertToBlock(request.BlockFrom);
-            blockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
-            blockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
-            blockChangeRequest.DateOfCreation = DateTime.Now;
-            blockChangeRequest.StudentId = Guid.Parse(request.StudentId);
+            var currentUserBlockChangeRequest = new BlockChangeRequest();
+            currentUserBlockChangeRequest.BlockFrom = BlockForExchangeModel.ConvertToBlock(request.BlockFrom);
+            currentUserBlockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
+            currentUserBlockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
+            currentUserBlockChangeRequest.DateOfCreation = DateTime.Now;
+            currentUserBlockChangeRequest.StudentId = Guid.Parse(request.StudentId);
 
-            var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
-            return Ok(res);
+            var (exchangeWasMade, foundMatch) = await _blockChangesService.AddAndFindMatch(currentUserBlockChangeRequest);
+
+            if (exchangeWasMade)
+            {
+                await _notificationService.AddNotification(
+                    SuccessfulExchangeNotification.Create(currentUserBlockChangeRequest, foundMatch));
+
+                await _notificationService.AddNotification(
+                    SuccessfulExchangeNotification.Create(foundMatch, currentUserBlockChangeRequest));
+            }
+            
+            return Ok(exchangeWasMade);
         }
         
         [HttpPost("userWaitingExchanges")]

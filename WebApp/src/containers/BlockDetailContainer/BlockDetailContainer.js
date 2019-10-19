@@ -14,11 +14,12 @@ class BlockDetailContainer extends Component {
   onOutsideClick = () => {
     this.props.actions.hideDetail();
   }
-
+  
   exchangeRequest = (course) =>
   {
     this.props.timetableActions.showExchangeModeTimetable(course);
-    this.props.actions.hideDetail();
+    this.props.timetableActions.chooseExchangeFromBlock(course);
+    this.props.actions.hideDetail();    
   }
 
   onClickDelete = (course) => {

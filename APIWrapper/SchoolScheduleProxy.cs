@@ -1,11 +1,8 @@
-using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
-using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 
 namespace FRITeam.Swapify.APIWrapper
@@ -16,29 +13,32 @@ namespace FRITeam.Swapify.APIWrapper
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ScheduleWeekContent GetByTeacherName(string teacherNumber)
+        public IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber)
+        {
+            return CallScheduleContentApi(5, personalNumber);
+        }
+
+        public IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber)
         {
             return CallScheduleContentApi(1, teacherNumber);
         }
 
-        public ScheduleWeekContent GetByStudyGroup(string studyGroupNumber)
-        {
-            return CallScheduleContentApi(2, studyGroupNumber);
-        }
-
-        public ScheduleWeekContent GetByRoomNumber(string roomNumber)
+        public IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber)
         {
             return CallScheduleContentApi(3, roomNumber);
         }
 
-        public ScheduleWeekContent GetBySubjectCode(string subjectCode)
+        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
         {
             return CallScheduleContentApi(4, subjectCode);
         }
 
-        private ScheduleWeekContent CallScheduleContentApi(int type, string requestContent)
+        private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
         {
-            var address = $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
+            string semester = getCurrentSemesterShortCut();
+            string address = string.IsNullOrEmpty(semester)
+                ? $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}"
+                : $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}{semester}";
             var myResponse = "";
             try
             {
@@ -57,11 +57,30 @@ namespace FRITeam.Swapify.APIWrapper
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                throw ex;
+                throw;
             }
             return ResponseParser.ParseResponse(myResponse);
         }
 
+        private string getCurrentSemesterShortCut()
+        {
+            DateTime localDate = DateTime.Now;
+            DateTime winterSemesterStart = new DateTime(localDate.Year, 9, 1); //start of winter semester 1.9.
+            DateTime winterSemesterEnd = new DateTime(localDate.Year, 3, 1); //end of winter semester and start of summer semester 1.3.
+            DateTime summerSemesterEnd = new DateTime(localDate.Year, 7, 1); //end of summer semester 1.7.
+
+            //if current semester is winter semester <1.9.; 1.3.)
+            if (localDate.CompareTo(winterSemesterStart) != -1 && localDate.CompareTo(winterSemesterEnd) == -1)
+            {
+                return $"&r={localDate.Year}&s='Z'";
+            } //if current semester is summer semester <1.3.; 1.7.)
+            else if (localDate.CompareTo(winterSemesterEnd) != -1 && localDate.CompareTo(summerSemesterEnd) == -1)
+            {
+                return $"&r={localDate.Year}&s='L'";
+            }
+
+            return "";
+        }
     }
 
 }
