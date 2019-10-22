@@ -16,26 +16,30 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [Authorize]
     public class ExchangeController : BaseController
     {        
         private readonly IBlockChangesService _blockChangesService;
         private readonly ILogger<UserController> _logger;
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
+        private readonly IStudentService _studentService;
         private readonly Uri _baseUrl;
 
         public ExchangeController(ILogger<UserController> logger, IBlockChangesService blockChangeService, IEmailService emailService,
-            IUserService userService, IOptions<EnvironmentSettings> environmentSettings) : base()
+            IUserService userService, IStudentService studentService, IOptions<EnvironmentSettings> environmentSettings) : base()
         {
             _logger = logger;
             _blockChangesService = blockChangeService;
             _emailService = emailService;
             _userService = userService;
+            _studentService = studentService;
             _baseUrl = new Uri(environmentSettings.Value.BaseUrl);
         }
 
         [HttpPost]
         [Route("exchangeConfirm")]
+        [AllowAnonymous]
         public async Task<IActionResult> ExchangeConfirm([FromBody]ExchangeRequestModel request)
         {
             var blockChangeRequest = new BlockChangeRequest();
@@ -48,14 +52,16 @@ namespace WebAPI.Controllers
             var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
             if (res != null)
             {
-                var user1 = await _userService.GetUserByIdAsync(res.FirstID);
+                var student1 = await _studentService.FindByIdAsync(Guid.Parse(res.FirstID));
+                var user1 = await _userService.GetUserByIdAsync(student1.UserId.ToString());
                 if (user1 == null)
                 {
                     _logger.LogError($"Cannot find user with ID {res.FirstID}.");
                     return BadRequest();
                 }
 
-                var user2 = await _userService.GetUserByIdAsync(res.SecondID);
+                var student2 = await _studentService.FindByIdAsync(Guid.Parse(res.SecondID));
+                var user2 = await _userService.GetUserByIdAsync(student2.UserId.ToString());
                 if (user2 == null)
                 {
                     _logger.LogError($"Cannot find user with ID {res.SecondID}.");
@@ -65,7 +71,7 @@ namespace WebAPI.Controllers
                 string callbackUrl1 = new Uri(_baseUrl, $@"getStudentTimetable/{user1.Email}").ToString();
                 string callbackUrl2 = new Uri(_baseUrl, $@"getStudentTimetable/{user2.Email}").ToString();
 
-                if (!_emailService.SendConfirmationEmail(user1.Email, callbackUrl1, "ExchangeEmail"))
+                if (!_emailService.SendConfirmationEmail(user1.Email, callbackUrl1, "ConfirmExchangeEmail"))
                 {
                     _logger.LogError($"Error when sending confirmation email to user {user1.Email}.");
                     return BadRequest();
@@ -79,7 +85,8 @@ namespace WebAPI.Controllers
             }
             return Ok(res);
         }
-        
+
+        [AllowAnonymous]
         [HttpPost("userWaitingExchanges")]
         public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
         {            

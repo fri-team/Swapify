@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
                 student = new Student
                 {
                     PersonalNumber = body.PersonalNumber,
-                    User = user
+                    UserId = user.Id
                 };
                 await _studentService.AddAsync(student);
 
