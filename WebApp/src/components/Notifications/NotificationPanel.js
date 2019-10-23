@@ -5,14 +5,20 @@ import Notification from './Notification';
 import NotificationIcon from '../svg/NotificationIcon';
 import { fetchNotifications, setRead } from '../../actions/notificationsActions';
 import './NotificationPanel.scss';
+import { NOTIFICATIONS_FETCH_INTERVAL_SECONDS } from '../../constants/configurationConstants';
 
-class NotificationPanel extends Component {
+class NotificationPanel extends Component {    
     state = {
         notificationPanelVisibility: ''
     }
 
     componentDidMount() {
-        this.props.fetchNotifications();
+        this.notificationsFetchInterval = setInterval(() => this.props.fetchNotifications(),
+            NOTIFICATIONS_FETCH_INTERVAL_SECONDS * 1000);        
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.notificationsFetchInterval)
     }
 
     onProfileClick = () => {
