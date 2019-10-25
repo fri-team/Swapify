@@ -13,6 +13,7 @@ class NotificationPanel extends Component {
     }
 
     componentDidMount() {
+        this.props.fetchNotifications()
         this.notificationsFetchInterval = setInterval(() => this.props.fetchNotifications(),
             NOTIFICATIONS_FETCH_INTERVAL_SECONDS * 1000);        
     }
