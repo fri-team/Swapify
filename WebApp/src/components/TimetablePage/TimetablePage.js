@@ -5,6 +5,8 @@ import TimetableContainer from '../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from '../../containers/BlockDetailContainer/BlockDetailContainer';
 import SidebarContainer from '../Sidebar/SidebarContainer';
 
+import './TimetablePage.scss';
+
 class TimetablePage extends PureComponent {
   state = { sidebarOpen: false, user: this.props.user };
   

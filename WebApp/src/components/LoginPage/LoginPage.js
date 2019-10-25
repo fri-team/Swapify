@@ -127,14 +127,14 @@ class LoginPage extends Component {
             <div className="FormField">
               <button className="FormField__Button">
                 {!this.state.resetingPassword ?
-                  "Prihlasiť sa" : "Resetovat Heslo"}
+                  "Prihlásiť sa" : "Resetovať heslo"}
               </button>
             </div>
 
             <div className="FormField">
               <a onClick={this.changeForm} className="FormField__Link">
                 {!this.state.resetingPassword ?
-                  " Ak si zabudol heslo klikni na tento link" : " Späť na login"}
+                  "Ak si zabudol heslo, klikni na tento link" : " Späť na login"}
               </a>
             </div>
           </form>
