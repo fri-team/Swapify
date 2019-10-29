@@ -5,7 +5,6 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Backend.Model;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -19,10 +18,15 @@ namespace FRITeam.Swapify.Backend
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
-        public async Task<IDsOfExchangeStudents> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blockChangeRequest"></param>
+        /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
+        public async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            await AddAsync(entityToAdd);
-            return await MakeExchangeAndDeleteRequests(entityToAdd);
+            await AddAsync(blockChangeRequest);
+            return await MakeExchangeAndDeleteRequests(blockChangeRequest);                        
         }
 
         public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
@@ -74,19 +78,18 @@ namespace FRITeam.Swapify.Backend
                       x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
 
-        private async Task<IDsOfExchangeStudents> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<(bool exchangeMade, BlockChangeRequest foundMatch)> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
             if (requestForExchange == null)
             {
-                return null;
+                return (false, null);
             }
-            IDsOfExchangeStudents ids = new IDsOfExchangeStudents(request.StudentId.ToString(), requestForExchange.StudentId.ToString());
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
-            await RemoveStudentRequests(request);
-            await RemoveStudentRequests(requestForExchange);
-            return ids;
+            await RemoveNotRealizedRequests(request);
+            await RemoveNotRealizedRequests(requestForExchange);
+            return (true, requestForExchange);
         }
 
         private async Task RemoveStudentRequests(BlockChangeRequest request)

@@ -1,82 +1,58 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
-import axios from 'axios';
-import '../RegisterPage/RegisterPage.scss';
-import FormValidator from '../FormValidator/FormValidator';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import { ElevatedBox, Form, MacBackground } from '../';
 import { connect } from 'react-redux';
 import { login } from '../../actions/userActions';
-import { Link } from 'react-router-dom';
-import { FORGOTPASSWORD } from '../../util/routes';
-
-const validator = new FormValidator([
-  {
-    field: 'email',
-    method: 'isEmpty',
-    validWhen: false,
-    message: 'Zadajte email'
-  },
-  {
-    field: 'email',
-    method: 'isEmail',
-    validWhen: true,
-    message: 'Emailová adresa nie je platná.'
-  },
-  {
-    field: 'password',
-    method: 'isEmpty',
-    validWhen: false,
-    message: 'Zadajte heslo'
-  }
-]);
+import TextField from '@material-ui/core/TextField';
+import axios from 'axios';
 class LoginPage extends Component {
-  state = {
-    email: '',
-    password: '',
-    validation: validator.valid(),
-    submitted: false,
-    serverErrors: '',
-    emailNotConfirmed: false,
-    sendConfirmEmailAgainResult: ''
-  };
+  constructor() {
+    super();
 
-  handleInputChange = event => {
-    event.preventDefault();
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  sendConfirmationEmailAgain = () => {
-    const body = {
-      email: this.state.email      
+    this.state = {
+      email: '',
+      password: '',
+      submitted: false,
+      success: false,
+      serverErrors: '',
+      emailNotConfirmed: false,
+      sendConfirmEmailAgainResult: '',
+      resetingPassword: false
     };
 
-    axios({
-      method: 'post',
-      url: '/api/user/SendEmailConfirmTokenAgain',
-      data: body
-    })
-      .then(() => {
-        this.setState({ sendConfirmEmailAgainResult: 'Email bol odoslaný' });
-      })
-      .catch(() => {
-        this.setState({ sendConfirmEmailAgainResult: 'Pri odosielaní emailu nastala chyba' });
-      });    
-  };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-  onSubmit = () => {
-    const { dispatch } = this.props;
-    this.setState( { emailNotConfirmed: false });
+  handleChange(e) {
+    let target = e.target;
+    let value = target.type === 'checkbox' ? target.checked : target.value;
+    let name = target.name;
 
-    const body = {
-      email: this.state.email,
-      password: this.state.password
-    };
-    const validation = validator.validate(body);
-    this.setState({ validation, submitted: true });
+    this.setState({
+      [name]: value
+    });
+  }
 
-    if (validation.isValid) {
+  changeForm = () => {
+    if (this.state.resetingPassword) {
+      this.setState({ resetingPassword: false });
+    }
+    else {
+      this.setState({ resetingPassword: true });
+    }
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    if (!this.state.resetingPassword) {
+      const { dispatch } = this.props;
+      this.setState({ emailNotConfirmed: false });
+
+      const body = {
+        email: this.state.email,
+        password: this.state.password
+      };
+
       axios({
         method: 'post',
         url: '/api/user/login',
@@ -88,87 +64,83 @@ class LoginPage extends Component {
         .catch(error => {
           if (error.response.status === 403) {
             this.setState({ serverErrors: error.response.data });
-            this.setState( { emailNotConfirmed: true });
+            this.setState({ emailNotConfirmed: true });
           }
           else
             this.setState({ serverErrors: error.response.data.error });
         });
+    } else {
+      const body = {
+        email: this.state.email
+      };
+
+      axios({
+        method: 'post',
+        url: '/api/user/resetPassword',
+        data: body
+      })
+        .then(() => {
+          this.setState({ success: true });
+        })
+        .catch(error => {
+          this.setState({ serverErrors: error.response.data.error });
+        });
     }
-  };
+  }
 
   render() {
-    let validation = this.state.submitted
-      ? validator.validate(this.state)
-      : this.state.validation;
-
+    const messageStyle = !this.state.success ? { display: 'none' } : {}
     return (
-      <MacBackground>
-        <ElevatedBox>
-        { 
-          this.state.sendConfirmEmailAgainResult === ''
-          ? <Form className="register-form" onSubmit={this.onSubmit}>
-              Prihlásenie
-              <div className="register-form-spacer">
-                <TextField
-                  label="Email"
-                  required
-                  name="email"
-                  error={!!validation.email.message}
-                  helperText={validation.email.message}
-                  value={this.state.email}
-                  fullWidth
-                  onChange={this.handleInputChange}
-                />
-              </div>
-
-              <div className="register-form-spacer">
+      <div className="FormCenter">
+        {this.state.sendConfirmEmailAgainResult === ''
+          ? <form onSubmit={this.handleSubmit} className="FormFields">
+            <div className="FormField">
+              <TextField
+                label="E-Mailová adresa"
+                type="email"
+                required
+                name="email"
+                className="FormField__Label"
+                value={this.state.email}
+                onChange={this.handleChange}
+                fullWidth
+              />
+            </div>
+            <div style={messageStyle}>
+              <p>Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.</p>
+            </div>
+            {!this.state.resetingPassword &&
+              <div className="FormField">
                 <TextField
                   label="Heslo"
                   type="password"
                   required
                   name="password"
-                  error={!!validation.password.message}
-                  helperText={validation.password.message}
+                  className="FormField__Label"
                   value={this.state.password}
+                  onChange={this.handleChange}
                   fullWidth
-                  onChange={this.handleInputChange}
                 />
               </div>
+            }
 
-              <Button type="submit" color="primary" variant="contained">
-                Prihlásiť
-              </Button>
-              <Button 
-                variant="text"
-                size="small"
-                component={Link} to={FORGOTPASSWORD}
-              >
-                Zabudnuté heslo
-              </Button>
-              <div
-                className={classNames({
-                  'server-error':
-                    this.state.submitted && this.state.serverErrors.length > 0
-                })}
-              >
-                {this.state.serverErrors}
-                { 
-                  this.state.emailNotConfirmed
-                  ? <Button 
-                      variant="text"
-                      size="small"
-                      onClick={this.sendConfirmationEmailAgain}
-                    >
-                      Znovu poslať overovací email
-                    </Button>
-                  : null 
-                }          
-              </div>              
-            </Form>
-          : <p>{ this.state.sendConfirmEmailAgainResult }</p> 
-        }          
-        </ElevatedBox>
-      </MacBackground>
+            <div className="FormField">
+              <button className="FormField__Button">
+                {!this.state.resetingPassword ?
+                  "Prihlásiť sa" : "Resetovať heslo"}
+              </button>
+            </div>
+
+            <div className="FormField">
+              <a onClick={this.changeForm} className="FormField__Link">
+                {!this.state.resetingPassword ?
+                  "Ak si zabudol heslo, klikni na tento link" : " Späť na login"}
+              </a>
+            </div>
+          </form>
+          : <p>{this.state.sendConfirmEmailAgainResult}</p>
+        }
+      </div>
     );
   }
 }

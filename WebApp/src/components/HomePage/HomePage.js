@@ -1,30 +1,65 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import { ElevatedBox, MacBackground } from '../';
-import { LOGIN, REGISTER } from '../../util/routes';
+
+
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
+import LoginPage from '../LoginPage/LoginPage';
+import RegisterPage from '../RegisterPage/RegisterPage';
+import { Fade } from 'react-slideshow-image';
 import './HomePage.scss';
 
-const HomePage = ({ history }) => (
-  <MacBackground>
-    <ElevatedBox className="home-content">
-      <h1>Swapify</h1>
-      <h3>Spravuj svoj rozvrh na jednom mieste!</h3>
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={() => history.push(REGISTER)}
-      >
-        Registrovať sa
-      </Button>
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={() => history.push(LOGIN)}
-      >
-        Prihlásiť sa
-      </Button>
-    </ElevatedBox>
-  </MacBackground>
-);
 
-export default HomePage;
+
+
+class HomePage extends Component {
+
+  render() {
+    const properties = {
+      duration: 5000,
+      transitionDuration: 500,
+      infinite: true,
+      indicators: true,
+      arrows: true
+    }
+    return (
+      <Router>
+        <div className="App">
+          <div className="App__Aside">
+            <div className="logo"></div>
+            <div className="slide-container">
+              <Fade {...properties}>
+                <div className="each-slide">
+                  <div>
+                    <span>Nesedí ti rozvrh? Nevadí! SWAPIFY ti pomôže</span>
+                  </div>
+                </div>
+                <div className="each-slide">
+                  <div >
+                    <span>Vymeniť si „cvičenia“ nikdy nebolo ľahšie</span>
+                  </div>
+                </div>
+                <div className="each-slide">
+                  <div>
+                    <span>SWAPIFY ti ponúka prehľadnosť, komplexnosť a jednoduchosť</span>
+                  </div>
+                </div>
+              </Fade>
+            </div>
+          </div>
+          <div className="App__Form">
+            <div className="PageSwitcher">
+              <NavLink exact to="/" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Prihlásiť sa</NavLink>
+              <NavLink to="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrovať sa</NavLink>
+            </div>
+            <Route exact path="/" component={LoginPage}>
+            </Route>
+            <Route path="/register" component={RegisterPage}>
+            </Route>
+          </div>
+
+        </div>
+      </Router>
+    );
+  }
+}
+
+export default (HomePage);

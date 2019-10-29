@@ -7,6 +7,7 @@ import timetable from './timetableReducer';
 import blockDetail from './blockDetailReducer';
 import exchangeRequests from './exchangeRequestsReducer'
 import user, { getUserData } from './userReducer';
+import notifications from './notificationReducer';
 
 const transforms = [
   createTransform(
@@ -39,7 +40,8 @@ const rootReducer = persistReducer(
     timetable,
     blockDetail,
     user,
-    exchangeRequests
+    exchangeRequests,
+    notifications
   })
 );
 
