@@ -9,6 +9,7 @@ using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.Backend.Model;
 
 namespace BackendTest
 {
@@ -57,19 +58,21 @@ namespace BackendTest
             BlockChangeRequest blockToChange5 = CreateBlockChangeRequest(block4, block2, student3.Id);
             BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student3.Id);
 
-            (await blockChangeService.AddAndFindMatch(blockToChange1)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange2)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange3)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange4)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange5)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange)).exchangeMade.Should().Be(true);
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(null);
+            (await blockChangeService.AddAndFindMatch(blockToChange2)).Should().Be(null);
+            (await blockChangeService.AddAndFindMatch(blockToChange3)).Should().Be(null);
+            (await blockChangeService.AddAndFindMatch(blockToChange4)).Should().Be(null);
+            (await blockChangeService.AddAndFindMatch(blockToChange5)).Should().Be(null);
+
+            IDsOfExchangeStudents model = new IDsOfExchangeStudents(student1.Id.ToString(), student3.Id.ToString());
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Equals(model);
 
             blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
 
             BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, student1.Id);
-            (await blockChangeService.AddAndFindMatch(blockToChange6)).exchangeMade.Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be(null);
             blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
@@ -96,8 +99,8 @@ namespace BackendTest
             BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student.Id);
             BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block3, block1, student.Id);
 
-            (await blockChangeService.AddAndFindMatch(blockToChange)).exchangeMade.Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange1)).exchangeMade.Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
 
             blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(2);
             (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);
