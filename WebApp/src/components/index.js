@@ -6,6 +6,7 @@ import HomePage from './HomePage/HomePage';
 import ImgCheckbox from './ImgCheckbox/ImgCheckbox';
 import LoadingPage from './LoadingPage/LoadingPage';
 import LoginPage from './LoginPage/LoginPage';
+import AboutUsPage from './AboutUsPage/AboutUsPage';
 import MacBackground from './MacBackground/MacBackground';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import RegisterPage from './RegisterPage/RegisterPage';
@@ -27,6 +28,7 @@ export {
   ImgCheckbox,
   LoadingPage,
   LoginPage,
+  AboutUsPage,
   MacBackground,
   NotFoundPage,
   RegisterPage,
