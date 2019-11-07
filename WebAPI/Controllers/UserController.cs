@@ -33,7 +33,9 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("" +
+                  "regist" +
+                  "er")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
             body.Email = body.Email.ToLower();
@@ -60,6 +62,33 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+            return Ok();
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("deleteUser")]
+        public async Task<IActionResult> DeleteAccount([FromBody] DeleteUserModel body)
+        {
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid user delete attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            var token = await _userService.Authenticate(body.Email, body.Password);
+            if (token == null)
+            {
+                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                return ErrorResponse("Zadané heslo nie je správne.");
+            }
+
+            var deleteResult = await _userService.DeleteUserAsyc(user);
+            if (deleteResult.Succeeded)
+                _logger.LogInformation($"User {body.Email} deleted.");
+
             return Ok();
         }
 
