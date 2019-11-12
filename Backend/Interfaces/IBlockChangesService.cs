@@ -8,7 +8,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
 {
     public interface IBlockChangesService
     {
-        Task<(bool exchangeMade, BlockChangeRequest foundMatch)> AddAndFindMatch(BlockChangeRequest blockChangeRequest);
+        Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest);
         Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId);
         Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId);
         Task<bool> CancelExchangeRequest(BlockChangeRequest request);

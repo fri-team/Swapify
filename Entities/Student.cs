@@ -1,3 +1,4 @@
+using System;
 
 namespace FRITeam.Swapify.Entities
 {
@@ -5,5 +6,6 @@ namespace FRITeam.Swapify.Entities
     {
         public Timetable Timetable { get; set; }
         public string PersonalNumber { get; set; }
+        public  Guid UserId  { get; set; }
     }
 }

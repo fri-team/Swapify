@@ -69,6 +69,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     Student = await CreateStudentAsync(serviceProvider)
                 };
 
+                user.Student.UserId = user.Id;
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
