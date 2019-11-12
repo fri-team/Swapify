@@ -1,5 +1,4 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Model;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using MongoDB.Driver;
@@ -24,7 +23,7 @@ namespace FRITeam.Swapify.Backend
         /// </summary>
         /// <param name="blockChangeRequest"></param>
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
-        public async Task<IDsOfExchangeStudents> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest entityToAdd)
         {
             await AddAsync(entityToAdd);
             return await MakeExchangeAndDeleteRequests(entityToAdd);
@@ -79,24 +78,23 @@ namespace FRITeam.Swapify.Backend
                       x.Status != ExchangeStatus.Done)).SortBy(x => x.DateOfCreation).FirstOrDefaultAsync();
         }
 
-        private async Task<IDsOfExchangeStudents> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
+        private async Task<(BlockChangeRequest, BlockChangeRequest)> MakeExchangeAndDeleteRequests(BlockChangeRequest request)
         {
             var requestForExchange = await FindExchange(request);
             if (requestForExchange == null)
             {
-                return null;
+                return (null, null);
             }
-            IDsOfExchangeStudents ids = new IDsOfExchangeStudents(request.StudentId.ToString(), requestForExchange.StudentId.ToString());
             await SetDoneStatus(request);
             await SetDoneStatus(requestForExchange);
             await RemoveStudentRequests(request);
             await RemoveStudentRequests(requestForExchange);
-            return ids;
+            return (request, requestForExchange);
         }
 
         private async Task RemoveStudentRequests(BlockChangeRequest request)
         {
-            await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
+           await _blockChangesCollection.DeleteManyAsync(x => x.StudentId == request.StudentId &&
                                                      x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
                                                      x.BlockFrom.StartHour == request.BlockFrom.StartHour &&
                                                      x.BlockFrom.Day == request.BlockFrom.Day &&
