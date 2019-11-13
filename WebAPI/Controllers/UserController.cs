@@ -139,7 +139,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse("Zadané heslo nie je správne.");
             }
 
-            var authUser = new AuthenticatedUserModel(user, token);
+            var authUser = new AuthenticatedUserModel(user, token.RawData, token.ValidTo);
             return Ok(authUser);
         }
 
@@ -147,7 +147,7 @@ namespace WebAPI.Controllers
         public IActionResult Renew([FromBody] RenewModel body)
         {
             var token = _userService.Renew(body.Token);
-            var authUser = new AuthenticatedUserModel(token);
+            var authUser = new AuthenticatedUserModel(token.RawData, token.ValidTo);
             return Ok(authUser);
         }
 
