@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BlazorClient.Models.UserModels;
 using Microsoft.AspNetCore.Components;
 using WebAPI.Models.UserModels;
 
