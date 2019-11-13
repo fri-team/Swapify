@@ -1,0 +1,20 @@
+@page "/login"
+@using BlazorClient.Models.UserModels
+
+<EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+
+  <InputText id="email" @bind-Value="loginModel.Email" />
+  <InputText id="password" @bind-Value="loginModel.Password" />
+  <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+  private LoginModel loginModel = new LoginModel();
+
+  private void HandleValidSubmit()
+  {
+    Console.WriteLine("OnValidSubmit");
+  }
+}

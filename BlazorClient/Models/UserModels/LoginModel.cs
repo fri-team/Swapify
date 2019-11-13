@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Models.UserModels
+namespace BlazorClient.Models.UserModels
 {
     public class LoginModel
     {
+        [EmailAddress(ErrorMessage = "Nesprávny formát emailu.")]
         [Required(ErrorMessage = "Prihlasovacie meno je povinné.")]
         public string Email { get; set; }
 
