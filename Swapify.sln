@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTest", "Tests\In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoursesParser", "CoursesParser\CoursesParser.csproj", "{E9CC6930-201D-474A-A306-9EADDFA3470D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{D2A572AE-A7F3-4CE7-AD08-63860502550C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{D2A572AE-A7F3-4CE7-AD08-63860502550C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBlazorServer", "TestBlazorServer\TestBlazorServer.csproj", "{9AF2DB6E-4688-4E65-9498-F99805E8E40D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
