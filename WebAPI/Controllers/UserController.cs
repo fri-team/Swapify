@@ -33,9 +33,7 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("" +
-                  "regist" +
-                  "er")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
             body.Email = body.Email.ToLower();
@@ -68,7 +66,7 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("deleteUser")]
-        public async Task<IActionResult> DeleteAccount([FromBody] DeleteUserModel body)
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel body)
         {
             body.Email = body.Email.ToLower();
             var user = await _userService.GetUserByEmailAsync(body.Email);
