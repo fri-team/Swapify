@@ -1,5 +1,8 @@
 @page "/login"
 @using BlazorClient.Models.UserModels
+@using BlazorClient.Services
+@inject ISwapifyAPI swapifyApi
+@inject IWebStorage webStorage
 
 <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
   <DataAnnotationsValidator />
@@ -13,8 +16,11 @@
 @code {
   private LoginModel loginModel = new LoginModel();
 
-  private void HandleValidSubmit()
+  private async void HandleValidSubmit()
   {
-    Console.WriteLine("OnValidSubmit");
+    Console.WriteLine("OnValidSubmitStart");
+    var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
+    await webStorage.SetAsync("user", authenticatedUserModel);
+    Console.WriteLine("OnValidSubmitEnd, email: " + authenticatedUserModel.Email);
   }
 }
