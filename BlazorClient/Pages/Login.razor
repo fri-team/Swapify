@@ -1,15 +1,23 @@
 @page "/login"
 @using BlazorClient.Models.UserModels
 @using BlazorClient.Services
+
 @inject ISwapifyAPI swapifyApi
 @inject IWebStorage webStorage
 
 <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
   <DataAnnotationsValidator />
-  <ValidationSummary />
 
-  <InputText id="email" @bind-Value="loginModel.Email" />
-  <InputText id="password" @bind-Value="loginModel.Password" />
+  <p>
+    <MatTextField Label="Email" @bind-Value="loginModel.Email" />
+    <ValidationMessage For="@(()=> loginModel.Email)" />
+  </p>
+
+  <p>
+    <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" />
+    <ValidationMessage For="@(()=> loginModel.Password)" />
+  </p>
+
   <button type="submit">Submit</button>
 </EditForm>
 
