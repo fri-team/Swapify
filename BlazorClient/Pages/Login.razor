@@ -18,7 +18,7 @@
     <ValidationMessage For="@(()=> loginModel.Password)" />
   </p>
 
-  <button type="submit">Submit</button>
+  <MatButton Type="submit" Raised="true">Prihlásiť</MatButton>
 </EditForm>
 
 @code {
@@ -26,9 +26,7 @@
 
   private async void HandleValidSubmit()
   {
-    Console.WriteLine("OnValidSubmitStart");
     var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
     await webStorage.SetAsync("user", authenticatedUserModel);
-    Console.WriteLine("OnValidSubmitEnd, email: " + authenticatedUserModel.Email);
   }
 }
