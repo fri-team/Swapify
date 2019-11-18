@@ -53,7 +53,7 @@ class PersonalNumber extends React.Component {
   render() {
     return (
         <MacBackground>
-            <div className="container home">
+            <div className="app-container home">
                  <Toolbar />
                 <div className="PersonalNumber-wrapper">
                 <FormControl

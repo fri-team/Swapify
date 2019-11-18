@@ -21,7 +21,7 @@ export default class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div className="container">
+        <div className="app-container">
           <Switch>
             <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
             <Route path={LOGIN} component={onlyNotAuth(HomePage)} />
