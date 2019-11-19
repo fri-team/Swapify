@@ -1,0 +1,42 @@
+@page "/home"
+
+<div className="App">
+  <div className="App__Aside">
+    <div className="logo"></div>
+    <div className="slide-container">
+      <div className="each-slide">
+        <div>
+          <span>Nesedí ti rozvrh? Nevadí! SWAPIFY ti pomôže</span>
+        </div>
+      </div>
+      <div className="each-slide">
+        <div>
+          <span>Vymeniť si „cvičenia“ nikdy nebolo ľahšie</span>
+        </div>
+      </div>
+      <div className="each-slide">
+        <div>
+          <span>SWAPIFY ti ponúka prehľadnosť, komplexnosť a jednoduchosť</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div className="App__Form">
+    <div className="PageSwitcher">
+      <NavLink href="/" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Prihlásenie</NavLink>
+      <NavLink href="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrácia</NavLink>
+    </div>
+
+    <Login></Login>
+
+    @*<div className="HomeFooter">
+      <NavLink href="/aboutus" className="FormField__Link">O nás</NavLink>
+    </div>*@
+  </div>
+
+</div>
+
+@code {
+
+}
