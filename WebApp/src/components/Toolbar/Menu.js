@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import UserAvatar from "./UserAvatar";
 import { PullRight, Shaddow } from "./shared";
-import ConfirmPasswordModal from "./ConfirmPasswordModal";
+import DeleteAccountModal from "./DeleteAccount/DeleteAccountModal";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 const MenuWrapper = styled.div`
@@ -78,7 +78,7 @@ export default class Menu extends PureComponent {
   };
 
   handleClickOutside = () => {
-    if (document.getElementsByClassName('modal-content').length === 0) {
+    if (document.getElementsByClassName('modal-window').length === 0) {
       this.props.onClose();
     }
   };
@@ -98,8 +98,8 @@ export default class Menu extends PureComponent {
                   <div>
                     <div className="username">{username}</div>
                     <div className="email">{email}</div>
-                      <ConfirmPasswordModal 
-                      email={email}/> 
+                      <DeleteAccountModal 
+                      email={email} onLogout={onLogout}/> 
                   </div>
                 </FlexBox>
               </PadBox>
