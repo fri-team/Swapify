@@ -28,7 +28,8 @@ class LoginPage extends Component {
     let name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      serverErrors: ''
     });
   }
 
@@ -117,6 +118,8 @@ class LoginPage extends Component {
                   required
                   name="password"
                   className="FormField__Label"
+                  error={this.state.serverErrors}
+                  helperText={this.state.serverErrors}
                   value={this.state.password}
                   onChange={this.handleChange}
                   fullWidth

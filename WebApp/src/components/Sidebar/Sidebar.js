@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ListItem from '@material-ui/core/ListItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tooltip from '@material-ui/core/Tooltip';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -17,7 +18,7 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Predmety" />
-        <Tab label="Vymeny" />
+        <Tab label="Výmeny" />
       </Tabs>
     </AppBar>
     {value === 0 &&
@@ -26,10 +27,12 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
           <ListItem button key={courseId}>
             <FormControlLabel
               control={
-                <Switch
-                  checked={checked}
-                  onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
-                />
+                <Tooltip title="Zobraziť rozvrh predmetu" placement="top">
+                  <Switch
+                    checked={checked}
+                    onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
+                  />
+                </Tooltip>
               }
               label={courseName}
             />
