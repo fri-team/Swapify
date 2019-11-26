@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace BlazorTestClient.Server
 {
@@ -36,13 +37,25 @@ namespace BlazorTestClient.Server
             app.UseStaticFiles();
             app.UseClientSideBlazorFiles<BlazorClient.Startup>();
 
+            // application acts as proxy server for calls to WebAPI api endpoints
+            app.MapWhen(IsApiCall, builder => builder.RunProxy(new ProxyOptions
+            {
+                Scheme = "http",
+                Host = "localhost",
+                Port = "5000"
+            }));
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDefaultControllerRoute();
+            {                
                 endpoints.MapFallbackToClientSideBlazor<BlazorClient.Startup>("index.html");
             });
+        }
+
+        private bool IsApiCall(HttpContext httpContext)
+        {
+            return httpContext.Request.Path.Value.StartsWith(@"/api", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
