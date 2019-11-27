@@ -1,10 +1,12 @@
 using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
@@ -14,95 +16,122 @@ namespace IntegrationTest.ExchangeControllerTest
 {
     public class ExchangeControllerTests : IClassFixture<TestFixture>
     {
-        private static readonly Guid CourseGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly Guid Stduent1Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
-        private static readonly Guid Stduent2Guid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+        private readonly Uri LoginUri;
+        private readonly Uri ExchangeUri;
+        private readonly Uri WaitingExchangesUri;        
 
-        public TestFixture TestFixture { get; set; }
+        public static TestFixture TestFixture { get; set; }
 
         public ExchangeControllerTests(TestFixture testFixture)
         {
             TestFixture = testFixture;
+            LoginUri = new Uri(TestFixture.BaseUrl, "user/login/");
+            ExchangeUri = new Uri(TestFixture.BaseUrl, "exchange/ExchangeConfirm/");
+            WaitingExchangesUri = new Uri(TestFixture.BaseUrl, "exchange/userWaitingExchanges");
         }
 
-        //public async Task AuthenticateUserAsync(RegisterModel model)
-        //{
-        //    TestFixture.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("tester", await GetJwtAsync(model));
-        //}
-
-        //private async Task<string> GetJwtAsync(RegisterModel model)
-        //{
-        //    var response = await TestFixture.Client.PostAsJsonAsync(new Uri(TestFixture.BaseUrl, "user/register/"), model);
-
-        //    var registrationResponse = await response.Content.ReadAsAsync<string>();
-        //    return registrationResponse;
-        //}
-
         [Fact]
-        public async Task ExchangeConfirm_Test()
+        public async Task Exchange_ExchangeConfirm_Successful()
         {
-            Uri uri = new Uri(TestFixture.BaseUrl, "user/login/");
-            Uri uriBlock = new Uri(TestFixture.BaseUrl, "student/getStudentTimetable/oleg@swapify.com/");
+            // Arrange
+            HttpClient client1 = TestFixture.CreateClient();
+            await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            HttpClient client2 = TestFixture.CreateClient();
+            await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
 
-            HttpClient client = TestFixture.CreateClient();
+            // Act
+            var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1);
+            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1);
+            var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1);
 
-            LoginModel rm = new LoginModel()
-            {
-                Email = "oleg@swapify.com",
-                Password = "Heslo123"
-            };
+            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2);
 
-            var jsonModel = JsonConvert.SerializeObject(rm);
-            StringContent content = new StringContent(jsonModel, System.Text.Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(uri, content);
+            var waitingExchanges1 = await GetUserWaitingExchanges(client1);
+            var waitingExchanges2 = await GetUserWaitingExchanges(client2);
 
-            string json = await response.Content.ReadAsStringAsync();
-            JObject o = JObject.Parse(json);
-            JToken token = o.SelectToken("$.token");
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.ToString());
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.ToString());
-            client.DefaultRequestHeaders.Add("Authorization", token.ToString());
-            client.DefaultRequestHeaders.Add("Connection", "keep-alive");
-
-            //var u = new User("oleg@swapify.com", "Oleg", "Dementov");
-
-            //jsonModel = JsonConvert.SerializeObject("oleg@swapify.com");
-            //content = new StringContent(jsonModel, System.Text.Encoding.UTF8, "application/json");
-            response = await client.GetAsync(uriBlock);
-
-            Assert.True(response.IsSuccessStatusCode == true);
+            // Assert
+            Assert.True(response11.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response13.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(waitingExchanges1.Count == 1);
+            Assert.True(waitingExchanges2.Count == 1);
         }
 
         [Fact]
         public async Task Exchange_ExchangeConfirm_NonAuthorizedCall()
         {
+            // Arrange
             Uri uri = new Uri(TestFixture.BaseUrl, "exchange/ExchangeConfirm/");
             HttpClient client = TestFixture.CreateClient();
 
-            ExchangeRequestModel exchange = new ExchangeRequestModel()
-            {
-                BlockFrom = new BlockForExchangeModel()
-                {
-                    Day = (int)Day.Monday,
-                    Duration = 2,
-                    StartHour = 9,
-                    CourseId = CourseGuid.ToString()
-                },
-                BlockTo = new BlockForExchangeModel()
-                {
-                    Day = (int)Day.Thursday,
-                    Duration = 2,
-                    StartHour = 15,
-                    CourseId = CourseGuid.ToString()
-                },
-                StudentId = Stduent1Guid.ToString()
-            };
-
-            var jsonModel = JsonConvert.SerializeObject(exchange);
+            // Act
+            ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
+            var jsonModel = JsonConvert.SerializeObject(ExchangeControllerTestsData.ExchangeModel11);
             StringContent content = new StringContent(jsonModel, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(uri, content);
 
+            // Assert
             Assert.True(response.IsSuccessStatusCode == false);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task Exchange_ExchangeConfirm_UserNotFound()
+        {
+            // Arrange
+            HttpClient client1 = TestFixture.CreateClient();
+            await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            HttpClient client2 = TestFixture.CreateClient();
+            await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
+
+            // Act
+            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2);
+
+            // Assert
+            Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+
+        private async Task AuthenticateClient(HttpClient client, LoginModel login)
+        {
+            var jsonModel = JsonConvert.SerializeObject(login);
+            StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(LoginUri, content);
+
+            string json = await response.Content.ReadAsStringAsync();
+            JObject o = JObject.Parse(json);
+            JToken token = o.SelectToken("$.token");
+            string studentId = (string)o.SelectToken("$.studentId");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.ToString());
+            client.DefaultRequestHeaders.Add("StudentId", studentId);
+        }
+
+        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client)
+        {
+            var studentId = client.DefaultRequestHeaders.GetValues("StudentId").FirstOrDefault();
+            exchangeModel.StudentId = studentId;
+            var jsonModel = JsonConvert.SerializeObject(exchangeModel);
+            var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
+
+            return await client.PostAsync(ExchangeUri, content);
+        }
+
+        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client)
+        {
+            var studentId = client.DefaultRequestHeaders.GetValues("StudentId").FirstOrDefault();
+            var jsonModel = JsonConvert.SerializeObject(studentId);
+            var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(WaitingExchangesUri, content);
+
+            string json = await response.Content.ReadAsStringAsync();
+            var list = JsonConvert.DeserializeObject<List<BlockChangeRequest>>(json);
+            return list;
         }
     }
 }
