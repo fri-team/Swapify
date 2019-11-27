@@ -1,5 +1,8 @@
-@page "/home"
+@page "/"
+@page "/register"
+@page "/login"
 
+@inject NavigationManager  NavigationManager
 <div className="App">
   <div className="App__Aside">
     <div className="logo"></div>
@@ -28,15 +31,32 @@
       <NavLink href="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrácia</NavLink>
     </div>
 
-    <Login></Login>
 
-    @*<div className="HomeFooter">
+    @if (NavigationManager.EqualsRelativeUri(@"register"))
+    {
+      <Registration></Registration>
+    }
+    else
+    {
+      <Login></Login>
+    }
+
+    <div className="HomeFooter">
       <NavLink href="/aboutus" className="FormField__Link">O nás</NavLink>
-    </div>*@
+    </div>
   </div>
 
 </div>
 
-@code {
+@code
+{
+    protected override void OnInitialized()
+    {
+      NavigationManager.LocationChanged += OnLocationChanged;
+    }
 
+    private void OnLocationChanged(object sender, LocationChangedEventArgs arg)
+    {
+      StateHasChanged();
+    }
 }
