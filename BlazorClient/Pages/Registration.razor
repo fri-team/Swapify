@@ -1,0 +1,40 @@
+@page "/register"
+@using BlazorClient.Models.UserModels
+@using BlazorClient.Services
+
+@inject ISwapifyAPI swapifyApi
+@inject IWebStorage webStorage
+
+  <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <p>
+      <MatTextField Label="Meno" @bind-Value="registerModel.Name" />
+      <ValidationMessage For="@(()=> registerModel.Name)" />
+    </p>
+    <p>
+      <MatTextField Label="Priezvisko" @bind-Value="registerModel.Surname" />
+      <ValidationMessage For="@(()=> registerModel.Surname)" />
+    </p>
+    <p>
+      <MatTextField Label="Emailová adresa" @bind-Value="registerModel.Email" />
+      <ValidationMessage For="@(()=> registerModel.Email)" />
+    </p>
+    <p>
+      <MatTextField Label="Heslo" @bind-Value="registerModel.Password" Type="password" />
+      <ValidationMessage For="@(()=> registerModel.Password)" />
+    </p>
+    <p>
+      <MatTextField Label="Potvrdenie hesla" @bind-Value="registerModel.PasswordAgain" Type="password" />
+      <ValidationMessage For="@(()=> registerModel.PasswordAgain)" />
+    </p>
+    <MatButton Type="submit" Raised="true">Registrovať</MatButton>
+  </EditForm>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private async void HandleValidSubmit()
+    {
+      await swapifyApi.User.Register(registerModel);
+    }
+}

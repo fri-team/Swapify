@@ -6,5 +6,6 @@ namespace BlazorClient.Services.API
     public interface IUserEndpoints
     {
         Task<AuthenticatedUserModel> Login(LoginModel loginModel);
+        Task<bool> Register(RegisterModel registerModel);
     }
 }
