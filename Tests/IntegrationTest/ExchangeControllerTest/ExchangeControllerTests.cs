@@ -35,20 +35,20 @@ namespace IntegrationTest.ExchangeControllerTest
         {
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
-            await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
             HttpClient client2 = TestFixture.CreateClient();
-            await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
+            var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
 
             // Act
-            var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1);
-            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1);
-            var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1);
+            var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
+            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
+            var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1, student1Id);
 
-            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2);
+            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
 
-            var waitingExchanges1 = await GetUserWaitingExchanges(client1);
-            var waitingExchanges2 = await GetUserWaitingExchanges(client2);
+            var waitingExchanges1 = await GetUserWaitingExchanges(client1, student1Id);
+            var waitingExchanges2 = await GetUserWaitingExchanges(client2, student2Id);
 
             // Assert
             Assert.True(response11.StatusCode == System.Net.HttpStatusCode.OK);
@@ -64,14 +64,13 @@ namespace IntegrationTest.ExchangeControllerTest
         public async Task Exchange_ExchangeConfirm_NonAuthorizedCall()
         {
             // Arrange
-            Uri uri = new Uri(TestFixture.BaseUrl, "exchange/ExchangeConfirm/");
             HttpClient client = TestFixture.CreateClient();
 
             // Act
             ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
             var jsonModel = JsonConvert.SerializeObject(ExchangeControllerTestsData.ExchangeModel11);
-            StringContent content = new StringContent(jsonModel, System.Text.Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(uri, content);
+            StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(ExchangeUri, content);
 
             // Assert
             Assert.True(response.IsSuccessStatusCode == false);
@@ -83,13 +82,13 @@ namespace IntegrationTest.ExchangeControllerTest
         {
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
-            await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
             HttpClient client2 = TestFixture.CreateClient();
-            await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
+            var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
 
             // Act
-            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2);
+            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
 
             // Assert
             Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
@@ -97,23 +96,20 @@ namespace IntegrationTest.ExchangeControllerTest
         }
 
 
-        private async Task AuthenticateClient(HttpClient client, LoginModel login)
+        private async Task<string> AuthenticateClient(HttpClient client, LoginModel login)
         {
             var jsonModel = JsonConvert.SerializeObject(login);
             StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(LoginUri, content);
 
             string json = await response.Content.ReadAsStringAsync();
-            JObject o = JObject.Parse(json);
-            JToken token = o.SelectToken("$.token");
-            string studentId = (string)o.SelectToken("$.studentId");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.ToString());
-            client.DefaultRequestHeaders.Add("StudentId", studentId);
+            var userModel = JsonConvert.DeserializeObject<AuthenticatedUserModel>(json);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userModel.Token);
+            return userModel.StudentId;
         }
 
-        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client)
+        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
         {
-            var studentId = client.DefaultRequestHeaders.GetValues("StudentId").FirstOrDefault();
             exchangeModel.StudentId = studentId;
             var jsonModel = JsonConvert.SerializeObject(exchangeModel);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
@@ -121,9 +117,8 @@ namespace IntegrationTest.ExchangeControllerTest
             return await client.PostAsync(ExchangeUri, content);
         }
 
-        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client)
-        {
-            var studentId = client.DefaultRequestHeaders.GetValues("StudentId").FirstOrDefault();
+        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string studentId)
+        { 
             var jsonModel = JsonConvert.SerializeObject(studentId);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
 
