@@ -23,13 +23,15 @@ namespace WebAPI.Models.UserModels
                 Name = user.Name;
                 Surname = user.Surname;
                 StudentId = user.Student?.Id.ToString();
-                }
+            }
             Token = token.RawData;
-            ValidTo = token.ValidTo;            
+            ValidTo = token.ValidTo;
         }
 
         public AuthenticatedUserModel(JwtSecurityToken token) : this(null, token)
         {
         }
+
+        public AuthenticatedUserModel() { }
     }
 }
