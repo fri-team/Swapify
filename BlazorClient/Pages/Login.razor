@@ -7,17 +7,19 @@
 <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
   <DataAnnotationsValidator />
 
-  <p>
-    <MatTextField Label="Email" @bind-Value="loginModel.Email" />
+  <div className="FormField">
+    <MatTextField Label="Email" @bind-Value="loginModel.Email" class="FormField__Label" FullWidth="true" />
     <ValidationMessage For="@(()=> loginModel.Email)" />
-  </p>
+  </div>
 
-  <p>
-    <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" />
+  <div className="FormField">
+    <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
     <ValidationMessage For="@(()=> loginModel.Password)" />
-  </p>
+  </div>
 
-  <MatButton Type="submit" Raised="true">Prihlásiť</MatButton>
+  <div className="FormField">
+    <button Type="submit" Raised="true" Class="FormField__Button">Prihlásiť</button>
+  </div>
 </EditForm>
 
 @code {

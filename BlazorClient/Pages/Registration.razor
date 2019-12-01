@@ -6,34 +6,36 @@
 
   <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
-    <p>
-      <MatTextField Label="Meno" @bind-Value="registerModel.Name" />
+    <div className="FormField">
+      <MatTextField Label="Meno" @bind-Value="registerModel.Name" class="FormField__Label" FullWidth="true" />
       <ValidationMessage For="@(()=> registerModel.Name)" />
-    </p>
-    <p>
-      <MatTextField Label="Priezvisko" @bind-Value="registerModel.Surname" />
+    </div>
+    <div className="FormField">
+      <MatTextField Label="Priezvisko" @bind-Value="registerModel.Surname" class="FormField__Label" FullWidth="true" />
       <ValidationMessage For="@(()=> registerModel.Surname)" />
-    </p>
-    <p>
-      <MatTextField Label="Emailová adresa" @bind-Value="registerModel.Email" />
+    </div>
+    <div className="FormField">
+      <MatTextField Label="Emailová adresa" @bind-Value="registerModel.Email" class="FormField__Label" FullWidth="true" />
       <ValidationMessage For="@(()=> registerModel.Email)" />
-    </p>
-    <p>
-      <MatTextField Label="Heslo" @bind-Value="registerModel.Password" Type="password" />
+    </div>
+    <div className="FormField">
+      <MatTextField Label="Heslo" @bind-Value="registerModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
       <ValidationMessage For="@(()=> registerModel.Password)" />
-    </p>
-    <p>
-      <MatTextField Label="Potvrdenie hesla" @bind-Value="registerModel.PasswordAgain" Type="password" />
+    </div>
+    <div className="FormField">
+      <MatTextField Label="Potvrdenie hesla" @bind-Value="registerModel.PasswordAgain" Type="password" class="FormField__Label" FullWidth="true" />
       <ValidationMessage For="@(()=> registerModel.PasswordAgain)" />
-    </p>
-    <MatButton Type="submit" Raised="true">Registrovať</MatButton>
+    </div>    
+    <div className="FormField">
+      <button Type="submit" Raised="true" Class="FormField__Button">Registrovať</button>
+    </div>
   </EditForm>
 
 @code {
-    private RegisterModel registerModel = new RegisterModel();
+  private RegisterModel registerModel = new RegisterModel();
 
-    private async void HandleValidSubmit()
-    {
-      await swapifyApi.User.Register(registerModel);
-    }
+  private async void HandleValidSubmit()
+  {
+    await swapifyApi.User.Register(registerModel);
+  }
 }
