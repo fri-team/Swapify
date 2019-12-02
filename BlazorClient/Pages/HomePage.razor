@@ -1,5 +1,6 @@
 @page "/"
 @page "/register"
+@page "/resetpassword"
 
 @inject NavigationManager  NavigationManager
 <div class="App">
@@ -35,6 +36,10 @@
     {
       <Registration></Registration>
     }
+    else if (NavigationManager.EqualsRelativeUri(@"resetpassword"))
+    {
+      <ResetPassword></ResetPassword>
+    }
     else
     {
       <Login></Login>
@@ -49,13 +54,13 @@
 
 @code
 {
-    protected override void OnInitialized()
-    {
-      NavigationManager.LocationChanged += OnLocationChanged;
-    }
+  protected override void OnInitialized()
+  {
+    NavigationManager.LocationChanged += OnLocationChanged;
+  }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs arg)
-    {
-      StateHasChanged();
-    }
+  private void OnLocationChanged(object sender, LocationChangedEventArgs arg)
+  {
+    StateHasChanged();
+  }
 }

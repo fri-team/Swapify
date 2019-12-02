@@ -28,5 +28,13 @@ namespace BlazorClient.Services.API
 
             return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
+
+        public async Task<bool> ResetPassword(ResetPasswordModel resetPasswordModel)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(resetPasswordModel), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/user/resetPassword", content);
+
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
+        }
     }
 }

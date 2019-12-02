@@ -4,23 +4,27 @@
 @inject ISwapifyAPI swapifyApi
 @inject IWebStorage webStorage
 
-<EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
-  <DataAnnotationsValidator />
+  <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
 
-  <div className="FormField">
-    <MatTextField Label="Email" @bind-Value="loginModel.Email" class="FormField__Label" FullWidth="true" />
-    <ValidationMessage For="@(()=> loginModel.Email)" />
-  </div>
+    <div className="FormField">
+      <MatTextField Label="Email" @bind-Value="loginModel.Email" class="FormField__Label" FullWidth="true" />
+      <ValidationMessage For="@(()=> loginModel.Email)" />
+    </div>
 
-  <div className="FormField">
-    <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
-    <ValidationMessage For="@(()=> loginModel.Password)" />
-  </div>
+    <div className="FormField">
+      <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
+      <ValidationMessage For="@(()=> loginModel.Password)" />
+    </div>
 
-  <div className="FormField">
-    <button Type="submit" Raised="true" Class="FormField__Button">Prihlásiť</button>
-  </div>
-</EditForm>
+    <div className="FormField">
+      <button Type="submit" Raised="true" Class="FormField__Button">Prihlásiť</button>
+    </div>
+
+    <div className="FormField">
+      <NavLink href="/resetpassword" class="FormField__Link">Resetovať heslo</NavLink>
+    </div>
+  </EditForm>
 
 @code {
   private LoginModel loginModel = new LoginModel();
