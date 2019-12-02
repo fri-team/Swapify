@@ -36,5 +36,13 @@ namespace BlazorClient.Services.API
 
             return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
+
+        public async Task<bool> SetNewPassword(SetNewPasswordModel setNewPasswordModel)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(setNewPasswordModel), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/user/setNewPassword", content);
+
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
+        }
     }
 }
