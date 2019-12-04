@@ -1,0 +1,49 @@
+@import 'Styles/globals';
+
+$border-width: 1px;
+$border: $border-width solid $border-color;
+
+.timetable {
+  width: 100%;
+  flex: 1;
+  display: grid;
+  border: $border;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: '. .' '. blocks';
+  border: $border;
+}
+
+.border-cell {
+  padding: 1em;
+  border: $border;
+  background-color: $background-color;
+}
+
+.centered {
+  text-align: center;
+}
+
+.border-cells {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-area: blocks;
+}
+
+.blocks {
+  display: grid;
+  grid-gap: $border-width * 2;
+  border: $border-width solid transparent;
+  grid-area: blocks;
+}
+
+.timetable-days {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.timetable-hours {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+}

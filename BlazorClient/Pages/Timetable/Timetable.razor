@@ -1,0 +1,29 @@
+@page "/timetable"
+
+<div class="timetable">
+  <div class="border-cell"></div>
+
+  <div class="timetable-hours">
+    @foreach (var hour in Constants.Timetable.HOURS)
+    {
+      <div class="border-cell centered">@hour</div>
+    }
+  </div>
+
+  <div class="timetable-days">
+    @foreach (var day in Constants.Timetable.DAYS)
+    {
+      <div class="border-cell">@day</div>
+    }
+  </div>
+
+  <div class="border-cells">
+    @for (int row = 0; row < Constants.Timetable.DAYS.Length; row++)
+    {
+      @for (int column = 0; column < Constants.Timetable.HOURS.Length; column++)
+      {
+        <div class="border-cell"></div>
+      }
+    }
+  </div>
+</div>
