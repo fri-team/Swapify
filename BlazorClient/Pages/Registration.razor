@@ -3,6 +3,7 @@
 
 @inject ISwapifyAPI swapifyApi
 @inject IWebStorage webStorage
+@inject NavigationManager  NavigationManager
 
   <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -32,10 +33,14 @@
   </EditForm>
 
 @code {
-  private RegisterModel registerModel = new RegisterModel();
+    private RegisterModel registerModel = new RegisterModel();
 
-  private async void HandleValidSubmit()
-  {
-    await swapifyApi.User.Register(registerModel);
-  }
+    private async void HandleValidSubmit()
+    {
+      bool ok = await swapifyApi.User.Register(registerModel);
+      if (ok)
+      {
+        NavigationManager.NavigateTo(Routes.LOGIN);
+      }      
+    }
 }
