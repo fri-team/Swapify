@@ -8,21 +8,21 @@
 <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
   <DataAnnotationsValidator />
 
-  <div className="FormField">
+  <div class="FormField">
     <MatTextField Label="Email" @bind-Value="loginModel.Email" class="FormField__Label" FullWidth="true" />
     <ValidationMessage For="@(()=> loginModel.Email)" />
   </div>
 
-  <div className="FormField">
+  <div class="FormField">
     <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
     <ValidationMessage For="@(()=> loginModel.Password)" />
   </div>
 
-  <div className="FormField">
-    <button Type="submit" Raised="true" Class="FormField__Button">Prihlásiť</button>
+  <div class="FormField">
+    <button Type="submit" Raised="true" class="FormField__Button">Prihlásiť</button>
   </div>
 
-  <div className="FormField">
+  <div class="FormField">
     <NavLink href="/resetpassword" class="FormField__Link">Resetovať heslo</NavLink>
   </div>
 </EditForm>
