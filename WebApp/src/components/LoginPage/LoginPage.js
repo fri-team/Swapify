@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { login } from '../../actions/userActions';
-import TextField from '@material-ui/core/TextField';
-import axios from 'axios';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { login } from "../../actions/userActions";
+import TextField from "@material-ui/core/TextField";
+import axios from "axios";
+import './LoginPage.scss';
 class LoginPage extends Component {
   constructor() {
     super();
 
     this.state = {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       submitted: false,
       success: false,
-      serverErrors: '',
+      serverErrors: "",
       emailNotConfirmed: false,
-      sendConfirmEmailAgainResult: '',
-      resetingPassword: false
+      sendConfirmEmailAgainResult: "",
+      resetingPassword: false,
+      wrongCredentials: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,22 +26,35 @@ class LoginPage extends Component {
 
   handleChange(e) {
     let target = e.target;
-    let value = target.type === 'checkbox' ? target.checked : target.value;
+    let value = target.type === "checkbox" ? target.checked : target.value;
     let name = target.name;
 
     this.setState({
       [name]: value,
-      serverErrors: ''
+      serverErrors: "",
+      wrongCredentials: false
     });
   }
 
   changeForm = () => {
     if (this.state.resetingPassword) {
       this.setState({ resetingPassword: false });
-    }
-    else {
+    } else {
       this.setState({ resetingPassword: true });
     }
+  };
+
+  WrongCredentialsMessage(props) {
+    const wrongCredentials = props.wrongCredentials;
+    const error = props.errors.error;
+    if (wrongCredentials) {
+      return (
+        <div className="wrongCredentials">
+          <p>{error}</p>
+        </div>
+      );
+    }
+    return null;
   }
 
   handleSubmit(e) {
@@ -55,8 +70,8 @@ class LoginPage extends Component {
       };
 
       axios({
-        method: 'post',
-        url: '/api/user/login',
+        method: "post",
+        url: "/api/user/login",
         data: body
       })
         .then(({ data }) => {
@@ -66,9 +81,12 @@ class LoginPage extends Component {
           if (error.response.status === 403) {
             this.setState({ serverErrors: error.response.data });
             this.setState({ emailNotConfirmed: true });
-          }
-          else
+          } else if (error.response.status === 400) {
+            this.setState({ serverErrors: error.response.data });
+            this.setState({ wrongCredentials: true });
+          } else {
             this.setState({ serverErrors: error.response.data.error });
+          }
         });
     } else {
       const body = {
@@ -76,8 +94,8 @@ class LoginPage extends Component {
       };
 
       axios({
-        method: 'post',
-        url: '/api/user/resetPassword',
+        method: "post",
+        url: "/api/user/resetPassword",
         data: body
       })
         .then(() => {
@@ -90,11 +108,15 @@ class LoginPage extends Component {
   }
 
   render() {
-    const messageStyle = !this.state.success ? { display: 'none' } : {}
+    const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
       <div className="FormCenter">
-        {this.state.sendConfirmEmailAgainResult === ''
-          ? <form onSubmit={this.handleSubmit} className="FormFields">
+        <this.WrongCredentialsMessage
+          wrongCredentials={this.state.wrongCredentials}
+          errors={this.state.serverErrors}
+        />
+        {this.state.sendConfirmEmailAgainResult === "" ? (
+          <form onSubmit={this.handleSubmit} className="FormFields">
             <div className="FormField">
               <TextField
                 label="E-Mailová adresa"
@@ -102,15 +124,18 @@ class LoginPage extends Component {
                 required
                 name="email"
                 className="FormField__Label"
+                error={this.state.wrongCredentials}
                 value={this.state.email}
                 onChange={this.handleChange}
                 fullWidth
               />
             </div>
             <div style={messageStyle}>
-              <p>Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.</p>
+              <p>
+                Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.
+              </p>
             </div>
-            {!this.state.resetingPassword &&
+            {!this.state.resetingPassword && (
               <div className="FormField">
                 <TextField
                   label="Heslo"
@@ -118,31 +143,33 @@ class LoginPage extends Component {
                   required
                   name="password"
                   className="FormField__Label"
-                  error={this.state.serverErrors}
-                  helperText={this.state.serverErrors}
+                  error={this.state.wrongCredentials}
                   value={this.state.password}
                   onChange={this.handleChange}
                   fullWidth
                 />
               </div>
-            }
+            )}
 
             <div className="FormField">
               <button className="FormField__Button">
-                {!this.state.resetingPassword ?
-                  "Prihlásiť sa" : "Resetovať heslo"}
+                {!this.state.resetingPassword
+                  ? "Prihlásiť sa"
+                  : "Resetovať heslo"}
               </button>
             </div>
 
             <div className="FormField">
               <a onClick={this.changeForm} className="FormField__Link">
-                {!this.state.resetingPassword ?
-                  "Ak si zabudol heslo, klikni na tento link" : " Späť na login"}
+                {!this.state.resetingPassword
+                  ? "Ak si zabudol heslo, klikni na tento link"
+                  : " Späť na login"}
               </a>
             </div>
           </form>
-          : <p>{this.state.sendConfirmEmailAgainResult}</p>
-        }
+        ) : (
+          <p>{this.state.sendConfirmEmailAgainResult}</p>
+        )}
       </div>
     );
   }
