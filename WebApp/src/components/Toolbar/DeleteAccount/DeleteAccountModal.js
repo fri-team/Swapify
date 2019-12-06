@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import styled from "styled-components";
 import Button from "@material-ui/core/Button";
-import { TextField, Modal } from '@material-ui/core';
+import { TextField, Modal } from "@material-ui/core";
 import axios from "axios";
 import "./DeleteAccountModal.scss";
 
@@ -32,7 +32,8 @@ export default class DeleteAccountModal extends Component {
       password: "",
       submitted: false,
       success: false,
-      serverErrors: ""
+      serverErrors: "",
+      wrongCredentials: false
     };
 
     this.onLogout = props.onLogout;
@@ -47,13 +48,15 @@ export default class DeleteAccountModal extends Component {
     let name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      serverErrors: "",
+      wrongCredentials: false
     });
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    
+
     const body = {
       email: this.state.email,
       password: this.state.password
@@ -70,14 +73,33 @@ export default class DeleteAccountModal extends Component {
       .catch(error => {
         if (error.response.status === 403) {
           this.setState({ serverErrors: error.response.data });
-        } else this.setState({ serverErrors: error.response.data.error });
+        } else if (error.response.status === 400) {
+          this.setState({ serverErrors: error.response.data });
+          this.setState({ wrongCredentials: true });
+        } else {
+          this.setState({ serverErrors: error.response.data.error });
+        }
       });
+  }
+
+  WrongCredentialsMessage(props) {
+    const wrongCredentials = props.wrongCredentials;
+    if (wrongCredentials) {
+      const error = props.errors.error;
+      return (
+        <div className="wrongCredentials">
+          <p>{error}</p>
+        </div>
+      );
+    }
+    return null;
   }
 
   Dialog(props) {
     const [show, setShow] = useState(false);
 
     const component = props.component;
+    const state = component.state;
 
     const handleClose = () => {
       setShow(false);
@@ -100,7 +122,11 @@ export default class DeleteAccountModal extends Component {
         >
           <div className={"FormCenter paper"}>
             <p>Pre zrušenie účtu zadajte prosím vaše heslo:</p>
-            <form className="FormFields" autoComplete="off" onSubmit={component.handleSubmit} >
+            <form
+              className="FormFields"
+              autoComplete="off"
+              onSubmit={component.handleSubmit}
+            >
               <div className="FormField">
                 <TextField
                   label="Heslo"
@@ -109,12 +135,17 @@ export default class DeleteAccountModal extends Component {
                   required
                   name="password"
                   className="FormField__Label"
-                  value={props.state.password}
+                  value={state.password}
                   onChange={component.handleChange}
                   fullWidth
                   autoFocus={true}
+                  error={state.wrongCredentials}
                 />
               </div>
+              <component.WrongCredentialsMessage
+                wrongCredentials={state.wrongCredentials}
+                errors={state.serverErrors}
+              />
               <div className="FormField">
                 <button className="FormField__Button">Potvrdiť</button>
               </div>
@@ -126,6 +157,6 @@ export default class DeleteAccountModal extends Component {
   }
 
   render() {
-    return <this.Dialog component={this} state={this.state} />;
+    return <this.Dialog component={this} />;
   }
 }
