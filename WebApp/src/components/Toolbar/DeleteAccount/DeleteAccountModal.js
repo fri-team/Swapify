@@ -68,7 +68,9 @@ export default class DeleteAccountModal extends Component {
       data: body
     })
       .then(() => {
-        this.onLogout();
+        setTimeout(() => {
+          this.onLogout();
+        }, 250);
       })
       .catch(error => {
         if (error.response.status === 403) {
@@ -80,19 +82,6 @@ export default class DeleteAccountModal extends Component {
           this.setState({ serverErrors: error.response.data.error });
         }
       });
-  }
-
-  WrongCredentialsMessage(props) {
-    const wrongCredentials = props.wrongCredentials;
-    if (wrongCredentials) {
-      const error = props.errors.error;
-      return (
-        <div className="wrongCredentials">
-          <p>{error}</p>
-        </div>
-      );
-    }
-    return null;
   }
 
   Dialog(props) {
@@ -140,12 +129,9 @@ export default class DeleteAccountModal extends Component {
                   fullWidth
                   autoFocus={true}
                   error={state.wrongCredentials}
+                  helperText={state.serverErrors.error}
                 />
               </div>
-              <component.WrongCredentialsMessage
-                wrongCredentials={state.wrongCredentials}
-                errors={state.serverErrors}
-              />
               <div className="FormField">
                 <button className="FormField__Button">Potvrdiť</button>
               </div>
