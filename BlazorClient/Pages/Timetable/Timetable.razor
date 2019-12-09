@@ -1,4 +1,6 @@
 @page "/timetable"
+@using BlazorClient.ViewModels;
+@using BlazorClient.Models.Timetable;
 
 <div class="timetable">
   <div class="border-cell"></div>
@@ -26,4 +28,82 @@
       }
     }
   </div>
+
+  <TimetableBlocks ViewModel="@_timetableBlocksViewModel"></TimetableBlocks>  
 </div>
+
+@code
+{
+    private TimetableBlocksViewModel _timetableBlocksViewModel;
+
+    protected override void OnInitialized()
+    {
+      base.OnInitialized();
+      _timetableBlocksViewModel = new TimetableBlocksViewModel()
+      {
+        ColumnsCount = (byte)Constants.Timetable.HOURS.Length,
+        RowsCount = (byte)Constants.Timetable.DAYS.Length,
+        TimetableBlocks = GetTestTimetableBlockViewModels()
+      };
+    }
+
+    private IEnumerable<TimetableBlockViewModel> GetTestTimetableBlockViewModels()
+    {
+      var blocks = new List<TimetableBlockViewModel>();
+
+      // add block 0
+      var block = new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut",
+        Room = "test room",
+        Teacher = "test teacher"
+      };
+
+      var blockViewModel = new TimetableBlockViewModel(block)
+      {
+        StartColumn = 2,
+        EndColumn = 4,
+        StartRow = 2,
+        EndRow = 3
+      };
+
+      blocks.Add(blockViewModel);
+
+      // add block 1
+      block = new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 1",
+        Room = "test room 1",
+        Teacher = "test teacher 1"
+      };
+
+      blockViewModel = new TimetableBlockViewModel(block)
+      {
+        StartColumn = 4,
+        EndColumn = 6,
+        StartRow = 3,
+        EndRow = 4
+      };
+
+      blocks.Add(blockViewModel);
+
+      // add block 2
+      block = new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 2",
+        Room = "test room 2",
+        Teacher = "test teacher 2"
+      };
+
+      blockViewModel = new TimetableBlockViewModel(block)
+      {
+        StartColumn = 2,
+        EndColumn = 4,
+        StartRow = 4,
+        EndRow = 5
+      };
+
+      blocks.Add(blockViewModel);
+      return blocks;
+    }
+}

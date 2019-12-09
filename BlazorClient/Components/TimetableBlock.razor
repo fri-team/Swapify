@@ -1,0 +1,15 @@
+@using BlazorClient.ViewModels;
+
+<div class="block"
+     style="background-color: green; color: white; grid-column: @ViewModel.StartColumn / @ViewModel.EndColumn; grid-row: @ViewModel.StartRow / @ViewModel.EndRow" >
+  <div>
+    <div class="name">@ViewModel.CourseShortcut</div>    
+  </div>
+  <div class="room">@ViewModel.Room</div>
+  <div class="teacher">@ViewModel.Teacher</div>  
+</div>
+
+@code {
+  [Parameter]
+  public TimetableBlockViewModel ViewModel { get; set; }  
+}

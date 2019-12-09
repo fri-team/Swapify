@@ -1,3 +1,36 @@
-@import 'Pages/HomePage';
-@import 'Pages/Registration';
-@import 'Pages/Timetable/Timetable';
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+:root {
+  box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
+html,
+body,
+#app,
+.container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-timetable {
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}

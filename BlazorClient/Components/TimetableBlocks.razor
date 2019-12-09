@@ -1,0 +1,15 @@
+@using BlazorClient.ViewModels;
+
+<div class="blocks"
+     style="grid-template-columns: repeat(@ViewModel.ColumnsCount, 1fr); grid-template-rows: repeat(@ViewModel.RowsCount, 1fr)">
+  @foreach (var block in ViewModel.TimetableBlocks)
+  {
+    <TimetableBlock ViewModel="@block"></TimetableBlock>
+  }
+</div>
+
+@code
+{
+  [Parameter]
+  public TimetableBlocksViewModel ViewModel { get; set; }
+}
