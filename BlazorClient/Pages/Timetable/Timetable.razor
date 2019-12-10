@@ -29,7 +29,7 @@
     }
   </div>
 
-  <TimetableBlocks ViewModel="@_timetableBlocksViewModel"></TimetableBlocks>  
+  <TimetableBlocks ViewModel="@_timetableBlocksViewModel"></TimetableBlocks>
 </div>
 
 @code
@@ -39,71 +39,83 @@
     protected override void OnInitialized()
     {
       base.OnInitialized();
-      _timetableBlocksViewModel = new TimetableBlocksViewModel()
-      {
-        ColumnsCount = (byte)Constants.Timetable.HOURS.Length,
-        RowsCount = (byte)Constants.Timetable.DAYS.Length,
-        TimetableBlocks = GetTestTimetableBlockViewModels()
-      };
+      _timetableBlocksViewModel = CreateTimetableBlocksViewModel(
+        GetTestTimetableBlockModels(),
+        Constants.Timetable.DAYS.Length,
+        Constants.Timetable.HOURS.Length);
     }
 
-    private IEnumerable<TimetableBlockViewModel> GetTestTimetableBlockViewModels()
+    private IEnumerable<TimetableBlockModel> GetTestTimetableBlockModels()
     {
-      var blocks = new List<TimetableBlockViewModel>();
-
-      // add block 0
-      var block = new TimetableBlockModel()
-      {
+      return new List<TimetableBlockModel>()
+  {
+      new TimetableBlockModel()
+        {
         CourseShortcut = "test shortcut",
         Room = "test room",
-        Teacher = "test teacher"
-      };
-
-      var blockViewModel = new TimetableBlockViewModel(block)
-      {
-        StartColumn = 2,
-        EndColumn = 4,
-        StartRow = 2,
-        EndRow = 3
-      };
-
-      blocks.Add(blockViewModel);
-
-      // add block 1
-      block = new TimetableBlockModel()
+        Teacher = "test teacher",
+        Day = 1,
+        StartBlock = 2,
+        EndBlock = 4
+      },
+      new TimetableBlockModel()
       {
         CourseShortcut = "test shortcut 1",
         Room = "test room 1",
-        Teacher = "test teacher 1"
-      };
-
-      blockViewModel = new TimetableBlockViewModel(block)
-      {
-        StartColumn = 4,
-        EndColumn = 6,
-        StartRow = 3,
-        EndRow = 4
-      };
-
-      blocks.Add(blockViewModel);
-
-      // add block 2
-      block = new TimetableBlockModel()
+        Teacher = "test teacher 1",
+        Day = 1,
+        StartBlock = 2,
+        EndBlock = 4
+      },
+      new TimetableBlockModel()
       {
         CourseShortcut = "test shortcut 2",
         Room = "test room 2",
-        Teacher = "test teacher 2"
-      };
+        Teacher = "test teacher 2",
+        Day = 3,
+        StartBlock = 2,
+        EndBlock = 4
+      }
+    };
+    }    
 
-      blockViewModel = new TimetableBlockViewModel(block)
+    private static TimetableBlocksViewModel CreateTimetableBlocksViewModel(IEnumerable<TimetableBlockModel> blockModels, int rowsCount, int columnsCount)
+    {
+      var timetableBlocks = CreateTimetableBlockViewModels(blockModels, out var rowHeight);
+      return new TimetableBlocksViewModel()
       {
-        StartColumn = 2,
-        EndColumn = 4,
-        StartRow = 4,
-        EndRow = 5
+        ColumnsCount = (byte)columnsCount,
+        RowsCount = (byte)(rowsCount * rowHeight),
+        TimetableBlocks = timetableBlocks
       };
+    }
 
-      blocks.Add(blockViewModel);
-      return blocks;
+    private static IEnumerable<TimetableBlockViewModel> CreateTimetableBlockViewModels(IEnumerable<TimetableBlockModel> blocks, out int rowHeight)
+    {
+      // group by day and startBlock
+      var blocksGroupedByStart = blocks
+          .GroupBy(block => (block.Day, block.StartBlock))
+          .OrderBy(group => group.Key);
+
+      // TODO order by day, startBlock, endBlock, course
+      rowHeight = blocksGroupedByStart.Select(group => group.Count()).Lcm();
+
+      var blockViewModels = new List<TimetableBlockViewModel>();
+      foreach (var group in blocksGroupedByStart)
+      {
+        var blockHeight = rowHeight / group.Count();
+        foreach (var (block, index) in group.WithIndex())
+        {
+          var startLine = (block.Day - 1) * rowHeight + index * blockHeight + 1;
+          blockViewModels.Add(new TimetableBlockViewModel(block)
+          {
+            StartColumn = (byte)block.StartBlock,
+            EndColumn = (byte)block.EndBlock,
+            StartRow = (byte)startLine,
+            EndRow = (byte)(startLine + blockHeight)
+          });
+        }
+      }
+      return blockViewModels;
     }
 }
