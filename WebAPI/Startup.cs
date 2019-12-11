@@ -26,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace WebAPI
 {
@@ -33,10 +34,10 @@ namespace WebAPI
     {
         private const string DatabaseName = "Swapify";
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
             Environment = environment;
@@ -73,12 +74,12 @@ namespace WebAPI
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder.AllowAnyOrigin()
+                app.UseCors(builder => builder.SetIsOriginAllowed(_ => true)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -89,15 +90,19 @@ namespace WebAPI
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseRouting();
             app.UseAuthentication();
-            app.UseMvc();
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            app.UseEndpoints(endpoints =>
             {
-                builder.UseMvc(routes =>
-                {
-                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
-                });
+                endpoints.MapControllers();                
             });
+            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            //{
+            //    builder.UseEndpoints(endpoints =>
+            //    {
+            //        endpoints.Map("{*url}", new { controller = "Home", action = "RouteToReact" });
+            //    });
+            //});
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)
