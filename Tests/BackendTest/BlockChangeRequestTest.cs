@@ -56,20 +56,28 @@ namespace BackendTest
             BlockChangeRequest blockToChange4 = CreateBlockChangeRequest(block1, block3, student2.Id);
             BlockChangeRequest blockToChange5 = CreateBlockChangeRequest(block4, block2, student3.Id);
             BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student3.Id);
+            ValueTuple<BlockChangeRequest, BlockChangeRequest> result = new ValueTuple<BlockChangeRequest, BlockChangeRequest>();
 
-            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange2)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange3)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange4)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange5)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(true);
+            result = (null, null);
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Equals(result);
+            (await blockChangeService.AddAndFindMatch(blockToChange2)).Should().Equals(result);
+            (await blockChangeService.AddAndFindMatch(blockToChange3)).Should().Equals(result);
+            (await blockChangeService.AddAndFindMatch(blockToChange4)).Should().Equals(result);
+            (await blockChangeService.AddAndFindMatch(blockToChange5)).Should().Equals(result);
 
-            blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(0);
+            result = (blockToChange, blockToChange1);
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Equals(result);
+
+            blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(1);
             blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
-            blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(2);
+
+            blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(0);
+            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
 
             BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, student1.Id);
-            (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be((null, null));
             blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
@@ -96,8 +104,8 @@ namespace BackendTest
             BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student.Id);
             BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block3, block1, student.Id);
 
-            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be(false);
-            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be(false);
+            (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Be((null, null));
+            (await blockChangeService.AddAndFindMatch(blockToChange1)).Should().Be((null, null));
 
             blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(2);
             (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);

@@ -21,6 +21,20 @@ class BlockDetail extends PureComponent {
     course: {...this.props.course}
   };
 
+  calculateBottomPosition = (pTop) => {
+    if (pTop > window.innerHeight * 0.7)
+      return `2px`
+    else 
+      return `auto`;
+  }
+
+  calculateTopPosition = (pTop) => {
+    if (pTop > window.innerHeight * 0.7)
+      return `auto`
+    else 
+      return `${pTop}px`;
+  }
+
   handleClickOutside = () => {
     if(!this.state.dialogOpen) {
       this.props.onOutsideClick();
@@ -42,18 +56,20 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
+
+
   render() {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course,user } = this.props;
+    const { top, left, course, user } = this.props;
     const email =
       _.replace(_.lowerCase(_.deburr(course.teacher)), ' ', '.') +
       '@fri.uniza.sk';
     const { backgroundColor, color } = toMaterialStyle(
       course.courseShortcut || ''
     );
-    const style = { top: `${top}px`, left: `${left}px`, position: `absolute` };
+    const style = { top: `${this.calculateTopPosition(top)}`, left: `${left}px`, bottom: `${this.calculateBottomPosition(top)}`, position: `absolute`, width: `20%` };
     const dialogOpen = this.state.dialogOpen;
     return (
       <div className="block-detail" style={style}>

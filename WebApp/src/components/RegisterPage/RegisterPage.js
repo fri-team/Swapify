@@ -102,7 +102,7 @@ class RegisterPage extends Component {
 
 
   handleChange = event => {
-    event.preventDefault();
+    //event.preventDefault();
     this.setState({ [event.target.name]: event.target.value });
   };
 

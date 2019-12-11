@@ -80,7 +80,7 @@ class PersonalNumber extends React.Component {
                     color="primary" 
                     variant="contained"
                 >
-                  Uloziť
+                  Uložiť
                 </Button>
                 </div>
             </div>

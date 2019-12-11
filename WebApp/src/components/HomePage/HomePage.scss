@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+
 .App {
   height: 100vh;
   display: flex;
   color: white;
+  font-family: 'Roboto', sans-serif;
 }
 
 .App__Aside {
@@ -11,14 +14,35 @@
 }
 
 .App__Form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   width: 40%;
   background-color: #5EBED7;
   padding: 25px 40px;
   overflow: auto;
 }
 
+.AboutUsContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  color: #28515b;
+  text-align: justify;
+}
+
+.AboutUsContainer h1{
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.AboutUsContainer p{
+  line-height: 1.4;
+}
+
 .PageSwitcher {
   display: flex;
+  flex: 0;
   justify-content: flex-end;
   margin-bottom: 10%;
 }
@@ -42,6 +66,9 @@
 
 .FormCenter {
   margin-bottom: 100px;
+  flex-direction: column;
+  flex: 1;
+  justify-self: flex-start;
 }
 
 .FormTitle {
@@ -102,7 +129,7 @@
   color: white;
   border: none;
   outline: none;
-  padding: 15px 70px;
+  padding: 10px 70px;
   font-size: .9em;
   font-weight: 500;
   float: right;
@@ -115,20 +142,20 @@
   display: inline-block;
   border-bottom: 1.5px solid #28515b;
   padding-bottom: 5px;
-  font-size: 1.1em;
+  //font-size: 1.1em;
   cursor: pointer;
 }
 
 .FormField__CheckboxLabel {
   color: #28515b;
-  font-size: 1.1em;
+  font-weight: 400;
+  //font-size: 1.2em;
 }
 
 .FormField__Checkbox {
   position: relative;
-  top: 1.5px;
   margin-right: 10px;
-  transform: scale(2);
+  transform: scale(1.5);
 }
 
 .FormField__TermsLink {
@@ -140,11 +167,17 @@
   margin-left: 5px;
 }
 
+.HomeFooter {
+  flex: 0;
+  align-self: flex-end;
+}
+
 .logo {
   background: url('../../images/logo.png') center no-repeat;
   background-size: 40%;
   height: 150px;
-  margin-bottom: 50px;
+  margin-top: 50px;
+  margin-bottom: 20px;
 }
 
 
@@ -161,6 +194,7 @@
   justify-content: center;
   background-size: cover;
   height: 600px;
+  font-family: 'Roboto', sans-serif;
 }
 
 .each-slide span {

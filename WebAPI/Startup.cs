@@ -67,6 +67,7 @@ namespace WebAPI
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
+            services.AddSingleton<INotificationService, NotificationService>();
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
@@ -136,6 +137,7 @@ namespace WebAPI
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new ProducesAttribute("application/json"));
@@ -211,6 +213,8 @@ namespace WebAPI
                 _logger.LogInformation("Courses created");
                 await DbSeed.CreateTestingExchangesAsync(serviceProvider);
                 _logger.LogInformation("Testing exchanges created.");
+                await DbSeed.CreateTestingNotifications(serviceProvider);
+                _logger.LogInformation("Testing notifications created.");
             }
             catch (Exception e)
             {

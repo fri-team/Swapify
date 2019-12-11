@@ -1,9 +1,9 @@
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect';
 import { LoadingPage } from '../components';
-import { LOGIN, TIMETABLE } from './routes';
+import { HOME, TIMETABLE } from './routes';
 
 export const onlyAuth = connectedRouterRedirect({
-  redirectPath: LOGIN,
+  redirectPath: HOME,
   authenticatedSelector: state => state.user.isAuthenticated,
   AuthenticatingComponent: LoadingPage,
   wrapperDisplayName: 'UserIsAuthenticated'
