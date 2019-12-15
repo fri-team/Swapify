@@ -89,20 +89,13 @@ namespace WebAPI
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseStaticFiles();            
             app.UseRouting();
             app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();                
-            });
-            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
-            //{
-            //    builder.UseEndpoints(endpoints =>
-            //    {
-            //        endpoints.Map("{*url}", new { controller = "Home", action = "RouteToReact" });
-            //    });
-            //});
+            });                        
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)
