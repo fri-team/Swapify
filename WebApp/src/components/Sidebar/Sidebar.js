@@ -9,10 +9,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
+import MailIcon from '@material-ui/icons/Mail';
 import { dayHourToString } from '../../util/dateTimeFormatter';
-import { CardHeader } from '@material-ui/core';
+import { CardHeader, Button } from '@material-ui/core';
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
+import './Sidebar.scss';
+
+const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWindow, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
@@ -20,35 +23,40 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
         <Tab label="Vymeny" />
       </Tabs>
     </AppBar>
-    {value === 0 &&
-      <List>
-        {courses.map(({ courseId, courseName, checked }) => (
-          <ListItem button key={courseId}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={checked}
-                  onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
-                />
-              }
-              label={courseName}
-            />
-          </ListItem>
+    <div className="drawerWrapper">
+      {value === 0 &&
+        <List>
+          {courses.map(({ courseId, courseName, checked }) => (
+            <ListItem button key={courseId}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={checked}
+                    onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
+                  />
+                }
+                label={courseName}
+              />
+            </ListItem>
 
-        ))}
-      </List>
-    }
-    {value === 1 &&
-      <Grid
-        container
-        direction="column"
-        justify="space-around"
-        alignItems="stretch"
-      >
-        {createExchangeRequestsList(exchangeRequests, courses)}
-      </Grid>
-    }
-
+          ))}
+        </List>
+      }
+      {value === 1 &&
+        <Grid
+          container
+          direction="column"
+          justify="space-around"
+          alignItems="stretch"
+        >
+          {createExchangeRequestsList(exchangeRequests, courses)}
+        </Grid>
+      }
+      
+      <Button onClick={toggleMailUsModalWindow}>
+        <MailIcon /> &nbsp; Napíšte nám
+      </Button>
+    </div>
   </Drawer>
 );
 
