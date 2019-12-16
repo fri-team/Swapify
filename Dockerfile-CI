@@ -9,7 +9,7 @@ RUN npm run lint
 RUN npm run test:CI
 
 # Build .NET Code app
-FROM microsoft/aspnetcore-build:2.0 AS dotnet
+FROM microsoft/aspnetcore-build:3.1 AS dotnet
 WORKDIR /src
 COPY ./ ./
 # run dotnet tests

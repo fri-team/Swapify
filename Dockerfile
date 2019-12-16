@@ -7,7 +7,7 @@ RUN npm install
 RUN npm run build:CI
 
 # Build .NET Code app
-FROM microsoft/aspnetcore-build:2.0 AS dotnet-build
+FROM microsoft/aspnetcore-build:3.1 AS dotnet-build
 WORKDIR /src
 COPY ./ ./
 RUN dotnet restore
@@ -18,7 +18,7 @@ RUN dotnet build -c Release -o /app
 RUN dotnet publish -c Release -o /app
 
 # Assemble final container
-FROM microsoft/aspnetcore:2.0 AS final
+FROM microsoft/aspnetcore:3.1 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
