@@ -56,7 +56,6 @@ class HomePage extends Component {
               <NavLink exact to="/aboutus" className="FormField__Link">O nás</NavLink>
             </div>
           </div>
-
         </div>
       </Router>
     );

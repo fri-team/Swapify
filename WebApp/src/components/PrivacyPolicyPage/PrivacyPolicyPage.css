@@ -1,3 +1,47 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .top-bar {
+    background: #5EBED7;
+    color: #fff;
+    padding: 1rem;
+  }
+
+  .top-bar-content {
+    width: 50%;
+    left: 40%;
+    position: relative;
+  }
+  
+  .btn {
+    background: #28515b;
+    color: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.7rem 2rem;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  
+  .page-info {
+    margin-left: 1rem;
+  }
+  
+  .error {
+    background: orangered;
+    color: #fff;
+    padding: 1rem;
+  }
+
+
+
 span.cls_002{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
 div.cls_002{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
 span.cls_009{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: underline}

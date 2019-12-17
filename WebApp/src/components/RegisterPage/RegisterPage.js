@@ -7,10 +7,10 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { HOME } from '../../util/routes';
-import Modal from '../Modal/Modal';
-import Backdrop from '../Backdrop/Backdrop';
+//import Modal from '../Modal/Modal';
+//import Backdrop from '../Backdrop/Backdrop';
 //import {Document, Page} from 'react-pdf';
-//import PrivacyPolicy from '../PrivacyPolicyPage/PrivacyPolicy';
+//import PrivacyPage from '../PrivacyPolicyPage/PrivacyPolicyPage';
 
 const validator = new FormValidator([
   {
@@ -157,10 +157,10 @@ class RegisterPage extends Component {
     const serverErrorsList = serverErrors.map(e => <li key={e}>{e}</li>);
     return (
       <React.Fragment>
-        {this.state.privacyPolicyOpened && <Backdrop></Backdrop>}
+        {/* {this.state.privacyPolicyOpened && <Backdrop></Backdrop>}
         {this.state.privacyPolicyOpened && <Modal title="Privacy policies" onCancel={this.handleModalCancel}>
           <p>Pomáhať a chrániť!</p>
-        </Modal>}
+        </Modal>} */}
         <div className="FormCenter">
           <form onSubmit={this.handleSubmit} className="FormFields">
             <div className="FormField">
@@ -251,9 +251,8 @@ class RegisterPage extends Component {
                 className="FormField__CheckboxLabel"
                 //onClick={this.handlePrivacyPolicyOpened}
               >
-                
                 {'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so '}
-                <a href="../PrivacyPolicyPage/PrivacyPolicy.js" target="_blank" rel="noopener noreferrer" >Zmluvnými podmienkami a Zásadami ochrany osobných údajov</a>{'.'}
+                <a href="/privacypolicy" target="_blank" rel="noopener noreferrer" >Zmluvnými podmienkami a Zásadami ochrany osobných údajov</a>{'.'}
               </label>
             </div>
 
