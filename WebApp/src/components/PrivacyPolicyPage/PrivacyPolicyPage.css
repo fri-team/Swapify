@@ -40,21 +40,30 @@
     padding: 1rem;
   }
 
+  .pdf-container {
+    background-color: rgba(94, 190, 215, 0.25);
+  }
 
+  .pdf-context {
+    width: 40%;
+    left: 30%;
+    position: relative;
+    padding: 1rem;
+  }
 
-span.cls_002{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_002{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_009{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: underline}
-div.cls_009{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_004{font-family:Times,serif;font-size:18.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_004{font-family:Times,serif;font-size:18.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_005{font-family:Times,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_005{font-family:Times,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_006{font-family:Arial,serif;font-size:10.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_006{font-family:Arial,serif;font-size:10.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_007{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_007{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_008{font-family:Courier New,serif;font-size:10.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_008{font-family:Courier New,serif;font-size:10.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_003{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_003{font-family:Times,serif;font-size:12.1px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_002{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_002{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_009{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: underline}
+  div.cls_009{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_004{font-family:Times,serif;font-size:36px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_004{font-family:Times,serif;font-size:36px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_005{font-family:Times,serif;font-size:24.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_005{font-family:Times,serif;font-size:24.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_006{font-family:Arial,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_006{font-family:Arial,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_007{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_007{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_008{font-family:Courier New,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_008{font-family:Courier New,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_003{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_003{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
