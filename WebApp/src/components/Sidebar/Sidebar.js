@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ListItem from '@material-ui/core/ListItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tooltip from '@material-ui/core/Tooltip';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -15,12 +16,12 @@ import { CardHeader, Button } from '@material-ui/core';
 
 import './Sidebar.scss';
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWindow, handleChange, value, exchangeRequests }) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Predmety" />
-        <Tab label="Vymeny" />
+        <Tab label="Výmeny" />
       </Tabs>
     </AppBar>
     <div className="drawerWrapper">
@@ -30,10 +31,12 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWind
             <ListItem button key={courseId}>
               <FormControlLabel
                 control={
-                  <Switch
-                    checked={checked}
-                    onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
-                  />
+                  <Tooltip title="Zobraziť rozvrh predmetu" placement="top">
+                    <Switch
+                      checked={checked}
+                      onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
+                    />
+                  </Tooltip>
                 }
                 label={courseName}
               />
@@ -52,7 +55,7 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWind
           {createExchangeRequestsList(exchangeRequests, courses)}
         </Grid>
       }
-      
+
       <Button onClick={toggleMailUsModalWindow}>
         <MailIcon /> &nbsp; Napíšte nám
       </Button>
