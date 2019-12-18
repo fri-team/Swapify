@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router'
 import { persistReducer, createTransform } from 'redux-persist';
 import createEncryptor from 'redux-persist-transform-encrypt';
 import storage from 'redux-persist/lib/storage';
@@ -33,10 +33,10 @@ const rootPersistConfig = {
   whitelist: ['user']
 };
 
-const rootReducer = persistReducer(
+const rootReducer = (history) => persistReducer(
   rootPersistConfig,
   combineReducers({
-    routing: routerReducer,
+    router: connectRouter(history),
     timetable,
     blockDetail,
     user,

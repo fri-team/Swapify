@@ -122,7 +122,7 @@ const styles = theme => ({
     flexGrow: 1,
   },
   divider: {
-    height: theme.spacing.unit * 2,
+    height: theme.spacing(2),
   },
 });
 
