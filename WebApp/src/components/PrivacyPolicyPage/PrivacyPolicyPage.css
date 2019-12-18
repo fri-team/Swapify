@@ -12,9 +12,14 @@
   }
 
   .top-bar-content {
-    width: 50%;
-    left: 40%;
+    width: 60%;
+    left: 20%;
     position: relative;
+  }
+
+  .top-bar-content.h1 {
+    position: relative;
+    align-self: center;
   }
   
   .btn {

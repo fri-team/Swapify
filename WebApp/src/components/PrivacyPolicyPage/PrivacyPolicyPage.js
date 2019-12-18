@@ -23,6 +23,8 @@ class PrivacyPolicyPage extends Component {
           <body>
             <div className="top-bar">
               <div className="top-bar-content">
+                <h1>Zmluvné podmienky a Zásady ochrany osobných údajov</h1>
+                {/*
                 <button className="btn" id="prev-page">
                   <i className="fas fa-arrow-circle-left"></i> Predošlá strana
                 </button>
@@ -32,6 +34,8 @@ class PrivacyPolicyPage extends Component {
                 <span className="page-info">
                   Strana <span id="page-num"></span> z <span id="page-count"></span>
                 </span>
+                */}
+                
               </div>
             </div>
 
