@@ -16,7 +16,7 @@ import { CardHeader, Button } from '@material-ui/core';
 
 import './Sidebar.scss';
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWindow, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
