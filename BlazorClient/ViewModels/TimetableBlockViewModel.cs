@@ -14,11 +14,11 @@ namespace BlazorClient.ViewModels
         public string CourseShortcut => _timetableBlock.CourseShortcut;
         public string Room => _timetableBlock.Room;
         public string Teacher => _timetableBlock.Teacher;
-        public byte StartColumn { get; set; }
-        public byte EndColumn { get; set; }
-        public byte StartRow { get; set; }
-        public byte EndRow { get; set; }
-        public bool MarginTop { get; set; }
+        public int StartColumn { get; set; }
+        public int EndColumn { get; set; }
+        public int StartRow { get; set; }
+        public int EndRow { get; set; }
+        public double MarginTop { get; set; }
 
         public void OnClick()
         {

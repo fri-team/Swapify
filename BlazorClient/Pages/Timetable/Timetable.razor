@@ -72,12 +72,58 @@
         CourseShortcut = "test shortcut 2",
         Room = "test room 2",
         Teacher = "test teacher 2",
+        Day = 1,
+        StartBlock = 3,
+        EndBlock = 5
+      },
+      new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 3",
+        Room = "test room 3",
+        Teacher = "test teacher 3",
+        Day = 1,
+        StartBlock = 3,
+        EndBlock = 5
+      },
+      new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 4",
+        Room = "test room 4",
+        Teacher = "test teacher 4",
         Day = 3,
         StartBlock = 2,
         EndBlock = 4
+      },      
+      new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 5",
+        Room = "test room 5",
+        Teacher = "test teacher 5",
+        Day = 3,
+        StartBlock = 3,
+        EndBlock = 5
+      },      
+      new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 6",
+        Room = "test room 6",
+        Teacher = "test teacher 6",
+        Day = 3,
+        StartBlock = 4,
+        EndBlock = 6
+      },      
+      new TimetableBlockModel()
+      {
+        CourseShortcut = "test shortcut 7",
+        Room = "test room 7",
+        Teacher = "test teacher 7",
+        Day = 3,
+        StartBlock = 6,
+        EndBlock = 8
       }
+
     };
-    }    
+    }
 
     private static TimetableBlocksViewModel CreateTimetableBlocksViewModel(IEnumerable<TimetableBlockModel> blockModels, int rowsCount, int columnsCount)
     {
@@ -101,21 +147,53 @@
       rowHeight = blocksGroupedByStart.Select(group => group.Count()).Lcm();
 
       var blockViewModels = new List<TimetableBlockViewModel>();
+      int lastEndBlock = 0;
+      int previousGroupDay = 0;
+      double marginTop = 0;
+
       foreach (var group in blocksGroupedByStart)
       {
+        lastEndBlock = ResetLastEndBlockIfNewDay(lastEndBlock, previousGroupDay, group.First().Day);
+        marginTop = ActualizeMarginTop(marginTop, lastEndBlock, group.First().StartBlock);
         var blockHeight = rowHeight / group.Count();
         foreach (var (block, index) in group.WithIndex())
         {
           var startLine = (block.Day - 1) * rowHeight + index * blockHeight + 1;
           blockViewModels.Add(new TimetableBlockViewModel(block)
           {
-            StartColumn = (byte)block.StartBlock,
-            EndColumn = (byte)block.EndBlock,
-            StartRow = (byte)startLine,
-            EndRow = (byte)(startLine + blockHeight)
+            StartColumn = block.StartBlock,
+            EndColumn = block.EndBlock,
+            StartRow = startLine,
+            EndRow = startLine + blockHeight,
+            MarginTop = marginTop
           });
         }
+        lastEndBlock = ActualizeLastEndBlock(lastEndBlock, group);
+        previousGroupDay = group.First().Day;
       }
       return blockViewModels;
+    }
+
+    private static int ActualizeLastEndBlock(int lastEndBlock, IGrouping<(int Day, int StartBlock), TimetableBlockModel> blocksGroup)
+    {
+      var last = lastEndBlock;
+      foreach (var block in blocksGroup)
+      {
+        if (block.EndBlock > last)
+        {
+          last = block.EndBlock;
+        }
+      }
+      return last;
+    }
+
+    private static int ResetLastEndBlockIfNewDay(int lastEndBlock, int previousDay, int currentDay)
+    {
+      return currentDay == previousDay ? lastEndBlock : 0;
+    }
+
+    private static double ActualizeMarginTop(double marginTop, int lastEndBlock, int currentGroupStartBlock)
+    {
+      return currentGroupStartBlock < lastEndBlock ? marginTop + 5 : 0;
     }
 }
