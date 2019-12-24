@@ -13,6 +13,7 @@ namespace BlazorClient
             services.AddStorage();
             services.AddSingleton<IWebStorage, Services.LocalStorage>();
             services.AddSingleton<ISwapifyAPI, SwapifyApi>();
+            services.AddSingleton<TimetableBlocksConverter>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)
