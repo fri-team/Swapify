@@ -11,8 +11,10 @@ namespace BlazorClient.Services.API
         public SwapifyApi(HttpClient httpClient)
         {
             User = new UserEndpoints(httpClient);
+            Student = new StudentEndpoints(httpClient);
         }
 
         public IUserEndpoints User { get; }
+        public IStudentEndpoints Student { get; }
     }
 }

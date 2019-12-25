@@ -4,6 +4,7 @@
 @using BlazorClient.Services;
 
 @inject TimetableBlocksConverter TimetableBlockConverter;
+@inject ISwapifyAPI SwapifyAPI;
 
 <div class="timetable">
   <div class="border-cell"></div>
@@ -39,11 +40,14 @@
 {
     private TimetableBlocksViewModel _timetableBlocksViewModel;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-      base.OnInitialized();
+      await base.OnInitializedAsync();
+      var timetable = await SwapifyAPI.Student.GetStudentTimetable("oleg@swapify.com");
+      var timetableBlocks = timetable.Blocks;
+
       _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
-        GetTestTimetableBlockModels(),
+        timetableBlocks,
         Constants.Timetable.DAYS.Length,
         Constants.Timetable.HOURS.Length);
     }
