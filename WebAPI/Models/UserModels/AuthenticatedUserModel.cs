@@ -1,5 +1,6 @@
 using FRITeam.Swapify.Entities;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebAPI.Models.UserModels
 {
@@ -13,7 +14,7 @@ namespace WebAPI.Models.UserModels
         public DateTime ValidTo { get; set; }
         public string StudentId { get; set; }
 
-        public AuthenticatedUserModel(User user, string token, DateTime validTo)
+        public AuthenticatedUserModel(User user, JwtSecurityToken token)
         {
             if (user != null)
             {
@@ -22,13 +23,15 @@ namespace WebAPI.Models.UserModels
                 Name = user.Name;
                 Surname = user.Surname;
                 StudentId = user.Student?.Id.ToString();
-                }
-            Token = token;
-            ValidTo = validTo;            
+            }
+            Token = token.RawData;
+            ValidTo = token.ValidTo;
         }
 
-        public AuthenticatedUserModel(string token, DateTime validTo) : this(null, token, validTo)
+        public AuthenticatedUserModel(JwtSecurityToken token) : this(null, token)
         {
         }
+
+        public AuthenticatedUserModel() { }
     }
 }

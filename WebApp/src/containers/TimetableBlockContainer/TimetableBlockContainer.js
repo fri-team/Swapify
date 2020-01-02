@@ -12,7 +12,15 @@ class TimetableBlockContainer extends Component {
         this.props.timetableActions.exchangeConfirm(course);
     } else {
         const { offsetTop, offsetLeft, offsetWidth } = evt.currentTarget;
-        this.props.actions.showDetail(offsetTop, offsetLeft + offsetWidth + 8, course);
+        if ((offsetLeft + offsetWidth + 8 + (window.innerWidth * 0.2) > window.innerWidth) && (offsetTop > window.innerHeight * 0.75)){
+          this.props.actions.showDetail(offsetTop, offsetLeft - (window.innerWidth * 0.2) - 8 , course);
+        } else if (offsetTop > window.innerHeight * 0.75) {
+          this.props.actions.showDetail(offsetTop, offsetLeft + offsetWidth + 8, course);
+        } else if (offsetLeft + offsetWidth + 8 + (window.innerWidth * 0.2) > window.innerWidth) {
+          this.props.actions.showDetail(offsetTop, offsetLeft - (window.innerWidth * 0.2) - 8 , course);
+        } else {
+          this.props.actions.showDetail(offsetTop, offsetLeft + offsetWidth + 8, course);
+        }
     }
   }
 

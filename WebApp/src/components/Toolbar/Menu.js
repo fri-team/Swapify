@@ -106,7 +106,7 @@ class Menu extends PureComponent {
                     variant="contained"
                     onClick={selectPersonalNumber}
                 >
-                Zmeniť číslo
+                  Zmeniť číslo
                 </MenuButton>
                 <MenuButton variant="contained" onClick={onLogout}>
                   Odhlásiť

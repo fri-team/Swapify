@@ -26,16 +26,15 @@ class SidebarContainer extends PureComponent {
   };
 
   handleCourseToggle = (courseId, courseName, checked) => {
-    const { dispatch } = this.props;
     if (checked) {
-      dispatch(showCourseTimetable(courseId, courseName));
+      this.props.showCourseTimetable(courseId, courseName);
     } else {
-      dispatch(hideCourseTimetable(courseId));
+      this.props.hideCourseTimetable(courseId);
     }
   };
 
   render() {
-    const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
+    const { open, onClose, myCourseNames, displayedCourses, exchangeRequests, toggleMailUsModalWindow } = this.props;
     const { value } = this.state;
     const courses = _.map(myCourseNames, course => ({
       courseName: course.courseName,
@@ -47,6 +46,7 @@ class SidebarContainer extends PureComponent {
         open={open}
         onClose={onClose}
         courses={courses}
+        toggleMailUsModalWindow={toggleMailUsModalWindow}
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}
@@ -59,7 +59,9 @@ class SidebarContainer extends PureComponent {
 const mapStateToProps = state => ({ ...state.timetable, ...state.exchangeRequests });
 const mapDispatchToProps = dispatch => {
   return {
-    loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()) 
+    loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()), 
+    showCourseTimetable: (courseId, courseName) => dispatch(showCourseTimetable(courseId, courseName)),
+    hideCourseTimetable: (courseId) => dispatch(hideCourseTimetable(courseId))
   }
 }
 
