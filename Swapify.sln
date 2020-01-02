@@ -27,8 +27,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoursesParser", "CoursesPar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{D2A572AE-A7F3-4CE7-AD08-63860502550C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBlazorServer", "TestBlazorServer\TestBlazorServer.csproj", "{9AF2DB6E-4688-4E65-9498-F99805E8E40D}"
 EndProject
 Global
@@ -69,10 +67,6 @@ Global
 		{D2A572AE-A7F3-4CE7-AD08-63860502550C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2A572AE-A7F3-4CE7-AD08-63860502550C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2A572AE-A7F3-4CE7-AD08-63860502550C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EEFEBB8-289A-4CD1-8877-4CCA4B9B7FB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AF2DB6E-4688-4E65-9498-F99805E8E40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
