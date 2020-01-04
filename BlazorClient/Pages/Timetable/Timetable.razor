@@ -6,6 +6,20 @@
 @inject TimetableBlocksConverter TimetableBlockConverter;
 @inject ISwapifyAPI SwapifyAPI;
 
+<MatAppBarContainer>
+  <MatAppBar Fixed="true">
+    <MatAppBarRow>
+      <MatAppBarSection>
+        <MatIconButton Icon="menu"></MatIconButton>        
+      </MatAppBarSection>
+      <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+        <MatIconButton Icon="notifications"></MatIconButton>
+        <MatIconButton Icon="help"></MatIconButton>
+      </MatAppBarSection>
+    </MatAppBarRow>
+  </MatAppBar>  
+</MatAppBarContainer>
+
 <div class="timetable">
   <div class="border-cell"></div>
 
@@ -38,24 +52,24 @@
 
 @code
 {
-    private TimetableBlocksViewModel _timetableBlocksViewModel;
+  private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
 
-    protected override async Task OnInitializedAsync()
-    {
-      await base.OnInitializedAsync();
-      var timetable = await SwapifyAPI.Student.GetStudentTimetable("oleg@swapify.com");
-      var timetableBlocks = timetable.Blocks;
-
-      _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
-        timetableBlocks,
-        Constants.Timetable.DAYS.Length,
-        Constants.Timetable.HOURS.Length);
-    }
-
-    private IEnumerable<TimetableBlockModel> GetTestTimetableBlockModels()
-    {
-      return new List<TimetableBlockModel>()
+  protected override async Task OnInitializedAsync()
   {
+    await base.OnInitializedAsync();
+    var timetable = await SwapifyAPI.Student.GetStudentTimetable("oleg@swapify.com");
+    var timetableBlocks = timetable.Blocks;
+
+    _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
+      timetableBlocks,
+      Constants.Timetable.DAYS.Length,
+      Constants.Timetable.HOURS.Length);
+  }
+
+  private IEnumerable<TimetableBlockModel> GetTestTimetableBlockModels()
+  {
+    return new List<TimetableBlockModel>()
+{
       new TimetableBlockModel()
         {
         CourseShortcut = "test shortcut",
@@ -100,7 +114,7 @@
         Day = 3,
         StartBlock = 2,
         EndBlock = 4
-      },      
+      },
       new TimetableBlockModel()
       {
         CourseShortcut = "test shortcut 5",
@@ -109,7 +123,7 @@
         Day = 3,
         StartBlock = 3,
         EndBlock = 5
-      },      
+      },
       new TimetableBlockModel()
       {
         CourseShortcut = "test shortcut 6",
@@ -118,7 +132,7 @@
         Day = 3,
         StartBlock = 4,
         EndBlock = 6
-      },      
+      },
       new TimetableBlockModel()
       {
         CourseShortcut = "test shortcut 7",
@@ -130,5 +144,5 @@
       }
 
     };
-    }    
+  }
 }
