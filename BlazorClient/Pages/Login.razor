@@ -3,6 +3,7 @@
 
 @inject ISwapifyAPI swapifyApi
 @inject IWebStorage webStorage
+@inject IUserService  UserService
 @inject NavigationManager  NavigationManager
 
 <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
@@ -28,13 +29,14 @@
 </EditForm>
 
 @code {
-  private LoginModel loginModel = new LoginModel();
+    private LoginModel loginModel = new LoginModel();
 
-  private async void HandleValidSubmit()
-  {
-    var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
-    swapifyApi.SetAuthorizationToken(authenticatedUserModel.Token);
-    await webStorage.SetAsync("user", authenticatedUserModel);
-    NavigationManager.NavigateTo(Routes.TIMETABLE);
-  }
+    private async void HandleValidSubmit()
+    {
+      var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
+      swapifyApi.SetAuthorizationToken(authenticatedUserModel.Token);
+      UserService.SetUser(authenticatedUserModel);
+      await webStorage.SetAsync("user", authenticatedUserModel);
+      NavigationManager.NavigateTo(Routes.TIMETABLE);
+    }
 }
