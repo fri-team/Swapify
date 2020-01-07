@@ -14,6 +14,7 @@ namespace BlazorClient
             services.AddSingleton<IWebStorage, Services.LocalStorage>();
             services.AddSingleton<ISwapifyAPI, SwapifyApi>();
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ITimetableService, TimetableService>();
             services.AddSingleton<TimetableBlocksConverter>();
         }
 

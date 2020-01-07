@@ -4,7 +4,6 @@ namespace BlazorClient.Services
 {
     public interface IUserService
     {
-        AuthenticatedUserModel GetUser();
-        void SetUser(AuthenticatedUserModel user);
+        AuthenticatedUserModel User { get; set; }
     }
 }

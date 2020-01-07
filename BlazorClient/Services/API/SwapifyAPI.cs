@@ -14,10 +14,12 @@ namespace BlazorClient.Services.API
             _httpClient = httpClient;
             User = new UserEndpoints(httpClient);
             Student = new StudentEndpoints(httpClient);
+            Timetable = new TimetableEndpoints(httpClient);
         }
 
         public IUserEndpoints User { get; }
         public IStudentEndpoints Student { get; }
+        public ITimetableEndpoints Timetable { get; }  
 
         public void SetAuthorizationToken(string token)
         {

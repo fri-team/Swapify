@@ -11,6 +11,7 @@ namespace BlazorClient.Services
     {
         IUserEndpoints User { get; }
         IStudentEndpoints Student { get; }
+        ITimetableEndpoints Timetable { get; }
         void SetAuthorizationToken(string token);
     }
 }
