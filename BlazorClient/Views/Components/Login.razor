@@ -35,7 +35,7 @@
     {
       var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
       swapifyApi.SetAuthorizationToken(authenticatedUserModel.Token);
-      UserService.SetUser(authenticatedUserModel);
+      UserService.User = authenticatedUserModel;
       await webStorage.SetAsync("user", authenticatedUserModel);
       NavigationManager.NavigateTo(Routes.TIMETABLE);
     }

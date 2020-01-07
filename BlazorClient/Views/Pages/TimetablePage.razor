@@ -1,15 +1,16 @@
 @page "/timetable"
 @using BlazorClient.Services;
+@using BlazorClient.Views.Components.Timetable;
 
-@inject TimetableBlocksConverter TimetableBlockConverter;
-@inject ISwapifyAPI SwapifyAPI;
+@inject ITimetableService TimetableService;
+@inject IUserService UserService;
 
 <AppBar OnChangePersonalNumberClick="ChangePersonalNumberButtonClicked"></AppBar>
 <ChangePersonalNumberDialog
   IsOpen="@_changePersonalNumberDialogOpen"
   Saved="ChangePersonalNumberDialogSaved"
   Canceled="ChangePersonalNumberDialogCanceled"/>
-<Timetable/>
+<Timetable />
 
 @code
 {    
@@ -20,9 +21,11 @@
       _changePersonalNumberDialogOpen = true;
     }
 
-    private void ChangePersonalNumberDialogSaved(string personalNumber)
+    private async void ChangePersonalNumberDialogSaved(string personalNumber)
     {      
       _changePersonalNumberDialogOpen = false;
+      var email = UserService.User.Email;
+      await TimetableService.SetTimetableByPersonalNumber(email, personalNumber);
     }
 
     private void ChangePersonalNumberDialogCanceled()

@@ -1,8 +1,11 @@
 @using BlazorClient.ViewModels;
 @using BlazorClient.Services;
+@using BlazorClient.Models.Timetable;
 
 @inject TimetableBlocksConverter TimetableBlockConverter;
 @inject ISwapifyAPI SwapifyAPI;
+@inject ITimetableService TimetableService;
+@inject IUserService  UserService;
 
 <div class="timetable">
   <div class="border-cell"></div>
@@ -36,12 +39,19 @@
 
 @code
 {
-    private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();    
+    private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
 
     protected override async Task OnInitializedAsync()
-    {      
+    {
       await base.OnInitializedAsync();
-      var timetable = await SwapifyAPI.Student.GetStudentTimetable("oleg@swapify.com");
+      var email = UserService.User.Email;
+      var timetable = await TimetableService.SetTimetable(email);
+      InitializeTimetable(timetable);
+      TimetableService.TimetableChanged += InitializeTimetable;
+    }
+
+    private void InitializeTimetable(TimetableModel timetable)
+    {      
       var timetableBlocks = timetable.Blocks;
 
       _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
