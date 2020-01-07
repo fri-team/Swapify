@@ -21,11 +21,13 @@
 <MatMenu @ref="_accountMenu" TargetForwardRef="@_buttonForwardRef">
   <h1>@User.Name</h1>
   <h2>@User.Email</h2>
-  <MatButton>Zmeniť číslo</MatButton><MatButton>Odhlásiť</MatButton>
+  <MatButton OnClick="OnChangePersonalNumberClick">Zmeniť číslo</MatButton><MatButton>Odhlásiť</MatButton>
 </MatMenu>
 
 @code
 {
+    [Parameter] public EventCallback OnChangePersonalNumberClick { get; set; }
+
     private AuthenticatedUserModel User { get; set; }
 
     ForwardRef _buttonForwardRef = new ForwardRef();

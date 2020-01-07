@@ -1,0 +1,32 @@
+@page "/timetable"
+@using BlazorClient.Services;
+
+@inject TimetableBlocksConverter TimetableBlockConverter;
+@inject ISwapifyAPI SwapifyAPI;
+
+<AppBar OnChangePersonalNumberClick="ChangePersonalNumberButtonClicked"></AppBar>
+<ChangePersonalNumberDialog
+  IsOpen="@_changePersonalNumberDialogOpen"
+  Saved="ChangePersonalNumberDialogSaved"
+  Canceled="ChangePersonalNumberDialogCanceled"/>
+<Timetable/>
+
+@code
+{    
+    private bool _changePersonalNumberDialogOpen = false;
+
+    private void ChangePersonalNumberButtonClicked()
+    {
+      _changePersonalNumberDialogOpen = true;
+    }
+
+    private void ChangePersonalNumberDialogSaved(string personalNumber)
+    {      
+      _changePersonalNumberDialogOpen = false;
+    }
+
+    private void ChangePersonalNumberDialogCanceled()
+    {      
+      _changePersonalNumberDialogOpen = false;
+    }    
+}

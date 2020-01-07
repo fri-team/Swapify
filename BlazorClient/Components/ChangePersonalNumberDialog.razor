@@ -1,0 +1,24 @@
+<MatDialog @bind-IsOpen="@IsOpen">  
+  <MatDialogContent>
+    <p>Zadajte osobné číslo:</p>
+    <MatTextField Label="Príklad: 555000" @bind-Value="@_personalNumber"></MatTextField>
+  </MatDialogContent>
+  <MatDialogActions>
+    <MatButton OnClick="@(() => Saved.InvokeAsync(_personalNumber))">Uložiť</MatButton>
+    <MatButton OnClick="@Canceled">Zrušiť</MatButton>
+  </MatDialogActions>
+</MatDialog>
+
+@code
+{
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Saved { get; set; }
+
+    [Parameter]
+    public EventCallback Canceled { get; set; }    
+
+    private string _personalNumber = null;    
+}
