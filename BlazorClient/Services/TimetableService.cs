@@ -26,7 +26,7 @@ namespace BlazorClient.Services
 
         public event Action<TimetableModel> TimetableChanged;
 
-        public async Task<TimetableModel> SetTimetable(string email)
+        public async Task<TimetableModel> LoadTimetable(string email)
         {
             Timetable = await _swapifyAPI.Student.GetStudentTimetable(email);
             return Timetable;
@@ -34,12 +34,17 @@ namespace BlazorClient.Services
 
         public async Task<TimetableModel> SetTimetableByPersonalNumber(string email, string personalNumber)
         {
-            Timetable = await _swapifyAPI.Timetable.SetTimetableFromPersonalNumber(new StudentModel() {
+            var ok = await _swapifyAPI.Timetable.SetTimetableFromPersonalNumber(new StudentModel() {
                 Email = email,
                 PersonalNumber = personalNumber
             });
 
-            return Timetable;
+            if (ok)
+            {
+                return await LoadTimetable(email);
+            }
+
+            return new TimetableModel();
         }
     }
 }

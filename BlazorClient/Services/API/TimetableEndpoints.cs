@@ -1,8 +1,7 @@
 using BlazorClient.Models.Student;
-using BlazorClient.Models.Timetable;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+using System.Text.Json;
 
 namespace BlazorClient.Services.API
 {
@@ -14,10 +13,11 @@ namespace BlazorClient.Services.API
         {
             _httpClient = httpClient;
         }
-        public async Task<TimetableModel> SetTimetableFromPersonalNumber(StudentModel studentModel)
+        public async Task<bool> SetTimetableFromPersonalNumber(StudentModel studentModel)
         {
-            return await _httpClient.PostJsonAsync<TimetableModel>(
-                "/api/student/setStudentTimetableFromPersonalNumber", studentModel);
+            var content = new StringContent(JsonSerializer.Serialize(studentModel), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/timetable/setStudentTimetableFromPersonalNumber", content);
+            return response.StatusCode == System.Net.HttpStatusCode.OK;            
         }
     }
 }

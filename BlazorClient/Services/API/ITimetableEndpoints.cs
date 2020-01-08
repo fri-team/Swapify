@@ -6,6 +6,6 @@ namespace BlazorClient.Services.API
 {
     public interface ITimetableEndpoints
     {
-        Task<TimetableModel> SetTimetableFromPersonalNumber(StudentModel studentModel);
+        Task<bool> SetTimetableFromPersonalNumber(StudentModel studentModel);
     }
 }

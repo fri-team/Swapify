@@ -9,6 +9,6 @@ namespace BlazorClient.Services
         TimetableModel Timetable { get; }
         event Action<TimetableModel> TimetableChanged;
         Task<TimetableModel> SetTimetableByPersonalNumber(string email, string personalNumber);
-        Task<TimetableModel> SetTimetable(string email);
+        Task<TimetableModel> LoadTimetable(string email);
     }
 }

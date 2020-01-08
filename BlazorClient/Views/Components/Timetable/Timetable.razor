@@ -1,6 +1,7 @@
 @using BlazorClient.ViewModels;
 @using BlazorClient.Services;
 @using BlazorClient.Models.Timetable;
+@using System.Text.Json;
 
 @inject TimetableBlocksConverter TimetableBlockConverter;
 @inject ISwapifyAPI SwapifyAPI;
@@ -45,19 +46,21 @@
     {
       await base.OnInitializedAsync();
       var email = UserService.User.Email;
-      var timetable = await TimetableService.SetTimetable(email);
+      var timetable = await TimetableService.LoadTimetable(email);
       InitializeTimetable(timetable);
       TimetableService.TimetableChanged += InitializeTimetable;
     }
 
     private void InitializeTimetable(TimetableModel timetable)
-    {      
+    {
+      System.Console.WriteLine(JsonSerializer.Serialize(timetable));
       var timetableBlocks = timetable.Blocks;
 
       _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
         timetableBlocks,
         Constants.Timetable.DAYS.Length,
         Constants.Timetable.HOURS.Length);
+      StateHasChanged();
     }
 
 
