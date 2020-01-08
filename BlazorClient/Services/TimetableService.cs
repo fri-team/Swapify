@@ -1,7 +1,7 @@
+using BlazorClient.Models.Student;
 using BlazorClient.Models.Timetable;
 using System;
 using System.Threading.Tasks;
-using BlazorClient.Models.Student;
 
 namespace BlazorClient.Services
 {
@@ -34,7 +34,8 @@ namespace BlazorClient.Services
 
         public async Task<TimetableModel> SetTimetableByPersonalNumber(string email, string personalNumber)
         {
-            var ok = await _swapifyAPI.Timetable.SetTimetableFromPersonalNumber(new StudentModel() {
+            var ok = await _swapifyAPI.Timetable.SetTimetableFromPersonalNumber(new StudentModel()
+            {
                 Email = email,
                 PersonalNumber = personalNumber
             });

@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorClient.Extensions
@@ -11,7 +10,7 @@ namespace BlazorClient.Extensions
         }
 
         public static bool EqualsRelativeUri(this NavigationManager navigationManager, string relativeUri)
-        {            
+        {
             return navigationManager.ToBaseRelativePath(navigationManager.Uri).Equals(relativeUri);
         }
     }

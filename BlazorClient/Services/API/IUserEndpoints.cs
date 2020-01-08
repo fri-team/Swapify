@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using BlazorClient.Models.UserModels;
+using System.Threading.Tasks;
 
 namespace BlazorClient.Services.API
 {

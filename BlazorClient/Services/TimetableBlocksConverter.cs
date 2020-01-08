@@ -1,9 +1,8 @@
-using BlazorClient.ViewModels;
+using BlazorClient.Extensions;
 using BlazorClient.Models.Timetable;
-using System;
+using BlazorClient.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using BlazorClient.Extensions;
 
 namespace BlazorClient.Services
 {
@@ -79,6 +78,6 @@ namespace BlazorClient.Services
         private static double ActualizeMarginTop(double marginTop, int lastEndBlock, int currentGroupStartBlock)
         {
             return currentGroupStartBlock < lastEndBlock ? marginTop + 5 : 0;
-        }        
+        }
     }
 }

@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BlazorClient.Services.API
 {
-    public class SwapifyApi: ISwapifyAPI
+    public class SwapifyApi : ISwapifyAPI
     {
         HttpClient _httpClient;
         public SwapifyApi(HttpClient httpClient)
@@ -19,7 +15,7 @@ namespace BlazorClient.Services.API
 
         public IUserEndpoints User { get; }
         public IStudentEndpoints Student { get; }
-        public ITimetableEndpoints Timetable { get; }  
+        public ITimetableEndpoints Timetable { get; }
 
         public void SetAuthorizationToken(string token)
         {

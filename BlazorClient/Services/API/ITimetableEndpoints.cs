@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
-using BlazorClient.Models.Timetable;
 using BlazorClient.Models.Student;
+using System.Threading.Tasks;
 
 namespace BlazorClient.Services.API
 {

@@ -1,7 +1,7 @@
 using BlazorClient.Models.Timetable;
+using Microsoft.AspNetCore.Components;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 
 namespace BlazorClient.Services.API
 {

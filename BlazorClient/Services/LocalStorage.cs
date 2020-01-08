@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Blazor.Extensions.Storage.Interfaces;
 
 namespace BlazorClient.Services
 {
-    public class LocalStorage: IWebStorage
+    public class LocalStorage : IWebStorage
     {
         private readonly Blazor.Extensions.Storage.LocalStorage _localStorage;
 

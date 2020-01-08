@@ -1,13 +1,13 @@
-using System.Net.Http;
-using System.Threading.Tasks;
 using BlazorClient.Models.UserModels;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace BlazorClient.Services.API
 {
-    public class UserEndpoints: IUserEndpoints
+    public class UserEndpoints : IUserEndpoints
     {
         private readonly HttpClient _httpClient;
 
@@ -23,7 +23,7 @@ namespace BlazorClient.Services.API
 
         public async Task<bool> Register(RegisterModel registerModel)
         {
-            var content = new StringContent(JsonSerializer.Serialize(registerModel), System.Text.Encoding.UTF8, "application/json");            
+            var content = new StringContent(JsonSerializer.Serialize(registerModel), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("/api/user/register", content);
 
             return response.StatusCode == System.Net.HttpStatusCode.OK;
