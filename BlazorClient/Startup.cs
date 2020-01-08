@@ -11,7 +11,7 @@ namespace BlazorClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddStorage();
-            services.AddSingleton<IWebStorage, Services.LocalStorage>();
+            services.AddSingleton<ILocalStorage, Services.LocalStorage>();
             services.AddSingleton<ISwapifyAPI, SwapifyApi>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITimetableService, TimetableService>();

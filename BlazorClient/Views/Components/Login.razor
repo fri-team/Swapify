@@ -1,42 +1,50 @@
 @using BlazorClient.Models.UserModels
 @using BlazorClient.Services
 
-@inject ISwapifyAPI swapifyApi
-@inject IWebStorage webStorage
 @inject IUserService  UserService
 @inject NavigationManager  NavigationManager
 
-<EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
-  <DataAnnotationsValidator />
+  <EditForm Model="@_loginModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />    
 
-  <div class="FormField">
-    <MatTextField Label="Email" @bind-Value="loginModel.Email" class="FormField__Label" FullWidth="true" />
-    <ValidationMessage For="@(()=> loginModel.Email)" />
-  </div>
+    <div class="FormField">
+      <MatTextField Label="Email" @bind-Value="_loginModel.Email" class="FormField__Label" FullWidth="true" />
+      <ValidationMessage For="@(()=> _loginModel.Email)" />
+    </div>
 
-  <div class="FormField">
-    <MatTextField Label="Heslo" @bind-Value="loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
-    <ValidationMessage For="@(()=> loginModel.Password)" />
-  </div>
+    <div class="FormField">
+      <MatTextField Label="Heslo" @bind-Value="_loginModel.Password" Type="password" class="FormField__Label" FullWidth="true" />
+      <ValidationMessage For="@(()=> _loginModel.Password)" />
+    </div>
 
-  <div class="FormField">
-    <button Type="submit" Raised="true" class="FormField__Button">Prihlásiť</button>
-  </div>
+    <div class="FormField">
+      <p>@_errorMessage</p>
+    </div>
 
-  <div class="FormField">
-    <NavLink href="/resetpassword" class="FormField__Link">Resetovať heslo</NavLink>
-  </div>
-</EditForm>
+    <div class="FormField">
+      <button Type="submit" Raised="true" class="FormField__Button">Prihlásiť</button>
+    </div>    
+
+    <div class="FormField">
+      <NavLink href="/resetpassword" class="FormField__Link">Resetovať heslo</NavLink>
+    </div>
+  </EditForm>
 
 @code {
-    private LoginModel loginModel = new LoginModel();
+    private LoginModel _loginModel = new LoginModel();
+    private string _errorMessage = "";
 
     private async void HandleValidSubmit()
     {
-      var authenticatedUserModel = await swapifyApi.User.Login(loginModel);
-      swapifyApi.SetAuthorizationToken(authenticatedUserModel.Token);
-      UserService.User = authenticatedUserModel;
-      await webStorage.SetAsync("user", authenticatedUserModel);
-      NavigationManager.NavigateTo(Routes.TIMETABLE);
+      var loginResult = await UserService.Login(_loginModel);
+
+      if (loginResult.Successful)
+      {
+        NavigationManager.NavigateTo(Routes.TIMETABLE);
+      }
+      else
+      {
+        _errorMessage = loginResult.Error;
+      }
     }
 }
