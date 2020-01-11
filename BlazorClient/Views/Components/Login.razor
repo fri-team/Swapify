@@ -43,8 +43,9 @@
         NavigationManager.NavigateTo(Routes.TIMETABLE);
       }
       else
-      {
+      {        
         _errorMessage = loginResult.Error;
       }
+      StateHasChanged();
     }
 }

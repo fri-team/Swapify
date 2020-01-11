@@ -20,43 +20,34 @@ namespace BlazorClient.Services.API
         public async Task<LoginResult> Login(LoginModel loginModel)
         {
             var content = new StringContent(JsonSerializer.Serialize(loginModel), System.Text.Encoding.UTF8, "application/json");
-
-            try
+            var options = new JsonSerializerOptions()
             {
-                Console.WriteLine("login");
-                var response = await _httpClient.PostAsync("/api/user/login", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var authenticatedUserModel = JsonSerializer.Deserialize<AuthenticatedUserModel>(await response.Content.ReadAsStringAsync());
-                    return new LoginResult()
-                    {
-                        AuthenticatedUser = authenticatedUserModel,
-                        Successful = true
-                    };
-                }
-                else if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    var errorResult = JsonSerializer.Deserialize<LoginResult>(await response.Content.ReadAsStringAsync());
-                    errorResult.Successful = false;
-                    return errorResult;
-                }
-
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            
+            var response = await _httpClient.PostAsync("/api/user/login", content);            
+            if (response.IsSuccessStatusCode)
+            {                                
+                var authenticatedUserModel = JsonSerializer.Deserialize<AuthenticatedUserModel>(
+                    await response.Content.ReadAsStringAsync(), options);
+                
                 return new LoginResult()
                 {
-                    Successful = false,
-                    Error = "Nastala chyba."
+                    AuthenticatedUser = authenticatedUserModel,
+                    Successful = true
                 };
             }
-            catch (Exception ex)
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {                
+                var errorResult = JsonSerializer.Deserialize<LoginResult>(await response.Content.ReadAsStringAsync(), options);
+                errorResult.Successful = false;
+                return errorResult;
+            }            
+            return new LoginResult()
             {
-                Console.WriteLine(ex);
-                return new LoginResult()
-                {
-                    Successful = false,
-                    Error = "chyba"
-                };
-            }                        
+                Successful = false,
+                Error = "Nastala chyba."
+            };
         }
 
         public async Task<bool> Register(RegisterModel registerModel)

@@ -46,14 +46,16 @@
     {
       await base.OnInitializedAsync();
       var email = UserService.User.Email;
+      System.Console.WriteLine(email);
       var timetable = await TimetableService.LoadTimetable(email);
+      System.Console.WriteLine(JsonSerializer.Serialize(timetable));
       InitializeTimetable(timetable);
       TimetableService.TimetableChanged += InitializeTimetable;
     }
 
     private void InitializeTimetable(TimetableModel timetable)
     {
-      System.Console.WriteLine(JsonSerializer.Serialize(timetable));
+      System.Console.WriteLine(JsonSerializer.Serialize(timetable) + "sssss");
       var timetableBlocks = timetable.Blocks;
 
       _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
