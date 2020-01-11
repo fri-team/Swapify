@@ -2,7 +2,7 @@ using BlazorClient.Models.UserModels;
 using System;
 using System.Threading.Tasks;
 
-namespace BlazorClient.Services
+namespace BlazorClient.Services.IdentityManagement
 {
     public interface IUserService
     {

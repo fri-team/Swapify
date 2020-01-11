@@ -1,8 +1,12 @@
+@using BlazorClient.Services.IdentityManagement
+
 @page "/"
 @page "/register"
 @page "/resetpassword"
 
 @inject NavigationManager  NavigationManager
+@inject IUserService  UserService
+
 <div class="App">
   <div class="App__Aside">
     <div class="logo"></div>
@@ -54,13 +58,19 @@
 
 @code
 {
-  protected override void OnInitialized()
-  {
-    NavigationManager.LocationChanged += OnLocationChanged;
-  }
+    protected override async Task OnInitializedAsync()
+    {
+      var authenticatedUser = await UserService.GetAuthenticatedUserAsync();
+      if (authenticatedUser != null)
+      {
+        NavigationManager.NavigateTo(Routes.TIMETABLE);
+        return;
+      }
+      NavigationManager.LocationChanged += OnLocationChanged;
+    }
 
-  private void OnLocationChanged(object sender, LocationChangedEventArgs arg)
-  {
-    StateHasChanged();
-  }
+    private void OnLocationChanged(object sender, LocationChangedEventArgs arg)
+    {
+      StateHasChanged();
+    }
 }

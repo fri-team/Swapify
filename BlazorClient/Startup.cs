@@ -1,6 +1,8 @@
 using Blazor.Extensions.Storage;
 using BlazorClient.Services;
 using BlazorClient.Services.API;
+using BlazorClient.Services.IdentityManagement;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,11 +13,13 @@ namespace BlazorClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddStorage();
-            services.AddSingleton<ILocalStorage, Services.LocalStorage>();
-            services.AddSingleton<ISwapifyAPI, SwapifyApi>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ITimetableService, TimetableService>();
-            services.AddSingleton<TimetableBlocksConverter>();
+            services.AddScoped<ILocalStorage, Services.LocalStorage>();
+            services.AddScoped<ISwapifyAPI, SwapifyApi>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITimetableService, TimetableService>();
+            services.AddScoped<TimetableBlocksConverter>();
+            services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            services.AddAuthorizationCore();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

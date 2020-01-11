@@ -1,5 +1,6 @@
 @using BlazorClient.ViewModels;
 @using BlazorClient.Services;
+@using BlazorClient.Services.IdentityManagement;
 @using BlazorClient.Models.Timetable;
 @using System.Text.Json;
 
@@ -40,30 +41,30 @@
 
 @code
 {
-    private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
+  private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
 
-    protected override async Task OnInitializedAsync()
-    {
-      await base.OnInitializedAsync();
-      var email = UserService.AuthenticatedUser.Email;
-      System.Console.WriteLine(email);
-      var timetable = await TimetableService.LoadTimetable(email);
-      System.Console.WriteLine(JsonSerializer.Serialize(timetable));
-      InitializeTimetable(timetable);
-      TimetableService.TimetableChanged += InitializeTimetable;
-    }
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    var email = UserService.AuthenticatedUser.Email;
+    System.Console.WriteLine(email);
+    var timetable = await TimetableService.LoadTimetable(email);
+    System.Console.WriteLine(JsonSerializer.Serialize(timetable));
+    InitializeTimetable(timetable);
+    TimetableService.TimetableChanged += InitializeTimetable;
+  }
 
-    private void InitializeTimetable(TimetableModel timetable)
-    {
-      System.Console.WriteLine(JsonSerializer.Serialize(timetable) + "sssss");
-      var timetableBlocks = timetable.Blocks;
+  private void InitializeTimetable(TimetableModel timetable)
+  {
+    System.Console.WriteLine(JsonSerializer.Serialize(timetable) + "sssss");
+    var timetableBlocks = timetable.Blocks;
 
-      _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
-        timetableBlocks,
-        Constants.Timetable.DAYS.Length,
-        Constants.Timetable.HOURS.Length);
-      StateHasChanged();
-    }
+    _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
+      timetableBlocks,
+      Constants.Timetable.DAYS.Length,
+      Constants.Timetable.HOURS.Length);
+    StateHasChanged();
+  }
 
 
 }

@@ -1,35 +1,36 @@
-@page "/timetable"
 @using BlazorClient.Services;
+@using BlazorClient.Services.IdentityManagement;
 @using BlazorClient.Views.Components.Timetable;
 
+@page "/timetable"
+@attribute [Authorize]
 @inject ITimetableService TimetableService;
 @inject IUserService UserService;
 
 <AppBar OnChangePersonalNumberClick="ChangePersonalNumberButtonClicked"></AppBar>
-<ChangePersonalNumberDialog
-  IsOpen="@_changePersonalNumberDialogOpen"
-  Saved="ChangePersonalNumberDialogSaved"
-  Canceled="ChangePersonalNumberDialogCanceled"/>
+<ChangePersonalNumberDialog IsOpen="@_changePersonalNumberDialogOpen"
+                            Saved="ChangePersonalNumberDialogSaved"
+                            Canceled="ChangePersonalNumberDialogCanceled" />
 <Timetable />
 
 @code
-{    
-    private bool _changePersonalNumberDialogOpen = false;
+{
+  private bool _changePersonalNumberDialogOpen = false;
 
-    private void ChangePersonalNumberButtonClicked()
-    {
-      _changePersonalNumberDialogOpen = true;
-    }
+  private void ChangePersonalNumberButtonClicked()
+  {
+    _changePersonalNumberDialogOpen = true;
+  }
 
-    private async void ChangePersonalNumberDialogSaved(string personalNumber)
-    {      
-      _changePersonalNumberDialogOpen = false;
-      var email = UserService.AuthenticatedUser.Email;
-      await TimetableService.SetTimetableByPersonalNumber(email, personalNumber);
-    }
+  private async void ChangePersonalNumberDialogSaved(string personalNumber)
+  {
+    _changePersonalNumberDialogOpen = false;
+    var email = UserService.AuthenticatedUser.Email;
+    await TimetableService.SetTimetableByPersonalNumber(email, personalNumber);
+  }
 
-    private void ChangePersonalNumberDialogCanceled()
-    {      
-      _changePersonalNumberDialogOpen = false;
-    }    
+  private void ChangePersonalNumberDialogCanceled()
+  {
+    _changePersonalNumberDialogOpen = false;
+  }
 }

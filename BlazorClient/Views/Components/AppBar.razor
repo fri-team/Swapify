@@ -1,5 +1,6 @@
 @using BlazorClient.Models.UserModels
 @using BlazorClient.Services
+@using BlazorClient.Services.IdentityManagement
 
 @inject IUserService  UserService
 
@@ -26,21 +27,21 @@
 
 @code
 {
-    [Parameter] public EventCallback OnChangePersonalNumberClick { get; set; }
+  [Parameter] public EventCallback OnChangePersonalNumberClick { get; set; }
 
-    private AuthenticatedUserModel User { get; set; }
+  private AuthenticatedUserModel User { get; set; }
 
-    ForwardRef _buttonForwardRef = new ForwardRef();
-    BaseMatMenu _accountMenu;
+  ForwardRef _buttonForwardRef = new ForwardRef();
+  BaseMatMenu _accountMenu;
 
-    private void OnAccountButtonClicked(MouseEventArgs e)
-    {
-      _accountMenu.OpenAsync();
-    }
+  private void OnAccountButtonClicked(MouseEventArgs e)
+  {
+    _accountMenu.OpenAsync();
+  }
 
-    protected override void OnInitialized()
-    {
-      base.OnInitialized();
-      User = UserService.AuthenticatedUser;
-    }
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    User = UserService.AuthenticatedUser;
+  }
 }
