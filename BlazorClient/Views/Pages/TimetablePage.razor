@@ -24,7 +24,7 @@
     private async void ChangePersonalNumberDialogSaved(string personalNumber)
     {      
       _changePersonalNumberDialogOpen = false;
-      var email = UserService.User.Email;
+      var email = UserService.AuthenticatedUser.Email;
       await TimetableService.SetTimetableByPersonalNumber(email, personalNumber);
     }
 

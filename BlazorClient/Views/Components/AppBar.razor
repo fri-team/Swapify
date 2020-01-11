@@ -41,6 +41,6 @@
     protected override void OnInitialized()
     {
       base.OnInitialized();
-      User = UserService.User;
+      User = UserService.AuthenticatedUser;
     }
 }
