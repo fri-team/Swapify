@@ -44,10 +44,10 @@ class PrivacyPolicyPage extends Component {
 
                 <div className="cls_002"><span className="cls_002">Spoločenstvo študentov a učiteľov podieľajúcich sa na vytvorení webovej aplikácie na</span></div>
                 <div className="cls_002"><span className="cls_002">zjednodušenie výmeny cvičení študentov Žilinskej univerzity s názvom Swapify</span></div>
-                <div className="cls_002"><span className="cls_002">(</span><a HREF="http://swapify.fri.uniza.sk/">swapify.fri.uniza.sk</a> <span className="cls_002">), organizovaného a koučovaného súkromnou firmou GlobalLogic, s. r. o.</span></div>
-                <div className="cls_002"><span className="cls_002">(</span><a HREF="http://www.globallogic.com/">www.globallogic.com</a> <span className="cls_002">), právne sídlo spoločnosti: Štúrova 27, Košice 040 01, zapísaná</span></div>
+                <div className="cls_002"><span className="cls_002">(</span><a href="http://swapify.fri.uniza.sk/">swapify.fri.uniza.sk</a> <span className="cls_002">), organizovaného a koučovaného súkromnou firmou GlobalLogic, s. r. o.</span></div>
+                <div className="cls_002"><span className="cls_002">(</span><a href="http://www.globallogic.com/">www.globallogic.com</a> <span className="cls_002">), právne sídlo spoločnosti: Štúrova 27, Košice 040 01, zapísaná</span></div>
                 <div className="cls_002"><span className="cls_002">Okresným súdom Košice I v Košiciach, ICO: 47782421, DIČ: SK2024098142, ako</span></div>
-                <div className="cls_002"><span className="cls_002">spolu-prevádzkovateľ internetovej stránky </span><a HREF="http://www.swapify.fri.uniza.sk/">www.swapify.fri.uniza.sk</a>, vyhlasuje, že všetky</div>
+                <div className="cls_002"><span className="cls_002">spolu-prevádzkovateľ internetovej stránky </span><a href="http://www.swapify.fri.uniza.sk/">www.swapify.fri.uniza.sk</a>, vyhlasuje, že všetky</div>
                 <div className="cls_002"><span className="cls_002">osobné údaje (ďalej aj „údaje“) sú považované za prísne dôverné a je s nimi nakladané v súlade</span></div>
                 <div className="cls_002"><span className="cls_002">s platnými zákonnými ustanoveniami v oblasti ochrany osobných údajov.</span></div>
                 <div className="cls_002"><span className="cls_002">Bezpečie vašich osobných údajov je pre nás prioritou. Osobným údajom a ich ochrane venujeme</span></div>
@@ -203,7 +203,7 @@ class PrivacyPolicyPage extends Component {
                 <div className="cls_002"><span className="cls_002">môžete požadovať urobenie opravy, doplnenie, likvidáciu osobných údajov alebo</span></div>
                 <div className="cls_002"><span className="cls_002">blokáciu osobných údajov.</span></div>
                 <div className="cls_006"><span className="cls_006">•</span><span className="cls_002">   c) Pre uplatnenie svojich práv kontaktujte poverenca pre ochranu osobných údajov na</span></div>
-                <div className="cls_002"><span className="cls_002">e-mailovej adrese </span><a HREF="mailto:oleg@swapify.com">oleg@swapify.com</a> <span className="cls_002">. Obrátiť sa môžete aj na Úrad na ochranu osobných</span></div>
+                <div className="cls_002"><span className="cls_002">e-mailovej adrese </span><a href="mailto:oleg@swapify.com">oleg@swapify.com</a> <span className="cls_002">. Obrátiť sa môžete aj na Úrad na ochranu osobných</span></div>
                 <div className="cls_002"><span className="cls_002">údajov.</span></div>
                 <div className="cls_006"><span className="cls_006">•</span><span className="cls_002">   d) Svoj súhlas so spracovaním osobných údajov môžete kedykoľvek odvolať. Pokiaľ</span></div>
                 <div className="cls_002"><span className="cls_002">odvoláte súhlas so spracovaním osobných údajov, budú vaše osobné údaje vymazané</span></div>
@@ -217,7 +217,7 @@ class PrivacyPolicyPage extends Component {
                 <div className="cls_002"><span className="cls_002">Naše stránky používajú tzv. cookies, abybola zachovaná plná funkcionalita nami ponúkaných</span></div>
                 <div className="cls_002"><span className="cls_002">služieb. Cookies sú malé textové súbory, ktoré sú uložené vo vašom počítači, smartfóne či inom</span></div>
                 <div className="cls_002"><span className="cls_002">zariadení a ktoré sa používajú vo vašom prehliadači. Viac informácií o súboroch cookies môžete</span></div>
-                <div className="cls_002"><span className="cls_002">nájsť </span><a HREF="https://en.wikipedia.org/wiki/HTTP_cookie">tu</a> <span className="cls_002">. Súbory cookies využívame napr. na:</span></div>
+                <div className="cls_002"><span className="cls_002">nájsť </span><a href="https://en.wikipedia.org/wiki/HTTP_cookie">tu</a> <span className="cls_002">. Súbory cookies využívame napr. na:</span></div>
                 <div className="cls_006"><span className="cls_006">•</span><span className="cls_002">   správnu funkčnosť systému tak, aby ste čo najjednoduchšie dokončili vykonávanie</span></div>
                 <div className="cls_002"><span className="cls_002">svojich zmien v rozvrhu</span></div>
                 <div className="cls_006"><span className="cls_006">•</span><span className="cls_002">   zapamätanie vašich prihlasovacích údajov, takže ich nemusíte opakovane zadávať</span></div>
@@ -254,13 +254,13 @@ class PrivacyPolicyPage extends Component {
                 <div className="cls_002"><span className="cls_002">typy.</span></div>
                 <div className="cls_002"><span className="cls_002">Informácie o prehliadačoch a o spôsobe nastavenia predvolieb pre súbory cookie môžete nájsť na</span></div>
                 <div className="cls_002"><span className="cls_002">nasledujúcich webových stránkach alebo v ďalšej dokumentácii internetových prehliadačov</span></div>
-                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a HREF="https://support.google.com/accounts/answer/61416?hl=sk&co=GENIE.Platform=Desktop&oco=1">Chrome</a> </div>
-                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a HREF="https://support.mozilla.org/sk/kb/povolenie-zakazanie-cookies">Firefox</a> </div>
-                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a HREF="https://support.microsoft.com/sk-sk/help/17442/windows-internet-explorer-delete-manage-cookies">Internet Explorer</a> </div>
-                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a HREF="https://support.google.com/accounts/answer/61416?hl=sk&co=GENIE.Platform=Android&oco=1">Android</a> </div>
+                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a href="https://support.google.com/accounts/answer/61416?hl=sk&co=GENIE.Platform=Desktop&oco=1">Chrome</a> </div>
+                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a href="https://support.mozilla.org/sk/kb/povolenie-zakazanie-cookies">Firefox</a> </div>
+                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a href="https://support.microsoft.com/sk-sk/help/17442/windows-internet-explorer-delete-manage-cookies">Internet Explorer</a> </div>
+                <div className="cls_006"><span className="cls_006">•</span><span className="cls_003">   </span><a href="https://support.google.com/accounts/answer/61416?hl=sk&co=GENIE.Platform=Android&oco=1">Android</a> </div>
 
                 <div className="cls_002"><span className="cls_002">Účinný nástroj na správu súborov cookie je tiež k dispozícii na stránkach</span></div>
-                <div className="cls_009"><span className="cls_009"> </span><a HREF="http://www.youronlinechoices.com/sk/">www.youronlinechoices.com/sk/</a> </div>
+                <div className="cls_009"><span className="cls_009"> </span><a href="http://www.youronlinechoices.com/sk/">www.youronlinechoices.com/sk/</a> </div>
                 <div className="cls_005"><span className="cls_005">5.4.  Odkazy</span></div>
                 <div className="cls_002"><span className="cls_002">Naše webové stránky obsahujú odkazy na iné webové stránky, ktoré sú praktické a obsahujú</span></div>
                 <div className="cls_002"><span className="cls_002">informácie. Upozorňujeme, že tieto stránky môžu byť vlastnené a prevádzkované ďalšími</span></div>
@@ -271,12 +271,12 @@ class PrivacyPolicyPage extends Component {
                 <div className="cls_004"><span className="cls_004">6.   Kontaktujte nás</span></div>
                 <div className="cls_002"><span className="cls_002">V prípade akýchkoľvek otázok, komentárov a žiadostí, čo sa týka týchto Zásad, nás neváhajte</span></div>
                 <div className="cls_002"><span className="cls_002">kontaktovať prostredníctvom e-mailovej adresy.</span></div>
-                <div className="cls_002"><span className="cls_002">Zodpovedná osoba: </span><a HREF="mailto:oleg@swapify.com">oleg@swapify.com</a> </div>
+                <div className="cls_002"><span className="cls_002">Zodpovedná osoba: </span><a href="mailto:oleg@swapify.com">oleg@swapify.com</a> </div>
                 <div className="cls_002"><span className="cls_002">Kontakt: GlobalLogic, s.r.o.,</span></div>
                 <div className="cls_002"><span className="cls_002">Štúrova 27,</span></div>
                 <div className="cls_002"><span className="cls_002">040 01 Košice</span></div>
                 <div className="cls_002"><span className="cls_002">Slovenská republika</span></div>
-                <div className="cls_002"><span className="cls_002">Používateľský servis: </span><a HREF="mailto:info@swapify.sk">info@swapify.sk</a> </div>
+                <div className="cls_002"><span className="cls_002">Používateľský servis: </span><a href="mailto:info@swapify.sk">info@swapify.sk</a> </div>
                 <div className="cls_004"><span className="cls_004">7.   Účinnosť</span></div>
                 <div className="cls_002"><span className="cls_002">Tieto Zásady ochrany osobných údajov platia od 1.1. 2015.</span></div>
 
