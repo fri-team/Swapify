@@ -6,6 +6,6 @@ namespace BlazorClient.Services
     {
         Task SetAsync<T>(string key, T data);
         Task<T> GetAsync<T>(string key);
-        Task RemoveAsync<T>(string key);
+        Task RemoveAsync(string key);
     }
 }

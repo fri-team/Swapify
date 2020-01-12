@@ -47,5 +47,11 @@ namespace BlazorClient.Services.IdentityManagement
             }
             return loginResult;
         }
+
+        public async Task Logout()
+        {
+            await _localStorage.RemoveAsync(AuthenticatedUserStorageKey);
+            AuthenticatedUser = null;
+        }
     }
 }

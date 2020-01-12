@@ -20,6 +20,8 @@ namespace BlazorClient.Services.IdentityManagement
         Task<AuthenticatedUserModel> GetAuthenticatedUserAsync();
         
         /// <returns></returns>
-        Task<LoginResult> Login(LoginModel loginModel);        
+        Task<LoginResult> Login(LoginModel loginModel);
+
+        Task Logout();
     }
 }

@@ -16,7 +16,7 @@ namespace BlazorClient.Services
             return await _localStorage.GetItem<T>(key);
         }
 
-        public async Task RemoveAsync<T>(string key)
+        public async Task RemoveAsync(string key)
         {
             await _localStorage.RemoveItem(key);
         }

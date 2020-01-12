@@ -7,7 +7,9 @@
 @inject ITimetableService TimetableService;
 @inject IUserService UserService;
 
-<AppBar OnChangePersonalNumberClick="ChangePersonalNumberButtonClicked"></AppBar>
+<AppBar OnChangePersonalNumberClick="ChangePersonalNumberButtonClicked"
+        OnLogoutButtonClick="LogoutButtonClicked" />
+
 <ChangePersonalNumberDialog IsOpen="@_changePersonalNumberDialogOpen"
                             Saved="ChangePersonalNumberDialogSaved"
                             Canceled="ChangePersonalNumberDialogCanceled" />
@@ -20,6 +22,11 @@
   private void ChangePersonalNumberButtonClicked()
   {
     _changePersonalNumberDialogOpen = true;
+  }
+
+  private async Task LogoutButtonClicked()
+  {
+    await UserService.Logout();
   }
 
   private async void ChangePersonalNumberDialogSaved(string personalNumber)
