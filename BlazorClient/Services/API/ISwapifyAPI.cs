@@ -8,5 +8,6 @@ namespace BlazorClient.Services
         IStudentEndpoints Student { get; }
         ITimetableEndpoints Timetable { get; }
         void SetAuthorizationToken(string token);
+        void DeleteAuthorizationToken();
     }
 }

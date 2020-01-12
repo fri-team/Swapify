@@ -43,7 +43,8 @@ namespace BlazorClient.Services.IdentityManagement
             if (loginResult.Successful)
             {
                 AuthenticatedUser = loginResult.AuthenticatedUser;
-                await _localStorage.SetAsync(AuthenticatedUserStorageKey, loginResult.AuthenticatedUser);                
+                await _localStorage.SetAsync(AuthenticatedUserStorageKey, loginResult.AuthenticatedUser);
+                _swapifyAPI.SetAuthorizationToken(loginResult.AuthenticatedUser.Token);
             }
             return loginResult;
         }
@@ -52,6 +53,7 @@ namespace BlazorClient.Services.IdentityManagement
         {
             await _localStorage.RemoveAsync(AuthenticatedUserStorageKey);
             AuthenticatedUser = null;
+            _swapifyAPI.DeleteAuthorizationToken();
         }
     }
 }
