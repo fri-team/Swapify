@@ -33,6 +33,10 @@ namespace BlazorClient.Services.IdentityManagement
         public async Task<AuthenticatedUserModel> GetAuthenticatedUserAsync()
         {
             var authenticatedUser = await _localStorage.GetAsync<AuthenticatedUserModel>(AuthenticatedUserStorageKey);
+            if (authenticatedUser != null)
+            {
+                _swapifyAPI.SetAuthorizationToken(authenticatedUser.Token);
+            }            
             AuthenticatedUser = authenticatedUser;
             return authenticatedUser;
         }

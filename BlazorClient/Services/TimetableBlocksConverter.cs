@@ -21,6 +21,12 @@ namespace BlazorClient.Services
 
         private static IEnumerable<TimetableBlockViewModel> CreateTimetableBlockViewModels(IEnumerable<TimetableBlockModel> blocks, out int rowHeight)
         {
+            if (blocks.Count() <= 0)
+            {
+                rowHeight = 1;
+                return new List<TimetableBlockViewModel>();
+            }
+
             // group by day and startBlock
             var blocksGroupedByStart = blocks
                 .GroupBy(block => (block.Day, block.StartBlock))

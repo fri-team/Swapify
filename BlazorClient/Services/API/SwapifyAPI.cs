@@ -19,7 +19,10 @@ namespace BlazorClient.Services.API
 
         public void SetAuthorizationToken(string token)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+            if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+            }            
         }
 
         public void DeleteAuthorizationToken()

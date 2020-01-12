@@ -46,19 +46,15 @@
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
-    var email = UserService.AuthenticatedUser.Email;
-    System.Console.WriteLine(email);
-    var timetable = await TimetableService.LoadTimetable(email);
-    System.Console.WriteLine(JsonSerializer.Serialize(timetable));
+    var email = UserService.AuthenticatedUser.Email;   
+    var timetable = await TimetableService.LoadTimetable(email);    
     InitializeTimetable(timetable);
     TimetableService.TimetableChanged += InitializeTimetable;
   }
 
   private void InitializeTimetable(TimetableModel timetable)
-  {
-    System.Console.WriteLine(JsonSerializer.Serialize(timetable) + "sssss");
+  {    
     var timetableBlocks = timetable.Blocks;
-
     _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
       timetableBlocks,
       Constants.Timetable.DAYS.Length,

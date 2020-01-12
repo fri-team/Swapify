@@ -20,8 +20,8 @@
 </MatAppBarContainer>
 
 <MatMenu @ref="_accountMenu" TargetForwardRef="@_buttonForwardRef">
-  <h1>@User.Name</h1>
-  <h2>@User.Email</h2>
+  <h2>@User.Name</h2>
+  <p>@User.Email</p>
   <MatButton OnClick="OnChangePersonalNumberClick">Zmeniť číslo</MatButton><MatButton OnClick="OnLogoutButtonClick">Odhlásiť</MatButton>
 </MatMenu>
 
@@ -35,9 +35,9 @@
   ForwardRef _buttonForwardRef = new ForwardRef();
   BaseMatMenu _accountMenu;
 
-  private void OnAccountButtonClicked(MouseEventArgs e)
+  private async Task OnAccountButtonClicked(MouseEventArgs e)
   {
-    _accountMenu.OpenAsync();
+    await _accountMenu.OpenAsync();
   }
 
   protected override void OnInitialized()
