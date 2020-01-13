@@ -34,7 +34,7 @@ class SidebarContainer extends PureComponent {
   };
 
   render() {
-    const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
+    const { open, onClose, myCourseNames, displayedCourses, exchangeRequests, toggleMailUsModalWindow } = this.props;
     const { value } = this.state;
     const courses = _.map(myCourseNames, course => ({
       courseName: course.courseName,
@@ -46,6 +46,7 @@ class SidebarContainer extends PureComponent {
         open={open}
         onClose={onClose}
         courses={courses}
+        toggleMailUsModalWindow={toggleMailUsModalWindow}
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}

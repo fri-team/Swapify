@@ -195,7 +195,7 @@ class AddBlockForm extends Component {
               color="primary"
               variant="contained"
             >
-              Uloziť
+              Uložiť
                 </Button>
           </DialogActions>
         </Dialog>
