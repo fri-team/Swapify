@@ -1,0 +1,74 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .top-bar {
+    background: #5EBED7;
+    color: #fff;
+    padding: 1rem;
+  }
+
+  .top-bar-content {
+    width: 40%;
+    left: 30%;
+    position: relative;
+  }
+
+  .top-bar-content.h1 {
+    position: relative;
+    align-self: center;
+  }
+  
+  .btn {
+    background: #28515b;
+    color: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.7rem 2rem;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  
+  .page-info {
+    margin-left: 1rem;
+  }
+  
+  .error {
+    background: orangered;
+    color: #fff;
+    padding: 1rem;
+  }
+
+  .pdf-container {
+    background-color: rgba(94, 190, 215, 0.25);
+  }
+
+  .pdf-context {
+    width: 40%;
+    left: 30%;
+    position: relative;
+    padding: 1rem;
+  }
+
+  span.cls_002{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_002{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_009{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: underline}
+  div.cls_009{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_004{font-family:Times,serif;font-size:36px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_004{font-family:Times,serif;font-size:36px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_005{font-family:Times,serif;font-size:24.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_005{font-family:Times,serif;font-size:24.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_006{font-family:Arial,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_006{font-family:Arial,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_007{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  div.cls_007{font-family:Times,serif;font-size:18px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+  span.cls_008{font-family:Courier New,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_008{font-family:Courier New,serif;font-size:13.6px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+  span.cls_003{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
+  div.cls_003{font-family:Times,serif;font-size:18px;color:rgb(0,0,255);font-weight:normal;font-style:normal;text-decoration: none}
