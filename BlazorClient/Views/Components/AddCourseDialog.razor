@@ -1,0 +1,54 @@
+<MatDialog @bind-IsOpen="@IsOpen">
+  <MatDialogContent>
+    <MatTextField Label="Zadajte názov predmetu *" @bind-Value="@_personalNumber"></MatTextField>
+    <MatTextField Label="Profesor" @bind-Value="@_personalNumber"></MatTextField>
+    <MatTextField Label="Miestnosť" @bind-Value="@_personalNumber"></MatTextField>
+
+    <MatSelect Label="Vyber deň" @bind-Value="@_day">
+      <MatOption TValue="byte" Value="1">pondelok</MatOption>
+      <MatOption TValue="byte" Value="2">utorok</MatOption>
+      <MatOption TValue="byte" Value="3">streda</MatOption>
+      <MatOption TValue="byte" Value="4">štvrtok</MatOption>
+      <MatOption TValue="byte" Value="5">piatok</MatOption>
+    </MatSelect>
+
+    <MatNumericUpDownField Label="Začiatok" TValue="byte"
+                           @bind-Value=@_hour
+                           DecimalPlaces=0
+                           Minimum="0" Maximum="23"/>
+
+    <MatNumericUpDownField Label="Dĺžka" TValue="byte"
+                           @bind-Value=@_length
+                           DecimalPlaces=0
+                           Minimum="0" Maximum="23"/>
+
+    <MatRadioGroup @bind-Value="@_type" TValue="byte">
+      <MatRadioButton TValue="byte" Value="1">Prednáška</MatRadioButton>
+      <MatRadioButton TValue="byte" Value="2">Laboratórium</MatRadioButton>
+      <MatRadioButton TValue="byte" Value="3">Cvičenie</MatRadioButton>
+    </MatRadioGroup>
+  </MatDialogContent>  
+
+  <MatDialogActions>
+    <MatButton OnClick="@(() => Saved.InvokeAsync(_personalNumber))">Uložiť</MatButton>
+    <MatButton OnClick="@Canceled">Zrušiť</MatButton>
+  </MatDialogActions>
+</MatDialog>
+
+@code
+{
+  [Parameter]
+  public bool IsOpen { get; set; }
+
+  [Parameter]
+  public EventCallback<string> Saved { get; set; }
+
+  [Parameter]
+  public EventCallback Canceled { get; set; }
+
+  private string _personalNumber = "";
+  private byte _day = 1;
+  private byte _hour = 8;
+  private byte _length = 1;
+  private byte _type = 0;
+}

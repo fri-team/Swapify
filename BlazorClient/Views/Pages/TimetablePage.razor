@@ -1,5 +1,6 @@
 @using BlazorClient.Services;
 @using BlazorClient.Services.IdentityManagement;
+@using BlazorClient.Views.Components;
 @using BlazorClient.Views.Components.Timetable;
 
 @page "/timetable"
@@ -13,6 +14,7 @@
 <ChangePersonalNumberDialog IsOpen="@_changePersonalNumberDialogOpen"
                             Saved="ChangePersonalNumberDialogSaved"
                             Canceled="ChangePersonalNumberDialogCanceled" />
+<AddCourseDialog IsOpen="true"></AddCourseDialog>
 <Timetable />
 
 @code
