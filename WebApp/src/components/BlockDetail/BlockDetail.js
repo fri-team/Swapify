@@ -78,18 +78,18 @@ class BlockDetail extends PureComponent {
             {course.type !== 'lecture' && (
               <span>
                 <IconButton onClick={this.onClickEditBlock }>
-                  <EditIcon nativeColor={color} />
+                  <EditIcon nativecolor={color} />
                 </IconButton>
                 <IconButton onClick={this.handleClickExchange }>
-                  <SwapIcon nativeColor={color} />
+                  <SwapIcon nativecolor={color} />
                 </IconButton>
                 <IconButton onClick={this.handleClickDelete}>
-                  <DeleteIcon nativeColor={color} />
+                  <DeleteIcon nativecolor={color} />
                 </IconButton>
               </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
-              <ClearIcon nativeColor={color} />
+              <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
           <div className="name" style={{ color }}>

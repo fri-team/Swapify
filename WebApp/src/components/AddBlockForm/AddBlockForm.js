@@ -107,7 +107,7 @@ class AddBlockForm extends Component {
             <div className="buttons">
         
         <IconButton onClick={this.handleCloseClick}>
-          <ClearIcon nativeColor="black" />
+          <ClearIcon nativecolor="black" />
         </IconButton>
       </div>
           <DialogContent>
@@ -117,7 +117,7 @@ class AddBlockForm extends Component {
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}
-                onInputValueChange={this.fetchCourses()}
+                inputvaluechange={this.fetchCourses()}
                 onChange={this.handleCourse}
                 margin="normal"
                 fullWidth

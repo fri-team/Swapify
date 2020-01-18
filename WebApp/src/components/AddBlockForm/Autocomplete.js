@@ -57,9 +57,9 @@ function getSuggestions(suggestions, value) {
 }
 
 function IntegrationDownshift(props) {
-  const { classes, onInputValueChange, onChange, suggestions } = props;
+  const { classes, inputvaluechange, onChange, suggestions } = props;
   return (
-    <Downshift onInputValueChange={onInputValueChange} onChange={onChange}>
+    <Downshift onInputValueChange={inputvaluechange} onChange={onChange}>
       {({
         getInputProps,
         getItemProps,
@@ -107,12 +107,12 @@ const styles = theme => ({
   paper: {
     position: 'absolute',
     zIndex: 1,
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     left: 0,
     right: 0,
   },
   chip: {
-    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`,
+    margin: `${theme.spacing(1 / 2)}px ${theme.spacing(1 / 4)}px`,
   },
   inputRoot: {
     flexWrap: 'wrap',
