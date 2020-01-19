@@ -1,0 +1,14 @@
+@using BlazorClient.Entities
+
+<div @onclick="() => OnClicked.InvokeAsync(new HourBlock() { Day = Day, Hour = Hour})" class="border-cell"></div>
+
+@code {
+  [Parameter]
+  public EventCallback<HourBlock> OnClicked { get; set; }
+
+  [Parameter]
+  public byte Day { get; set; }
+
+  [Parameter]
+  public byte Hour { get; set; }
+}

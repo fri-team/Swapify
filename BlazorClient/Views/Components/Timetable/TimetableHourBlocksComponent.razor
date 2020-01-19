@@ -1,0 +1,17 @@
+@using BlazorClient.Entities
+
+<div class="border-cells">
+  @for (int day = 1; day <= Constants.Timetable.DAYS.Length; day++)
+  {
+    @for (int hour = 1; hour <= Constants.Timetable.HOURS.Length; hour++)
+    {
+      <TimetableHourBlockComponent Day="@((byte)day)" Hour="@((byte)hour)" OnClicked="@OnHourBlockClicked"/>
+    }
+  }
+</div>
+
+@code
+{
+    [Parameter]
+    public EventCallback<HourBlock> OnHourBlockClicked { get; set; }    
+}

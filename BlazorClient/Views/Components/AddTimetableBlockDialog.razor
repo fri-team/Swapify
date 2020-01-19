@@ -1,0 +1,85 @@
+@using BlazorClient.Models.Timetable
+
+<MatDialog IsOpen="@IsOpen" IsOpenChanged="@OpenChanged">
+  <MatDialogContent>
+    <MatTextField Label="Zadajte názov predmetu *" @bind-Value="@_courseName"></MatTextField>
+    <MatTextField Label="Profesor" @bind-Value="@_teacher"></MatTextField>
+    <MatTextField Label="Miestnosť" @bind-Value="@_room"></MatTextField>
+
+    <MatSelect Label="Vyber deň" @bind-Value="@Day">
+      <MatOption TValue="byte" Value="1">pondelok</MatOption>
+      <MatOption TValue="byte" Value="2">utorok</MatOption>
+      <MatOption TValue="byte" Value="3">streda</MatOption>
+      <MatOption TValue="byte" Value="4">štvrtok</MatOption>
+      <MatOption TValue="byte" Value="5">piatok</MatOption>
+    </MatSelect>
+
+    <MatNumericUpDownField Label="Začiatok" TValue="byte"
+                           @bind-Value=@StartHour
+                           DecimalPlaces=0
+                           Minimum="0" Maximum="23" />
+
+    <MatNumericUpDownField Label="Dĺžka" TValue="byte"
+                           @bind-Value=@_length
+                           DecimalPlaces=0
+                           Minimum="0" Maximum="23" />
+
+    <MatRadioGroup @bind-Value="@_type" TValue="byte">
+      <MatRadioButton TValue="byte" Value="1">Prednáška</MatRadioButton>
+      <MatRadioButton TValue="byte" Value="2">Laboratórium</MatRadioButton>
+      <MatRadioButton TValue="byte" Value="3">Cvičenie</MatRadioButton>
+    </MatRadioGroup>
+  </MatDialogContent>
+
+  <MatDialogActions>
+    <MatButton OnClick="@OnSave">Uložiť</MatButton>
+    <MatButton OnClick="@Canceled">Zrušiť</MatButton>
+  </MatDialogActions>
+</MatDialog>
+
+@code
+{
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<TimetableBlockModel> Saved { get; set; }
+
+    [Parameter]
+    public EventCallback Canceled { get; set; }
+
+    [Parameter]
+    public byte StartHour { get; set; }
+
+    [Parameter]
+    public byte Day { get; set; }
+
+    private void OnSave()
+    {
+      var timetableBlock = new TimetableBlockModel()
+      {
+        CourseName = _courseName,
+        Teacher = _teacher,
+        Room = _room,
+        StartBlock = StartHour,
+        EndBlock = StartHour + _length,
+        Day = Day
+      };
+
+      Saved.InvokeAsync(timetableBlock);
+    }
+
+    private void OpenChanged(bool isOpened)
+    {
+      if (!isOpened)
+      {
+        Canceled.InvokeAsync(null);
+      }
+    }
+
+    private string _courseName = "";
+    private string _teacher = "";
+    private string _room = "";
+    private byte _length = 1;
+    private byte _type = 0;
+}

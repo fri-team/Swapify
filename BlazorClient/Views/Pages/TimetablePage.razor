@@ -14,12 +14,11 @@
 <ChangePersonalNumberDialog IsOpen="@_changePersonalNumberDialogOpen"
                             Saved="ChangePersonalNumberDialogSaved"
                             Canceled="ChangePersonalNumberDialogCanceled" />
-<AddCourseDialog IsOpen="true"></AddCourseDialog>
 <Timetable />
 
 @code
 {
-  private bool _changePersonalNumberDialogOpen = false;
+  private bool _changePersonalNumberDialogOpen = false;  
 
   private void ChangePersonalNumberButtonClicked()
   {
@@ -41,5 +40,5 @@
   private void ChangePersonalNumberDialogCanceled()
   {
     _changePersonalNumberDialogOpen = false;
-  }
+  }  
 }

@@ -2,65 +2,74 @@
 @using BlazorClient.Services;
 @using BlazorClient.Services.IdentityManagement;
 @using BlazorClient.Models.Timetable;
-@using System.Text.Json;
+@using BlazorClient.Entities;
 
 @inject TimetableBlocksConverter TimetableBlockConverter;
 @inject ISwapifyAPI SwapifyAPI;
 @inject ITimetableService TimetableService;
 @inject IUserService  UserService;
 
-<div class="timetable">
-  <div class="border-cell"></div>
+  <div class="timetable">
+    <div class="border-cell"></div>
 
-  <div class="timetable-hours">
-    @foreach (var hour in Constants.Timetable.HOURS)
-    {
-      <div class="border-cell centered">@hour</div>
-    }
-  </div>
-
-  <div class="timetable-days">
-    @foreach (var day in Constants.Timetable.DAYS)
-    {
-      <div class="border-cell">@day</div>
-    }
-  </div>
-
-  <div class="border-cells">
-    @for (int row = 0; row < Constants.Timetable.DAYS.Length; row++)
-    {
-      @for (int column = 0; column < Constants.Timetable.HOURS.Length; column++)
+    <div class="timetable-hours">
+      @foreach (var hour in Constants.Timetable.HOURS)
       {
-        <div class="border-cell"></div>
+        <div class="border-cell centered">@hour</div>
       }
-    }
-  </div>
+    </div>
 
-  <TimetableBlocks ViewModel="@_timetableBlocksViewModel"></TimetableBlocks>
-</div>
+    <div class="timetable-days">
+      @foreach (var day in Constants.Timetable.DAYS)
+      {
+        <div class="border-cell">@day</div>
+      }
+    </div>
+
+    <TimetableBlocks ViewModel="_timetableBlocksViewModel"></TimetableBlocks>
+    <TimetableHourBlocksComponent OnHourBlockClicked="HourBlockClicked" />
+
+    <AddTimetableBlockDialog IsOpen="_isAddBlockDialogOpen"
+                             Canceled="AddBlockDialogCanceled"
+                             StartHour="_addBlockHour"
+                             Day="_addBlockDay"/>
+  </div>
 
 @code
-{
-  private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
+{    
+    private TimetableBlocksViewModel _timetableBlocksViewModel = new TimetableBlocksViewModel();
+    private bool _isAddBlockDialogOpen = false;
+    private byte _addBlockDay;
+    private byte _addBlockHour;
 
-  protected override async Task OnInitializedAsync()
-  {
-    await base.OnInitializedAsync();
-    var email = UserService.AuthenticatedUser.Email;   
-    var timetable = await TimetableService.LoadTimetable(email);    
-    InitializeTimetable(timetable);
-    TimetableService.TimetableChanged += InitializeTimetable;
-  }
+    protected override async Task OnInitializedAsync()
+    {
+      await base.OnInitializedAsync();
+      var email = UserService.AuthenticatedUser.Email;
+      var timetable = await TimetableService.LoadTimetable(email);
+      InitializeTimetable(timetable);
+      TimetableService.TimetableChanged += InitializeTimetable;
+    }
 
-  private void InitializeTimetable(TimetableModel timetable)
-  {    
-    var timetableBlocks = timetable.Blocks;
-    _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
-      timetableBlocks,
-      Constants.Timetable.DAYS.Length,
-      Constants.Timetable.HOURS.Length);
-    StateHasChanged();
-  }
+    private void InitializeTimetable(TimetableModel timetable)
+    {
+      var timetableBlocks = timetable.Blocks;
+      _timetableBlocksViewModel = TimetableBlockConverter.CreateTimetableBlocksViewModel(
+        timetableBlocks,
+        Constants.Timetable.DAYS.Length,
+        Constants.Timetable.HOURS.Length);
+      StateHasChanged();
+    }
 
+    private void HourBlockClicked(HourBlock hourBlock)
+    {
+      _addBlockHour = hourBlock.Hour;
+      _addBlockDay = hourBlock.Day;
+      _isAddBlockDialogOpen = true;
+    }
 
+    private void AddBlockDialogCanceled()
+    {
+      _isAddBlockDialogOpen = false;
+    }
 }
