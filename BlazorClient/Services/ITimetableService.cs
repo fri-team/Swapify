@@ -10,5 +10,6 @@ namespace BlazorClient.Services
         event Action<TimetableModel> TimetableChanged;
         Task<TimetableModel> SetTimetableByPersonalNumber(string email, string personalNumber);
         Task<TimetableModel> LoadTimetable(string email);
+        Task<bool> AddNewTimetableBlock(TimetableBlockModel newBlock);
     }
 }
