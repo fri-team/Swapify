@@ -39,6 +39,18 @@
 
 @code
 {
+    private string _courseName = "";
+    private string _teacher = "";
+    private string _room = "";
+    private byte _length = 1;
+    private byte _type = 0;
+
+    [Parameter]
+    public byte StartHour { get; set; }
+
+    [Parameter]
+    public byte Day { get; set; }
+
     [Parameter]
     public bool IsOpen { get; set; }
 
@@ -46,13 +58,7 @@
     public EventCallback<TimetableBlockModel> Saved { get; set; }
 
     [Parameter]
-    public EventCallback Canceled { get; set; }
-
-    [Parameter]
-    public byte StartHour { get; set; }
-
-    [Parameter]
-    public byte Day { get; set; }
+    public EventCallback Canceled { get; set; }    
 
     private void OnSave()
     {
@@ -65,7 +71,6 @@
         EndBlock = StartHour + _length,
         Day = Day
       };
-
       Saved.InvokeAsync(timetableBlock);
     }
 
@@ -75,11 +80,5 @@
       {
         Canceled.InvokeAsync(null);
       }
-    }
-
-    private string _courseName = "";
-    private string _teacher = "";
-    private string _room = "";
-    private byte _length = 1;
-    private byte _type = 0;
+    }    
 }
