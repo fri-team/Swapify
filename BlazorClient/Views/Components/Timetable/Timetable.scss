@@ -4,7 +4,7 @@ $border-width: 1px;
 $border: $border-width solid $border-color;
 
 .timetable {
-  width: 100%;
+  padding-top: 44px;
   flex: 1;
   display: grid;
   border: $border;

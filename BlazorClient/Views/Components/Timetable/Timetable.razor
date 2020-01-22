@@ -31,6 +31,7 @@
 
     <AddTimetableBlockDialog IsOpen="_isAddBlockDialogOpen"
                              Canceled="AddBlockDialogCanceled"
+                             Saved="AddBlockDialogSaved"
                              StartHour="_addBlockHour"
                              Day="_addBlockDay"/>
   </div>
@@ -66,6 +67,12 @@
       _addBlockHour = hourBlock.Hour;
       _addBlockDay = hourBlock.Day;
       _isAddBlockDialogOpen = true;
+    }
+
+    private async void AddBlockDialogSaved(TimetableBlockModel block)
+    {
+      await TimetableService.AddNewTimetableBlock(block);
+      _isAddBlockDialogOpen = false;
     }
 
     private void AddBlockDialogCanceled()

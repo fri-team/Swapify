@@ -5,7 +5,7 @@
   {
     @for (int hour = 1; hour <= Constants.Timetable.HOURS.Length; hour++)
     {
-      <TimetableHourBlockComponent Day="@((byte)day)" Hour="@((byte)hour)" OnClicked="@OnHourBlockClicked"/>
+      <TimetableHourBlockComponent Day="@((byte)day)" Hour="@((byte)(hour + 6))" OnClicked="@OnHourBlockClicked"/>
     }
   }
 </div>
