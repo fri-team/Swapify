@@ -45,9 +45,12 @@ namespace FRITeam.Swapify.Backend
             return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
         }
 
-        public Task<List<Course>> FindByStartName(string courseStartsWith)
+        public List<Course> FindByStartName(string courseStartsWith)
         {
-            return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
+            List<Course> list = _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToList();
+            //Task < List < Course >> collection = _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
+            return list;
+            //return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
         }
 
         /// <summary>

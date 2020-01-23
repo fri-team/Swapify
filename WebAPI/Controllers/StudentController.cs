@@ -150,9 +150,6 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            
-
-
             if (student.Timetable.RemoveBlock(block))
             {
                 await _studentService.UpdateStudentAsync(student);

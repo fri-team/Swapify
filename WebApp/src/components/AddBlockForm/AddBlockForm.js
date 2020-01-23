@@ -52,7 +52,7 @@ class AddBlockForm extends Component {
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
       axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
-        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) })
+        this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
       });
     })
     return courseName => {
