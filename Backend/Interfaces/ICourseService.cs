@@ -10,9 +10,9 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task AddAsync(Course entityToAdd);
         Task<Course> FindByIdAsync(Guid guid);
         Task<Course> FindByNameAsync(string name);
-        Task<List<Course>> FindByStartName(string courseStartsWith);
+        List<Course> FindByStartName(string courseStartsWith);
         Task<Guid> GetOrAddNotExistsCourseIdByShortcut(string courseShortcut, Block courseBlock);
-        Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, Block courseBlock);
+        Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, string courseShortcut, Block courseBlock);
         Task<Course> FindCourseTimetableFromProxy(Guid guid);
     }
 }

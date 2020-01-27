@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
         [HttpGet("course/getCoursesAutoComplete/{courseName}")]
         public IActionResult GetCoursesAutoComplete(string courseName)
         {
-            return Ok(this._courseService.FindByStartName(courseName));
+            return Ok(_courseService.FindByStartName(courseName));
         }
 
         [HttpGet("getCourseTimetable/{courseId}")]
