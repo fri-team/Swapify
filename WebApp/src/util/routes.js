@@ -8,3 +8,5 @@ export const TIMETABLE = '/timetable';
 export const RESETPASSWORD = '/reset-password';
 export const SETNEWPASSWORD = '/set-new-password';
 export const PERSONALNUMBER = '/personal-number';
+export const PRIVACYPOLICY = '/privacypolicy';
+//export const WEBVIEWER = '/privacypolicy/web/';

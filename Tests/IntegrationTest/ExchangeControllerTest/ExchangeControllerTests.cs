@@ -38,6 +38,8 @@ namespace IntegrationTest.ExchangeControllerTest
             var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
             HttpClient client2 = TestFixture.CreateClient();
             var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
+            var waitingExchanges1Before = await GetUserWaitingExchanges(client1, student1Id);
+            var waitingExchanges2Before = await GetUserWaitingExchanges(client2, student2Id);
 
             // Act
             var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
@@ -56,8 +58,16 @@ namespace IntegrationTest.ExchangeControllerTest
             Assert.True(response13.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(waitingExchanges1.Count == 1);
-            Assert.True(waitingExchanges2.Count == 1);
+            // UserWaitingExchanges are not processed
+            // Host doesn't make exchanges (count increases by every test run)
+
+            //Assert.True(waitingExchanges1.Count == 1); 
+            //Assert.True(waitingExchanges2.Count == 1);
+
+            // Consider comparing state before the Act and after ?
+            Assert.True(waitingExchanges1.Count == waitingExchanges1Before.Count + 1);
+            Assert.True(waitingExchanges2.Count == waitingExchanges2Before.Count + 1);
+            //TODO: Check if host makes exchanges 
         }
 
         [Fact]

@@ -38,21 +38,26 @@ namespace BackendTest
             var schoolScheduleProxy = new SchoolScheduleProxy();
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
-            
-            Student student = new Student();
+
+
             var timetable = serviceSchedule.GetByPersonalNumber("558188");
-            student.Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse);
-            student.PersonalNumber = "558188";
+            Student student = new Student
+            {
+                PersonalNumber = "558188",
+                Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
+            };
 
             var newBlock = new Block();
             var countShouldBe = student.Timetable.AllBlocks.Count;
             student.Timetable.AddNewBlock(newBlock);
 
-            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe); // check if timetable is copied
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
 
             var newBlockSt = new Block();
+            countShouldBe = student.Timetable.AllBlocks.Count;
             student.Timetable.AddNewBlock(newBlockSt);
-            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1); // +1 because of added block
+
+            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
         }
 
         [Fact]
@@ -68,9 +73,8 @@ namespace BackendTest
             {
                 PersonalNumber = "558188",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
-        };
+            };
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
-            Timetable tt = new Timetable();
             Block bl = new Block
             {
                 BlockType = BlockType.Lecture,
@@ -79,18 +83,20 @@ namespace BackendTest
                 Duration = 2,
                 Day = Day.Thursday
             };
-            tt.AddNewBlock(bl);
-            
+
+            st.Timetable.AddNewBlock(bl);
+
             await stSer.AddAsync(st);
 
             st = await stSer.FindByIdAsync(st.Id);
-            st.Id.Should().NotBeEmpty(); // id was set?
+            st.Id.Should().NotBeEmpty();
             st.PersonalNumber.Should().Be("558188");
-            st.Timetable.AllBlocks.First().Day.Should().Be(Day.Thursday);
-            st.Timetable.AllBlocks.First().Duration.Should().Be(2);
-            st.Timetable.AllBlocks.First().StartHour.Should().Be(16);
-            st.Timetable.AllBlocks.First().BlockType.Should().Be(BlockType.Lecture);
+            st.Timetable.AllBlocks.Last().Day.Should().Be(Day.Thursday);
+            st.Timetable.AllBlocks.Last().Duration.Should().Be(2);
+            st.Timetable.AllBlocks.Last().StartHour.Should().Be(16);
+            st.Timetable.AllBlocks.Last().BlockType.Should().Be(BlockType.Lecture);
         }
+
 
 
         [Fact]

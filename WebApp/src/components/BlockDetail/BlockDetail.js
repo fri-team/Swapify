@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 import _ from 'lodash';
 import toMaterialStyle from 'material-color-hash';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -56,7 +58,25 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
-
+  showEditButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Upraviť predmet" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.onClickEditBlock}>
+            <EditIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
+  
+  showExchangeButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.handleClickExchange}>
+            <SwapIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
 
   render() {
     if (!this.props.isVisible) {
@@ -77,6 +97,7 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
+               {/*
                 <IconButton onClick={this.onClickEditBlock }>
                   <EditIcon nativecolor={color} />
                 </IconButton>
@@ -86,6 +107,14 @@ class BlockDetail extends PureComponent {
                 <IconButton onClick={this.handleClickDelete}>
                   <DeleteIcon nativecolor={color} />
                 </IconButton>
+                */}
+                {this.showEditButton(color)}
+                {this.showExchangeButton(color)}
+                <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
+                  <IconButton onClick={this.handleClickDelete}>
+                    <DeleteIcon nativeColor={color} />
+                  </IconButton>
+                </Tooltip>
               </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
