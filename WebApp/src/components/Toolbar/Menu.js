@@ -46,6 +46,7 @@ const FlexBox = styled.div`
 
 const MenuButton = styled(Button)`
   && {
+    margin: 3px;
     background-color: #fafafa;
     color: #666;
     border: 1px solid #666;

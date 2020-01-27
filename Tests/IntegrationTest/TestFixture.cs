@@ -19,7 +19,6 @@ namespace IntegrationTest
     public class TestFixture : IDisposable
     {
         public Uri BaseUrl { get => new Uri("http://localhost:5000/api/"); }
-        public HttpClient Client { get; private set; }
         private readonly TestServer Server;
 
         public TestFixture()
@@ -46,7 +45,6 @@ namespace IntegrationTest
                 });
 
             Server = new TestServer(builder);
-            Client = Server.CreateClient();
         }
 
         public void Dispose()
@@ -55,9 +53,13 @@ namespace IntegrationTest
             GC.SuppressFinalize(this);
         }
 
+        public HttpClient CreateClient()
+        {
+            return Server.CreateClient();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
-            Client.Dispose();
             Server.Dispose();
         }
 
