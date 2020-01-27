@@ -42,15 +42,13 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindByNameAsync(string name)
         {
-            return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
+            return await _courseCollection.Find(x => x.CourseName.Equals(name.ToLower())).FirstOrDefaultAsync();
         }
 
         public List<Course> FindByStartName(string courseStartsWith)
         {
-            List<Course> list = _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToList();
-            //Task < List < Course >> collection = _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
-            return list;
-            //return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
+            var filter = "{CourseName: /" + courseStartsWith + "/i }"; //regex for search on every position in course name 
+            return _courseCollection.Find(filter).ToList();
         }
 
         /// <summary>
@@ -64,7 +62,7 @@ namespace FRITeam.Swapify.Backend
             {
                 var timetable = new Timetable();
                 timetable.AddNewBlock(courseBlock);
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable };
+                course = new Course() {CourseCode = courseShortcut, Timetable = timetable };
                 await this.AddAsync(course);
             }
             else
@@ -84,14 +82,14 @@ namespace FRITeam.Swapify.Backend
             return course.Id;
         }
 
-        public async Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, Block courseBlock)
+        public async Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, string courseShortcut, Block courseBlock)
         {
             var course = await this.FindByNameAsync(courseName);
             if (course == null)
             {
                 var timetable = new Timetable();
                 timetable.AddNewBlock(courseBlock);
-                course = new Course() { CourseName = courseName, Timetable = timetable };
+                course = new Course() { CourseCode = courseShortcut, CourseName = courseName, Timetable = timetable };
                 await this.AddAsync(course);
             }
             else
