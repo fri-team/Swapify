@@ -58,7 +58,25 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
-
+  showEditButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Upraviť predmet" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.onClickEditBlock}>
+            <EditIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
+  
+  showExchangeButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.handleClickExchange}>
+            <SwapIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
 
   render() {
     if (!this.props.isVisible) {
@@ -79,16 +97,8 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
-                <Tooltip title="Upraviť predmet" placement="top" TransitionComponent={Zoom}>
-                  <IconButton onClick={this.onClickEditBlock}>
-                    <EditIcon nativeColor={color} />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
-                  <IconButton onClick={this.handleClickExchange}>
-                    <SwapIcon nativeColor={color} />
-                  </IconButton>
-                </Tooltip>
+                {this.showEditButton(color)}
+                {this.showExchangeButton(color)}
                 <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
                     <DeleteIcon nativeColor={color} />
