@@ -11,6 +11,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
 using System.Net;
+using System.Net.Mail;
 
 namespace WebAPI.Controllers
 {
@@ -197,6 +198,56 @@ namespace WebAPI.Controllers
                 return ValidationError(identityErrors);
             }
             return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("mailUs")]
+        public async Task<IActionResult> MailUs([FromBody] MailUsModel body)
+        {
+            const string mailUsEmailAddress = "swapifyteam@gmail.com";
+            const string mailUsPassword = "FRITeamSwapify";
+
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid mail us attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                _logger.LogInformation($"Invalid mail us attemp. User {body.Email} didn't confirm email address.");
+                return ErrorResponse($"Najskôr prosím potvrď svoju emailovú adresu.");
+            }
+
+            try
+            {
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(mailUsEmailAddress);
+                message.To.Add(new MailAddress(mailUsEmailAddress));
+                message.Subject = "Mail us - " + body.Email;
+                message.IsBodyHtml = true;
+                message.Body = body.Content;
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailUsEmailAddress, mailUsPassword),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
+                };
+
+                smtp.Send(message);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Sending email failed. Exception: {e}");
+                return ErrorResponse($"Email sa nepodarilo odoslať.");
+            }
         }
     }
 }

@@ -177,6 +177,15 @@ namespace BackendTest.UserControllerTests
                 Email = "tester@testovaci.com"
             };
         }
+
+        private static MailUsModel CreateMailUs()
+        {
+            return new MailUsModel
+            {
+                Email = "tester@testovaci.com",
+                Content = "Content of email for tests."
+            };
+        }
         #endregion
 
         [Fact]
@@ -594,6 +603,28 @@ namespace BackendTest.UserControllerTests
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task MailUs_EmailSuccess_Ok()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            bool confirmEmailSuccess = true;
+            bool emailAlreadyConfirmed = true;
+            bool loginSuccess = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
+                    confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+
+            var mailUsModel = CreateMailUs();
+
+            var result = await controller.MailUs(mailUsModel);
 
             Assert.IsType<OkResult>(result);
         }
