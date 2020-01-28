@@ -240,6 +240,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 dic[crs.CourseCode] = new Course()
                 {
+                    Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName
                 };

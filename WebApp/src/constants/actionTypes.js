@@ -24,6 +24,10 @@ export const REMOVE_BLOCK = 'REMOVE_BLOCK';
 export const REMOVE_BLOCK_DONE = 'REMOVE_BLOCK_DONE';
 export const REMOVE_BLOCK_FAIL = 'REMOVE_BLOCK_FAIL';
 
+export const EDIT_BLOCK = 'EDIT_BLOCK';
+export const EDIT_BLOCK_DONE = 'EDIT_BLOCK_DONE';
+export const EDIT_BLOCK_FAIL = 'EDIT_BLOCK_FAIL';
+
 export const ADD_BLOCK = 'ADD_BLOCK';
 export const ADD_BLOCK_DONE = 'ADD_BLOCK_DONE';
 export const ADD_BLOCK_FAIL = 'ADD_BLOCK_FAIL';

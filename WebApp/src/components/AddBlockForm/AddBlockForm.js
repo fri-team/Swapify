@@ -31,6 +31,7 @@ const FlexBox = styled.div`
 
 class AddBlockForm extends Component {
   state = {
+    id: this.props.course.id,
     courseName: this.props.course.courseName,
     courseShortcut: this.props.course.courseShortcut,
     teacher: this.props.course.teacher,
@@ -40,7 +41,8 @@ class AddBlockForm extends Component {
     length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
     type: this.props.course.type,
     suggestions: [],
-    user: this.props.user
+    user: this.props.user,
+    isEdited: this.props.isEdited
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -90,7 +92,12 @@ class AddBlockForm extends Component {
       }
     };
     this.handleSubmitClick();
-    this.props.timetableActions.addBlock(body, this.props.user.email);
+
+    if (this.state.isEdited) {
+      this.props.timetableActions.editBlock(body, this.state.user.email);
+    } else {
+      this.props.timetableActions.addBlock(body, this.props.user.email);
+    }
     
     onClose();
   }

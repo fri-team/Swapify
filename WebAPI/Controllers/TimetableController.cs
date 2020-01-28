@@ -107,10 +107,11 @@ namespace WebAPI.Controllers
             {
                 TimetableBlock timetableBlock = new TimetableBlock
                 {
-                    Id = _course.Id.ToString(),
+                    Id = block.BlockId.ToString(),
                     Day = block.Day.GetHashCode(),
                     StartBlock = block.StartHour - 6,
                     EndBlock = block.StartHour - 6 + block.Duration,
+                    CourseId = _course.Id.ToString(),
                     CourseName = _course.CourseName,
                     CourseShortcut = _course.CourseCode ?? "",
                     Room = block.Room,
