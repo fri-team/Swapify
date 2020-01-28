@@ -50,6 +50,11 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
+  handleClickEdit = () => {
+    this.props.onClickEdit();
+    this.setState({dialogOpen:false})
+  }
+
   onClickEditBlock = () => {
     this.setState({dialogOpen:true})
   }
@@ -97,6 +102,17 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
+               {/*
+                <IconButton onClick={this.onClickEditBlock }>
+                  <EditIcon nativecolor={color} />
+                </IconButton>
+                <IconButton onClick={this.handleClickExchange }>
+                  <SwapIcon nativecolor={color} />
+                </IconButton>
+                <IconButton onClick={this.handleClickDelete}>
+                  <DeleteIcon nativecolor={color} />
+                </IconButton>
+                */}
                 {this.showEditButton(color)}
                 {this.showExchangeButton(color)}
                 <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
@@ -107,7 +123,7 @@ class BlockDetail extends PureComponent {
               </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
-              <ClearIcon nativeColor={color} />
+              <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
           <div className="name" style={{ color }}>
@@ -140,11 +156,13 @@ class BlockDetail extends PureComponent {
         </div>
         {dialogOpen && (
           <AddBlockForm 
+          id={this.props.course.id}
           user={user} 
           course={course} 
-          onSubmitClick={this.handleClickDelete}
+          onSubmitClick={this.handleClickEdit}
           onCloseEditBlock={this.onCloseEditBlock} 
-          onClose={this.handleClickOutside} />
+          onClose={this.handleClickOutside}
+          isEdited={true} />
         )}
       </div>
     );

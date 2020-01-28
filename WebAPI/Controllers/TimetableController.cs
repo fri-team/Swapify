@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
         [HttpGet("course/getCoursesAutoComplete/{courseName}")]
         public IActionResult GetCoursesAutoComplete(string courseName)
         {
-            return Ok(this._courseService.FindByStartName(courseName));
+            return Ok(_courseService.FindByStartName(courseName));
         }
 
         [HttpGet("getCourseTimetable/{courseId}")]
@@ -107,10 +107,11 @@ namespace WebAPI.Controllers
             {
                 TimetableBlock timetableBlock = new TimetableBlock
                 {
-                    Id = _course.Id.ToString(),
+                    Id = block.BlockId.ToString(),
                     Day = block.Day.GetHashCode(),
                     StartBlock = block.StartHour - 6,
                     EndBlock = block.StartHour - 6 + block.Duration,
+                    CourseId = _course.Id.ToString(),
                     CourseName = _course.CourseName,
                     CourseShortcut = _course.CourseCode ?? "",
                     Room = block.Room,

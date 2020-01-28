@@ -57,10 +57,11 @@ namespace WebAPI.Controllers
             {
                 TimetableBlock timetableBlock = new TimetableBlock();
                 Course course = await _courseService.FindByIdAsync(block.CourseId);
-                timetableBlock.Id = block.CourseId.ToString();
+                timetableBlock.Id = block.BlockId.ToString();
                 timetableBlock.Day = block.Day.GetHashCode();
                 timetableBlock.StartBlock = block.StartHour - 6;
                 timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
+                timetableBlock.CourseId = course.Id.ToString();
                 timetableBlock.CourseName = course.CourseName;
                 if (course.CourseCode == null)
                 {
@@ -113,25 +114,10 @@ namespace WebAPI.Controllers
             return Ok(newBlockModel.TimetableBlock);
         }
 
-        [HttpDelete("{studentEmail}/blocks/{day}/{teacher}/{room}/{startHour}/{duration}/{type}")]
-        public async Task<IActionResult> RemoveBlock(string studentEmail,
-                                                     Day day,
-                                                     string teacher,
-                                                     string room,
-                                                     byte startHour,
-                                                     byte duration,
-                                                     BlockType type)
+        [HttpDelete("removeBlock/{userEmail}/{blockId}")]
+        public async Task<IActionResult> RemoveBlock(string userEmail, string blockId)
         {
-            if (teacher.Equals("null"))
-            {
-                teacher = null;
-            }
-            if (room.Equals("null"))
-            {
-                room = null;
-            }
-            Block block = new Block(type, day, startHour, duration, room, teacher);
-            var _user = await _userService.GetUserByEmailAsync(studentEmail);
+            var _user = await _userService.GetUserByEmailAsync(userEmail);
             bool isValidGUID = Guid.TryParse(_user.Student.Id.ToString(), out Guid guid);
             if (!isValidGUID)
             {
@@ -139,35 +125,38 @@ namespace WebAPI.Controllers
             }
 
             var student = await _studentService.FindByIdAsync(guid);
-
             if (student == null)
             {
                 return ErrorResponse($"Student with id: {_user.Student.Id.ToString()} does not exist.");
             }
-
             if (student.Timetable == null)
             {
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            
-
-
-            if (student.Timetable.RemoveBlock(block))
+            Guid blockGuid = Guid.Parse(blockId);
+            if (student.Timetable.RemoveBlock(blockGuid))
             {
                 await _studentService.UpdateStudentAsync(student);
             }
             else
             {
-                return ErrorResponse($"Block {block.ToString()} does not exist in student {student.Id} timetable.");
+                return ErrorResponse($"Block with id {blockId} does not exist in student {student.Id} timetable.");
             }
             return Ok();
         }
 
-        [HttpPut("editblock")]
+        [HttpPut("editBlock")]
         public async Task<IActionResult> EditBlock([FromBody] UpdateBlockModel updateBlockModel)
         {
-            var student = await _studentService.FindByIdAsync(updateBlockModel.User.Student.Id);
+            var _user = await _userService.GetUserByEmailAsync(updateBlockModel.User.Email);
+            bool isValidGUID = Guid.TryParse(_user.Student.Id.ToString(), out Guid guid);
+            if (!isValidGUID)
+            {
+                return ErrorResponse($"Student id: {_user.Student.Id.ToString()} is not valid GUID.");
+            }
+
+            var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {
                 return ErrorResponse($"Student with id: {updateBlockModel.User.Student.Id} does not exist.");
@@ -178,33 +167,21 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            TimetableBlock newTimetableBlock = updateBlockModel.NewTimetableBlock;
-            TimetableBlock oldTimetableBlock = updateBlockModel.OldTimetableBlock;
-
-            Course newCourse = await _courseService.FindByNameAsync(newTimetableBlock.CourseName);
-            Course oldCourse = await _courseService.FindByNameAsync(oldTimetableBlock.CourseName);
-
+            Course newCourse = await _courseService.FindByNameAsync(updateBlockModel.TimetableBlock.CourseName);
             if (newCourse == null)
             {
-                return ErrorResponse($"New course: {newTimetableBlock.CourseName} does not exist.");
+                return ErrorResponse($"New course: {updateBlockModel.TimetableBlock.CourseName} does not exist.");
             }
 
-            if (oldCourse == null)
-            {
-                return ErrorResponse($"Old course: {oldTimetableBlock.CourseName} does not exist.");
-            }
+            Block newBlock = TimetableBlock.ConvertToBlock(updateBlockModel.TimetableBlock, newCourse.Id);
 
-            Block newBlock = TimetableBlock.ConvertToBlock(newTimetableBlock, newCourse.Id);
-            Block oldBlock = TimetableBlock.ConvertToBlock(oldTimetableBlock, oldCourse.Id);
-
-
-            if (student.Timetable.UpdateBlock(oldBlock, newBlock))
+            if (student.Timetable.UpdateBlock(newBlock))
             {
                 await _studentService.UpdateStudentAsync(student);
             }
             else
             {
-                return ErrorResponse($"Block {oldBlock.ToString()} is not updated");
+                return ErrorResponse($"Block {newBlock.ToString()} is not updated");
             }
 
             return Ok(newBlock);

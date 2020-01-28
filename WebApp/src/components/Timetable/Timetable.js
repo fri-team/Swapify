@@ -96,7 +96,8 @@ class Timetable extends React.Component {
           course={course}
           onSubmitClick={this.handleSumbitClick}
           onCloseEditBlock={this.handleSumbitClick} 
-          onClose={this.handleClickOutside} />
+          onClose={this.handleClickOutside}
+          isEdited={false} />
         )}
       </div>
     );

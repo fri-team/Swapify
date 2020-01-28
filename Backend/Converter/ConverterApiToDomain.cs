@@ -91,7 +91,15 @@ namespace FRITeam.Swapify.Backend.Converter
 
                     if (!isTimetableForCourse)
                     {
-                        block.CourseId = await (string.IsNullOrEmpty(firstInGroup.CourseName) ? courseService.GetOrAddNotExistsCourseIdByShortcut(firstInGroup.CourseShortcut, block) : courseService.GetOrAddNotExistsCourseIdByName(firstInGroup.CourseName, block));
+                        Course course = await (string.IsNullOrEmpty(firstInGroup.CourseName) ?
+                            courseService.GetOrAddNotExistsCourseByShortcut(firstInGroup.CourseShortcut, block) :
+                            courseService.GetOrAddNotExistsCourseByName(firstInGroup.CourseName, firstInGroup.CourseShortcut, block));
+                        Block courseBlock = course.Timetable.GetBlock(block);
+                        if (courseBlock != null)
+                            block.BlockId = courseBlock.BlockId;
+                        else
+                            block.BlockId = Guid.NewGuid();
+                        block.CourseId = course.Id;
                     }
 
                     return block;

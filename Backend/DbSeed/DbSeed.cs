@@ -240,11 +240,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 dic[crs.CourseCode] = new Course()
                 {
+                    Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName
                 };
             }
-            courseCollection.InsertMany(dic.Select(x => x.Value));
+            long count = courseCollection.Count(x => x.Id != null);
+            if (count == 0)
+            {
+                courseCollection.InsertMany(dic.Select(x => x.Value));
+            }
         }
     }
 }
