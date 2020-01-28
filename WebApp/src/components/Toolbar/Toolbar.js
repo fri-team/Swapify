@@ -19,6 +19,7 @@ import NotificationPanel from '../Notifications/NotificationPanel';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
+  z-index: 5;
 `;
 
 const IconTray = styled.div`

@@ -97,6 +97,17 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
+               {/*
+                <IconButton onClick={this.onClickEditBlock }>
+                  <EditIcon nativecolor={color} />
+                </IconButton>
+                <IconButton onClick={this.handleClickExchange }>
+                  <SwapIcon nativecolor={color} />
+                </IconButton>
+                <IconButton onClick={this.handleClickDelete}>
+                  <DeleteIcon nativecolor={color} />
+                </IconButton>
+                */}
                 {this.showEditButton(color)}
                 {this.showExchangeButton(color)}
                 <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
@@ -107,7 +118,7 @@ class BlockDetail extends PureComponent {
               </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
-              <ClearIcon nativeColor={color} />
+              <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
           <div className="name" style={{ color }}>
