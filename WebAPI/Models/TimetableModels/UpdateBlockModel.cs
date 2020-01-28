@@ -8,10 +8,7 @@ namespace WebAPI.Models.TimetableModels
         [Required(ErrorMessage = "Používateľ je povinný.")]
         public User User { get; set; }
 
-        [Required(ErrorMessage = "Starý blok je povinný.")]
-        public TimetableBlock OldTimetableBlock { get; set; }
-
-        [Required(ErrorMessage = "Nový blok je povinný.")]
-        public TimetableBlock NewTimetableBlock { get; set; }
+        [Required(ErrorMessage = "Blok je povinný.")]
+        public TimetableBlock TimetableBlock { get; set; }
     }
 }

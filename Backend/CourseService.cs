@@ -47,7 +47,7 @@ namespace FRITeam.Swapify.Backend
 
         public List<Course> FindByStartName(string courseStartsWith)
         {
-            var filter = "{CourseName: /" + courseStartsWith + "/i }"; //regex for search on every position in course name 
+            var filter = "{CourseName: /" + courseStartsWith + "/ }"; //regex for search on every position in course name 
             return _courseCollection.Find(filter).ToList();
         }
 
@@ -55,7 +55,7 @@ namespace FRITeam.Swapify.Backend
         /// If course with "courseName" exists function return ID, if course doesnt exist fuction
         /// save this course and return id of saved course.
         /// </summary>
-        public async Task<Guid> GetOrAddNotExistsCourseIdByShortcut(string courseShortcut, Block courseBlock)
+        public async Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut, Block courseBlock)
         {
             var course = await this.FindByCodeAsync(courseShortcut);
             if (course == null)
@@ -79,10 +79,10 @@ namespace FRITeam.Swapify.Backend
                     await this.UpdateAsync(course);
                 }
             }
-            return course.Id;
+            return course;
         }
 
-        public async Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, string courseShortcut, Block courseBlock)
+        public async Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseShortcut, Block courseBlock)
         {
             var course = await this.FindByNameAsync(courseName);
             if (course == null)
@@ -106,7 +106,7 @@ namespace FRITeam.Swapify.Backend
                     await this.UpdateAsync(course);
                 }
             }
-            return course.Id;
+            return course;
         }
 
         public async Task<Course> FindCourseTimetableFromProxy(Guid guid)

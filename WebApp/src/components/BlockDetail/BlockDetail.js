@@ -50,6 +50,11 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
+  handleClickEdit = () => {
+    this.props.onClickEdit();
+    this.setState({dialogOpen:false})
+  }
+
   onClickEditBlock = () => {
     this.setState({dialogOpen:true})
   }
@@ -140,11 +145,13 @@ class BlockDetail extends PureComponent {
         </div>
         {dialogOpen && (
           <AddBlockForm 
+          id={this.props.course.id}
           user={user} 
           course={course} 
-          onSubmitClick={this.handleClickDelete}
+          onSubmitClick={this.handleClickEdit}
           onCloseEditBlock={this.onCloseEditBlock} 
-          onClose={this.handleClickOutside} />
+          onClose={this.handleClickOutside}
+          isEdited={true} />
         )}
       </div>
     );

@@ -12,6 +12,9 @@ import {
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
+  EDIT_BLOCK,
+  EDIT_BLOCK_DONE,
+  EDIT_BLOCK_FAIL,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE,
   ADD_BLOCK,
@@ -211,23 +214,14 @@ export function exchangeConfirm(blockTo) {
   };
 }
 
-export function removeBlock(course, userEmail) {
-  const block = {
-    day: course.day,
-    teacher: (course.teacher === '') ? null : course.teacher,
-    room: (course.room === '') ? null : course.room,
-    startHour: course.startBlock + 6,
-    duration: course.endBlock - course.startBlock,
-    type: ((course.type == 'laboratory') ? (2) : (3))
-  }
-
+export function removeBlock(body, userEmail) {
   return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
     });
     axios({
       method: 'delete',
-      url: `/api/student/${userEmail}/blocks/${block.day}/${block.teacher}/${block.room}/${block.startHour}/${block.duration}/${block.type}`
+      url: `/api/student/removeBlock/${userEmail}/${body.id}`
     })
     .then(() =>{
       dispatch({
@@ -286,6 +280,42 @@ export function addBlock(body, userEmail) {
       window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
       dispatch({
         type: ADD_BLOCK_FAIL
+      });
+    });
+  };
+}
+
+export function editBlock(body, userEmail) {
+  return dispatch => {
+    dispatch({
+      type: EDIT_BLOCK
+    });
+    axios({
+      method: 'put',
+      url: `/api/student/editBlock`,
+      data: body
+    })
+    .then(() =>{
+      dispatch({
+        type: EDIT_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/student/getStudentTimetable/' + userEmail
+      })
+        .then(res => {
+          dispatch({
+            type: LOAD_MY_TIMETABLE_DONE,
+            payload: {
+              timetable: res.data.blocks
+            }
+          });
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: EDIT_BLOCK_FAIL
       });
     });
   };

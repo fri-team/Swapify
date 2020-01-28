@@ -11,6 +11,9 @@ import {
   REMOVE_BLOCK,
   REMOVE_BLOCK_DONE,
   REMOVE_BLOCK_FAIL,
+  EDIT_BLOCK,
+  EDIT_BLOCK_DONE,
+  EDIT_BLOCK_FAIL,
   SHOW_EXCHANGE_MODE_TIMETABLE,
   CONFIRM_EXCHANGE_REQUEST,
   CANCEL_EXCHANGE_MODE,
@@ -63,7 +66,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
         isLoadingMyTimetable: false,
         myTimetable: payload.timetable,
         myCourseNames: _.sortBy(_.uniqBy(_.map(payload.timetable, function(item) {
-          return {courseId: item.id,courseName: item.courseName};
+          return {courseId: item.courseId,courseName: item.courseName};
         }), 'courseId'), 'courseName'),
         displayedTimetable: mergeTimetables(
           payload.timetable,
@@ -195,6 +198,36 @@ export default function timetableReducer(state = initState, { type, payload }) {
         0
       ),
       isBlockRemoved: false
+    };
+    case EDIT_BLOCK:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses),
+        0
+      ),
+      isEdited: false
+    };
+    case EDIT_BLOCK_DONE:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses),
+        0
+      ),
+      isEdited: true
+    };
+    case EDIT_BLOCK_FAIL:
+    return {
+      ...state,
+      displayedTimetable: mergeTimetables(
+        state.myTimetable,
+        _.pick(state.courseTimetables, state.displayedCourses),
+        0
+      ),
+      isEdited: false
     };
     case ADD_BLOCK:
     return {
