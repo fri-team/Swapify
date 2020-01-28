@@ -63,6 +63,33 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
+
+        [AllowAnonymous]
+        [HttpPost("deleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel body)
+        {
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid user delete attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            var token = await _userService.Authenticate(body.Email, body.Password);
+            if (token == null)
+            {
+                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                return ErrorResponse("Zadané heslo nie je správne.");
+            }
+
+            var deleteResult = await _userService.DeleteUserAsyc(user);
+            if (deleteResult.Succeeded)
+                _logger.LogInformation($"User {body.Email} deleted.");
+
+            return Ok();
+        }
+
         [AllowAnonymous]
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)

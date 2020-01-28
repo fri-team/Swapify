@@ -10,6 +10,7 @@ class TimetableContainer extends Component {
     super(props);
 
     this.props.actions.loadMyTimetable(this.props.user.email);
+
   }
 
   render() {

@@ -26,7 +26,7 @@ class TimetablePage extends PureComponent {
   
   render() {
     return (
-      <div className="container">
+      <div className="app-container">
         <Toolbar
           toggleSidebar={() =>
             this.setState(prevState => ({
