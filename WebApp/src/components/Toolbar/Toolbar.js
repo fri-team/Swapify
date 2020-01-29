@@ -18,9 +18,9 @@ import { PERSONALNUMBER } from '../../util/routes';
 import NotificationPanel from '../Notifications/NotificationPanel';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
-
+import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
-
+import logo from '../../images/logowhite.png';
 const ToolbarWrapper = styled.div`
   width: 100%;
   z-index: 5;
@@ -67,8 +67,11 @@ class AppToolbar extends PureComponent {
             >
               <MenuIcon />
             </IconButton>
-            <IconTray>
 
+            
+            <IconTray>
+            
+            <img src={logo} alt="logo" height="30px" className="logowhite"/>
               <PullRight />
               {button}
               &nbsp;
