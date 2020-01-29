@@ -11,7 +11,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
 import SwapIcon from '@material-ui/icons/SwapHorizSharp';
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
-import SwapHorizontal from '../svg/SwapHorizontal';
 import Location from '../svg/Location';
 import Person from '../svg/Person';
 import './BlockDetail.scss';
@@ -131,6 +130,7 @@ class BlockDetail extends PureComponent {
           </div>
         </div>
         <div className="footer">
+          {/*
           {course.type !== 'lecture' && (
             <div className="line">
               <SwapHorizontal className="icon" />
@@ -139,11 +139,14 @@ class BlockDetail extends PureComponent {
               </div>
             </div>
           )}
+          */}
           <div className="line">
             <Location className="icon" />
             <div className="text">
               <div className="medium">{`FRI, ${course.room}`}</div>
+              {/*
               <div className="small">kapacita 20</div>
+              */}
             </div>
           </div>
           <div className="line">

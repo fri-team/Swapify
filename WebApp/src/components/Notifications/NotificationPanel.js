@@ -71,7 +71,7 @@ class NotificationPanel extends Component {
         }        
 
         return (
-            <div className="notification-wrapper">                                                                  
+            <div className="">                                                                  
                 <div className={"notification-badge" + badge} onClick={this.onProfileClick}>{unreadNotificationsCount}</div>
                 <NotificationIcon onClick={this.onProfileClick}/>
                 <div className={"notification-panel " + this.state.notificationPanelVisibility}>
