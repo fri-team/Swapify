@@ -68,7 +68,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg2Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider)
+                    Student = await CreateStudentAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
                 };
 
                 var password = new PasswordHasher<User>();

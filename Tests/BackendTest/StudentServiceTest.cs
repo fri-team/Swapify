@@ -117,7 +117,7 @@ namespace BackendTest
             st.Timetable.AllBlocks.Count().Should().Be(2);
 
             st = await stSer.FindByIdAsync(st.Id);
-            st.Timetable.RemoveBlock(bl1).Should().Be(true);
+            st.Timetable.RemoveBlock(bl1.BlockId).Should().Be(true);
             st.Timetable.AllBlocks.Count().Should().Be(1);
             st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
             st.Timetable.AddNewBlock(bl3);

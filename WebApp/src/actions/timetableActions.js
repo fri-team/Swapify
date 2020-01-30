@@ -60,12 +60,12 @@ export function loadMyTimetable(userEmail) {
 }
 
 export function showExchangeModeTimetable(course) {
-  var courseId = course.id;
+  var courseId = course.courseId;
   const action = {
     type: SHOW_COURSE_TIMETABLE,
     payload: { courseId }
   };
-  return dowloadCourseTimetableIfNeeded(course.id, course.courseName, action);
+  return dowloadCourseTimetableIfNeeded(course.courseId, course.courseName, action);
 }
 
 function loadCourseTimetableAsync(dispatch, id, name) {
@@ -173,14 +173,16 @@ export function exchangeConfirm(blockTo) {
     const body = {
       BlockFrom:
       {
-        courseId: bl.id,
+        blockId: bl.id,
+        courseId: bl.courseId,
         day: bl.day,
         startHour: blockNumberToHour(bl.startBlock),
         duration: bl.endBlock - bl.startBlock
       },
 
       BlockTo: {
-        courseId: blockTo.id,
+        blockId: blockTo.id,
+        courseId: blockTo.courseId,
         day: blockTo.day,
         startHour: blockNumberToHour(blockTo.startBlock),
         duration: blockTo.endBlock - blockTo.startBlock
@@ -190,7 +192,7 @@ export function exchangeConfirm(blockTo) {
 
     axios({
       method: 'post',
-      url: `/api/exchange/ExchangeConfirm`,
+      url: `/api/exchange/exchangeConfirm`,
       data: body
     })
       .then((response) => { 
