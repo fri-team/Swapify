@@ -1,5 +1,6 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
@@ -54,6 +55,33 @@ namespace FRITeam.Swapify.APIWrapper
                 }
             }
             return weekTimetable;
+        }
+
+        public static IEnumerable<CourseContent> ParseCourseResponse(string myResponse)
+        {
+            var response = JObject.Parse(myResponse);
+            var coursesContent = (JObject)response["ScheduleTypeList"];
+            var childs = coursesContent.Children().ToList();
+            childs.RemoveAt(0);
+
+            var courses = new List<CourseContent>();
+            foreach (var child in childs)
+            {
+                try
+                {
+                    {
+                        CourseContent courseContent = child.First.ToObject<CourseContent>();
+                        courses.Add(courseContent);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    throw;
+                }
+            }
+
+            return courses;
         }
 
         private static LessonType ConvertLessonType(char lessonShortcutType)

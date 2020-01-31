@@ -12,7 +12,7 @@ namespace CoursesParser
 {
     public class BaseParser
     {
-        private const string Url = "http://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
+        private const string Url = "https://vzdelavanie.uniza.sk/vzdelavanie5/plany.php";
         private readonly HtmlDocument _document;
         private HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
@@ -73,15 +73,18 @@ namespace CoursesParser
                             _studyYearAct = studyYear;
                             Console.WriteLine(studyYear.InnerText);
                             DownloadAndSaveCourses(ChangeLevel.FromStudyYear);
-                            foreach (var fieldOfStudy in _selectFieldOfStudy.ChildNodes)
+                            if (_selectFieldOfStudy != null)
                             {
-                                _fieldOfStudyAct = fieldOfStudy;
-                                Console.WriteLine(fieldOfStudy.InnerText);
-                                DownloadAndSaveCourses(ChangeLevel.FromFieldOfStudy);
-                                foreach (var fieldOfStudyDetailed in _selectFieldOfStudyDetailed.ChildNodes)
+                                foreach (var fieldOfStudy in _selectFieldOfStudy.ChildNodes)
                                 {
-                                    _fieldOfStudyDetailedAct = fieldOfStudyDetailed;
-                                    DownloadAndSaveCourses(ChangeLevel.FromDetailedFieldOfStudy);
+                                    _fieldOfStudyAct = fieldOfStudy;
+                                    Console.WriteLine(fieldOfStudy.InnerText);
+                                    DownloadAndSaveCourses(ChangeLevel.FromFieldOfStudy);
+                                    foreach (var fieldOfStudyDetailed in _selectFieldOfStudyDetailed.ChildNodes)
+                                    {
+                                        _fieldOfStudyDetailedAct = fieldOfStudyDetailed;
+                                        DownloadAndSaveCourses(ChangeLevel.FromDetailedFieldOfStudy);
+                                    }
                                 }
                             }
                         }
@@ -93,7 +96,7 @@ namespace CoursesParser
 
         private void DownloadAndSaveCourses(ChangeLevel level)
         {
-            if (_facAct.Attributes["value"].Value == null ||
+            if (_facAct.Attributes["value"]?.Value == null ||
                 _townAct?.Attributes["value"]?.Value == null ||
                 _studyTypeAct?.Attributes["value"]?.Value == null ||
                 _studyYearAct?.Attributes["value"]?.Value == null ||

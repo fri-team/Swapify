@@ -15,7 +15,8 @@ namespace FRITeam.Swapify.APIWrapper
 
         public IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber)
         {
-            return CallScheduleContentApi(5, personalNumber);
+            string semester = getCurrentSemesterShortCut();
+            return CallScheduleContentApi(5, personalNumber + semester);
         }
 
         public IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber)
@@ -35,10 +36,7 @@ namespace FRITeam.Swapify.APIWrapper
 
         private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
         {
-            string semester = getCurrentSemesterShortCut();
-            string address = string.IsNullOrEmpty(semester)
-                ? $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}"
-                : $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}{semester}";
+            string address =  $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
             var myResponse = "";
             try
             {
