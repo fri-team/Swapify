@@ -27,7 +27,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<User>("users");            
+            var usersCollection = dbService.GetCollection<User>("users");
 
             string email = "oleg@swapify.com";
             User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
@@ -46,7 +46,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     SecurityStamp = OlegGuid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid, OlegGuid)
                 };
-                
+
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
@@ -123,7 +123,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     Status = ExchangeStatus.WaitingForExchange,
                     DateOfCreation = DateTime.Now,
                     BlockFrom = new Block
-                    {                                              
+                    {
                         CourseId = course1.Id,
                         Day = Day.Wednesday,
                         StartHour = 8
@@ -153,7 +153,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                         Day = Day.Friday,
                         StartHour = 15
                     }
-                });                
+                });
             }
         }
 
@@ -230,9 +230,17 @@ namespace FRITeam.Swapify.Backend.DbSeed
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var courseCollection = dbService.GetCollection<Course>(nameof(Course));
-            
+
             var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();
-            var json = File.ReadAllText(path.Value.CoursesJsonPath);
+            string json;
+            if(dbService.DatabaseNamespace.DatabaseName != "SwapifyTest")
+            {
+                json = File.ReadAllText(path.Value.CoursesJsonPath);
+            }
+            else
+            {
+                json = File.ReadAllText(path.Value.CoursesJsonPathFromTest);
+            }            
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
 
             Dictionary<string, Course> dic = new Dictionary<string, Course>();

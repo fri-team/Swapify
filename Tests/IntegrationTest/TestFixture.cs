@@ -1,8 +1,12 @@
+using FRITeam.Swapify.Backend.DbSeed;
 using FRITeam.Swapify.Backend.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,6 +14,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using WebAPI;
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
@@ -20,6 +25,7 @@ namespace IntegrationTest
     {
         public Uri BaseUrl { get => new Uri("http://localhost:5000/api/"); }
         private readonly TestServer Server;
+        public IMongoDatabase Database { get; set; }
 
         public TestFixture()
         {
@@ -38,17 +44,25 @@ namespace IntegrationTest
                 .UseContentRoot(basePath)
                 .UseConfiguration(config)
                 .UseEnvironment("Development")
-                .UseStartup<Startup>()
+                .UseStartup<StartupForTest>()
                 .ConfigureTestServices(services =>
                 {
                     MockServices(services);
                 });
 
             Server = new TestServer(builder);
+
+            var serviceFactory = (IServiceScopeFactory)Server.Host.Services.GetService(typeof(IServiceScopeFactory));
+            using (var scope = serviceFactory.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                Database = services.GetRequiredService<IMongoDatabase>();
+            }
         }
 
         public void Dispose()
         {
+            Database.Client.DropDatabase("SwapifyTest");
             Dispose(true);
             GC.SuppressFinalize(this);
         }

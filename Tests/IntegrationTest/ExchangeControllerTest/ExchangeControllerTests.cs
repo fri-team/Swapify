@@ -1,12 +1,9 @@
 using FRITeam.Swapify.Entities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
@@ -18,7 +15,7 @@ namespace IntegrationTest.ExchangeControllerTest
     {
         private readonly Uri LoginUri;
         private readonly Uri ExchangeUri;
-        private readonly Uri WaitingExchangesUri;        
+        private readonly Uri WaitingExchangesUri;
 
         public static TestFixture TestFixture { get; set; }
 
@@ -35,7 +32,7 @@ namespace IntegrationTest.ExchangeControllerTest
         {
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
-            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login2);
             HttpClient client2 = TestFixture.CreateClient();
             var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
 
@@ -45,7 +42,7 @@ namespace IntegrationTest.ExchangeControllerTest
             var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1, student1Id);
 
             var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);   //todo toto z nejakeho dovodu neprechadza
 
             var waitingExchanges1 = await GetUserWaitingExchanges(client1, student1Id);
             var waitingExchanges2 = await GetUserWaitingExchanges(client2, student2Id);
@@ -56,7 +53,7 @@ namespace IntegrationTest.ExchangeControllerTest
             Assert.True(response13.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(waitingExchanges1.Count == 1);
+            Assert.True(waitingExchanges1.Count == 1);  //3, because DBSeed is work well now (consider if DBSeed is necessary)
             Assert.True(waitingExchanges2.Count == 1);
         }
 
@@ -68,9 +65,7 @@ namespace IntegrationTest.ExchangeControllerTest
 
             // Act
             ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
-            var jsonModel = JsonConvert.SerializeObject(ExchangeControllerTestsData.ExchangeModel11);
-            StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(ExchangeUri, content);
+            HttpResponseMessage response = await client.PostAsJsonAsync(ExchangeUri, ExchangeControllerTestsData.ExchangeModel11);
 
             // Assert
             Assert.True(response.IsSuccessStatusCode == false);
@@ -80,6 +75,7 @@ namespace IntegrationTest.ExchangeControllerTest
         [Fact]
         public async Task Exchange_ExchangeConfirm_UserNotFound()
         {
+
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
             var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
@@ -98,12 +94,8 @@ namespace IntegrationTest.ExchangeControllerTest
 
         private async Task<string> AuthenticateClient(HttpClient client, LoginModel login)
         {
-            var jsonModel = JsonConvert.SerializeObject(login);
-            StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(LoginUri, content);
-
-            string json = await response.Content.ReadAsStringAsync();
-            var userModel = JsonConvert.DeserializeObject<AuthenticatedUserModel>(json);
+            var response = await client.PostAsJsonAsync(LoginUri, login);
+            var userModel = JsonConvert.DeserializeObject<AuthenticatedUserModel>(await response.Content.ReadAsStringAsync());
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userModel.Token);
             return userModel.StudentId;
         }
@@ -111,21 +103,13 @@ namespace IntegrationTest.ExchangeControllerTest
         private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
         {
             exchangeModel.StudentId = studentId;
-            var jsonModel = JsonConvert.SerializeObject(exchangeModel);
-            var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
-
-            return await client.PostAsync(ExchangeUri, content);
+            return await client.PostAsJsonAsync(ExchangeUri, exchangeModel);
         }
 
         private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string studentId)
-        { 
-            var jsonModel = JsonConvert.SerializeObject(studentId);
-            var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync(WaitingExchangesUri, content);
-
-            string json = await response.Content.ReadAsStringAsync();
-            var list = JsonConvert.DeserializeObject<List<BlockChangeRequest>>(json);
+        {
+            var response = await client.PostAsJsonAsync(WaitingExchangesUri, studentId);
+            var list = JsonConvert.DeserializeObject<List<BlockChangeRequest>>(await response.Content.ReadAsStringAsync());
             return list;
         }
     }

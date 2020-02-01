@@ -41,7 +41,12 @@ namespace WebAPI
             Configuration = configuration;
             Environment = environment;
             DbRegistration.Init();
-            _logger = loggerFactory.CreateLogger<Startup>();
+            _logger = GetLogger(loggerFactory);
+        }
+
+        protected virtual ILogger<Startup> GetLogger(ILoggerFactory loggerFactory)
+        {
+            return loggerFactory.CreateLogger<Startup>();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -54,7 +59,8 @@ namespace WebAPI
                 MongoClientSettings settings = new MongoClientSettings();
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton(new MongoClient(settings).GetDatabase(GetDatabaseName()));
+
             }
 
             LoadAndValidateSettings(services);
@@ -169,7 +175,7 @@ namespace WebAPI
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
                     ConnectionString = Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString,
-                    DatabaseName = DatabaseName
+                    DatabaseName = GetDatabaseName()
                 };
             else
                 configuration.MongoDbSettings = new MongoDbSettings();
@@ -190,6 +196,11 @@ namespace WebAPI
                 options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
             };
             return configuration;
+        }
+
+        protected virtual string GetDatabaseName()
+        {
+            return DatabaseName;
         }
 
         private byte[] GetJwtSecret()
