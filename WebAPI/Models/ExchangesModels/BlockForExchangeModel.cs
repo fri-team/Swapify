@@ -10,6 +10,7 @@ namespace WebAPI.Models.Exchanges
 {
     public class BlockForExchangeModel
     {
+        public string BlockId { get; set; }
         public int Day { get; set; }
         public int Duration { get; set; }
         public int StartHour { get; set; }
@@ -20,6 +21,7 @@ namespace WebAPI.Models.Exchanges
         public static Block ConvertToBlock(BlockForExchangeModel blockToConvert)
         {
             Block blc = new Block();
+            blc.BlockId = Guid.Parse(blockToConvert.BlockId);
             blc.CourseId = Guid.Parse(blockToConvert.CourseId);
             blc.Day = (Day)blockToConvert.Day;
             blc.Duration = (byte)blockToConvert.Duration;

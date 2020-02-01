@@ -3,6 +3,7 @@ using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
 using FRITeam.Swapify.Entities.Enums;
 using MongoDB.Driver;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -30,7 +31,7 @@ namespace BackendTest
             await stserv.AddAsync(student);
 
             var loadedStudent = await stserv.FindByIdAsync(student.Id);
-            Block blckToAdd = new Block { BlockType = BlockType.Lecture, Day = Day.Friday, StartHour = 9 };
+            Block blckToAdd = new Block { BlockId = Guid.NewGuid(), BlockType = BlockType.Lecture, Day = Day.Friday, StartHour = 9 };
 
             loadedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(0);
             //add new block
@@ -43,9 +44,9 @@ namespace BackendTest
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
             updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
 
-            Block updtBlock = new Block { BlockType = BlockType.Excercise, Day = Day.Friday, StartHour = 9 };
+            Block updtBlock = new Block { BlockId = blckToAdd.BlockId, BlockType = BlockType.Excercise, Day = Day.Friday, StartHour = 9 };
             // update blckToAdd to updtBlock
-            updatedStudent.Timetable.UpdateBlock(blckToAdd, updtBlock);
+            updatedStudent.Timetable.UpdateBlock(updtBlock);
             //save updated block
             await stserv.UpdateStudentAsync(updatedStudent);
             //load from db
@@ -54,7 +55,7 @@ namespace BackendTest
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(1);
 
             //delete added block
-            updatedStudent.Timetable.RemoveBlock(updtBlock);
+            updatedStudent.Timetable.RemoveBlock(updtBlock.BlockId);
             //save deleted
             await stserv.UpdateStudentAsync(updatedStudent);
             //load from db
