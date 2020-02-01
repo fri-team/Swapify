@@ -31,6 +31,7 @@ const FlexBox = styled.div`
 
 class AddBlockForm extends Component {
   state = {
+    id: this.props.course.id,
     courseName: this.props.course.courseName,
     courseShortcut: this.props.course.courseShortcut,
     teacher: this.props.course.teacher,
@@ -40,7 +41,8 @@ class AddBlockForm extends Component {
     length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
     type: this.props.course.type,
     suggestions: [],
-    user: this.props.user
+    user: this.props.user,
+    isEdited: this.props.isEdited
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -52,7 +54,7 @@ class AddBlockForm extends Component {
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
       axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
-        this.setState({ suggestions: map(data.result, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) })
+        this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
       });
     })
     return courseName => {
@@ -90,7 +92,12 @@ class AddBlockForm extends Component {
       }
     };
     this.handleSubmitClick();
-    this.props.timetableActions.addBlock(body, this.props.user.email);
+
+    if (this.state.isEdited) {
+      this.props.timetableActions.editBlock(body, this.state.user.email);
+    } else {
+      this.props.timetableActions.addBlock(body, this.props.user.email);
+    }
     
     onClose();
   }
@@ -107,7 +114,7 @@ class AddBlockForm extends Component {
             <div className="buttons">
         
         <IconButton onClick={this.handleCloseClick}>
-          <ClearIcon nativeColor="black" />
+          <ClearIcon nativecolor="black" />
         </IconButton>
       </div>
           <DialogContent>
@@ -117,7 +124,7 @@ class AddBlockForm extends Component {
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}
-                onInputValueChange={this.fetchCourses()}
+                inputvaluechange={this.fetchCourses()}
                 onChange={this.handleCourse}
                 margin="normal"
                 fullWidth
@@ -195,7 +202,7 @@ class AddBlockForm extends Component {
               color="primary"
               variant="contained"
             >
-              Uloziť
+              Uložiť
                 </Button>
           </DialogActions>
         </Dialog>

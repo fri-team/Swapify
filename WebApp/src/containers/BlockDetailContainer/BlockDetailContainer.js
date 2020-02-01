@@ -22,8 +22,12 @@ class BlockDetailContainer extends Component {
     this.props.actions.hideDetail();    
   }
 
-  onClickDelete = (course) => {
-    this.props.timetableActions.removeBlock(course, this.state.user.email);
+  onClickDelete = (block) => {
+    this.props.timetableActions.removeBlock(block, this.state.user.email);
+    this.props.actions.hideDetail();
+  }
+
+  onClickEdit = () => {
     this.props.actions.hideDetail();
   }
 
@@ -39,6 +43,7 @@ class BlockDetailContainer extends Component {
         onOutsideClick={this.onOutsideClick}
         onExchangeRequest={this.exchangeRequest}
         onClickDelete={this.onClickDelete}
+        onClickEdit={this.onClickEdit}
       />
     );
   }

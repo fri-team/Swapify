@@ -6,8 +6,11 @@ import * as actions from '../../actions/timetableActions';
 import Timetable from '../../components/Timetable/Timetable';
 
 class TimetableContainer extends Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     this.props.actions.loadMyTimetable(this.props.user.email);
+
   }
 
   render() {

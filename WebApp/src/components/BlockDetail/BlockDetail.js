@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 import _ from 'lodash';
 import toMaterialStyle from 'material-color-hash';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -21,6 +23,20 @@ class BlockDetail extends PureComponent {
     course: {...this.props.course}
   };
 
+  calculateBottomPosition = (pTop) => {
+    if (pTop > window.innerHeight * 0.7)
+      return `2px`
+    else 
+      return `auto`;
+  }
+
+  calculateTopPosition = (pTop) => {
+    if (pTop > window.innerHeight * 0.7)
+      return `auto`
+    else 
+      return `${pTop}px`;
+  }
+
   handleClickOutside = () => {
     if(!this.state.dialogOpen) {
       this.props.onOutsideClick();
@@ -34,6 +50,11 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
+  handleClickEdit = () => {
+    this.props.onClickEdit();
+    this.setState({dialogOpen:false})
+  }
+
   onClickEditBlock = () => {
     this.setState({dialogOpen:true})
   }
@@ -42,18 +63,38 @@ class BlockDetail extends PureComponent {
     this.setState({dialogOpen:false})
   }
 
+  showEditButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Upraviť predmet" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.onClickEditBlock}>
+            <EditIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
+  
+  showExchangeButton = (color) => {
+    if (this.props.course.isMine) {
+      return(
+        <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.handleClickExchange}>
+            <SwapIcon nativeColor={color} />
+          </IconButton>
+        </Tooltip>)
+  }}
+
   render() {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course,user } = this.props;
+    const { top, left, course, user } = this.props;
     const email =
       _.replace(_.lowerCase(_.deburr(course.teacher)), ' ', '.') +
       '@fri.uniza.sk';
     const { backgroundColor, color } = toMaterialStyle(
       course.courseShortcut || ''
     );
-    const style = { top: `${top}px`, left: `${left}px`, position: `absolute` };
+    const style = { top: `${this.calculateTopPosition(top)}`, left: `${left}px`, bottom: `${this.calculateBottomPosition(top)}`, position: `absolute`, width: `20%` };
     const dialogOpen = this.state.dialogOpen;
     return (
       <div className="block-detail" style={style}>
@@ -61,19 +102,28 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
+               {/*
                 <IconButton onClick={this.onClickEditBlock }>
-                  <EditIcon nativeColor={color} />
+                  <EditIcon nativecolor={color} />
                 </IconButton>
                 <IconButton onClick={this.handleClickExchange }>
-                  <SwapIcon nativeColor={color} />
+                  <SwapIcon nativecolor={color} />
                 </IconButton>
                 <IconButton onClick={this.handleClickDelete}>
-                  <DeleteIcon nativeColor={color} />
+                  <DeleteIcon nativecolor={color} />
                 </IconButton>
+                */}
+                {this.showEditButton(color)}
+                {this.showExchangeButton(color)}
+                <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
+                  <IconButton onClick={this.handleClickDelete}>
+                    <DeleteIcon nativeColor={color} />
+                  </IconButton>
+                </Tooltip>
               </span>
             )}
             <IconButton onClick={this.handleClickOutside}>
-              <ClearIcon nativeColor={color} />
+              <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
           <div className="name" style={{ color }}>
@@ -106,11 +156,13 @@ class BlockDetail extends PureComponent {
         </div>
         {dialogOpen && (
           <AddBlockForm 
+          id={this.props.course.id}
           user={user} 
           course={course} 
-          onSubmitClick={this.handleClickDelete}
+          onSubmitClick={this.handleClickEdit}
           onCloseEditBlock={this.onCloseEditBlock} 
-          onClose={this.handleClickOutside} />
+          onClose={this.handleClickOutside}
+          isEdited={true} />
         )}
       </div>
     );

@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import HelpIcon from '@material-ui/icons/Help';
 import UserAvatar from './UserAvatar';
 import Menu from './Menu';
 import { PullRight } from './shared';
@@ -15,8 +16,10 @@ import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
 import { PERSONALNUMBER } from '../../util/routes';
 import NotificationPanel from '../Notifications/NotificationPanel';
+
 const ToolbarWrapper = styled.div`
   width: 100%;
+  z-index: 5;
 `;
 
 const IconTray = styled.div`
@@ -42,13 +45,13 @@ class AppToolbar extends PureComponent {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
           }}
-        >
+        >   
           Späť na rozvrh
         </Button>
       );
     }
 
-    const { user, toggleSidebar } = this.props;
+    const { user, toggleSidebar, toggleHelpModalWindow } = this.props;
     return (
       <ToolbarWrapper>
         <AppBar position="static">
@@ -86,7 +89,13 @@ class AppToolbar extends PureComponent {
             <p>
               {user.name} {user.surname}
             </p>
-            
+            <IconButton
+              color="inherit"
+              aria-label="Help"
+              onClick={toggleHelpModalWindow}
+            >
+              <HelpIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>

@@ -142,6 +142,15 @@ namespace BackendTest.UserControllerTests
             };
         }
 
+        private static DeleteUserModel CreateDeleteUserModel()
+        {
+            return new DeleteUserModel
+            {
+                Email = "tester@testovaci.com",
+                Password = "Heslo.123"
+            };
+        }
+
         private static LoginModel CreateLoginModel()
         {
             return new LoginModel
@@ -299,6 +308,68 @@ namespace BackendTest.UserControllerTests
             var result = await controller.ConfirmEmail(confirmEmailModel);
 
             Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteUser_DeleteUserSuccess_Ok()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            bool confirmEmailSuccess = true;
+            bool emailAlreadyConfirmed = true;
+            bool loginSuccess = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
+                    confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            var deleteUserModel = CreateDeleteUserModel();
+
+            var result = await controller.DeleteUser(deleteUserModel);
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteUser_UserNotExists_BadRequestObjectResult()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = false;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            var deleteUserModel = CreateDeleteUserModel();
+
+            var result = await controller.DeleteUser(deleteUserModel);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteUser_WrongPassword_BadRequestObject()
+        {
+            bool createUserSuccess = true;
+            bool findUserByIdSuccess = true;
+            bool findUserByEmailSuccess = true;
+            bool confirmEmailSuccess = true;
+            bool emailAlreadyConfirmed = true;
+            UserController controller = new UserController(_loggerMock.Object,
+                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
+                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockEmailService(true),
+                _envSettingsMock.Object);
+            var deleteUserModel = CreateDeleteUserModel();
+
+            var result = await controller.DeleteUser(deleteUserModel);
+            Assert.IsType<BadRequestObjectResult>(result);
+
+            dynamic badRequestObject = (BadRequestObjectResult)result;
+            string error = badRequestObject.Value.Error;
+            Assert.Equal("Zadané heslo nie je správne.", error);
+
         }
 
         [Fact]

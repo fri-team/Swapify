@@ -5,6 +5,7 @@ namespace FRITeam.Swapify.Entities
 {
     public class Block 
     {
+        public Guid BlockId { get; set; }
         public BlockType BlockType { get; set; }
         public Guid CourseId { get; set; }
         public Day Day { get; set; }
@@ -41,6 +42,7 @@ namespace FRITeam.Swapify.Entities
         public Block Clone()
         {
             var newBlock = new Block();
+            newBlock.BlockId = this.BlockId;
             newBlock.BlockType = this.BlockType;
             newBlock.CourseId = this.CourseId;
             newBlock.Day = this.Day;

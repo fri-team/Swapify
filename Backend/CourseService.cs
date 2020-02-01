@@ -42,26 +42,27 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindByNameAsync(string name)
         {
-            return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
+            return await _courseCollection.Find(x => x.CourseName.Equals(name.ToLower())).FirstOrDefaultAsync();
         }
 
-        public Task<List<Course>> FindByStartName(string courseStartsWith)
+        public List<Course> FindByStartName(string courseStartsWith)
         {
-            return _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith)).ToListAsync();
+            var filter = "{CourseName: /" + courseStartsWith + "/ }"; //regex for search on every position in course name 
+            return _courseCollection.Find(filter).ToList();
         }
 
         /// <summary>
         /// If course with "courseName" exists function return ID, if course doesnt exist fuction
         /// save this course and return id of saved course.
         /// </summary>
-        public async Task<Guid> GetOrAddNotExistsCourseIdByShortcut(string courseShortcut, Block courseBlock)
+        public async Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut, Block courseBlock)
         {
             var course = await this.FindByCodeAsync(courseShortcut);
             if (course == null)
             {
                 var timetable = new Timetable();
                 timetable.AddNewBlock(courseBlock);
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable };
+                course = new Course() {CourseCode = courseShortcut, Timetable = timetable };
                 await this.AddAsync(course);
             }
             else
@@ -78,17 +79,17 @@ namespace FRITeam.Swapify.Backend
                     await this.UpdateAsync(course);
                 }
             }
-            return course.Id;
+            return course;
         }
 
-        public async Task<Guid> GetOrAddNotExistsCourseIdByName(string courseName, Block courseBlock)
+        public async Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseShortcut, Block courseBlock)
         {
             var course = await this.FindByNameAsync(courseName);
             if (course == null)
             {
                 var timetable = new Timetable();
                 timetable.AddNewBlock(courseBlock);
-                course = new Course() { CourseName = courseName, Timetable = timetable };
+                course = new Course() { CourseCode = courseShortcut, CourseName = courseName, Timetable = timetable };
                 await this.AddAsync(course);
             }
             else
@@ -105,7 +106,7 @@ namespace FRITeam.Swapify.Backend
                     await this.UpdateAsync(course);
                 }
             }
-            return course.Id;
+            return course;
         }
 
         public async Task<Course> FindCourseTimetableFromProxy(Guid guid)

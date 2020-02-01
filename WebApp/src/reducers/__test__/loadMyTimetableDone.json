@@ -86,9 +86,10 @@
       }
     ],
     "myCourseNames": [
-      "Architektúry informačných systémov",
-      "Databázy a získavanie znalostí",
-      "Teória informácie"
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "courseName": "Teória informácie"
+      }
     ],
     "isLoadingCourse": false,
     "courseTimetables": {},
@@ -99,6 +100,7 @@
         "day": 2,
         "startBlock": 6,
         "endBlock": 8,
+        "isGrey": true,
         "courseName": "Teória informácie",
         "courseShortcut": "TI",
         "room": "RC009",
@@ -111,6 +113,7 @@
         "day": 4,
         "startBlock": 1,
         "endBlock": 3,
+        "isGrey": true,
         "courseName": "Databázy a získavanie znalostí",
         "courseShortcut": "II05",
         "room": "RC009",
@@ -123,6 +126,7 @@
         "day": 4,
         "startBlock": 6,
         "endBlock": 8,
+        "isGrey": true,
         "courseName": "Architektúry informačných systémov",
         "courseShortcut": "AIS",
         "room": "RC009",
