@@ -38,15 +38,15 @@ class TimetablePage extends PureComponent {
               helpModalWindowOpen: !prevState.helpModalWindowOpen
             }))
           }
-        />
-        <SidebarContainer
-          open={this.state.sidebarOpen}
-          onClose={() => this.setState({ sidebarOpen: false })}
           toggleMailUsModalWindow={() =>
             this.setState(prevState => ({
               mailUsModalWindowOpen: !prevState.mailUsModalWindowOpen
             }))
           }
+        />
+        <SidebarContainer
+          open={this.state.sidebarOpen}
+          onClose={() => this.setState({ sidebarOpen: false })}
         />
         <TimetableContainer />
         

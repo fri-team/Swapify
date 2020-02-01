@@ -16,7 +16,11 @@ import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
 import { PERSONALNUMBER } from '../../util/routes';
 import NotificationPanel from '../Notifications/NotificationPanel';
-
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import './Toolbar.scss';
+import MailIcon from '@material-ui/icons/Mail';
+import logo from '../../images/logowhite.png';
 const ToolbarWrapper = styled.div`
   width: 100%;
   z-index: 5;
@@ -45,13 +49,13 @@ class AppToolbar extends PureComponent {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
           }}
-        >   
+        >
           Späť na rozvrh
         </Button>
       );
     }
 
-    const { user, toggleSidebar, toggleHelpModalWindow } = this.props;
+    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
     return (
       <ToolbarWrapper>
         <AppBar position="static">
@@ -63,12 +67,14 @@ class AppToolbar extends PureComponent {
             >
               <MenuIcon />
             </IconButton>
+
+            
             <IconTray>
-             
+            
+            <img src={logo} alt="logo" height="30px" className="logowhite"/>
               <PullRight />
-              
               {button}
-              <NotificationPanel/>
+              &nbsp;
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
@@ -86,16 +92,38 @@ class AppToolbar extends PureComponent {
               )}
             </IconTray>
             &nbsp;
-            <p>
+            <p onClick={() => this.setState({ showMenu: true })}>
               {user.name} {user.surname}
             </p>
-            <IconButton
-              color="inherit"
-              aria-label="Help"
-              onClick={toggleHelpModalWindow}
-            >
-              <HelpIcon />
-            </IconButton>
+            
+            <Tooltip title="Zobraz pomocník" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="Help"
+                onClick={toggleHelpModalWindow}
+              >
+                <HelpIcon />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Napíšte nám" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="MailUs"
+                onClick={toggleMailUsModalWindow}
+              >
+                <MailIcon />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Notifikácie" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="Notifications"
+              >
+                <NotificationPanel />
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>

@@ -10,13 +10,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Switch from '@material-ui/core/Switch';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import MailIcon from '@material-ui/icons/Mail';
 import { dayHourToString } from '../../util/dateTimeFormatter';
-import { CardHeader, Button } from '@material-ui/core';
+import { CardHeader } from '@material-ui/core';
 
 import './Sidebar.scss';
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWindow, handleChange, value, exchangeRequests }) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
@@ -55,10 +54,6 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, toggleMailUsModalWind
           {createExchangeRequestsList(exchangeRequests, courses)}
         </Grid>
       }
-
-      <Button onClick={toggleMailUsModalWindow}>
-        <MailIcon /> &nbsp; Napíšte nám
-      </Button>
     </div>
   </Drawer>
 );
