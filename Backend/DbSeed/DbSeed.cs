@@ -22,7 +22,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
         private static readonly Guid Oleg3Guid = Guid.Parse("7c9e6679-7425-40de-944b-e07fc1f90ae7");
         private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
-        private static readonly Guid OlegStudent2Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
+        private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
+        private static readonly Guid OlegStudent3Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -91,8 +92,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     UserName = email,
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
-                    SecurityStamp = Oleg2Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudent2Guid, Oleg3Guid)
+                    SecurityStamp = Oleg3Guid.ToString("D"),
+                    Student = await CreateStudentAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
                 };
 
                 var password = new PasswordHasher<User>();
