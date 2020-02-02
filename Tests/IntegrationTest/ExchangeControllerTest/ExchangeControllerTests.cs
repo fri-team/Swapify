@@ -42,7 +42,7 @@ namespace IntegrationTest.ExchangeControllerTest
             var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1, student1Id);
 
             var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);   //todo toto z nejakeho dovodu neprechadza
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id); 
 
             var waitingExchanges1 = await GetUserWaitingExchanges(client1, student1Id);
             var waitingExchanges2 = await GetUserWaitingExchanges(client2, student2Id);
@@ -53,7 +53,7 @@ namespace IntegrationTest.ExchangeControllerTest
             Assert.True(response13.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(waitingExchanges1.Count == 1);  //3, because DBSeed is work well now (consider if DBSeed is necessary)
+            Assert.True(waitingExchanges1.Count == 1); 
             Assert.True(waitingExchanges2.Count == 1);
         }
 
@@ -64,31 +64,12 @@ namespace IntegrationTest.ExchangeControllerTest
             HttpClient client = TestFixture.CreateClient();
 
             // Act
-            ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
+            ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.GenerateGuid().ToString();
             HttpResponseMessage response = await client.PostAsJsonAsync(ExchangeUri, ExchangeControllerTestsData.ExchangeModel11);
 
             // Assert
             Assert.True(response.IsSuccessStatusCode == false);
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.Unauthorized);
-        }
-
-        [Fact]
-        public async Task Exchange_ExchangeConfirm_UserNotFound()
-        {
-
-            // Arrange
-            HttpClient client1 = TestFixture.CreateClient();
-            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
-            HttpClient client2 = TestFixture.CreateClient();
-            var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
-
-            // Act
-            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
-
-            // Assert
-            Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
 
