@@ -201,12 +201,12 @@ export function exchangeConfirm(blockTo) {
           window.alert("Výmena bola vykonaná.");  
           dispatch(loadMyTimetable(user.email));
         }
-        dispatch(hideCourseTimetable(blockTo.id));
+        dispatch(hideCourseTimetable(bl.id));
         dispatch(action);        
         dispatch(loadExchangeRequests());
       })
       .catch(() => {
-        dispatch(hideCourseTimetable(blockTo.id));
+        dispatch(hideCourseTimetable(bl.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
         });        

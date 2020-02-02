@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
-import { PERSONALNUMBER } from '../../util/routes';
+import { PERSONALNUMBER, TIMETABLE } from '../../util/routes';
 import NotificationPanel from '../Notifications/NotificationPanel';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
@@ -32,19 +32,32 @@ const IconTray = styled.div`
 `;
 
 class AppToolbar extends PureComponent {
-  state = { showMenu: false };
+  state = { showMenu: false, changeGroup: false };
 
   handleLogout = () => this.props.userActions.logout();
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
+  timetable = () => this.props.history.push(TIMETABLE);
+
+  checkUrl = () => {
+    if(window.location.pathname == "/personal-number") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   render() {
+    
     let button;
     if (this.props.timetable.isExchangeMode) {
       button = (
         <Button
           variant="contained"
           color="default"
+          size="small"
+          className="backToTimetable"
           onClick={() => {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
@@ -56,10 +69,12 @@ class AppToolbar extends PureComponent {
     }
 
     const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
+    const url = this.checkUrl();
     return (
       <ToolbarWrapper>
         <AppBar position="static">
           <Toolbar>
+            { !url && (
             <IconButton
               color="inherit"
               aria-label="Menu"
@@ -67,14 +82,13 @@ class AppToolbar extends PureComponent {
             >
               <MenuIcon />
             </IconButton>
-
-            
+            )}
+           
             <IconTray>
             
-            <img src={logo} alt="logo" height="30px" className="logowhite"/>
+            <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
               {button}
-              &nbsp;
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
@@ -92,7 +106,7 @@ class AppToolbar extends PureComponent {
               )}
             </IconTray>
             &nbsp;
-            <p onClick={() => this.setState({ showMenu: true })}>
+            <p onClick={() => this.setState({ showMenu: true })} className="cursor">
               {user.name} {user.surname}
             </p>
             

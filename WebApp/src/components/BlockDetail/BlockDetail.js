@@ -65,7 +65,7 @@ class BlockDetail extends PureComponent {
   showEditButton = (color) => {
     if (this.props.course.isMine) {
       return(
-        <Tooltip title="Upraviť predmet" placement="top" TransitionComponent={Zoom}>
+        <Tooltip title="Upraviť blok" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.onClickEditBlock}>
             <EditIcon nativeColor={color} />
           </IconButton>
@@ -114,7 +114,7 @@ class BlockDetail extends PureComponent {
                 */}
                 {this.showEditButton(color)}
                 {this.showExchangeButton(color)}
-                <Tooltip title="Vymazať predmet" placement="top" TransitionComponent={Zoom} >
+                <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
                     <DeleteIcon nativeColor={color} />
                   </IconButton>
