@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import Notification from './Notification';
+import onClickOutside from 'react-onclickoutside';
 import NotificationIcon from '../svg/NotificationIcon';
 import { fetchNotifications, setRead } from '../../actions/notificationsActions';
 import './NotificationPanel.scss';
@@ -27,6 +28,12 @@ class NotificationPanel extends Component {
             notificationPanelVisibility: this.state.notificationPanelVisibility ? '' : 'visible'
         });
     }    
+
+    handleClickOutside = () => {
+        this.setState({
+            notificationPanelVisibility: ''
+        });
+      }
 
     countUnreadNotifications(notifications) {
         var unreadNotificationsCount = 0;
@@ -100,4 +107,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(NotificationPanel));
