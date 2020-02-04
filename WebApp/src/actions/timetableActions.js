@@ -208,6 +208,7 @@ export function exchangeConfirm(blockTo) {
         dispatch(loadExchangeRequests());
       })
       .catch(() => {
+        window.alert("Pri vytváraní žiadosti nastala chyba.");
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
