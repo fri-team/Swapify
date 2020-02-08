@@ -76,7 +76,7 @@ namespace FRITeam.Swapify.Backend
         {
             using (SmtpClient client = new SmtpClient())
             {
-                client.Connect(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort, false);
+                client.Connect(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort, true);
                 client.Authenticate(_emailSettings.Username, _emailSettings.Password);
                 client.Send(message);
                 client.Disconnect(true);
