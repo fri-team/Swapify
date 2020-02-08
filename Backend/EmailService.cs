@@ -24,6 +24,30 @@ namespace FRITeam.Swapify.Backend
             _environmentSettings = environmentSettings.Value;
         }
 
+        public bool SendFeedbackEmail(string userEmail, string context)
+        {
+            try
+            {
+                MimeMessage mailMessage = new MimeMessage();
+                mailMessage.From.Add(new MailboxAddress(_emailSettings.SenderDisplayName, _emailSettings.SenderEmail));
+                mailMessage.To.Add(new MailboxAddress(_emailSettings.FeedbackEmail));
+                mailMessage.Subject = "Feedback - " + userEmail;
+                mailMessage.Body = new TextPart("html")
+                {
+                    Text = $"<b>{userEmail}</b> wrote:<br><br><b>" +
+                           context + "</b>"
+                };
+
+                SendEmail(mailMessage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                return false;
+            }
+        }
+
         public bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType)
         {
             try
