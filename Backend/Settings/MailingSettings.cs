@@ -11,6 +11,7 @@ namespace FRITeam.Swapify.Backend.Settings
         public string SenderEmail { get; set; }
         public string SenderDisplayName { get; set; }
         public string Password { get; set; }
+        public string FeedbackEmail { get; set; }
 
         protected override void ValidateInternal()
         {
