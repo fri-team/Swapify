@@ -90,7 +90,6 @@ class TimetablePage extends PureComponent {
           <DialogTitle id="max-width-dialog-title">Napíšte nám</DialogTitle>
           <DialogContent className = "dialogMailUsContent">
             <FormControl fullWidth>
-              <TextField id="outlined-basic" label="Mailová adresa" fullWidth /> &nbsp;
               <TextField id="outlined-basic" label="Predmet" fullWidth /> &nbsp;
               <TextField id="outlined-multiline-flexible" label="Správa" fullWidth multiline rows="4"/> &nbsp;
               <Button>

@@ -12,15 +12,22 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import { dayHourToString } from '../../util/dateTimeFormatter';
 import { CardHeader } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 
 import './Sidebar.scss';
+
+const StyledTab= withStyles({
+  root: {
+    width: 200
+  }
+})(Tab);
 
 const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
-        <Tab label="Predmety" />
-        <Tab label="Výmeny" />
+        <StyledTab label="Predmety" />
+        <StyledTab label="Výmeny" />
       </Tabs>
     </AppBar>
     <div className="drawerWrapper">

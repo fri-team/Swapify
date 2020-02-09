@@ -21,6 +21,7 @@ import Zoom from '@material-ui/core/Zoom';
 import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
 import logo from '../../images/logowhite.png';
+
 const ToolbarWrapper = styled.div`
   width: 100%;
   z-index: 5;
