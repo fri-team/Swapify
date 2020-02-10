@@ -67,7 +67,7 @@ class BlockDetail extends PureComponent {
       return(
         <Tooltip title="Upraviť blok" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.onClickEditBlock}>
-            <EditIcon nativeColor={color} />
+            <EditIcon nativecolor={color} />
           </IconButton>
         </Tooltip>)
   }}
@@ -77,19 +77,45 @@ class BlockDetail extends PureComponent {
       return(
         <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.handleClickExchange}>
-            <SwapIcon nativeColor={color} />
+            <SwapIcon nativecolor={color} />
           </IconButton>
         </Tooltip>)
   }}
+
+  convertNameToEmail(teacherName) {
+    let result = "";
+    // remove titles from name
+    let charsBeforeDot = 0;
+    for (let i = 0; i < teacherName.length; i++) {
+      result += teacherName[i];
+      charsBeforeDot++;
+      if (teacherName[i] === ('.')) {
+        result = result.substring(0, result.length - charsBeforeDot);
+        
+      }
+      if (teacherName[i] === (' ')) {
+        charsBeforeDot = 0;
+      }
+    }
+
+    result = result.trim();
+    if (result !== "") {
+      result = _.replace(_.lowerCase(_.deburr(result)), ' ', '.') + '@fri.uniza.sk';
+    }
+    else {
+      result = null;
+    }
+
+    return result;
+  }
 
   render() {
     if (!this.props.isVisible) {
       return null;
     }
     const { top, left, course, user } = this.props;
-    const email =
-      _.replace(_.lowerCase(_.deburr(course.teacher)), ' ', '.') +
-      '@fri.uniza.sk';
+    const email = this.convertNameToEmail(course.teacher);
+    const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = toMaterialStyle(
       course.courseShortcut || ''
     );
@@ -101,22 +127,11 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {course.type !== 'lecture' && (
               <span>
-               {/*
-                <IconButton onClick={this.onClickEditBlock }>
-                  <EditIcon nativecolor={color} />
-                </IconButton>
-                <IconButton onClick={this.handleClickExchange }>
-                  <SwapIcon nativecolor={color} />
-                </IconButton>
-                <IconButton onClick={this.handleClickDelete}>
-                  <DeleteIcon nativecolor={color} />
-                </IconButton>
-                */}
                 {this.showEditButton(color)}
                 {this.showExchangeButton(color)}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
-                    <DeleteIcon nativeColor={color} />
+                    <DeleteIcon nativecolor={color} />
                   </IconButton>
                 </Tooltip>
               </span>
@@ -143,7 +158,7 @@ class BlockDetail extends PureComponent {
           <div className="line">
             <Location className="icon" />
             <div className="text">
-              <div className="medium">{`FRI, ${course.room}`}</div>
+              <div className="medium">{`FRI${room}`}</div>
               {/*
               <div className="small">kapacita 20</div>
               */}
