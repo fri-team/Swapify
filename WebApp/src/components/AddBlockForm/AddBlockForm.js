@@ -22,6 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import Autocomplete from './Autocomplete';
 import * as timetableActions from '../../actions/timetableActions';
+import { ClipLoader } from "react-spinners";
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -42,7 +43,8 @@ class AddBlockForm extends Component {
     type: this.props.course.type,
     suggestions: [],
     user: this.props.user,
-    isEdited: this.props.isEdited
+    isEdited: this.props.isEdited,
+    loading: false
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -80,6 +82,7 @@ class AddBlockForm extends Component {
   }
 
   submit = () => {
+    this.setState({loading: true});
     const { onClose } = this.props;
     const { startBlock, length, ...restState } = this.state;
     const start = parseInt(replace(startBlock, /[^0-9]/, '')) / 100;
@@ -98,7 +101,7 @@ class AddBlockForm extends Component {
     } else {
       this.props.timetableActions.addBlock(body, this.props.user.email);
     }
-    
+    this.setState({loading: false});
     onClose();
   }
 
@@ -196,6 +199,7 @@ class AddBlockForm extends Component {
             </FlexBox>
           </DialogContent>
           <DialogActions>
+          {!this.state.loading && 
             <Button
               disabled={!this.canSubmit()}
               onClick={this.submit}
@@ -203,7 +207,15 @@ class AddBlockForm extends Component {
               variant="contained"
             >
               Uložiť
-                </Button>
+            </Button>
+          }
+           {this.state.loading && 
+                <ClipLoader
+                  size={35}
+                  color={"#2196f3"}
+                  loading={this.state.loading}
+                />
+            }
           </DialogActions>
         </Dialog>
       </form>
