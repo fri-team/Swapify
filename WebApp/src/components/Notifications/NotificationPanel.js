@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import Notification from './Notification';
-import NotificationIcon from '../svg/NotificationIcon';
+import onClickOutside from 'react-onclickoutside';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import { fetchNotifications, setRead } from '../../actions/notificationsActions';
 import './NotificationPanel.scss';
 import { NOTIFICATIONS_FETCH_INTERVAL_SECONDS } from '../../constants/configurationConstants';
@@ -27,6 +28,12 @@ class NotificationPanel extends Component {
             notificationPanelVisibility: this.state.notificationPanelVisibility ? '' : 'visible'
         });
     }    
+
+    handleClickOutside = () => {
+        this.setState({
+            notificationPanelVisibility: ''
+        });
+      }
 
     countUnreadNotifications(notifications) {
         var unreadNotificationsCount = 0;
@@ -71,9 +78,9 @@ class NotificationPanel extends Component {
         }        
 
         return (
-            <div className="notification-wrapper">                                                                  
+            <div className="">                                                                  
                 <div className={"notification-badge" + badge} onClick={this.onProfileClick}>{unreadNotificationsCount}</div>
-                <NotificationIcon onClick={this.onProfileClick}/>
+                <NotificationsIcon onClick={this.onProfileClick}/>
                 <div className={"notification-panel " + this.state.notificationPanelVisibility}>
                     <div className="notification-panel-header clearfix">
                         <strong>Notifikácie</strong>                        
@@ -100,4 +107,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(NotificationPanel));

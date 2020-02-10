@@ -14,8 +14,13 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../../actions/userActions';
 import * as timetableActions from '../../actions/timetableActions';
 import { withRouter } from 'react-router-dom';
-import { PERSONALNUMBER } from '../../util/routes';
+import { PERSONALNUMBER, TIMETABLE } from '../../util/routes';
 import NotificationPanel from '../Notifications/NotificationPanel';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import './Toolbar.scss';
+import MailIcon from '@material-ui/icons/Mail';
+import logo from '../../images/logowhite.png';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -28,34 +33,49 @@ const IconTray = styled.div`
 `;
 
 class AppToolbar extends PureComponent {
-  state = { showMenu: false };
+  state = { showMenu: false, changeGroup: false };
 
   handleLogout = () => this.props.userActions.logout();
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
+  timetable = () => this.props.history.push(TIMETABLE);
+
+  checkUrl = () => {
+    if(window.location.pathname == "/personal-number") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   render() {
+    
     let button;
     if (this.props.timetable.isExchangeMode) {
       button = (
         <Button
           variant="contained"
           color="default"
+          size="small"
+          className="backToTimetable"
           onClick={() => {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
           }}
-        >   
+        >
           Späť na rozvrh
         </Button>
       );
     }
 
-    const { user, toggleSidebar, toggleHelpModalWindow } = this.props;
+    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
+    const url = this.checkUrl();
     return (
       <ToolbarWrapper>
         <AppBar position="static">
           <Toolbar>
+            { !url && (
             <IconButton
               color="inherit"
               aria-label="Menu"
@@ -63,12 +83,13 @@ class AppToolbar extends PureComponent {
             >
               <MenuIcon />
             </IconButton>
+            )}
+           
             <IconTray>
-             
+            
+            <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
-              
               {button}
-              <NotificationPanel/>
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
@@ -86,16 +107,38 @@ class AppToolbar extends PureComponent {
               )}
             </IconTray>
             &nbsp;
-            <p>
+            <p onClick={() => this.setState({ showMenu: true })} className="cursor">
               {user.name} {user.surname}
             </p>
-            <IconButton
-              color="inherit"
-              aria-label="Help"
-              onClick={toggleHelpModalWindow}
-            >
-              <HelpIcon />
-            </IconButton>
+            
+            <Tooltip title="Zobraz pomocník" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="Help"
+                onClick={toggleHelpModalWindow}
+              >
+                <HelpIcon />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Napíšte nám" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="MailUs"
+                onClick={toggleMailUsModalWindow}
+              >
+                <MailIcon />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Notifikácie" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="Notifications"
+              >
+                <NotificationPanel />
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>

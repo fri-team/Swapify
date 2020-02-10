@@ -225,5 +225,28 @@ namespace WebAPI.Controllers
             }
             return Ok();
         }
+
+        [AllowAnonymous]
+        [HttpPost("sendFeedback")]
+        public async Task<IActionResult> SendFeedback([FromBody] FeedbackModel body)
+        {
+            body.Email = body.Email.ToLower();
+
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid sending feedback attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            if (!_emailService.SendFeedbackEmail(body.Email, body.Content))
+            {
+                _logger.LogError($"Error when sending feedback email from user {body.Email}.");
+                return BadRequest();
+            }
+            _logger.LogInformation($"Feedback email from user {body.Email} sent.");
+
+            return Ok();
+        }
     }
 }
