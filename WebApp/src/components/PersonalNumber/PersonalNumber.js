@@ -8,13 +8,18 @@ import './PersonalNumber.scss';
 import axios from 'axios';
 import { MacBackground } from '..';
 import { TIMETABLE } from '../../util/routes';
+import { ClipLoader } from "react-spinners";
+
 
 class PersonalNumber extends React.Component {
   state = {
+    loading: false,
     personalNumber: '',
     user: this.props.user,
-    existing: false
+    existing: false,
+    
   }
+
 
   onKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -23,7 +28,9 @@ class PersonalNumber extends React.Component {
     }
   }
 
+
   Submit = () => {
+    this.setState({loading: true});
     const body = {
       personalNumber: this.state.personalNumber,
       email: this.state.user.email
@@ -34,9 +41,11 @@ class PersonalNumber extends React.Component {
       data: body
     })
     .then(() => {
+      this.setState({loading: false});
       this.props.history.push(TIMETABLE);
     })
     .catch(() => {
+      this.setState({loading: false});
       this.setState({existing: true});
     })
   }
@@ -74,14 +83,24 @@ class PersonalNumber extends React.Component {
                       helperText={this.state.personalNumber.length !== 6 && this.state.personalNumber !== "" ? 'Zlý formát osobného čísla' : this.state.existing ? 'Neexistujúce osobné číslo' : ''}
                     />
                 </FormControl>
-                <Button 
-                    onClick={this.Submit}
-                    disabled={!this.canBeSubmitted()}
-                    color="primary" 
-                    variant="contained"
-                >
-                  Uložiť
-                </Button>
+                
+                {!this.state.loading && 
+                  <Button 
+                      onClick={this.Submit}
+                      disabled={!this.canBeSubmitted()}
+                      color="primary" 
+                      variant="contained"
+                  >
+                    Uložiť 
+                  </Button>
+                }
+                {this.state.loading && 
+                    <ClipLoader
+                      size={35}
+                      color={"#2196f3"}
+                      loading={this.state.loading}
+                    />
+                }
                 </div>
             </div>
       </MacBackground>
