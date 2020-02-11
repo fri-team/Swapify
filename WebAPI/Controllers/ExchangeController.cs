@@ -53,6 +53,9 @@ namespace WebAPI.Controllers
                 if (res != (null, null))
                 {
                     var student1 = await _studentService.FindByIdAsync(res.Item1.StudentId);
+                    student1.Timetable.RemoveBlock(res.Item1.BlockFrom.BlockId);
+                    student1.Timetable.AddNewBlock(res.Item1.BlockTo.Clone());
+                    await _studentService.UpdateStudentAsync(student1);
                     var user1 = await _userService.GetUserByIdAsync(student1.UserId.ToString());
                     if (user1 == null)
                     {
@@ -62,6 +65,9 @@ namespace WebAPI.Controllers
                     }
 
                     var student2 = await _studentService.FindByIdAsync(res.Item2.StudentId);
+                    student2.Timetable.RemoveBlock(res.Item2.BlockFrom.BlockId);
+                    student2.Timetable.AddNewBlock(res.Item2.BlockTo.Clone());
+                    await _studentService.UpdateStudentAsync(student2);
                     var user2 = await _userService.GetUserByIdAsync(student2.UserId.ToString());
                     if (user2 == null)
                     {
@@ -80,7 +86,7 @@ namespace WebAPI.Controllers
                         return NotFound(message);
                     }
 
-                    if (!_emailService.SendConfirmationEmail(user2.Email, callbackUrl2, "ExchangeEmail"))
+                    if (!_emailService.SendConfirmationEmail(user2.Email, callbackUrl2, "ConfirmExchangeEmail"))
                     {
                         string message = $"Error when sending confirmation email to user {user2.Email}.";
                         _logger.LogError(message);
