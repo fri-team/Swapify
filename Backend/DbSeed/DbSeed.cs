@@ -239,18 +239,17 @@ namespace FRITeam.Swapify.Backend.DbSeed
             Dictionary<string, Course> dic = new Dictionary<string, Course>();
             foreach (var crs in courses)
             {
-                dic[crs.CourseCode] = new Course()
+                Course course = new Course()
                 {
                     Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName
                 };
+                dic[crs.CourseCode] = course;
             }
             long count = courseCollection.Count(x => x.Id != null);
             if (count == 0)
-            {
                 courseCollection.InsertMany(dic.Select(x => x.Value));
-            }
         }
     }
 }

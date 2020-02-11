@@ -1,3 +1,4 @@
+using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,10 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<Course> FindByIdAsync(Guid guid);
         Task<Course> FindByNameAsync(string name);
         List<Course> FindByStartName(string courseStartsWith);
-        Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut, Block courseBlock);
-        Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseShortcut, Block courseBlock);
+        Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut);
+        Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseCode);
+        string FindCourseShortCutFromProxy(Course course);
         Task<Course> FindCourseTimetableFromProxy(Guid guid);
+        Task<Course> FindCourseTimetableFromProxy(string shortCut, Course course);
     }
 }

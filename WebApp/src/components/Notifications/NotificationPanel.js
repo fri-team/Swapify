@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import Notification from './Notification';
 import onClickOutside from 'react-onclickoutside';
-import NotificationIcon from '../svg/NotificationIcon';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import { fetchNotifications, setRead } from '../../actions/notificationsActions';
 import './NotificationPanel.scss';
 import { NOTIFICATIONS_FETCH_INTERVAL_SECONDS } from '../../constants/configurationConstants';
@@ -80,7 +80,7 @@ class NotificationPanel extends Component {
         return (
             <div className="">                                                                  
                 <div className={"notification-badge" + badge} onClick={this.onProfileClick}>{unreadNotificationsCount}</div>
-                <NotificationIcon onClick={this.onProfileClick}/>
+                <NotificationsIcon onClick={this.onProfileClick}/>
                 <div className={"notification-panel " + this.state.notificationPanelVisibility}>
                     <div className="notification-panel-header clearfix">
                         <strong>Notifikácie</strong>                        

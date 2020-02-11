@@ -83,13 +83,13 @@ namespace WebAPI.Controllers
             return Ok(_courseService.FindByStartName(courseName));
         }
 
-        [HttpGet("getCourseTimetable/{courseId}")]
-        public async Task<IActionResult> GetCourseTimetable(string courseId)
+        [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
+        public async Task<IActionResult> GetCourseTimetable(string courseId, string studentId)
         {
-            bool isValidGUID = Guid.TryParse(courseId, out Guid guid);
-            var _course = await _courseService.FindByIdAsync(guid);
+            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
+            var _course = await _courseService.FindByIdAsync(courseGuid);
             
-            if (!isValidGUID)
+            if (!isValidCourseGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
             }
@@ -98,7 +98,17 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
             }
 
-            //Course _course = await _courseService.FindCourseTimetableFromProxy(guid); // pre najdenie rozvrhu predmetu z API ... nefunguje pre skratku kurzu
+            bool isValidStudentGUID = Guid.TryParse(studentId, out Guid studentGuid);
+            var _student = await _studentService.FindByIdAsync(studentGuid);
+
+            if (!isValidStudentGUID)
+            {
+                return ErrorResponse($"Student id: {studentGuid} is not valid GUID.");
+            }
+            if (_student == null)
+            {
+                return ErrorResponse($"Student with id: {studentId} does not exist.");
+            }
 
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();
@@ -118,7 +128,8 @@ namespace WebAPI.Controllers
                     Teacher = block.Teacher,
                     Type = (TimetableBlockType)block.BlockType
                 };
-                Blocks.Add(timetableBlock);
+                if (!_student.Timetable.ContainsBlock(block))
+                    Blocks.Add(timetableBlock);
             }
             timetable.Blocks = Blocks;
 

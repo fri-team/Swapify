@@ -25,6 +25,7 @@ namespace FRITeam.Swapify.Entities
             var newTimetable = new Timetable();
             foreach (var block in _blocks)
             {
+                block.BlockId = Guid.NewGuid();
                 newTimetable.AddNewBlock(block.Clone());
             }
 

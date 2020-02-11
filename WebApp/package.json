@@ -31,6 +31,7 @@
   "author": "fri-team",
   "license": "MIT",
   "dependencies": {
+    "@emotion/core": "^10.0.27",
     "@material-ui/core": "^4.8.0",
     "@material-ui/icons": "^4.5.1",
     "axios": "^0.18.0",
@@ -51,6 +52,7 @@
     "react-router-redux": "5.0.0-alpha.6",
     "react-slideshow-image": "^1.2.0",
     "react-swipeable-views": "^0.13.8",
+    "react-spinners": "^0.8.0",
     "redux": "^4.0.0",
     "redux-auth-wrapper": "^2.0.3",
     "redux-persist": "^6.0.0-pre2.1",
