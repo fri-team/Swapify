@@ -16,6 +16,8 @@ namespace WebAPI.Models.Exchanges
         public int StartHour { get; set; }
         [Required(ErrorMessage = "CourseId musí byť zadané.")]
         public string CourseId { get; set; }
+        public string Room { get; set; }
+        public string Teacher { get; set; }
 
         public BlockForExchangeModel() { }
         public static Block ConvertToBlock(BlockForExchangeModel blockToConvert)
@@ -26,6 +28,8 @@ namespace WebAPI.Models.Exchanges
             blc.Day = (Day)blockToConvert.Day;
             blc.Duration = (byte)blockToConvert.Duration;
             blc.StartHour = (byte)blockToConvert.StartHour;
+            blc.Room = blockToConvert.Room;
+            blc.Teacher = blockToConvert.Teacher;
             return blc;
         }
     }
