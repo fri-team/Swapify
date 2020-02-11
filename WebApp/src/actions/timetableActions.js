@@ -171,13 +171,14 @@ export function exchangeConfirm(blockTo) {
     const { timetable, user } = getState();
     var bl = timetable.blockFromExchange;
     const body = {
-      BlockFrom:
-      {
+      BlockFrom: {
         blockId: bl.id,
         courseId: bl.courseId,
         day: bl.day,
         startHour: blockNumberToHour(bl.startBlock),
-        duration: bl.endBlock - bl.startBlock
+        duration: bl.endBlock - bl.startBlock,
+        room: bl.room,
+        teacher: bl.teacher
       },
 
       BlockTo: {
@@ -185,7 +186,9 @@ export function exchangeConfirm(blockTo) {
         courseId: blockTo.courseId,
         day: blockTo.day,
         startHour: blockNumberToHour(blockTo.startBlock),
-        duration: blockTo.endBlock - blockTo.startBlock
+        duration: blockTo.endBlock - blockTo.startBlock,
+        room: blockTo.room,
+        teacher: blockTo.teacher
       },
       StudentId: user.studentId
     }    
