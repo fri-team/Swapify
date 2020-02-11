@@ -38,6 +38,18 @@
 
 .AboutUsContainer p{
   line-height: 1.4;
+  margin-top: 2em;
+}
+
+.AboutUsLogos {
+  display: flex;
+  justify-content: center;
+  margin: 3em;
+}
+
+.AboutUsLogos img{
+  width: auto;
+  height: 115px;
 }
 
 .PageSwitcher {
