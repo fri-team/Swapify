@@ -5,6 +5,7 @@ using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
@@ -13,6 +14,7 @@ using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
 namespace WebAPI.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class TimetableController : BaseController
     {
@@ -88,7 +90,7 @@ namespace WebAPI.Controllers
         {
             bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
             var _course = await _courseService.FindByIdAsync(courseGuid);
-            
+
             if (!isValidCourseGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");

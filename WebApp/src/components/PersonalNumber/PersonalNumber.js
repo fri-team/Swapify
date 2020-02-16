@@ -9,7 +9,7 @@ import axios from 'axios';
 import { MacBackground } from '..';
 import { TIMETABLE } from '../../util/routes';
 import { ClipLoader } from "react-spinners";
-
+import { API_URL } from '../../constants/environments'
 
 class PersonalNumber extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class PersonalNumber extends React.Component {
     personalNumber: '',
     user: this.props.user,
     existing: false,
-    
+
   }
 
 
@@ -37,7 +37,7 @@ class PersonalNumber extends React.Component {
     }
     axios({
       method: 'post',
-      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      url: API_URL + '/api/timetable/setStudentTimetableFromPersonalNumber',
       data: body
     })
     .then(() => {
@@ -83,18 +83,18 @@ class PersonalNumber extends React.Component {
                       helperText={this.state.personalNumber.length !== 6 && this.state.personalNumber !== "" ? 'Zlý formát osobného čísla' : this.state.existing ? 'Neexistujúce osobné číslo' : ''}
                     />
                 </FormControl>
-                
-                {!this.state.loading && 
-                  <Button 
+
+                {!this.state.loading &&
+                  <Button
                       onClick={this.Submit}
                       disabled={!this.canBeSubmitted()}
-                      color="primary" 
+                      color="primary"
                       variant="contained"
                   >
-                    Uložiť 
+                    Uložiť
                   </Button>
                 }
-                {this.state.loading && 
+                {this.state.loading &&
                     <ClipLoader
                       size={35}
                       color={"#2196f3"}

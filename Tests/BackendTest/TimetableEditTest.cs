@@ -14,6 +14,7 @@ namespace BackendTest
     public class TimetableEditTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
+        private readonly DatabaseSettings _databaseSettings = new DatabaseSettings { ConnectionString = "mongodb://swapify:MxQ14#8a@localhost:27017/Swapify", DatabaseName = "Swapify" };
 
 
         public TimetableEditTest(Mongo2GoFixture mongoFixture)
@@ -24,8 +25,7 @@ namespace BackendTest
         [Fact]
         public async Task EditBlockStudentTimetablePassed()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stserv = new StudentService(database);
+            StudentService stserv = new StudentService(_databaseSettings);
             Student student = new Student();
             student.Timetable = FakeTimetable.GetFakeTimetable();
             await stserv.AddAsync(student);

@@ -4,7 +4,7 @@ import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import { Fade } from 'react-slideshow-image';
 import './HomePage.scss';
-import { AboutUsPage } from '..';
+import AboutUsPage from '../AboutUsPage/AboutUsPage';
 
 class HomePage extends Component {
 

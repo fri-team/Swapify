@@ -14,15 +14,17 @@ namespace FRITeam.Swapify.Backend
     public class CourseService : ICourseService
     {
         private readonly ILogger<CourseService> _logger;
-        private readonly IMongoDatabase _database;
-        private IMongoCollection<Course> _courseCollection => _database.GetCollection<Course>(nameof(Course));
+        private readonly IMongoCollection<Course> _courseCollection;
         private readonly ISchoolScheduleProxy _scheduleProxy;
         private readonly ISchoolCourseProxy _courseProxy;
 
-        public CourseService(ILogger<CourseService> logger, IMongoDatabase database, ISchoolScheduleProxy scheduleProxy, ISchoolCourseProxy courseProxy)
+        public CourseService(ILogger<CourseService> logger, IDatabaseSettings settings, ISchoolScheduleProxy scheduleProxy, ISchoolCourseProxy courseProxy)
         {
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _courseCollection = database.GetCollection<Course>(nameof(Course));
+
             _logger = logger;
-            _database = database;
             _scheduleProxy = scheduleProxy;
             _courseProxy = courseProxy;
         }
@@ -50,7 +52,7 @@ namespace FRITeam.Swapify.Backend
 
         public List<Course> FindByStartName(string courseStartsWith)
         {
-            var filter = "{CourseName: /" + courseStartsWith + "/ }"; //regex for search on every position in course name 
+            var filter = "{CourseName: /" + courseStartsWith + "/ }"; //regex for search on every position in course name
             return _courseCollection.Find(filter).ToList();
         }
 
@@ -67,7 +69,7 @@ namespace FRITeam.Swapify.Backend
                 course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false };
                 string shortCut = FindCourseShortCutFromProxy(course);
                 await FindCourseTimetableFromProxy(shortCut, course);
-                
+
                 await this.AddAsync(course);
             }
             else
@@ -147,7 +149,7 @@ namespace FRITeam.Swapify.Backend
             {
                 _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
             }
-            
+
             if (schedule == null)
             {
                 _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");

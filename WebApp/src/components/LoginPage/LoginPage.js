@@ -4,6 +4,7 @@ import { login } from "../../actions/userActions";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import './LoginPage.scss';
+import { API_URL } from '../../constants/environments';
 class LoginPage extends Component {
   constructor() {
     super();
@@ -46,13 +47,15 @@ class LoginPage extends Component {
 
   WrongCredentialsMessage(props) {
     const wrongCredentials = props.wrongCredentials;
-    const error = props.errors.error;
-    if (wrongCredentials) {
-      return (
-        <div className="wrongCredentials">
-          <p>{error}</p>
-        </div>
-      );
+    if (props.errors != undefined) {
+      const error = props.errors.error;
+      if (wrongCredentials) {
+        return (
+          <div className="wrongCredentials">
+            <p>{error}</p>
+          </div>
+        );
+      }
     }
     return null;
   }
@@ -71,7 +74,7 @@ class LoginPage extends Component {
 
       axios({
         method: "post",
-        url: "/api/user/login",
+        url: API_URL + "/api/user/login",
         data: body
       })
         .then(({ data }) => {
@@ -84,6 +87,8 @@ class LoginPage extends Component {
           } else if (error.response.status === 400) {
             this.setState({ serverErrors: error.response.data });
             this.setState({ wrongCredentials: true });
+          } else if (error.response.status === 500) {
+            this.setState({ serverErrors: {error: "Chyba na strane servera"} });
           } else {
             this.setState({ serverErrors: error.response.data.error });
           }
@@ -95,11 +100,12 @@ class LoginPage extends Component {
 
       axios({
         method: "post",
-        url: "/api/user/resetPassword",
+        url: API_URL + "/api/user/resetPassword",
         data: body
       })
         .then(() => {
           this.setState({ success: true });
+          window.alert("Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.");
         })
         .catch(error => {
           this.setState({ serverErrors: error.response.data.error });
@@ -129,11 +135,6 @@ class LoginPage extends Component {
                 onChange={this.handleChange}
                 fullWidth
               />
-            </div>
-            <div style={messageStyle}>
-              <p>
-                Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.
-              </p>
             </div>
             {!this.state.resetingPassword && (
               <div className="FormField">

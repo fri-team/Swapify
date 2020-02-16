@@ -24,7 +24,7 @@ namespace BackendTest.UserControllerTests
         public UserControllerTests()
         {
             _loggerMock = new Mock<ILogger<UserController>>();
-            EnvironmentSettings envSettings = new EnvironmentSettings() { BaseUrl = "http://localhost:3000/", JwtSecret = "DoNotUseMeInProduction", Environment = "Development" };
+            EnvironmentSettings envSettings = new EnvironmentSettings() { BaseUrl = "http://swapify.fri.uniza.sk:3000/", JwtSecret = "DoNotUseMeInProduction", Environment = "Development" };
             _envSettingsMock = new Mock<IOptions<EnvironmentSettings>>();
             _envSettingsMock.Setup(x => x.Value).Returns(envSettings);
         }

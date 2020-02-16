@@ -18,7 +18,7 @@ namespace BackendTest
     public class StudentServiceTest : IClassFixture<Mongo2GoFixture>
     {
         private readonly Mongo2GoFixture _mongoFixture;
-        private readonly IMongoDatabase _database;
+        private readonly DatabaseSettings _databaseSettings = new DatabaseSettings { ConnectionString = "mongodb://swapify:MxQ14#8a@localhost:27017/Swapify", DatabaseName = "Swapify" };
         private readonly Mock<ILogger<SchoolScheduleProxy>> _loggerMockSchedule;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
@@ -28,7 +28,6 @@ namespace BackendTest
             _mongoFixture = mongoFixture;
             _loggerMockSchedule = new Mock<ILogger<SchoolScheduleProxy>>();
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
-            _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
 
@@ -36,7 +35,7 @@ namespace BackendTest
         public async Task AssingTimetableToStudent()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _databaseSettings, schoolScheduleProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
 
 
@@ -64,9 +63,9 @@ namespace BackendTest
         public async Task AddStudentTest()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _databaseSettings, schoolScheduleProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
-            StudentService stSer = new StudentService(_database);
+            StudentService stSer = new StudentService(_databaseSettings);
 
             var timetable = serviceSchedule.GetByPersonalNumber("558188");
             Student st = new Student
@@ -102,8 +101,7 @@ namespace BackendTest
         [Fact]
         public async Task UpdateStudentTest()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stSer = new StudentService(database);
+            StudentService stSer = new StudentService(_databaseSettings);
             Student st = new Student();
 
             Block bl1 = new Block { Room = "room1" };

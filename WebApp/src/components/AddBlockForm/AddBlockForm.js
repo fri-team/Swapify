@@ -23,6 +23,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Autocomplete from './Autocomplete';
 import * as timetableActions from '../../actions/timetableActions';
 import { ClipLoader } from "react-spinners";
+import { API_URL } from '../../constants/environments';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -48,14 +49,14 @@ class AddBlockForm extends Component {
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
-  
+
   handleSubmitClick = () => this.props.onSubmitClick();
 
   handleClickOutside = () =>  this.props.onCloseEditBlock();
 
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
-      axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
+      axios.get(API_URL + `/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
         this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
       });
     })
@@ -69,7 +70,7 @@ class AddBlockForm extends Component {
   handleCourse = courseName => {
     this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
     this.setState({courseName: courseName.split(' (')[0]});
-  } 
+  }
 
   handleChange = evt => {
     const { name, value } = evt.target;
@@ -115,7 +116,7 @@ class AddBlockForm extends Component {
           onClose();
         }}>
             <div className="buttons">
-        
+
         <IconButton onClick={this.handleCloseClick}>
           <ClearIcon nativecolor="black" />
         </IconButton>
@@ -199,7 +200,7 @@ class AddBlockForm extends Component {
             </FlexBox>
           </DialogContent>
           <DialogActions>
-          {!this.state.loading && 
+          {!this.state.loading &&
             <Button
               disabled={!this.canSubmit()}
               onClick={this.submit}
@@ -209,7 +210,7 @@ class AddBlockForm extends Component {
               Uložiť
             </Button>
           }
-           {this.state.loading && 
+           {this.state.loading &&
                 <ClipLoader
                   size={35}
                   color={"#2196f3"}

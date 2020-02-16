@@ -47,6 +47,7 @@ namespace WebAPI
                     logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .UseNLog()
+                .UseUrls(urls: "http://swapify.fri.uniza.sk:5000")
                 .Build();
         }
     }

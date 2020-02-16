@@ -11,31 +11,31 @@ using MongoDB.Driver;
 namespace FRITeam.Swapify.Backend
 {
     public class NotificationService: INotificationService
-    {        
-        private readonly IMongoDatabase _database;
+    {
+        private readonly IMongoCollection<Notification> _notificationCollection;
 
-        private IMongoCollection<Notification> NotificationCollection  => _database.GetCollection<Notification>(nameof(Notification));
-
-        public NotificationService(IMongoDatabase database)
+        public NotificationService(IDatabaseSettings settings)
         {
-            _database = database;            
-        }        
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _notificationCollection = database.GetCollection<Notification>(nameof(Notification));
+        }
 
         public async Task UpdateNotificationReadState(Guid notificationId, bool read)
         {
-            await NotificationCollection.UpdateOneAsync(
+            await _notificationCollection.UpdateOneAsync(
                 notification => notification.Id == notificationId,
                 Builders<Notification>.Update.Set(notification => notification.Read, read));
         }
 
         public async Task<IEnumerable<Notification>> GetStudentNotifications(Guid studentId)
         {
-            return await NotificationCollection.Find(notification => notification.RecipientId == studentId).ToListAsync();
+            return await _notificationCollection.Find(notification => notification.RecipientId == studentId).ToListAsync();
         }
 
         public async Task AddNotification(Notification notification)
-        {            
-            await NotificationCollection.InsertOneAsync(notification);
+        {
+            await _notificationCollection.InsertOneAsync(notification);
         }
     }
 }

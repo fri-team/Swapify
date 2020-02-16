@@ -9,6 +9,7 @@ using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.APIWrapper;
+using Microsoft.Extensions.Configuration;
 
 namespace BackendTest
 {
@@ -17,8 +18,9 @@ namespace BackendTest
     {
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
+        private readonly DatabaseSettings _databaseSettings = new DatabaseSettings { ConnectionString = "mongodb://swapify:MxQ14#8a@localhost:27017/Swapify", DatabaseName = "Swapify" };
 
-        public BlockChangeRequestTest(Mongo2GoFixture mongoFixture)
+    public BlockChangeRequestTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
@@ -28,11 +30,10 @@ namespace BackendTest
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService studentSrv = new StudentService(database);
-            BlockChangesService blockChangeService = new BlockChangesService(database);
+            StudentService studentSrv = new StudentService(_databaseSettings);
+            BlockChangesService blockChangeService = new BlockChangesService(_databaseSettings);
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, _databaseSettings, schoolScheduleProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
             Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);
@@ -86,18 +87,17 @@ namespace BackendTest
         [Fact]
         public async Task CancelExchangeTest()
         {
-            IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService studentSrv = new StudentService(database);
-            BlockChangesService blockChangeService = new BlockChangesService(database);
+            StudentService studentSrv = new StudentService(_databaseSettings);
+            BlockChangesService blockChangeService = new BlockChangesService(_databaseSettings);
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, _databaseSettings, schoolScheduleProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
 
             Block block1 = CreateBlock(BlockType.Laboratory, Day.Monday, 2, 7, course.Id);
             Block block2 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 10, course.Id);
             Block block3 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 8, course.Id);
-            
+
             Student student = new Student();
             await studentSrv.AddAsync(student);
 

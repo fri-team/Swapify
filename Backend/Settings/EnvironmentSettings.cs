@@ -6,8 +6,8 @@ namespace FRITeam.Swapify.Backend.Settings
     {
         public override string ConfigFileName => "environmentVariables";
         public string Environment { get; set; }
-        public string JwtSecret { get; set; }
-        public string BaseUrl { get; set; }
+        public string JwtSecret { get; set; } = "DoNotUseMeInProduction";
+        public string BaseUrl { get; set; } = "http://swapify.fri.uniza.sk";
 
         protected override void ValidateInternal()
         {

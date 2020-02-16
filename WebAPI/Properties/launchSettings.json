@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5000/",
+      "applicationUrl": "http://swapify.fri.uniza.sk/",
       "sslPort": 0
     }
   },
@@ -13,9 +13,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "JwtSecret": "DoNotUseMeInProduction",
-        "BaseUrl": "http://localhost:3000/"
+        "BaseUrl": "http://swapify.fri.uniza.sk/"
       },
-      "applicationUrl": "http://localhost:5000/"
+      "applicationUrl": "http://swapify.fri.uniza.sk/"
     }
   }
 }

@@ -9,9 +9,10 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, Form, MacBackground } from '../';
 import { Link } from 'react-router-dom';
-import { LOGIN } from '../../util/routes';
+import { HOME } from '../../util/routes';
+import { API_URL } from '../../constants/environments';
 
-const validator = new FormValidator([    
+const validator = new FormValidator([
     {
       field: 'password',
       method: 'isEmpty',
@@ -67,12 +68,12 @@ const validator = new FormValidator([
       success: false,
       serverErrors: []
     };
-  
+
     handleInputChange = event => {
       event.preventDefault();
       this.setState({ [event.target.name]: event.target.value });
     };
-  
+
     onSubmit = () => {
       const splitedPath = window.location.pathname.split("/");
       const userId = splitedPath[2];
@@ -84,14 +85,14 @@ const validator = new FormValidator([
         password: this.state.password,
         passwordAgain: this.state.passwordAgain
       };
-  
+
       const validation = validator.validate(data);
       this.setState({ validation, submitted: true });
-  
+
       if (validation.isValid) {
         axios({
           method: 'post',
-          url: '/api/user/setNewPassword',
+          url: API_URL + '/api/user/setNewPassword',
           data
         })
           .then(() => {
@@ -103,31 +104,31 @@ const validator = new FormValidator([
           });
       }
     };
-  
+
     render() {
       let validation = this.state.submitted
         ? validator.validate(this.state)
         : this.state.validation;
-  
+
       const serverErrors = this.state.serverErrors;
       const serverErrorsList = serverErrors.map(e => <li key={e}>{e}</li>);
-  
+
       return (
         <MacBackground>
           <ElevatedBox>
-          { 
+          {
             this.state.success === true ?
                 <div>
                     Heslo bolo úspešne resetované.
-                    <Button 
+                    <Button
                       variant="text"
                       size="small"
-                      component={Link} to={LOGIN}
+                      component={Link} to={HOME}
                     >
                       Prihlásenie
                     </Button>
                 </div>
-            : 
+            :
             <Form className="register-form" onSubmit={this.onSubmit}>
               Reset hesla
               <div className="register-form-spacer">
@@ -143,7 +144,7 @@ const validator = new FormValidator([
                   onChange={this.handleInputChange}
                 />
               </div>
-  
+
               <div className="register-form-spacer">
                 <TextField
                   label="Potvrdenie hesla"
@@ -157,7 +158,7 @@ const validator = new FormValidator([
                   onChange={this.handleInputChange}
                 />
               </div>
-  
+
               <Button type="submit" color="primary" variant="contained">
                 Resetovať
               </Button>
@@ -170,17 +171,17 @@ const validator = new FormValidator([
                 <ul>{serverErrorsList}</ul>
               </div>
             </Form>
-          }            
+          }
           </ElevatedBox>
         </MacBackground>
       );
     }
   }
-  
+
   SetNewPasswordPage.propTypes = {
     history: PropTypes.shape({
       push: PropTypes.func
     }).isRequired
   };
-  
+
   export default SetNewPasswordPage;

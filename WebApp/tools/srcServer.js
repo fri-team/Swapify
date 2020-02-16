@@ -26,7 +26,7 @@ browserSync({
     middleware: [
       historyApiFallback(),
 
-      proxy('/api', { target: 'http://localhost:5000', changeOrigin: true }),
+      proxy('/api', { target: 'http://swapify.fri.uniza.sk:5000/', changeOrigin: true }),
 
       webpackDevMiddleware(bundler, {
         // Dev middleware can't access config, so we provide publicPath

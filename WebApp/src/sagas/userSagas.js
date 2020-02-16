@@ -5,6 +5,7 @@ import { call, put, race, take } from 'redux-saga/effects';
 import { REHYDRATE } from 'redux-persist';
 import { LOGIN, LOGOUT } from '../constants/actionTypes';
 import { logout, renew } from '../actions/userActions';
+import { API_URL } from '../constants/environments';
 
 const BEFORE_EXPIRE = 30 * 1000;
 
@@ -35,7 +36,7 @@ const getExpirationDelay = ({ validTo }) => {
 
 export function* fetchNewToken(token) {
   try {
-    const { data } = yield call(axios.post, '/api/user/renew', { token });
+    const { data } = yield call(axios.post, API_URL + '/api/user/renew', { token });
     yield put(renew(data));
     return parsePayload(data);
   } catch (err) {

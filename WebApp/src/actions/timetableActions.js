@@ -25,6 +25,8 @@ import {
 import data from './timetableData.json';
 import { loadExchangeRequests } from './exchangeActions';
 import { blockNumberToHour } from '../util/convertFunctions';
+import { API_URL} from '../constants/environments';
+import { PERSONALNUMBER } from '../util/routes';
 
 export function loadMyTimetable(userEmail) {
   return dispatch => {
@@ -33,7 +35,7 @@ export function loadMyTimetable(userEmail) {
     });
     axios({
       method: 'get',
-      url: '/api/student/getStudentTimetable/' + userEmail
+      url: API_URL + '/api/student/getStudentTimetable/' + userEmail
     })
       .then(res => {
         dispatch({
@@ -47,8 +49,7 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        window.location.replace("http://localhost:3000/personal-number");
-        // fallback if API is not running, TODO: remove in the future
+        //this.props.history.push(PERSONALNUMBER);
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
           payload: {
@@ -101,7 +102,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
+        url: API_URL + `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
       })
         .then(res => {
           dispatch({
@@ -158,7 +159,7 @@ export function chooseExchangeFromBlock(course) {
     payload: {
       course
     }
-  }  
+  }
 }
 
 export function exchangeConfirm(blockTo) {
@@ -191,31 +192,31 @@ export function exchangeConfirm(blockTo) {
         teacher: blockTo.teacher
       },
       StudentId: user.studentId
-    }    
+    }
 
     axios({
       method: 'post',
-      url: `/api/exchange/exchangeConfirm`,
+      url: API_URL + `/api/exchange/exchangeConfirm`,
       data: body
     })
-      .then((response) => { 
+      .then((response) => {
         var exchangeMade = response.data;
         if (exchangeMade === false) {
-          window.alert("Žiadosť o výmenu bola evidovaná.");          
-        } else {          
-          window.alert("Výmena bola vykonaná.");  
+          window.alert("Žiadosť o výmenu bola evidovaná.");
+        } else {
+          window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
         }
-        dispatch(hideCourseTimetable(bl.id));
-        dispatch(action);        
+        dispatch(hideCourseTimetable(bl.courseId));
+        dispatch(action);
         dispatch(loadExchangeRequests());
       })
       .catch(() => {
         window.alert("Pri vytváraní žiadosti nastala chyba.");
-        dispatch(hideCourseTimetable(bl.id));
+        dispatch(hideCourseTimetable(bl.courseId));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
-        });        
+        });
       });
   };
 }
@@ -227,7 +228,7 @@ export function removeBlock(body, userEmail) {
     });
     axios({
       method: 'delete',
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`
+      url: API_URL + `/api/student/removeBlock/${userEmail}/${body.id}`
     })
     .then(() =>{
       dispatch({
@@ -235,7 +236,7 @@ export function removeBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: API_URL + '/api/student/getStudentTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -262,7 +263,7 @@ export function addBlock(body, userEmail) {
     });
     axios({
       method: 'post',
-      url: `/api/student/addNewBlock`,
+      url: API_URL + `/api/student/addNewBlock`,
       data: body
     })
     .then(() =>{
@@ -271,7 +272,7 @@ export function addBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: API_URL + '/api/student/getStudentTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -298,7 +299,7 @@ export function editBlock(body, userEmail) {
     });
     axios({
       method: 'put',
-      url: `/api/student/editBlock`,
+      url: API_URL + '/api/student/editBlock',
       data: body
     })
     .then(() =>{
@@ -307,7 +308,7 @@ export function editBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: API_URL + '/api/student/getStudentTimetable/' + userEmail
       })
         .then(res => {
           dispatch({

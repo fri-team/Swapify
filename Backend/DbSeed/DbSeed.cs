@@ -25,13 +25,12 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
         private static readonly Guid OlegStudent3Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
 
-        public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
+        public static async Task CreateTestingUserAsync(IMongoDatabase database)
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<User>("users");            
+            var _userCollection = database.GetCollection<User>(nameof(User));
 
             string email = "oleg@swapify.com";
-            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            User oleg = _userCollection.Find(x => x.Email == email).SingleOrDefault();
             if (oleg == null)
             {
                 User user = new User
@@ -45,17 +44,17 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = OlegGuid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid, OlegGuid)
+                    Student = await CreateStudentAsync(database, OlegStudentGuid, OlegGuid)
                 };
-                
+
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                _userCollection.InsertOne(user);
             }
 
             email = "oleg2@swapify.com";
-            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            oleg = _userCollection.Find(x => x.Email == email).SingleOrDefault();
             if (oleg == null)
             {
                 User user = new User
@@ -69,17 +68,17 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg2Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
+                    Student = await CreateStudentAsync(database, OlegStudent2Guid, Oleg2Guid)
                 };
 
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                _userCollection.InsertOne(user);
             }
 
             email = "oleg3@swapify.com";
-            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            oleg = _userCollection.Find(x => x.Email == email).SingleOrDefault();
             if (oleg == null)
             {
                 User user = new User
@@ -93,28 +92,27 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg3Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
+                    Student = await CreateStudentAsync(database, OlegStudent3Guid, Oleg3Guid)
                 };
 
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                _userCollection.InsertOne(user);
             }
         }
 
-        public static async Task CreateTestingExchangesAsync(IServiceProvider serviceProvider)
+        public static async Task CreateTestingExchangesAsync(IServiceProvider serviceProvider, IMongoDatabase database)
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var blockExchangeCollection = dbService.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
-            var usersCollection = dbService.GetCollection<User>("users");
+            var blockExchangeCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
+            var usersCollection = database.GetCollection<User>("users");
+            var courseCollection = database.GetCollection<Course>(nameof(Course));
 
             string email = "oleg@swapify.com";
             User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
 
-            var courseService = serviceProvider.GetRequiredService<ICourseService>();
-            var course1 = await courseService.FindByNameAsync("technické prostriedky PC");
-            var course2 = await courseService.FindByNameAsync("multimediálne informačné systémy");
+            var course1 = await courseCollection.Find(x => x.CourseName.Equals("technické prostriedky PC")).FirstOrDefaultAsync();
+            var course2 = await courseCollection.Find(x => x.CourseName.Equals("multimediálne informačné systémy")).FirstOrDefaultAsync();
 
             if (oleg != null)
             {
@@ -124,7 +122,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     Status = ExchangeStatus.WaitingForExchange,
                     DateOfCreation = DateTime.Now,
                     BlockFrom = new Block
-                    {                                              
+                    {
                         CourseId = course1.Id,
                         Day = Day.Wednesday,
                         StartHour = 8
@@ -154,14 +152,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
                         Day = Day.Friday,
                         StartHour = 15
                     }
-                });                
+                });
             }
         }
 
-        public static async Task CreateTestingNotifications(IServiceProvider serviceProvider)
+        public static async Task CreateTestingNotifications(IServiceProvider serviceProvider, IMongoDatabase database)
         {
-            var db = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var notificationsCollection = db.GetCollection<Notification>(nameof(Notification));
+            var notificationsCollection = database.GetCollection<Notification>(nameof(Notification));
 
             // insert testing notification only if notifications collection is empty
             if (notificationsCollection.CountDocuments(notification => true) > 0)
@@ -210,10 +207,9 @@ namespace FRITeam.Swapify.Backend.DbSeed
             await notificationsCollection.InsertManyAsync(notifications);
         }
 
-        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid), Guid userId = default(Guid))
+        private static async Task<Student> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid), Guid userId = default(Guid))
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var studentCollection = dbService.GetCollection<Student>(nameof(Student));
+            var studentCollection = database.GetCollection<Student>(nameof(Student));
 
             Student student = new Student
             {
@@ -227,11 +223,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
             return student;
         }
 
-        public static void CreateTestingCourses(IServiceProvider serviceProvider)
+        public static void CreateTestingCourses(IServiceProvider serviceProvider, IMongoDatabase database)
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var courseCollection = dbService.GetCollection<Course>(nameof(Course));
-            
+            var courseCollection = database.GetCollection<Course>(nameof(Course));
+
             var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();
             var json = File.ReadAllText(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
@@ -247,9 +242,9 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 };
                 dic[crs.CourseCode] = course;
             }
-            long count = courseCollection.Count(x => x.Id != null);
-            if (count == 0)
-                courseCollection.InsertMany(dic.Select(x => x.Value));
+
+            courseCollection.DeleteMany(x => x != null);
+            courseCollection.InsertMany(dic.Select(x => x.Value));
         }
     }
 }

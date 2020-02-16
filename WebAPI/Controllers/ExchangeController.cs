@@ -4,8 +4,6 @@ using FRITeam.Swapify.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Logging;
@@ -14,6 +12,7 @@ using WebAPI.Models.Exchanges;
 
 namespace WebAPI.Controllers
 {
+    [AllowAnonymous]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class ExchangeController : BaseController

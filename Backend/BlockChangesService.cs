@@ -12,14 +12,16 @@ namespace FRITeam.Swapify.Backend
     public class BlockChangesService : IBlockChangesService
     {
         private readonly IMongoCollection<BlockChangeRequest> _blockChangesCollection;
-        
-        public BlockChangesService(IMongoDatabase database)
+
+        public BlockChangesService(IDatabaseSettings settings)
         {
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
             _blockChangesCollection = database.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="blockChangeRequest"></param>
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>

@@ -8,9 +8,11 @@ using WebAPI.Models.UserModels;
 using System.Collections.Generic;
 using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
+    [AllowAnonymous]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class StudentController : BaseController
@@ -110,7 +112,7 @@ namespace WebAPI.Controllers
 
             student.Timetable.AddNewBlock(block);
             await _studentService.UpdateStudentAsync(student);
-            //return block with new id 
+            //return block with new id
             return Ok(newBlockModel.TimetableBlock);
         }
 

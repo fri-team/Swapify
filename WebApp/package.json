@@ -28,6 +28,7 @@
     "open:cover": "npm run test:cover && opn ./coverage/lcov-report/index.html",
     "analyze-bundle": "babel-node ./tools/analyzeBundle.js"
   },
+  "proxy": "http://swapify.fri.uniza.sk:5000/",
   "author": "fri-team",
   "license": "MIT",
   "dependencies": {

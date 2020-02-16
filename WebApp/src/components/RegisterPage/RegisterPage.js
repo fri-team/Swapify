@@ -11,6 +11,7 @@ import { HOME } from '../../util/routes';
 //import Backdrop from '../Backdrop/Backdrop';
 //import {Document, Page} from 'react-pdf';
 //import PrivacyPage from '../PrivacyPolicyPage/PrivacyPolicyPage';
+import { API_URL } from '../../constants/environments';
 
 const validator = new FormValidator([
   {
@@ -135,7 +136,7 @@ class RegisterPage extends Component {
     if (validation.isValid) {
       axios({
         method: 'post',
-        url: '/api/user/register',
+        url: API_URL + '/api/user/register',
         data: body
       })
         .then(() => {
@@ -239,7 +240,7 @@ class RegisterPage extends Component {
             </div>
 
             <div className="FormField">
-              
+
             <input
                   className="FormField__Checkbox"
                   type="checkbox" name="hasAgreed"

@@ -26,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
+using FRITeam.Swapify.Entities.Notifications;
 
 namespace WebAPI
 {
@@ -49,19 +50,32 @@ namespace WebAPI
             _logger.LogInformation("Configuring services");
             if (Environment.IsDevelopment())
             {
-                _logger.LogInformation("Starting Mongo2Go");
+                /*_logger.LogInformation("Starting Mongo2Go");
                 Mongo2Go.MongoDbRunner.StartForDebugging();
                 MongoClientSettings settings = new MongoClientSettings();
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));*/
+                services.Configure<DatabaseSettings>(
+                Configuration.GetSection(nameof(DatabaseSettings)));
+
+                services.AddSingleton<IDatabaseSettings>(sp =>
+                    sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             }
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.WithOrigins("http://swapify.fri.uniza.sk")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
 
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);
 
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
@@ -76,14 +90,10 @@ namespace WebAPI
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
+            app.UseCors("CorsPolicy");
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-
                 CreateDbSeedAsync(app.ApplicationServices);
             }
 
@@ -138,7 +148,6 @@ namespace WebAPI
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.Add(new ProducesAttribute("application/json"));
@@ -166,14 +175,11 @@ namespace WebAPI
         {
             _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
-            if (Environment.IsDevelopment())
-                configuration.MongoDbSettings = new MongoDbSettings
-                {
-                    ConnectionString = Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString,
-                    DatabaseName = DatabaseName
-                };
-            else
-                configuration.MongoDbSettings = new MongoDbSettings();
+            configuration.MongoDbSettings = new MongoDbSettings
+            {
+                ConnectionString = "mongodb://swapify:MxQ14#8a@localhost:27017/Swapify",
+                DatabaseName = DatabaseName
+            };
 
             configuration.IdentityOptionsAction = options =>
             {
@@ -206,15 +212,19 @@ namespace WebAPI
             _logger.LogInformation("Creating DB seed");
             try
             {
+                IConfigurationSection databaseSettings = Configuration.GetSection("DatabaseSettings");
+                var client = new MongoClient(databaseSettings.GetSection("ConnectionString").Value);
+                var database = client.GetDatabase(databaseSettings.GetSection("DatabaseName").Value);
+
                 _logger.LogInformation("Creating testing user");
-                await DbSeed.CreateTestingUserAsync(serviceProvider);
+                await DbSeed.CreateTestingUserAsync(database);
                 _logger.LogInformation("Oleg created");
                 _logger.LogInformation("Creating courses");
-                DbSeed.CreateTestingCourses(serviceProvider);
+                DbSeed.CreateTestingCourses(serviceProvider, database);
                 _logger.LogInformation("Courses created");
-                await DbSeed.CreateTestingExchangesAsync(serviceProvider);
+                await DbSeed.CreateTestingExchangesAsync(serviceProvider, database);
                 _logger.LogInformation("Testing exchanges created.");
-                await DbSeed.CreateTestingNotifications(serviceProvider);
+                await DbSeed.CreateTestingNotifications(serviceProvider, database);
                 _logger.LogInformation("Testing notifications created.");
             }
             catch (Exception e)

@@ -8,6 +8,7 @@ import path from 'path';
 
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
+  'process.env.REACT_APP_API_URI': 'http://swapify.fri.uniza.sk:5000',
   __DEV__: false
 };
 

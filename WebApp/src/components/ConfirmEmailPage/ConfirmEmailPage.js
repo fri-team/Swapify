@@ -5,24 +5,25 @@ import { ElevatedBox, MacBackground } from '../';
 import { CircularProgress, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { HOME } from '../../util/routes';
+import { API_URL } from '../../constants/environments';
 
 class ConfirmEmailPage extends Component {
   state = {
     confirmationResult: ''
   };
 
-  render() {   
+  render() {
     return (
       <MacBackground>
         <ElevatedBox>
-          { 
+          {
             this.state.confirmationResult === '' ?
                 <CircularProgress  />
-            : null 
-          }          
+            : null
+          }
           <div>
             <p>{ this.state.confirmationResult }</p>
-            <Button 
+            <Button
               variant="text"
               size="small"
               component={Link} to={HOME}
@@ -43,16 +44,16 @@ class ConfirmEmailPage extends Component {
       userId: userId,
       token: token
     };
-    
+
     axios({
       method: 'post',
-      url: '/api/user/confirmEmail',
+      url: API_URL + '/api/user/confirmEmail',
       data
     })
-    .then(() => {      
+    .then(() => {
       this.setState({confirmationResult: "Emailová adresa bola potvrdená" })
     })
-    .catch(() => {      
+    .catch(() => {
       this.setState({confirmationResult: "Pri potvrdzovaní emailovej adresy nastala chyba" })
     });
   }

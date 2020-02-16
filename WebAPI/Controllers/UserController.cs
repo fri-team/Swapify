@@ -14,6 +14,7 @@ using System.Net;
 
 namespace WebAPI.Controllers
 {
+    [AllowAnonymous]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class UserController : BaseController
@@ -156,7 +157,7 @@ namespace WebAPI.Controllers
             if (!user.EmailConfirmed)
             {
                 _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
-                return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
+                return ErrorResponse("Pre prihlásenie prosím potvrď svoju emailovú adresu.");
             }
 
             var token = await _userService.Authenticate(body.Email, body.Password);
