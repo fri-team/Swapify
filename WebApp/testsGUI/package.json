@@ -1,0 +1,25 @@
+{
+  "name": "testsGUI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "codecept.conf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/nightmare": "^2.10.4",
+    "codeceptjs-assert": "0.0.2",
+    "colors": "^1.3.3",
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jquery": "^3.4.1",
+    "jquery-ui-dist": "^1.12.1",
+    "sliced": "^1.0.1"
+  },
+  "prettier": {
+    "printWidth": 180
+  }
+}
