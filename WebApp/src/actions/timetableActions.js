@@ -146,6 +146,12 @@ export function hideCourseTimetable(courseId = null) {
   };
 }
 
+export function hideCourseTimetableAddingMode() {
+  return {
+    type: HIDE_COURSE_TIMETABLE
+  };
+}
+
 export function cancelExchangeMode(){
   return {
     type: CANCEL_EXCHANGE_MODE
