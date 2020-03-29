@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import { dayHourToString } from '../../util/dateTimeFormatter';
 import { CardHeader } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+// import AddSubjectIcon from '../svg/AddSubjectIcon';
 
 import './Sidebar.scss';
 
@@ -49,6 +50,10 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
             </ListItem>
 
           ))}
+          <Tooltip title="Pridať predmet do rozvrhu" placement="top">
+            {/* <AddSubjectIcon className="icon" position="static" placement="right" /> */}
+            <img src="https://img.icons8.com/ios/50/000000/add.png" onClick={onCourseToggle()}/>
+          </Tooltip>
         </List>
       }
       {value === 1 &&
