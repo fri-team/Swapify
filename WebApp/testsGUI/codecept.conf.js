@@ -1,5 +1,5 @@
 exports.config = {
-    tests: './**/*.spec.js',
+    tests: './scenarios/*.spec.js',
     output: './output',
     helpers: {
         Puppeteer: {
@@ -21,9 +21,6 @@ exports.config = {
         PuppeteerWrap: {
             require: './puppeteer_helper.js',
         },
-        AssertWrapper: {
-            require: './node_modules/codeceptjs-assert',
-        },
     },
     plugins: {
         autoDelay: {
@@ -31,13 +28,11 @@ exports.config = {
             delayAfter: 200, // default delay
             methods: ['click', 'say', 'see', 'awaitRequests'],
         },
-        plugins: {
-            retryFailedStep: {
-                enabled: true
-            },
-            screenshotOnFail: {
-                enabled: true
-            }
+        retryFailedStep: {
+            enabled: true
+        },
+        screenshotOnFail: {
+            enabled: true
         }
     },
     include: {
