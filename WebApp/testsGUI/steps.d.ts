@@ -127,7 +127,7 @@ declare const codeceptjs: any;
 
 declare namespace CodeceptJS {
   export interface I {
-    Nightmare(options: string) : void,
+    Puppeteer(options: string) : void,
     grabHAR() : Promise<string>,
     saveHAR(fileName: string) : void,
     resetHAR() : void,
@@ -241,7 +241,7 @@ declare namespace CodeceptJS {
     debug(msg: string) : void,
     debugSection(section: string, msg: string) : void,
     realMouseover(selector: string) : void,
-    getNightmare() : void,
+    getPuppeteer() : void,
     makeRequest(method: string, url: string, data: string) : void,
     exec(fn: Function, args: string) : void,
     realMouseOver(selector: string) : void,

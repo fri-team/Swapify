@@ -2,7 +2,7 @@ exports.config = {
     tests: './**/*.spec.js',
     output: './output',
     helpers: {
-        Nightmare: {
+        Puppeteer: {
             url: 'http://localhost:3000',
             show: true,
             restart: true,
@@ -18,8 +18,8 @@ exports.config = {
             width: 1890,
             waitForAction: 40, // default delay after each command
         },
-        NightmareWrap: {
-            require: './nightmare_helper.js',
+        PuppeteerWrap: {
+            require: './puppeteer_helper.js',
         },
         AssertWrapper: {
             require: './node_modules/codeceptjs-assert',
@@ -31,6 +31,14 @@ exports.config = {
             delayAfter: 200, // default delay
             methods: ['click', 'say', 'see', 'awaitRequests'],
         },
+        plugins: {
+            retryFailedStep: {
+                enabled: true
+            },
+            screenshotOnFail: {
+                enabled: true
+            }
+        }
     },
     include: {
         I: './steps_file.js',
