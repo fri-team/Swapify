@@ -6,7 +6,7 @@ function send(_event) {
     ipc.send.apply(ipc, arguments);
 }
 
-window.__nightmare = {
+window.__puppeteer = {
     resolve(value) {
         send('response', value);
     },

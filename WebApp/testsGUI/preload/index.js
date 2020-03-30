@@ -1,4 +1,4 @@
-require('./nightmare-preload');
+require('./puppeteer-preload');
 
 require('./helpers');
 

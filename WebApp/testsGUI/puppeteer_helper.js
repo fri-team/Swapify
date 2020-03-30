@@ -1,15 +1,15 @@
 /* eslint-disable class-methods-use-this */
 const colors = require('colors');
 
-class Nightmare extends Helper {
+class Puppeteer extends Helper {
     _init() { }
 
     async realMouseover(selector) {
-        const { browser } = this.helpers.Nightmare;
+        const { browser } = this.helpers.Puppeteer;
     }
 
-    async getNightmare() {
-        return this.helpers.Nightmare;
+    async getPuppeteer() {
+        return this.helpers.Puppeteer;
     }
 
     async makeRequest(method, url, data) {
@@ -41,7 +41,7 @@ class Nightmare extends Helper {
         if (!fn || typeof fn !== 'function') {
             return null;
         }
-        const { browser } = this.helpers.Nightmare;
+        const { browser } = this.helpers.Puppeteer;
         return browser.evaluate(
             (fnString, fnArgs, done) => {
                 const fn = eval(fnString);
@@ -86,4 +86,4 @@ class Nightmare extends Helper {
     // use: this.helpers['helperName']
 }
 
-module.exports = Nightmare;
+module.exports = Puppeteer;
