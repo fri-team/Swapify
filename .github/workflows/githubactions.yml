@@ -1,0 +1,40 @@
+name: CI github actions
+on:
+  push:
+  #  branches: 
+  #    - develop
+  pull_request:    
+
+jobs:  
+  build-and-test:
+    name: Start of build
+    runs-on: ubuntu-latest #windows-latest
+    
+    steps:
+    - name: step#1 Checkout
+      uses: actions/checkout@v2
+        
+    - name: stop#X Run test script
+      run: |
+        echo 'print me dir'
+        ls -l
+    
+    - name: step#2 Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '2.2.108' #newest '3.1.100'?
+    - name: step#3 Build with dotnet
+      run: dotnet build --configuration Release #<my project>
+      
+    - name: step#4 Run tests
+      run: dotnet test --configuration Release #<my project>
+    
+    - name: step#5 Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.11.1
+    - run: npm install
+    - run: npm run build
+    - run: npm test
+    
+    
