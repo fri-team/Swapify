@@ -73,7 +73,7 @@ class PersonalNumber extends React.Component {
                       id="personalNumber"
                       value={this.state.personalNumber}
                       onChange={this.handleSubmit}
-                      label="Zadajte osobné čislo"
+                      label="Zadajte osobné číslo"
                       placeholder="Príklad 555000"
                       margin="normal"
                       fullWidth

@@ -58,3 +58,10 @@ Scenario('[LOGIN04] Invalid email, invalid password is entered.', async (I) => {
     I.click(locate('button').withText('Prihlásiť sa'));
     I.see('Zadané heslo nie je správne.');
 });
+
+Scenario('[LOGIN06] Verify if user is not able to login until he confirms his email address.', async (I) => {
+    I.fillField('input[type="email"]', 'Nikita@swapify.com');
+    I.fillField('input[type="password"]', 'Heslo123');
+    I.click(locate('button').withText('Prihlásiť sa'));
+    I.see('Najskôr prosím potvrď svoju emailovú adresu.');
+});
