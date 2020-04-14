@@ -115,7 +115,7 @@ namespace FRITeam.Swapify.Backend
                 if (_course.ShortCut.Substring(0, course.CourseCode.Length).Equals(course.CourseCode))
                     return _course.ShortCut;
             }
-            return "";
+            return course.CourseCode;
         }
 
         public async Task<Course> FindCourseTimetableFromProxy(Guid guid)

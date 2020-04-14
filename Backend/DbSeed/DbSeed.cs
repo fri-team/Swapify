@@ -21,9 +21,11 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
         private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
         private static readonly Guid Oleg3Guid = Guid.Parse("7c9e6679-7425-40de-944b-e07fc1f90ae7");
+        private static readonly Guid NikitaGuid = Guid.Parse("9D10B8E1-25EB-44F1-AD54-6EFCB4809FD1");
         private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
         private static readonly Guid OlegStudent3Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
+        private static readonly Guid NikitaStudentGuid = Guid.Parse("612D23A9-DE25-4EA6-95EA-9944829E3C14");
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -94,6 +96,30 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     EmailConfirmed = true,
                     SecurityStamp = Oleg3Guid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
+                };
+
+                var password = new PasswordHasher<User>();
+                var hashed = password.HashPassword(user, "Heslo123");
+                user.PasswordHash = hashed;
+                usersCollection.InsertOne(user);
+            }
+
+            email = "nikita@swapify.com";
+            User nikita = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            if (nikita == null)
+            {
+                User user = new User
+                {
+                    Id = NikitaGuid,
+                    Name = "Nikita",
+                    Surname = "Dementov",
+                    Email = email,
+                    NormalizedEmail = email.ToUpper(),
+                    UserName = email,
+                    NormalizedUserName = email.ToUpper(),
+                    EmailConfirmed = false,
+                    SecurityStamp = NikitaGuid.ToString("D"),
+                    Student = await CreateStudentAsync(serviceProvider, NikitaStudentGuid, NikitaGuid)
                 };
 
                 var password = new PasswordHasher<User>();
