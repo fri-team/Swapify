@@ -30,10 +30,10 @@ jobs:
         cd WebApp
         npm install
 
-    - name: step#7 npm test
-      run: |
-        cd WebApp
-        npm test
+#    - name: step#7 npm test
+#      run: |
+#        cd WebApp
+#        npm test
         
     - name: step#8 gui tests
       run: |
