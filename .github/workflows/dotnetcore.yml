@@ -21,14 +21,14 @@ jobs:
     - name: step#4 Run tests
       run: dotnet test ./Tests/BackendTest/BackendTest.csproj #dotnet test --verbosity normal
     
-#    - name: step#5 Setup node
-#      uses: actions/setup-node@v1
-#      with:
-#        node-version: 12.11.1
-#    - name: step#6 npm install
-#      run: |
-#        cd WebApp
-#        npm install
+    - name: step#5 Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.11.1
+    - name: step#6 npm install
+      run: |
+        cd WebApp
+        npm install
 
 #    - name: step#7 npm test
 #      run: |
@@ -38,5 +38,5 @@ jobs:
     - name: step#8 gui tests
       run: |
         cd WebApp/testsGUI
-        codecept.conf.js run
+        npx codeceptjs run
         
