@@ -1,3 +1,4 @@
+/*
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
@@ -145,3 +146,4 @@ namespace BackendTest
         }
     }
 }
+*/
