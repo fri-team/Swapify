@@ -1,4 +1,3 @@
-/*
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Entities;
@@ -32,7 +31,7 @@ namespace BackendTest
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
-
+/*
         [Fact]
         public async Task AssingTimetableToStudent()
         {
@@ -60,7 +59,8 @@ namespace BackendTest
 
             student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
         }
-
+*/
+/*
         [Fact]
         public async Task AddStudentTest()
         {
@@ -97,7 +97,7 @@ namespace BackendTest
             st.Timetable.AllBlocks.Last().StartHour.Should().Be(16);
             st.Timetable.AllBlocks.Last().BlockType.Should().Be(BlockType.Lecture);
         }
-
+*/
 
 
         [Fact]
@@ -131,4 +131,3 @@ namespace BackendTest
         }
     }
 }
-*/
