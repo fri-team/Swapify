@@ -31,7 +31,7 @@ namespace WebAPI
 {
     public class Startup
     {
-        private const string DatabaseName = "Swapify";
+        private const string DatabaseName = "SwapifyDB";
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
@@ -42,10 +42,12 @@ namespace WebAPI
             Environment = environment;
             DbRegistration.Init();
             _logger = loggerFactory.CreateLogger<Startup>();
+            //Console.WriteLine("Envinronment: " + environment.EnvironmentName);
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine("DEBUG: ConfigureServices - start");
             _logger.LogInformation("Configuring services");
             if (Environment.IsDevelopment())
             {
@@ -72,10 +74,13 @@ namespace WebAPI
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
+            Console.WriteLine("DEBUG: ConfigureServices - end");
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            Console.WriteLine("DEBUG: ConfigureServices - start");
+            Console.WriteLine("Envinronment: " + env.EnvironmentName);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -169,11 +174,15 @@ namespace WebAPI
             if (Environment.IsDevelopment())
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString,
+                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString, // StartForDebugging()
                     DatabaseName = DatabaseName
                 };
             else
-                configuration.MongoDbSettings = new MongoDbSettings();
+                configuration.MongoDbSettings = new MongoDbSettings
+                {
+                    ConnectionString = "mongodb://localhost/" + DatabaseName,
+                    DatabaseName = DatabaseName
+                };
 
             configuration.IdentityOptionsAction = options =>
             {

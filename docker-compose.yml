@@ -1,16 +1,46 @@
 version: '3'
 services:
-  app:
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: webserver
+  #   restart: unless-stopped
+  #   ports:
+  #     - 0.0.0.0:80:80
+  #     - 0.0.0.0:443:443
+  #   volumes:
+  #     - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/nginx.conf
+  #     - /home/ubuntu/SwapifySSL:/etc/ssl/private
+  #   expose:
+  #     - 80
+  #     - 443
+  swapify:
     build:
       context: .
       dockerfile: Dockerfile
-    image: app
+    image: swapify-app
+    container_name: swapify
     volumes:
+      # - /home/ubuntu/Swapify/:
       - ./logs:/app/logs
+    restart: unless-stopped
     ports:
-      - '80:80'
-  ci:
-    build:
-      context: .
-      dockerfile: Dockerfile-CI
-    image: tests
+      - 80:80
+      # - 0.0.0.0:3000:3000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - BaseUrl=http://0.0.0.0:3000/
+      - JwtSecret=CchangOrDNChanngSecr
+      - NODE_ENV=production
+    # expose:
+    #   - 80
+      # - BaseUrl=http://18.184.180.36:80/
+  # ci:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-CI
+  #   image: tests
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Production
+  #     - BaseUrl=http://18.184.180.36:80/
+  #     - JwtSecret=CchangOrDNChanngSecr
+  #     - NODE_ENV=production
