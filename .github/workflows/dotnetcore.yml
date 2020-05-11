@@ -11,6 +11,20 @@ jobs:
     - name: step#1 Checkout
       uses: actions/checkout@v2
     
+    - name: step#XXX DIR
+      run: |
+        dir
+        cd WebAPI
+        dir
+        cd bin
+        dir
+        cd Debug
+        dir
+        cd netcoreapp2.0
+        dir        
+        cd ../../../../../WebApp
+        dir
+    
     - name: step#2 Setup dotnet
       uses: actions/setup-dotnet@v1
       with:
