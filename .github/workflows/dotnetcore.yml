@@ -37,7 +37,10 @@ jobs:
         
     - name: step#8 gui tests
       run: |
-        cd WebApp/testsGUI
+        dotnet WebAPI/bin/Debug/netcoreapp2.0/WebAPI.dll        
+        cd ../../../../../WebApp
+        npm start
+        cd testsGUI
         npm install
         npx codeceptjs run
         
