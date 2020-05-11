@@ -38,5 +38,6 @@ jobs:
     - name: step#8 gui tests
       run: |
         cd WebApp/testsGUI
+        npm install
         npx codeceptjs run
         
