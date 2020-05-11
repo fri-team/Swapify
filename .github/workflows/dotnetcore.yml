@@ -29,7 +29,7 @@ jobs:
         dir
         cd netcoreapp2.0
         dir        
-        cd ../../../../../WebApp
+        cd ../../../../WebApp
         dir
       
     - name: step#4 Run tests
@@ -52,7 +52,7 @@ jobs:
     - name: step#8 gui tests
       run: |
         dotnet WebAPI/bin/Debug/netcoreapp2.0/WebAPI.dll        
-        cd ../../../../../WebApp
+        cd ../../../../WebApp
         npm start
         cd testsGUI
         npm install
