@@ -40,7 +40,8 @@ namespace FRITeam.Swapify.APIWrapper
                         string teacherName = block["u"].ToString();
                         string roomName = block["r"].ToString();
                         string subjectShortcut = block["k"].ToString();
-                        string subjectName = block["s"].ToString();
+                        string subjectNameHelper = block["s"].ToString();
+                        string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);
                         var hourContent = new ScheduleHourContent(int.Parse(block["dw"].ToString()) - 1, int.Parse(block["b"].ToString()), false,
                                                          lessonType, teacherName, roomName,
                                                          subjectShortcut, subjectName, SubjectType.None);

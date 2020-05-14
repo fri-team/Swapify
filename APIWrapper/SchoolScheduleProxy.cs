@@ -31,7 +31,8 @@ namespace FRITeam.Swapify.APIWrapper
 
         public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
         {
-            return CallScheduleContentApi(4, subjectCode);
+            string addition = ",5,1,1" + getCurrentSemesterShortCut();
+            return CallScheduleContentApi(4, subjectCode + addition);
         }
 
         private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
