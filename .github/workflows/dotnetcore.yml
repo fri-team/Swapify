@@ -30,17 +30,20 @@ jobs:
         cd WebApp
         npm install
 
+
+
 #    - name: step#7 npm test
 #      run: |
 #        cd WebApp
 #        npm test
         
-#    - name: step#8 gui tests
-#      run: |
-#        dotnet WebAPI/bin/Debug/netcoreapp2.0/WebAPI.dll        
-#        cd ../../../../WebApp
-#        npm start
-#        cd testsGUI
-#        npm install
-#        npx codeceptjs run
-        
+    - name: step#8 gui tests
+      run: |
+        dotnet WebAPI/bin/Debug/netcoreapp2.0/WebAPI.dll        
+        cd ../../../../WebApp
+        npm start
+        cd testsGUI
+        npm install
+        npx codeceptjs run
+    env:
+        ASPNETCORE_ENVIRONMENT: Development
