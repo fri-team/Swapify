@@ -46,4 +46,4 @@ jobs:
         npm install
         npx codeceptjs run
     env:
-        ASPNETCORE_ENVIRONMENT: Development
+        ASPNETCORE_ENVIRONMENT: Production
