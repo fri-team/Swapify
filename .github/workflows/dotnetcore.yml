@@ -11,15 +11,15 @@ jobs:
     - name: step#1 Checkout
       uses: actions/checkout@v2
     
-#    - name: step#2 Setup dotnet
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: '3.1.100' #'2.2.108' #'3.1.100'
-#    - name: step#3 Build with dotnet
-#      run: dotnet build ./Swapify.sln #--configuration Release
+    - name: step#2 Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: '3.1.100' #'2.2.108' #'3.1.100'
+    - name: step#3 Build with dotnet
+      run: dotnet build ./Swapify.sln #--configuration Release
       
-#    - name: step#4 Run tests
-#      run: dotnet test ./Tests/BackendTest/BackendTest.csproj #dotnet test --verbosity normal
+    - name: step#4 Run tests
+      run: dotnet test ./Tests/BackendTest/BackendTest.csproj #dotnet test --verbosity normal
     
     - name: step#5 Setup node
       uses: actions/setup-node@v1
