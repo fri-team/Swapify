@@ -26,9 +26,9 @@ FROM microsoft/aspnetcore:2.0 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
-EXPOSE 3000
+EXPOSE 80
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
-# EXPOSE 80
+# EXPOSE 300
 
 # # Pull down an image from Docker Hub that includes the .NET core SDK: 
 # # https://hub.docker.com/_/microsoft-dotnet-core-sdk

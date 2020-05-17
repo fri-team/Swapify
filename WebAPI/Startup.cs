@@ -42,7 +42,6 @@ namespace WebAPI
             Environment = environment;
             DbRegistration.Init();
             _logger = loggerFactory.CreateLogger<Startup>();
-            //Console.WriteLine("Envinronment: " + environment.EnvironmentName);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -112,6 +111,16 @@ namespace WebAPI
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
+            //if (mailSettings["Username"] == "<login>")
+            //{
+            //    mailSettings["Username"] = System.Environment.GetEnvironmentVariable("MAIL_USERNAME");
+            //    mailSettings["Password"] = System.Environment.GetEnvironmentVariable("MAIL_PASSWORD");
+            //    mailSettings["SmtpServer"] = System.Environment.GetEnvironmentVariable("SMTP_SERVER");
+            //    mailSettings["SmtpPort"] = System.Environment.GetEnvironmentVariable("SMTP_PORT");
+            //    mailSettings["SenderEmail"] = System.Environment.GetEnvironmentVariable("SENDER_EMAIL");
+            //    mailSettings["FeedbackEmail"] = System.Environment.GetEnvironmentVariable("FEEDBACK_EMAIL");
+            //}
+
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
