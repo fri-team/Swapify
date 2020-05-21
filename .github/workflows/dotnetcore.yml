@@ -32,6 +32,7 @@ jobs:
         cd WebApp
         npm install
 
+#Temporary disabled FE tests, because of automated gui test. FE and BE has to run, but BE wont run because of incorrect default mail settings in appsettings.json file.
 #    - name: 7. npm test
 #      run: |
 #        cd WebApp
