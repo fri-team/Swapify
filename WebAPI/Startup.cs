@@ -183,13 +183,13 @@ namespace WebAPI
             if (Environment.IsDevelopment())
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString, // StartForDebugging()
+                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
                     DatabaseName = DatabaseName
                 };
             else
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = "mongodb://localhost/" + DatabaseName,
+                    ConnectionString = "mongodb://mongodb:27017/" + DatabaseName,
                     DatabaseName = DatabaseName
                 };
 
