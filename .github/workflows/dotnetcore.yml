@@ -1,0 +1,50 @@
+name: CI github actions
+on:
+  push: #Workflow runs are triggered on every push
+
+jobs:  
+  build-and-test:
+    name: github-actions_build-and-test #Name of test
+    runs-on: windows-latest #ubuntu-latest #Setting operating system
+    
+    steps:
+    - name: 1. Checkout github actions
+      uses: actions/checkout@v2
+    
+    - name: 2. Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: '3.1.100' #'2.2.108'
+    
+    - name: 3. Build dotnet
+      run: dotnet build ./Swapify.sln #--configuration Release
+      
+    - name: 4. Run BE tests
+      run: dotnet test ./Tests/BackendTest/BackendTest.csproj #dotnet test --verbosity normal
+    
+    - name: 5. Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.11.1
+    
+    - name: 6. npm install
+      run: |
+        cd WebApp
+        npm install
+
+#Temporary disabled FE tests, because of automated gui test. FE and BE has to run, but BE wont run because of incorrect default mail settings in appsettings.json file.
+#    - name: 7. npm test
+#      run: |
+#        cd WebApp
+#        npm test
+        
+#    - name: 8. gui tests
+#      run: |
+#        dotnet WebAPI/bin/Debug/netcoreapp2.0/WebAPI.dll        
+#        cd ../../../../WebApp
+#        npm start
+#        cd testsGUI
+#        npm install
+#        npx codeceptjs run
+#    env:
+#        ASPNETCORE_ENVIRONMENT: Development
