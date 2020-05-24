@@ -51,13 +51,7 @@ namespace FRITeam.Swapify.Backend
 
         public List<Course> FindByStartName(string courseStartsWith)
         {
-            var filter = "{CourseName: /" + courseStartsWith + "/ }"; //regex for search on every position in course name
             return _courseCollection.Find(x => x.CourseName.ToLower().Contains(courseStartsWith.ToLower())).ToList();
-            // Might want to order selection
-//            var temp = _courseCollection.Find(x => x.CourseName.ToLower().Contains(courseStartsWith.ToLower())).ToList();
-//            temp.OrderBy(x => x.CourseName.IndexOf(courseStartsWith)).ThenBy(x =>x.CourseName).ToList();
-//            return temp;
-//            return _courseCollection.Find(filter).ToList();
         }
 
         /// <summary>
