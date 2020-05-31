@@ -32,6 +32,51 @@ namespace WebAPI.Controllers
             _courseService = courseService;
         }
 
+        [HttpPost("initializeTimetableForTestUsers")]
+        public async Task<IActionResult> InitializeTimetableForTestUsers([FromBody] StudentModel body)
+        {
+            _logger.LogInformation($"[TEST] Setting test timetable for test student: {body.Email}.");
+            User user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogError($"[TEST] Test user with email: {body.Email} does not exist.");
+                return ErrorResponse($"User with email: {body.Email} does not exist.");
+            }
+            var timetable = _schoolScheduleProxy.GetFromJsonFile("TestTimetable.json");
+            if (timetable == null)
+                return ErrorResponse("Loading of test timetable failed.");
+
+            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
+
+            Student student = user.Student;
+            if (student == null)
+            {
+                student = new Student
+                {
+                    PersonalNumber = "000000",
+                    UserId = user.Id
+                };
+                await _studentService.AddAsync(student);
+
+                user.Student = student;
+
+                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+                await _userService.UpdateUserAsync(user);
+                return Ok(student.Timetable);
+            }
+            if (student.PersonalNumber != null && student.PersonalNumber.Equals("000000"))
+            {
+                return Ok(student.Timetable);
+            }
+            else
+            {
+                student.PersonalNumber = "000000";
+                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+                await _userService.UpdateUserAsync(user);
+                return Ok(student.Timetable);
+            }
+        }
+
         [HttpPost("setStudentTimetableFromPersonalNumber")]
         public async Task<IActionResult> SetStudentTimetableFromPersonalNumber([FromBody] StudentModel body)
         {
