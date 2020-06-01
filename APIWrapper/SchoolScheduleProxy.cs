@@ -35,6 +35,18 @@ namespace FRITeam.Swapify.APIWrapper
             return CallScheduleContentApi(4, subjectCode + addition);
         }
 
+        public IEnumerable<ScheduleHourContent> GetFromJsonFile(string fileName)
+        {
+            var myJson = "";
+
+            using (StreamReader file = File.OpenText($@"..\Tests\{fileName}"))
+            {
+                myJson = file.ReadToEnd();
+            }
+
+            return ResponseParser.ParseResponse(myJson);
+        }
+
         private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
         {
             string address =  $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";

@@ -10,7 +10,8 @@
     "codeceptjs-assert": "0.0.4",
     "jquery": "^3.4.1",
     "jquery-ui-dist": "^1.12.1",
-    "puppeteer": "^2.1.1"
+    "puppeteer": "^2.1.1",
+    "unirest": "^0.6.0"
   },
   "prettier": {
     "printWidth": 180

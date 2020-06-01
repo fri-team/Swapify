@@ -2,9 +2,17 @@ exports.config = {
   tests: "./scenarios/*.spec.js",
   output: "./output",
   helpers: {
+    REST: {
+      endpoint: "http://localhost:3000",
+      defaultHeaders: {
+        'Auth': '11111',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    },
     Puppeteer: {
       url: "http://localhost:3000",
-      show: false,
+      show: true,
       restart: true,
       webPreferences: {
         preload: require.resolve("./preload")
