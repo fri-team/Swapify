@@ -1,0 +1,48 @@
+name: CI github actions
+on:
+  push:
+
+jobs:  
+  build-and-test:
+    name: github_actions_build-and-test
+    runs-on: windows-latest
+    
+    steps:
+    - name: 1. Checkout github actions
+      uses: actions/checkout@v2
+    
+    - name: 2. Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: '3.1.100'
+    
+    - name: 3. Build dotnet
+      run: dotnet build ./Swapify.sln
+      
+    - name: 4. Run BackendTest
+      run: dotnet test Tests/BackendTest/BackendTest.csproj
+      
+#    - name: 5. Run IntegrationTest
+#      run: dotnet test Tests/IntegrationTest/IntegrationTest.csproj
+    
+    - name: 6. Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.11.1
+    
+    - name: 7. npm install
+      run: |
+        cd WebApp
+        npm install
+            
+    - name: 8. npm test
+      run: |
+        cd WebApp
+        npm test -t src/
+
+#Temporary disabled automated gui test
+#    - name: 9. gui tests
+#      run: |
+#        cd WebApp/testsGUI
+#        npm install
+#        npx codeceptjs run
