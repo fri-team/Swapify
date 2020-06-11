@@ -1,4 +1,4 @@
-name: CI github actions
+name: GitHub Actions
 on:
   push:
 
@@ -21,28 +21,18 @@ jobs:
       
     - name: 4. Run BackendTest
       run: dotnet test Tests/BackendTest/BackendTest.csproj
-      
-#    - name: 5. Run IntegrationTest
-#      run: dotnet test Tests/IntegrationTest/IntegrationTest.csproj
     
-    - name: 6. Setup node
+    - name: 5. Setup node
       uses: actions/setup-node@v1
       with:
         node-version: 12.11.1
     
-    - name: 7. npm install
+    - name: 6. npm install
       run: |
         cd WebApp
         npm install
             
-    - name: 8. npm test
+    - name: 7. npm test
       run: |
         cd WebApp
         npm test -t src/
-
-#Temporary disabled automated gui test
-#    - name: 9. gui tests
-#      run: |
-#        cd WebApp/testsGUI
-#        npm install
-#        npx codeceptjs run

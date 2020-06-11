@@ -1,6 +1,8 @@
 # Swapify
 
-[![Build Status](https://travis-ci.org/fri-team/Swapify.svg?branch=master)](https://travis-ci.org/fri-team/Swapify)
+
+[![Build Status](https://github.com/fri-team/Swapify/workflows/GitHub%20Actions/badge.svg?branch=develop)](https://github.com/fri-team/Swapify/actions?query=branch%3Adevelop)
+<!--outdated travis[![Build Status](https://travis-ci.org/fri-team/Swapify.svg?branch=master)](https://travis-ci.org/fri-team/Swapify)-->
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Swapify&metric=alert_status)](https://sonarcloud.io/dashboard?id=Swapify)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Swapify&metric=security_rating)](https://sonarcloud.io/dashboard?id=Swapify)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Swapify&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Swapify)
