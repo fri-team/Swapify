@@ -1,0 +1,38 @@
+name: GitHub Actions
+on:
+  push:
+
+jobs:  
+  build-and-test:
+    name: github_actions_build-and-test
+    runs-on: windows-latest
+    
+    steps:
+    - name: 1. Checkout github actions
+      uses: actions/checkout@v2
+    
+    - name: 2. Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: '3.1.100'
+    
+    - name: 3. Build dotnet
+      run: dotnet build ./Swapify.sln
+      
+    - name: 4. Run BackendTest
+      run: dotnet test Tests/BackendTest/BackendTest.csproj
+    
+    - name: 5. Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.11.1
+    
+    - name: 6. npm install
+      run: |
+        cd WebApp
+        npm install
+            
+    - name: 7. npm test
+      run: |
+        cd WebApp
+        npm test -t src/

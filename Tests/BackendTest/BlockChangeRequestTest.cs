@@ -32,7 +32,8 @@ namespace BackendTest
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
+            var schoolCourseProxy = new SchoolCourseProxy();
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy, schoolCourseProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
             Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);
@@ -90,7 +91,8 @@ namespace BackendTest
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy);
+            var schoolCourseProxy = new SchoolCourseProxy();
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy, schoolCourseProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
 

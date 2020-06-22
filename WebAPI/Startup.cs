@@ -26,6 +26,8 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace WebAPI
 {
@@ -33,10 +35,10 @@ namespace WebAPI
     {
         private const string DatabaseName = "SwapifyDB";
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
             Environment = environment;
@@ -74,9 +76,19 @@ namespace WebAPI
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
             Console.WriteLine("DEBUG: ConfigureServices - end");
+
+            services.AddControllersWithViews();
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                //configuration.RootPath = "/";
+                //configuration.RootPath = "WebApp/build";
+                configuration.RootPath = "wwwroot";
+            });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             Console.WriteLine("DEBUG: ConfigureServices - start");
             Console.WriteLine("Envinronment: " + env.EnvironmentName);
@@ -90,18 +102,38 @@ namespace WebAPI
 
                 CreateDbSeedAsync(app.ApplicationServices);
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
+            //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseRouting();
+
             app.UseAuthentication();
-            app.UseMvc();
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+
+            app.UseEndpoints(endpoints =>
             {
-                builder.UseMvc(routes =>
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
+
+            app.UseSpa(spa =>
+            {
+                //spa.Options.SourcePath = "/";
+                spa.Options.SourcePath = "wwwroot";
+
+                if (env.IsDevelopment())
                 {
-                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
-                });
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
 
@@ -111,15 +143,6 @@ namespace WebAPI
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
-            //if (mailSettings["Username"] == "<login>")
-            //{
-            //    mailSettings["Username"] = System.Environment.GetEnvironmentVariable("MAIL_USERNAME");
-            //    mailSettings["Password"] = System.Environment.GetEnvironmentVariable("MAIL_PASSWORD");
-            //    mailSettings["SmtpServer"] = System.Environment.GetEnvironmentVariable("SMTP_SERVER");
-            //    mailSettings["SmtpPort"] = System.Environment.GetEnvironmentVariable("SMTP_PORT");
-            //    mailSettings["SenderEmail"] = System.Environment.GetEnvironmentVariable("SENDER_EMAIL");
-            //    mailSettings["FeedbackEmail"] = System.Environment.GetEnvironmentVariable("FEEDBACK_EMAIL");
-            //}
 
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");

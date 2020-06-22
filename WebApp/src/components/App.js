@@ -31,12 +31,13 @@ export default class App extends Component {
             <Route path={PERSONALNUMBER} component={onlyAuth(PersonalNumber)} />
             <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
             <Route path={ABOUTUS} component={onlyNotAuth(AboutUsPage)} />
-            <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
             <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />
-            <Route path={SETNEWPASSWORD} component={onlyNotAuth(SetNewPasswordPage)} />            
-            <Route path={PRIVACYPOLICY} component={onlyNotAuth(PrivacyPolicyPage)} />
+            <Route path={SETNEWPASSWORD} component={onlyNotAuth(SetNewPasswordPage)} />
+            <Route path={PRIVACYPOLICY} component={onlyNotAuth(PrivacyPolicyPage)} /> 
+            <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
             <Route component={NotFoundPage} />
           </Switch>
+          
         </div>
       </BrowserRouter>
     );

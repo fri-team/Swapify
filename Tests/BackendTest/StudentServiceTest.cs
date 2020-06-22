@@ -36,7 +36,8 @@ namespace BackendTest
         public async Task AssingTimetableToStudent()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
+            var schoolCourseProxy = new SchoolCourseProxy();
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
 
 
@@ -64,7 +65,8 @@ namespace BackendTest
         public async Task AddStudentTest()
         {
             var schoolScheduleProxy = new SchoolScheduleProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy);
+            var schoolCourseProxy = new SchoolCourseProxy();
+            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
             StudentService stSer = new StudentService(_database);
 
