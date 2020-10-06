@@ -29,7 +29,7 @@ services:
       # - 0.0.0.0:3000:3000
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - BaseUrl=http://18.184.180.36
+      - BaseUrl=http://18.193.17.141
       - JwtSecret=CchangOrDNChanngSecr
       - NODE_ENV=production
     # links:
