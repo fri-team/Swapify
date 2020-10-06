@@ -25,6 +25,7 @@ namespace BackendTest
 
         }
 
+/*
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
@@ -83,7 +84,8 @@ namespace BackendTest
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
         }
-
+*/
+/*
         [Fact]
         public async Task CancelExchangeTest()
         {
@@ -113,7 +115,7 @@ namespace BackendTest
             (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);
             blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(1);
         }
-
+*/
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)
         {
             return new Block()

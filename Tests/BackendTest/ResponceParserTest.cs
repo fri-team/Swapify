@@ -23,6 +23,7 @@ namespace BackendTest
 
         }
 
+        /*
         [Fact]
         public void ParseResponce_ParseCorrectBlocks()
         {
@@ -67,5 +68,6 @@ namespace BackendTest
 
             parsed.Should().BeEquivalentTo(expectedResult);
         }
+        */
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.Entities.Enums;
 using WebAPI.Models.UserModels;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
 
@@ -15,13 +16,14 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class StudentController : BaseController
     {
-
+        private readonly ILogger<TimetableController> _logger;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
 
-        public StudentController(IStudentService studentService, IUserService userService, ICourseService courseService)
+        public StudentController(ILogger<TimetableController> logger, IStudentService studentService, IUserService userService, ICourseService courseService)
         {
+            _logger = logger;
             _studentService = studentService;
             _userService = userService;
             _courseService = courseService;
@@ -31,6 +33,7 @@ namespace WebAPI.Controllers
         [HttpGet("getStudentTimetable/{userEmail}")]
         public async Task<IActionResult> GetStudentTimetable(string userEmail)
         {
+            _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
             User user = await _userService.GetUserByEmailAsync(userEmail);
             string studentId = user.Student.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);

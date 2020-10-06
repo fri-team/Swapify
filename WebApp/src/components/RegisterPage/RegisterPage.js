@@ -149,6 +149,7 @@ class RegisterPage extends Component {
   };
 
   render() {
+    const messageStyle = !this.state.success ? { display: "none" } : {};
     let validation = this.state.submitted
       ? validator.validate(this.state)
       : this.state.validation;
@@ -270,6 +271,14 @@ class RegisterPage extends Component {
             >
               <ul>{serverErrorsList}</ul>
             </div>
+
+            {this.state.submitted === true ? (
+              <div style={messageStyle}>
+                <p>
+                  Na zadanú emailovú adresu bol zaslaný email pre potvrdenie registrácie.
+                </p>
+              </div>
+            ) : (<div></div>)}
 
           </form>
         </div>

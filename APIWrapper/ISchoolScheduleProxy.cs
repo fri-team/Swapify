@@ -28,5 +28,11 @@ namespace FRITeam.Swapify.APIWrapper
         /// </summary>
         /// <param name="subjectCode">subject code</param>
         IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode);
+
+        /// <summary>
+        /// Return schedule for whole week from file for test purposes
+        /// </summary>
+        /// <param name="fileName">file name</param>
+        IEnumerable<ScheduleHourContent> GetFromJsonFile(string fileName);
     }
 }

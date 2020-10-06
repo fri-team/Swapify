@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { login } from "../../actions/userActions";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import './LoginPage.scss';
-class LoginPage extends Component {
+class LoginPage extends PureComponent {
   constructor() {
     super();
 

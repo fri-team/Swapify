@@ -20,6 +20,7 @@ using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.Extensions.Options;
 using System;
+using System.IO;
 using WebAPI.Filters;
 using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,8 @@ namespace WebAPI
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
+        private Mongo2Go.MongoDbRunner _runner;
+        private String _absPathForFixedDB;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
@@ -44,6 +47,7 @@ namespace WebAPI
             Environment = environment;
             DbRegistration.Init();
             _logger = loggerFactory.CreateLogger<Startup>();
+            _absPathForFixedDB = Path.GetFullPath("..\\Tests\\FixedDB");
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -53,7 +57,7 @@ namespace WebAPI
             if (Environment.IsDevelopment())
             {
                 _logger.LogInformation("Starting Mongo2Go");
-                Mongo2Go.MongoDbRunner.StartForDebugging();
+                _runner = Mongo2Go.MongoDbRunner.StartForDebugging();
                 MongoClientSettings settings = new MongoClientSettings();
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
@@ -257,6 +261,7 @@ namespace WebAPI
                 _logger.LogInformation("Testing exchanges created.");
                 await DbSeed.CreateTestingNotifications(serviceProvider);
                 _logger.LogInformation("Testing notifications created.");
+                DbSeed.ImportTestDb(_runner, _absPathForFixedDB);
             }
             catch (Exception e)
             {

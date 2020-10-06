@@ -8,6 +8,7 @@ import blockDetail from './blockDetailReducer';
 import exchangeRequests from './exchangeRequestsReducer'
 import user, { getUserData } from './userReducer';
 import notifications from './notificationReducer';
+import toolbar from './toolbarReducer';
 
 const transforms = [
   createTransform(
@@ -41,7 +42,8 @@ const rootReducer = (history) => persistReducer(
     blockDetail,
     user,
     exchangeRequests,
-    notifications
+    notifications,
+    toolbar
   })
 );
 

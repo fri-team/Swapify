@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Toolbar from '../Toolbar/Toolbar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -13,6 +13,8 @@ import TimetableContainer from '../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from '../../containers/BlockDetailContainer/BlockDetailContainer';
 import SidebarContainer from '../Sidebar/SidebarContainer';
 import { Button } from '@material-ui/core';
+import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import axios from "axios";
 
 import GifAddCourse from '../../images/swapify-addCourse.gif';
 import GifShowCourseTimetable from '../../images/swapify-showCourseTimetable.gif';
@@ -31,14 +33,52 @@ const carouselStyles = {
 
 const StyledCarousel = withStyles(carouselStyles)(AutoRotatingCarousel);
 
-class TimetablePage extends PureComponent {
+class TimetablePage extends Component {
+  constructor() {
+    super();
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
   state = { 
     sidebarOpen: false, 
     helpModalWindowOpen: false,
     mailUsModalWindowOpen: false,
-    user: this.props.user 
+    message: '',
+    subject: ''
   };
+
+  handleChange(e) {
+    let target = e.target;
+    let value = target.value;
+    let name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
   
+    const body = {
+      Email: this.props.user.mail,
+      Content: this.state.message
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/sendFeedback",
+      data: body
+    })
+    .then(() => {
+      this.setState({ mailUsModalWindowOpen: false });
+      alert("Spätná väzba bola odoslaná.")
+    })
+    .catch(error => alert(error));
+  }
+
   render() {
     return (
       <div className="app-container">
@@ -110,9 +150,23 @@ class TimetablePage extends PureComponent {
           <DialogTitle id="max-width-dialog-title">Napíšte nám</DialogTitle>
           <DialogContent className = "dialogMailUsContent">
             <FormControl fullWidth>
-              <TextField id="outlined-basic" label="Predmet" fullWidth /> &nbsp;
-              <TextField id="outlined-multiline-flexible" label="Správa" fullWidth multiline rows="4"/> &nbsp;
-              <Button>
+              <TextField 
+                id="outlined-basic" 
+                label="Predmet" 
+                name="subject"
+                value={this.state.subject}
+                onChange={this.handleChange} 
+                fullWidth 
+              /> &nbsp;
+              <TextField 
+                id="outlined-multiline-flexible" 
+                label="Správa" 
+                name="message"
+                fullWidth multiline rows="4" 
+                value={this.state.message}
+                onChange={this.handleChange} 
+              /> &nbsp;
+              <Button onClick={this.handleSubmit}>
                 <SendIcon /> &nbsp; Odoslať
               </Button>
             </FormControl>
@@ -126,7 +180,6 @@ class TimetablePage extends PureComponent {
   }
 }
 
+const mapStateToProps = state => ({ user: state.user, message: state.message });
 
-const mapStateToProps = state => ({ user: state.user });
-
-export default connect(mapStateToProps)(TimetablePage);
+export default connect(mapStateToProps, {messageChanged, sendFeedback})(TimetablePage);

@@ -139,30 +139,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
             User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
 
             var courseService = serviceProvider.GetRequiredService<ICourseService>();
-            var course1 = await courseService.FindByNameAsync("technické prostriedky PC");
             var course2 = await courseService.FindByNameAsync("multimediálne informačné systémy");
 
             if (oleg != null)
             {
-                blockExchangeCollection.InsertOne(new BlockChangeRequest
-                {
-                    StudentId = oleg.Student.Id,
-                    Status = ExchangeStatus.WaitingForExchange,
-                    DateOfCreation = DateTime.Now,
-                    BlockFrom = new Block
-                    {                                              
-                        CourseId = course1.Id,
-                        Day = Day.Wednesday,
-                        StartHour = 8
-                    },
-                    BlockTo = new Block
-                    {
-                        CourseId = course1.Id,
-                        Day = Day.Thursday,
-                        StartHour = 12
-                    }
-                });
-
                 blockExchangeCollection.InsertOne(new BlockChangeRequest
                 {
                     StudentId = oleg.Student.Id,
@@ -276,6 +256,15 @@ namespace FRITeam.Swapify.Backend.DbSeed
             long count = courseCollection.Count(x => x.Id != null);
             if (count == 0)
                 courseCollection.InsertMany(dic.Select(x => x.Value));
+        }
+
+        public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
+        {
+            paRunner.Import("Swapify", "BlockChangeRequest", paPath + "\\BlockChangeRequest.json", true);
+            paRunner.Import("Swapify", "Course", paPath + "\\Course.json", true);
+            paRunner.Import("Swapify", "Notification", paPath + "\\Notification.json", true);
+            paRunner.Import("Swapify", "Student", paPath + "\\Student.json", true);
+            paRunner.Import("Swapify", "users", paPath + "\\users.json", true);
         }
     }
 }

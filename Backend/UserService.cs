@@ -29,6 +29,7 @@ namespace FRITeam.Swapify.Backend
         public async Task<JwtSecurityToken> Authenticate(string login, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(login, password, false, false);
+            
             if (result.Succeeded)
                 return GenerateJwtToken(login);
             return null;

@@ -23,10 +23,10 @@ namespace FRITeam.Swapify.Backend
         /// </summary>
         /// <param name="blockChangeRequest"></param>
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
-        public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest entityToAdd)
+        public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            await AddAsync(entityToAdd);
-            return await MakeExchangeAndDeleteRequests(entityToAdd);
+            await AddAsync(blockChangeRequest);
+            return await MakeExchangeAndDeleteRequests(blockChangeRequest);
         }
 
         public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
