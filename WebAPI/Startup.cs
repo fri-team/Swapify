@@ -29,6 +29,7 @@ using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using WebAPI.Models.DatabaseModels;
 
 namespace WebAPI
 {
@@ -72,22 +73,43 @@ namespace WebAPI
                     .AllowCredentials());
                 });
             }
+            else
+            {
+                MongoClientSettings settings = new MongoClientSettings();
+                settings.GuidRepresentation = GuidRepresentation.Standard;
+                settings.Server = new MongoServerAddress("mongodb");
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+
+                //services.Configure<Settings>(options =>
+                //{
+                //    options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+                //    options.Database = Configuration.GetSection("MongoConnection:Database").Value;
+                //});
+
+                // requires using Microsoft.Extensions.Options
+                //services.Configure<SwapifyDatabaseSettings>(
+                //    Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
+
+                //services.AddSingleton<ISwapifyDatabaseSettings>(sp =>
+                //    sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
+            }
 
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);
 
+            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
+                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
+
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
             services.AddSingleton<ISchoolCourseProxy, SchoolCourseProxy>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
+            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();
 
-            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
-                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
+            
             Console.WriteLine("DEBUG: ConfigureServices - end");
 
             services.AddControllersWithViews();
@@ -119,7 +141,10 @@ namespace WebAPI
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                // Switched for productino debugging purposes
+                app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/Error");
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -132,12 +157,14 @@ namespace WebAPI
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
 
             app.UseSpa(spa =>
