@@ -62,6 +62,15 @@ namespace WebAPI
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+
+                services.AddCors(options =>
+                {
+                    options.AddDefaultPolicy(builder =>
+                    builder.SetIsOriginAllowed(_ => true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+                });
             }
 
             LoadAndValidateSettings(services);
@@ -99,10 +108,12 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                //app.UseCors(builder => builder.AllowAnyOrigin()
+                //    .AllowAnyMethod()
+                //    .AllowAnyHeader()
+                //    .AllowCredentials()
+                //    );
+                app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
             }
