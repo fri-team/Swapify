@@ -16,8 +16,8 @@ Web based application enabling students of [University of Zilina](http://www.uni
 
 ### Prerequirements
 
-* Visual Studio 2017
-* ASP .NET Core 2.0
+* Visual Studio 2019
+* ASP .NET Core 3.1
 * Visual Studio Code
 * Node.js
 * NPM
