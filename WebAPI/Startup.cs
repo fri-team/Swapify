@@ -75,11 +75,23 @@ namespace WebAPI
             }
             else
             {
-                MongoClientSettings settings = new MongoClientSettings();
-                settings.GuidRepresentation = GuidRepresentation.Standard;
-                settings.Server = new MongoServerAddress("mongodb");
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                //MongoClientSettings settings = new MongoClientSettings();
+                //settings.GuidRepresentation = GuidRepresentation.Standard;
+                //settings.Server = new MongoServerAddress("mongodb");
 
+                //var settings = new MongoDbSettings();
+                services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
+                var settings = new MongoClientSettings
+                {
+                    //Server = new MongoServerAddress( "localhost", 27017)
+                    Server = new MongoServerAddress("mongodb", 27017),
+                    GuidRepresentation = GuidRepresentation.Standard
+                //ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
+                //DatabaseName = DatabaseName
+            };
+
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
                 //services.Configure<Settings>(options =>
                 //{
                 //    options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
@@ -94,8 +106,6 @@ namespace WebAPI
                 //    sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
             }
 
-            LoadAndValidateSettings(services);
-            ConfigureAuthorization(services);
 
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
@@ -121,6 +131,9 @@ namespace WebAPI
                 //configuration.RootPath = "WebApp/build";
                 configuration.RootPath = "wwwroot";
             });
+
+            LoadAndValidateSettings(services);
+            ConfigureAuthorization(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -273,6 +286,7 @@ namespace WebAPI
 
                 options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
             };
+
             return configuration;
         }
 
