@@ -75,35 +75,15 @@ namespace WebAPI
             }
             else
             {
-                //MongoClientSettings settings = new MongoClientSettings();
-                //settings.GuidRepresentation = GuidRepresentation.Standard;
-                //settings.Server = new MongoServerAddress("mongodb");
-
-                //var settings = new MongoDbSettings();
                 services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
                 var settings = new MongoClientSettings
                 {
-                    //Server = new MongoServerAddress( "localhost", 27017)
                     Server = new MongoServerAddress("mongodb", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
-                //ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
-                //DatabaseName = DatabaseName
             };
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
                 services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
-                //services.Configure<Settings>(options =>
-                //{
-                //    options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
-                //    options.Database = Configuration.GetSection("MongoConnection:Database").Value;
-                //});
-
-                // requires using Microsoft.Extensions.Options
-                //services.Configure<SwapifyDatabaseSettings>(
-                //    Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
-
-                //services.AddSingleton<ISwapifyDatabaseSettings>(sp =>
-                //    sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
             }
 
 
@@ -143,11 +123,6 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseCors(builder => builder.AllowAnyOrigin()
-                //    .AllowAnyMethod()
-                //    .AllowAnyHeader()
-                //    .AllowCredentials()
-                //    );
                 app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
