@@ -53,7 +53,6 @@ namespace WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Console.WriteLine("DEBUG: ConfigureServices - start");
             _logger.LogInformation("Configuring services");
             if (Environment.IsDevelopment())
             {
@@ -100,7 +99,6 @@ namespace WebAPI
             services.AddSingleton<INotificationService, NotificationService>();
 
             
-            Console.WriteLine("DEBUG: ConfigureServices - end");
 
             services.AddControllersWithViews();
 
@@ -129,9 +127,7 @@ namespace WebAPI
             }
             else
             {
-                // Switched for productino debugging purposes
-                app.UseDeveloperExceptionPage();
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error");
 
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
