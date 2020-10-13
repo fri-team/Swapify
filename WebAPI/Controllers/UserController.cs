@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
             {
                 var existingUser = await _userService.GetUserByEmailAsync(body.Email);
                 // user hasn't confirmed email
-                if (!existingUser.EmailConfirmed)
+                if (existingUser != null && !existingUser.EmailConfirmed)
                 {
                     Console.WriteLine("existingUser: " + existingUser);
                     string newToken = await _userService.GenerateEmailConfirmationTokenAsync(existingUser);
