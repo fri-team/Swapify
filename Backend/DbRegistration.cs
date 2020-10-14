@@ -15,6 +15,7 @@ namespace Backend
                 {
                     map.AutoMap();
                     map.MapField("_blocks").SetElementName("AllBlocks");
+                    
                 });
                 _isInicialized = true;
 

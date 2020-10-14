@@ -39,11 +39,31 @@ namespace WebAPI.Controllers
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var addResult = await _userService.AddUserAsync(user, body.Password);
+
             if (!addResult.Succeeded)
             {
-                _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", addResult.Errors));
-                Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(addResult.Errors);
-                return ValidationError(identityErrors);
+                var existingUser = await _userService.GetUserByEmailAsync(body.Email);
+                // user hasn't confirmed email
+                if (existingUser != null && !existingUser.EmailConfirmed)
+                {
+                    Console.WriteLine("existingUser: " + existingUser);
+                    string newToken = await _userService.GenerateEmailConfirmationTokenAsync(existingUser);
+                    string newCallbackUrl = new Uri(_baseUrl, $@"confirmEmail/{existingUser.Id}/{newToken}").ToString();
+
+                    if (!_emailService.SendConfirmationEmail(body.Email, newCallbackUrl, "RegistrationEmail"))
+                    {
+                        _logger.LogError($"Error when sending confirmation email to user {body.Email}. Errors: {addResult.Errors} URI: {newCallbackUrl}");
+                        return BadRequest();
+                    }
+                    _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+                    return Ok();
+                }
+                else
+                {
+                    _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", addResult.Errors));
+                    Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(addResult.Errors);
+                    return ValidationError(identityErrors);
+                }
             }
 
             _logger.LogInformation($"User {body.Email} created.");
@@ -94,6 +114,12 @@ namespace WebAPI.Controllers
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
         {
+            //Console.WriteLine("Body is: " + body);
+            //Console.WriteLine("UserId is: " + body.UserId);
+            //Console.WriteLine("Token is: " + body.Token);
+            //_logger.LogWarning("Body is: " + body);
+            //_logger.LogWarning("UserId is: " + body.UserId);
+            //_logger.LogWarning("Token is: " + body.Token);
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
@@ -145,29 +171,36 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
-            body.Email = body.Email.ToLower();
-            var user = await _userService.GetUserByEmailAsync(body.Email);
-            if (user == null)
+            try
             {
-                _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
-            }
+                body.Email = body.Email.ToLower();
+                var user = await _userService.GetUserByEmailAsync(body.Email); // cannot reach mongoDB
+                if (user == null)
+                {
+                    _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
+                    return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                }
 
-            if (!user.EmailConfirmed)
+                if (!user.EmailConfirmed)
+                {
+                    _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
+                    return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
+                }
+
+                var token = await _userService.Authenticate(body.Email, body.Password);
+                if (token == null)
+                {
+                    _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                    return ErrorResponse("Zadané heslo nie je správne.");
+                }
+
+                var authUser = new AuthenticatedUserModel(user, token);
+                return Ok(authUser);
+            }
+            catch (Exception ex)
             {
-                _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
-                return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
+                return ErrorResponse("Error HERE: " + ex.ToString());
             }
-
-            var token = await _userService.Authenticate(body.Email, body.Password);
-            if (token == null)
-            {
-                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                return ErrorResponse("Zadané heslo nie je správne.");
-            }
-
-            var authUser = new AuthenticatedUserModel(user, token);
-            return Ok(authUser);
         }
 
         [HttpPost("renew")]

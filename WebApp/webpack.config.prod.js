@@ -21,8 +21,13 @@ export default {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: '[name].[chunkhash].js'
+    // filename: 'bundle.js'
+    // filename: '[name].[chunkhash].js'
+    filename: '[name].js'
   },
+  // devServer: {
+  //   historyApiFallback: true
+  // },
   plugins: [
     // Hash the files using MD5 so that their names change when the content changes.
     new WebpackMd5Hash(),
