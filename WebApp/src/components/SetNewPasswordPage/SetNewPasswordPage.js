@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { ElevatedBox, Form, MacBackground } from '../';
 import { Link } from 'react-router-dom';
-import { LOGIN } from '../../util/routes';
+import { HOME } from '../../util/routes';
 
 const validator = new FormValidator([    
     {
@@ -122,7 +122,7 @@ const validator = new FormValidator([
                     <Button 
                       variant="text"
                       size="small"
-                      component={Link} to={LOGIN}
+                      component={Link} to={HOME}
                     >
                       Prihlásenie
                     </Button>
