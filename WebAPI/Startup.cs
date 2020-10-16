@@ -36,11 +36,13 @@ namespace WebAPI
     public class Startup
     {
         private const string DatabaseName = "SwapifyDB";
+        private const string DatabaseNameDev = "Swapify";
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
         private Mongo2Go.MongoDbRunner _runner;
         private String _absPathForFixedDB;
+        private readonly string SwapifyCorsOrigins = "_swapifyCorsOrigins";
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
@@ -54,6 +56,72 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("SwapifyCorsPolicy",
+            //    builder =>
+            //    {
+            //        builder.WithOrigins("http://18.193.17.141/",
+            //                            "http://swapify.fri.uniza.sk/",
+            //                            "http://localhost:3000",
+            //                            "http://localhost:27017",
+            //                            "127.0.0.1:27017")
+            //                            .AllowAnyHeader()
+            //                            .AllowAnyMethod();
+            //    });
+            //});
+
+
+            //services.AddCors();
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(SwapifyCorsOrigins,
+            //    builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:3000",
+            //                            "http://localhost:5000",
+            //                            "http://127.0.0.1:27021");
+            //    });
+            //});
+            //services.AddCors(options =>
+            //{
+            //    //options.AddPolicy("SwapifyCorsPolicy",
+            //    //builder =>
+            //    //{
+            //    //    builder.WithOrigins("http://18.193.17.141",
+            //    //                        "http://swapify.fri.uniza.sk",
+            //    //                        "http://*swapify.fri.uniza.sk",
+            //    //                        "http://localhost:3000",
+            //    //                        "http://localhost:5000",
+            //    //                        "http://localhost:27017",
+            //    //                        "127.0.0.1:27021")
+            //    //    .SetIsOriginAllowedToAllowWildcardSubdomains()
+            //    //    .AllowAnyHeader()
+            //    //    .AllowAnyMethod();
+            //    //});
+
+            //    //options.AddPolicy("AllowCredentials",
+            //    //builder =>
+            //    //{
+            //    //    builder.WithOrigins("http://18.193.17.141",
+            //    //                        "http://swapify.fri.uniza.sk",
+            //    //                        "http://*swapify.fri.uniza.sk",
+            //    //                        "http://localhost:3000",
+            //    //                        "http://localhost:5000",
+            //    //                        "http://localhost:27017",
+            //    //                        "127.0.0.1:27021")
+            //    //           .AllowCredentials();
+            //    //});
+
+            //    //options.AddPolicy("AllowCredentials",
+            //    //builder =>
+            //    //{
+            //    //    builder.AllowAnyOrigin();
+            //    //});
+            //});
+
+
+
             if (Environment.IsDevelopment())
             {
                 _logger.LogInformation("Starting Mongo2Go");
@@ -61,16 +129,16 @@ namespace WebAPI
                 MongoClientSettings settings = new MongoClientSettings();
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
-
-                services.AddCors(options =>
-                {
-                    options.AddDefaultPolicy(builder =>
-                    builder.SetIsOriginAllowed(_ => true)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-                });
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDev));
+                //services.AddCors();
+                //services.AddCors(options =>
+                //{
+                //    options.AddDefaultPolicy(builder =>
+                //    builder.SetIsOriginAllowed(_ => true)
+                //    .AllowAnyMethod()
+                //    .AllowAnyHeader()
+                //    .AllowCredentials());
+                //});
             }
             else
             {
@@ -103,12 +171,15 @@ namespace WebAPI
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            if (Environment.IsProduction())
             {
-                //configuration.RootPath = "/";
-                //configuration.RootPath = "WebApp/build";
-                configuration.RootPath = "wwwroot";
-            });
+                services.AddSpaStaticFiles(configuration =>
+                {
+                    //configuration.RootPath = "/";
+                    //configuration.RootPath = "WebApp/build";
+                    configuration.RootPath = "wwwroot";
+                });
+            }
 
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);
@@ -116,12 +187,27 @@ namespace WebAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Console.WriteLine("DEBUG: ConfigureServices - start");
-            Console.WriteLine("Envinronment: " + env.EnvironmentName);
+            //app.UseCors(SwapifyCorsOrigins);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors("CorsPolicy");
+
+                //app.UseCors(builder =>
+                //builder.WithOrigins("http://18.193.17.141/",
+                //                "http://swapify.fri.uniza.sk/",
+                //                "http://localhost:3000",
+                //                "http://localhost:27017",
+                //                "127.0.0.1:27017")
+                //    .AllowAnyMethod()
+                //    .AllowAnyHeader());
+
+                //app.UseCors(builder => builder.AllowAnyOrigin()
+                //    .AllowAnyMethod()
+                //    .AllowAnyHeader()
+                //    //.SetIsOriginAllowed(origin => true) // allow any origin
+                //    //.AllowCredentials()
+                //    );
+                ////app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
             }
@@ -131,13 +217,21 @@ namespace WebAPI
 
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.UseSpaStaticFiles();
             }
+
+            //app.UseCors("SwapifyCorsPolicy");
+            //app.UseCors(builder =>
+            //    builder.AllowAnyOrigin()
+            //    .AllowAnyMethod()
+            //    .AllowAnyHeader()
+            //    .SetIsOriginAllowed(origin => true) // allow any origin
+            //);
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
             //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -151,6 +245,9 @@ namespace WebAPI
                 endpoints.MapControllers();
             });
 
+
+            // Do we use even this???
+            /*
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
@@ -161,6 +258,7 @@ namespace WebAPI
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+            */
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)
@@ -230,18 +328,25 @@ namespace WebAPI
             _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
             if (Environment.IsDevelopment())
+            {
+                //Console.WriteLine("IS DEVELOPMENT!!!!!!!");
+                //Console.WriteLine("ConnectionString: " + Mongo2Go.MongoDbRunner.Start().ConnectionString + DatabaseNameDev);
+                //Console.WriteLine("DatabaseName: " + DatabaseName);
+                //Console.WriteLine("ConnectionString: " + _runner.ConnectionString + DatabaseNameDev);
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
-                    DatabaseName = DatabaseName
+                    ConnectionString = _runner.ConnectionString + DatabaseNameDev,
+                    DatabaseName = DatabaseNameDev
                 };
+            }
             else
+            {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
                     ConnectionString = "mongodb://mongodb:27017/" + DatabaseName,
                     DatabaseName = DatabaseName
                 };
-
+            }
             configuration.IdentityOptionsAction = options =>
             {
                 options.Password.RequireDigit = (bool)settings.RequireDigit;
