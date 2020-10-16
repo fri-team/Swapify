@@ -58,13 +58,13 @@ namespace FRITeam.Swapify.Backend
         /// If course with "courseName" exists function return ID, if course doesnt exist fuction
         /// save this course and return id of saved course.
         /// </summary>
-        public async Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut)
+        public async Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut, string courseName = null)
         {
             var course = await this.FindByCodeAsync(courseShortcut);
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false };
+                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false, CourseName = courseName };
                 string shortCut = FindCourseShortCutFromProxy(course);
                 await FindCourseTimetableFromProxy(shortCut, course);
                 
