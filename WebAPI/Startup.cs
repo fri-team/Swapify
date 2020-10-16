@@ -56,71 +56,6 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("SwapifyCorsPolicy",
-            //    builder =>
-            //    {
-            //        builder.WithOrigins("http://18.193.17.141/",
-            //                            "http://swapify.fri.uniza.sk/",
-            //                            "http://localhost:3000",
-            //                            "http://localhost:27017",
-            //                            "127.0.0.1:27017")
-            //                            .AllowAnyHeader()
-            //                            .AllowAnyMethod();
-            //    });
-            //});
-
-
-            //services.AddCors();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(SwapifyCorsOrigins,
-            //    builder =>
-            //    {
-            //        builder.WithOrigins("http://localhost:3000",
-            //                            "http://localhost:5000",
-            //                            "http://127.0.0.1:27021");
-            //    });
-            //});
-            //services.AddCors(options =>
-            //{
-            //    //options.AddPolicy("SwapifyCorsPolicy",
-            //    //builder =>
-            //    //{
-            //    //    builder.WithOrigins("http://18.193.17.141",
-            //    //                        "http://swapify.fri.uniza.sk",
-            //    //                        "http://*swapify.fri.uniza.sk",
-            //    //                        "http://localhost:3000",
-            //    //                        "http://localhost:5000",
-            //    //                        "http://localhost:27017",
-            //    //                        "127.0.0.1:27021")
-            //    //    .SetIsOriginAllowedToAllowWildcardSubdomains()
-            //    //    .AllowAnyHeader()
-            //    //    .AllowAnyMethod();
-            //    //});
-
-            //    //options.AddPolicy("AllowCredentials",
-            //    //builder =>
-            //    //{
-            //    //    builder.WithOrigins("http://18.193.17.141",
-            //    //                        "http://swapify.fri.uniza.sk",
-            //    //                        "http://*swapify.fri.uniza.sk",
-            //    //                        "http://localhost:3000",
-            //    //                        "http://localhost:5000",
-            //    //                        "http://localhost:27017",
-            //    //                        "127.0.0.1:27021")
-            //    //           .AllowCredentials();
-            //    //});
-
-            //    //options.AddPolicy("AllowCredentials",
-            //    //builder =>
-            //    //{
-            //    //    builder.AllowAnyOrigin();
-            //    //});
-            //});
-
-
 
             if (Environment.IsDevelopment())
             {
@@ -130,15 +65,39 @@ namespace WebAPI
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDev));
-                //services.AddCors();
-                //services.AddCors(options =>
-                //{
-                //    options.AddDefaultPolicy(builder =>
-                //    builder.SetIsOriginAllowed(_ => true)
-                //    .AllowAnyMethod()
-                //    .AllowAnyHeader()
-                //    .AllowCredentials());
-                //});
+
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SwapifyCorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "http://localhost:3000",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk",
+                                            "https://localhost:3000")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+
+                    options.AddPolicy("AllowCredentials",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "http://localhost:3000",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk",
+                                            "https://localhost:3000")
+                               .AllowCredentials();
+                    });
+                });
             }
             else
             {
@@ -147,10 +106,39 @@ namespace WebAPI
                 {
                     Server = new MongoServerAddress("mongodb", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
-            };
+                };
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
                 services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
+
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SwapifyCorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+
+                    options.AddPolicy("AllowCredentials",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk")
+                               .AllowCredentials();
+                    });
+                });
             }
 
 
@@ -187,27 +175,9 @@ namespace WebAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UseCors(SwapifyCorsOrigins);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                //app.UseCors(builder =>
-                //builder.WithOrigins("http://18.193.17.141/",
-                //                "http://swapify.fri.uniza.sk/",
-                //                "http://localhost:3000",
-                //                "http://localhost:27017",
-                //                "127.0.0.1:27017")
-                //    .AllowAnyMethod()
-                //    .AllowAnyHeader());
-
-                //app.UseCors(builder => builder.AllowAnyOrigin()
-                //    .AllowAnyMethod()
-                //    .AllowAnyHeader()
-                //    //.SetIsOriginAllowed(origin => true) // allow any origin
-                //    //.AllowCredentials()
-                //    );
-                ////app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
             }
@@ -220,13 +190,8 @@ namespace WebAPI
                 app.UseSpaStaticFiles();
             }
 
-            //app.UseCors("SwapifyCorsPolicy");
-            //app.UseCors(builder =>
-            //    builder.AllowAnyOrigin()
-            //    .AllowAnyMethod()
-            //    .AllowAnyHeader()
-            //    .SetIsOriginAllowed(origin => true) // allow any origin
-            //);
+            app.UseCors("SwapifyCorsPolicy");
+            app.UseCors("AllowCredentials");
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
@@ -246,7 +211,7 @@ namespace WebAPI
             });
 
 
-            // Do we use even this???
+            // Do we even use this???
             /*
             app.UseSpa(spa =>
             {
@@ -329,10 +294,6 @@ namespace WebAPI
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
             if (Environment.IsDevelopment())
             {
-                //Console.WriteLine("IS DEVELOPMENT!!!!!!!");
-                //Console.WriteLine("ConnectionString: " + Mongo2Go.MongoDbRunner.Start().ConnectionString + DatabaseNameDev);
-                //Console.WriteLine("DatabaseName: " + DatabaseName);
-                //Console.WriteLine("ConnectionString: " + _runner.ConnectionString + DatabaseNameDev);
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
                     ConnectionString = _runner.ConnectionString + DatabaseNameDev,
