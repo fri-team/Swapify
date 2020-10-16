@@ -94,7 +94,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         Course course;
                         if (!string.IsNullOrEmpty(firstInGroup.CourseShortcut))
                         {
-                        	course = await courseService.GetOrAddNotExistsCourseByShortcut(firstInGroup.CourseShortcut, firstInGroup.CourseName);   
+                        		course = await courseService.GetOrAddNotExistsCourseByShortcut(firstInGroup.CourseShortcut, firstInGroup.CourseName);   
                         }
                         else
                         {                                                        
