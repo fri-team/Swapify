@@ -91,7 +91,7 @@ namespace FRITeam.Swapify.Backend.Converter
 
                     if (!isTimetableForCourse)
                     {
-                        Course course = null;
+                        Course course;
                         if (!string.IsNullOrEmpty(firstInGroup.CourseShortcut))
                         {
                         	course = await courseService.GetOrAddNotExistsCourseByShortcut(firstInGroup.CourseShortcut, firstInGroup.CourseName);   
@@ -99,11 +99,7 @@ namespace FRITeam.Swapify.Backend.Converter
                         else
                         {                                                        
                             course = await courseService.GetOrAddNotExistsCourseByName(firstInGroup.CourseName, firstInGroup.CourseShortcut);                            
-                        }
-                        if (course == null)
-                        {
-                            throw new Exception("Course has no name and no Shortcut, therefore it could not be added.");
-                        }
+                        }                        
                         Block courseBlock = course.Timetable.GetBlock(block);
                         if (courseBlock != null)
                             block.BlockId = courseBlock.BlockId;
