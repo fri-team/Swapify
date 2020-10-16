@@ -19,8 +19,10 @@ namespace WebAPI.Filters
         {
             foreach (var validatableObject in _validatableObjects)
             {
+                Console.WriteLine("validatableObject.ConfigFileName: " + validatableObject.ConfigFileName);
+                Console.WriteLine("validatableObject.ConfigFileName: " + validatableObject);
                 validatableObject.Validate();
-                if (validatableObject.Errors.Length != 0)                
+                if (validatableObject.Errors.Length != 0)
                     throw new SettingException(validatableObject.ConfigFileName, validatableObject.Errors.ToString());                
             }
 

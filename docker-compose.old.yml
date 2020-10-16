@@ -29,20 +29,9 @@ services:
       # - 0.0.0.0:3000:3000
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - BaseUrl=http://18.193.17.141
+      - BaseUrl=http://18.184.180.36/api/
       - JwtSecret=CchangOrDNChanngSecr
       - NODE_ENV=production
-    # links:
-    #   - db
-    depends_on:
-      - mongodb
-    links:
-      - mongodb
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    volumes:
-      - ./data:/data/db
     # expose:
     #   - 80
       # - BaseUrl=http://18.184.180.36:80/

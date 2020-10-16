@@ -27,19 +27,22 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using WebAPI.Models.DatabaseModels;
 
 namespace WebAPI
 {
     public class Startup
     {
-        private const string DatabaseName = "Swapify";
+        private const string DatabaseName = "SwapifyDB";
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
         private Mongo2Go.MongoDbRunner _runner;
         private String _absPathForFixedDB;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
             Environment = environment;
@@ -59,49 +62,104 @@ namespace WebAPI
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+
+                services.AddCors(options =>
+                {
+                    options.AddDefaultPolicy(builder =>
+                    builder.SetIsOriginAllowed(_ => true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+                });
+            }
+            else
+            {
+                services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
+                var settings = new MongoClientSettings
+                {
+                    Server = new MongoServerAddress("mongodb", 27017),
+                    GuidRepresentation = GuidRepresentation.Standard
+            };
+
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
             }
 
-            LoadAndValidateSettings(services);
-            ConfigureAuthorization(services);
+
+            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
+                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
 
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
             services.AddSingleton<ISchoolCourseProxy, SchoolCourseProxy>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
+            services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();
 
-            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
-                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
+            
+
+            services.AddControllersWithViews();
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                //configuration.RootPath = "/";
+                //configuration.RootPath = "WebApp/build";
+                configuration.RootPath = "wwwroot";
+            });
+
+            LoadAndValidateSettings(services);
+            ConfigureAuthorization(services);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Console.WriteLine("DEBUG: ConfigureServices - start");
+            Console.WriteLine("Envinronment: " + env.EnvironmentName);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
+            //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseRouting();
+
             app.UseAuthentication();
-            app.UseMvc();
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                builder.UseMvc(routes =>
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                //spa.Options.SourcePath = "/";
+                spa.Options.SourcePath = "wwwroot";
+
+                if (env.IsDevelopment())
                 {
-                    routes.MapRoute("spa-fallback", "{*url}", new { controller = "Home", action = "RouteToReact" });
-                });
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
 
@@ -111,6 +169,7 @@ namespace WebAPI
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
+
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
@@ -173,11 +232,15 @@ namespace WebAPI
             if (Environment.IsDevelopment())
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = Mongo2Go.MongoDbRunner.StartForDebugging().ConnectionString,
+                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
                     DatabaseName = DatabaseName
                 };
             else
-                configuration.MongoDbSettings = new MongoDbSettings();
+                configuration.MongoDbSettings = new MongoDbSettings
+                {
+                    ConnectionString = "mongodb://mongodb:27017/" + DatabaseName,
+                    DatabaseName = DatabaseName
+                };
 
             configuration.IdentityOptionsAction = options =>
             {
@@ -194,6 +257,7 @@ namespace WebAPI
 
                 options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
             };
+
             return configuration;
         }
 

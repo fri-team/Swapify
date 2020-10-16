@@ -47,7 +47,7 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        window.location.replace("http://localhost:3000/personal-number");
+        // window.location.replace("http://localhost:3000/personal-number");
         // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,

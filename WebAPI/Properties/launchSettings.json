@@ -16,6 +16,15 @@
         "BaseUrl": "http://localhost:3000/"
       },
       "applicationUrl": "http://localhost:5000/"
+    },
+
+    "AWS": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "JwtSecret": "CchangeThisJWTSecreeeetPleasse",
+        "BaseUrl": "http://18.193.17.141:80/"
+      }
     }
   }
 }
