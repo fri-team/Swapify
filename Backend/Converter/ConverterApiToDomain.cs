@@ -91,7 +91,7 @@ namespace FRITeam.Swapify.Backend.Converter
 
                     if (!isTimetableForCourse)
                     {
-                        Course course;
+                        Course course = null;
                         if (!string.IsNullOrEmpty(firstInGroup.CourseShortcut))
                         {
                         		course = await courseService.GetOrAddNotExistsCourseByShortcut(firstInGroup.CourseShortcut);   
