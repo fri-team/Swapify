@@ -13,6 +13,10 @@
   overflow: auto;
 }
 
+.App__Aside::-webkit-scrollbar {
+  display: none;
+}
+
 .App__Form {
   display: flex;
   flex: 1;
