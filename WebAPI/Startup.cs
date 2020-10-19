@@ -36,11 +36,13 @@ namespace WebAPI
     public class Startup
     {
         private const string DatabaseName = "SwapifyDB";
+        private const string DatabaseNameDev = "Swapify";
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
         private Mongo2Go.MongoDbRunner _runner;
         private String _absPathForFixedDB;
+        private readonly string SwapifyCorsOrigins = "_swapifyCorsOrigins";
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
@@ -54,6 +56,7 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
+
             if (Environment.IsDevelopment())
             {
                 _logger.LogInformation("Starting Mongo2Go");
@@ -61,15 +64,39 @@ namespace WebAPI
                 MongoClientSettings settings = new MongoClientSettings();
                 settings.GuidRepresentation = GuidRepresentation.Standard;
 
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDev));
 
                 services.AddCors(options =>
                 {
-                    options.AddDefaultPolicy(builder =>
-                    builder.SetIsOriginAllowed(_ => true)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                    options.AddPolicy("SwapifyCorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "http://localhost:3000",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk",
+                                            "https://localhost:3000")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+
+                    options.AddPolicy("AllowCredentials",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "http://localhost:3000",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk",
+                                            "https://localhost:3000")
+                               .AllowCredentials();
+                    });
                 });
             }
             else
@@ -79,10 +106,39 @@ namespace WebAPI
                 {
                     Server = new MongoServerAddress("mongodb", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
-            };
+                };
 
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
                 services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
+
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SwapifyCorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+
+                    options.AddPolicy("AllowCredentials",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://18.193.17.141",
+                                            "http://swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",
+                                            "https://18.193.17.141",
+                                            "https://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk")
+                               .AllowCredentials();
+                    });
+                });
             }
 
 
@@ -103,12 +159,15 @@ namespace WebAPI
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            if (Environment.IsProduction())
             {
-                //configuration.RootPath = "/";
-                //configuration.RootPath = "WebApp/build";
-                configuration.RootPath = "wwwroot";
-            });
+                services.AddSpaStaticFiles(configuration =>
+                {
+                    //configuration.RootPath = "/";
+                    //configuration.RootPath = "WebApp/build";
+                    configuration.RootPath = "wwwroot";
+                });
+            }
 
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);
@@ -116,12 +175,9 @@ namespace WebAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Console.WriteLine("DEBUG: ConfigureServices - start");
-            Console.WriteLine("Envinronment: " + env.EnvironmentName);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors("CorsPolicy");
 
                 CreateDbSeedAsync(app.ApplicationServices);
             }
@@ -131,13 +187,16 @@ namespace WebAPI
 
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.UseSpaStaticFiles();
             }
+
+            app.UseCors("SwapifyCorsPolicy");
+            app.UseCors("AllowCredentials");
 
             // Serve index.html and static resources from wwwroot/
             app.UseDefaultFiles();
             //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -151,6 +210,9 @@ namespace WebAPI
                 endpoints.MapControllers();
             });
 
+
+            // Do we even use this???
+            /*
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
@@ -161,6 +223,7 @@ namespace WebAPI
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+            */
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)
@@ -230,18 +293,21 @@ namespace WebAPI
             _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
             if (Environment.IsDevelopment())
+            {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = Mongo2Go.MongoDbRunner.Start().ConnectionString,
-                    DatabaseName = DatabaseName
+                    ConnectionString = _runner.ConnectionString + DatabaseNameDev,
+                    DatabaseName = DatabaseNameDev
                 };
+            }
             else
+            {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
                     ConnectionString = "mongodb://mongodb:27017/" + DatabaseName,
                     DatabaseName = DatabaseName
                 };
-
+            }
             configuration.IdentityOptionsAction = options =>
             {
                 options.Password.RequireDigit = (bool)settings.RequireDigit;
