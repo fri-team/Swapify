@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{C6831B1C-F5E4-4FBA-859E-E6A5CC80DA43}"
 EndProject
@@ -24,6 +24,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTest", "Tests\IntegrationTest\IntegrationTest.csproj", "{47DE3159-8875-4F29-918F-75FE040BE6EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoursesParser", "CoursesParser\CoursesParser.csproj", "{E9CC6930-201D-474A-A306-9EADDFA3470D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApp", "WebApp", "{8C80EC8D-945F-42BE-B6E1-3D53458569DD}"
+	ProjectSection(SolutionItems) = preProject
+		WebApp\.gitignore = WebApp\.gitignore
+		WebApp\package-lock.json = WebApp\package-lock.json
+		WebApp\package.json = WebApp\package.json
+		WebApp\webpack.config.dev.js = WebApp\webpack.config.dev.js
+		WebApp\webpack.config.prod.js = WebApp\webpack.config.prod.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
