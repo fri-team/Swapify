@@ -272,7 +272,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            if (!_emailService.SendFeedbackEmail(body.Email, body.Content))
+            if (!_emailService.SendFeedbackEmail(body.Email, body.Name, body.Subject, body.Body))
             {
                 _logger.LogError($"Error when sending feedback email from user {body.Email}.");
                 return BadRequest();

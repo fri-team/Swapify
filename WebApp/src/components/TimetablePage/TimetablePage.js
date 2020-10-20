@@ -61,10 +61,12 @@ class TimetablePage extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-  
+
     const body = {
-      Email: this.props.user.mail,
-      Content: this.state.message
+      Email: this.props.user.email,
+      Name: this.props.user.name + " " + this.props.user.surname,
+      Subject: this.state.subject,
+      Body: this.state.message
     };
 
     axios({
