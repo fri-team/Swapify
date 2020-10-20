@@ -266,5 +266,14 @@ namespace FRITeam.Swapify.Backend.DbSeed
             paRunner.Import("Swapify", "Student", paPath + "\\Student.json", true);
             paRunner.Import("Swapify", "users", paPath + "\\users.json", true);
         }
+
+        public static void ImportTestDbForProduction(Mongo2Go.MongoDbRunner paRunner, string paPath, string databaseName)
+        {
+            paRunner.Import(databaseName, "BlockChangeRequest", paPath + "\\BlockChangeRequest.json", true);
+            paRunner.Import(databaseName, "Course", paPath + "\\Course.json", true);
+            paRunner.Import(databaseName, "Notification", paPath + "\\Notification.json", true);
+            paRunner.Import(databaseName, "Student", paPath + "\\Student.json", true);
+            paRunner.Import(databaseName, "users", paPath + "\\users.json", true);
+        }
     }
 }

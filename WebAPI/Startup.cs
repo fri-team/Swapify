@@ -185,6 +185,8 @@ namespace WebAPI
             {
                 app.UseExceptionHandler("/Error");
 
+                CreateDbSeedAsyncProduction(app.ApplicationServices);
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseSpaStaticFiles();
@@ -355,6 +357,30 @@ namespace WebAPI
             catch (Exception e)
             {
                 _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+            }
+        }
+
+        private async Task CreateDbSeedAsyncProduction(IServiceProvider serviceProvider)
+        {
+            _logger.LogInformation("Creating DB seed for production");
+            try
+            {
+                _logger.LogInformation("Creating testing user");
+                await DbSeed.CreateTestingUserAsync(serviceProvider);
+                _logger.LogInformation("Oleg created");
+                _logger.LogInformation("Creating courses");
+                DbSeed.CreateTestingCourses(serviceProvider);
+                _logger.LogInformation("Courses created");
+                await DbSeed.CreateTestingExchangesAsync(serviceProvider);
+                _logger.LogInformation("Testing exchanges created.");
+                await DbSeed.CreateTestingNotifications(serviceProvider);
+                _logger.LogInformation("Testing notifications created.");
+                _logger.LogInformation("TEMPORARY:_absPathForFixedDB::" + _absPathForFixedDB);
+                DbSeed.ImportTestDbForProduction(_runner, _absPathForFixedDB, DatabaseName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception during creating DB seed for production:\n{e.Message}");
             }
         }
     }
