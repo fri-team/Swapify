@@ -55,8 +55,8 @@ namespace FRITeam.Swapify.Backend
         }
 
         /// <summary>
-        /// If course with "courseName" exists function return ID, if course doesnt exist fuction
-        /// save this course and return id of saved course.
+        /// If course with exists, function returns ID. If course doesnt exist function
+        /// saves this course and returns id of saved course.
         /// </summary>
         public async Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName)
         {
