@@ -60,7 +60,7 @@ namespace FRITeam.Swapify.Backend
         /// </summary>
         public async Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName)
         {
-            var course = await (string.IsNullOrEmpty(courseShortcut) ? this.FindByCodeAsync(courseName) : this.FindByCodeAsync(courseShortcut));
+            var course = await (string.IsNullOrEmpty(courseShortcut) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseShortcut));
             if (course == null)
             {
                 var timetable = new Timetable();
