@@ -12,8 +12,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<Course> FindByIdAsync(Guid guid);
         Task<Course> FindByNameAsync(string name);
         List<Course> FindByStartName(string courseStartsWith);
-        Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut);
-        Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseCode);
+        Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName);        
         string FindCourseShortCutFromProxy(Course course);
         Task<Course> FindCourseTimetableFromProxy(Guid guid);
         Task<Course> FindCourseTimetableFromProxy(string shortCut, Course course);

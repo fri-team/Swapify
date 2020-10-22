@@ -55,19 +55,18 @@ namespace FRITeam.Swapify.Backend
         }
 
         /// <summary>
-        /// If course with "courseName" exists function return ID, if course doesnt exist fuction
-        /// save this course and return id of saved course.
+        /// If course with exists, function returns ID. If course doesnt exist function
+        /// saves this course and returns id of saved course.
         /// </summary>
-        public async Task<Course> GetOrAddNotExistsCourseByShortcut(string courseShortcut)
+        public async Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName)
         {
-            var course = await this.FindByCodeAsync(courseShortcut);
+            var course = await (string.IsNullOrEmpty(courseShortcut) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseShortcut));
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false };
+                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false, CourseName = courseName };
                 string shortCut = FindCourseShortCutFromProxy(course);
-                await FindCourseTimetableFromProxy(shortCut, course);
-                
+                await FindCourseTimetableFromProxy(shortCut, course);                
                 await this.AddAsync(course);
             }
             else
@@ -81,33 +80,7 @@ namespace FRITeam.Swapify.Backend
                 }
             }
             return course;
-        }
-
-        public async Task<Course> GetOrAddNotExistsCourseByName(string courseName, string courseCode)
-        {
-            var course = await this.FindByNameAsync(courseName);
-            if (course == null)
-            {
-                var timetable = new Timetable();
-                course = new Course() { CourseCode = courseCode, CourseName = courseName, Timetable = timetable, IsLoaded = false };
-                string shortCut = FindCourseShortCutFromProxy(course);
-                await FindCourseTimetableFromProxy(shortCut, course);
-
-                await this.AddAsync(course);
-            }
-            else
-            {
-                if (course.Timetable == null || !course.IsLoaded)
-                {
-                    course.Timetable = new Timetable();
-                    string shortCut = this.FindCourseShortCutFromProxy(course);
-                    await this.FindCourseTimetableFromProxy(shortCut, course);
-                    await this.UpdateAsync(course);
-                }
-            }
-            return course;
-        }
-
+        }       
         public string FindCourseShortCutFromProxy(Course course)
         {
             foreach (var _course in _courseProxy.GetByCourseName(course.CourseName))
