@@ -43,7 +43,7 @@ class AddBlockForm extends Component {
     type: this.props.course.type,
     suggestions: [],
     user: this.props.user,
-    isEdited: this.props.isEdited,
+    editing: this.props.editing,
     loading: false
   };
 
@@ -96,14 +96,16 @@ class AddBlockForm extends Component {
     };
     this.handleSubmitClick();
 
-    if (this.state.isEdited) {
+    if (this.state.editing) {
       this.props.timetableActions.editBlock(body, this.state.user.email);
     } else {
       this.props.timetableActions.addBlock(body, this.props.user.email);
     }
+
     this.setState({loading: false});
     onClose();
   }
+
 
   render() {
     const { onClose } = this.props
