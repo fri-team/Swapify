@@ -31,19 +31,19 @@ class Timetable extends React.Component {
   }
 
   openAddBlock = (i, j) => {
-    let course = {...this.state.course}
+    let course = { ...this.state.course }
     course.day = i;
     course.startBlock = j;
-    this.setState({course});
+    this.setState({ course });
     this.setState({ day: i, start: j, dialogOpen: true })
   }
 
   handleSumbitClick = () => {
-    this.setState({dialogOpen:false})
+    this.setState({ dialogOpen: false })
   };
 
   handleClickOutside = () => {
-    this.setState({dialogOpen:false})
+    this.setState({ dialogOpen: false })
   };
 
   render() {
@@ -91,13 +91,14 @@ class Timetable extends React.Component {
           {borderCells}
         </div>
         {dialogOpen && (
-          <AddBlockForm 
-          user={user}
-          course={course}
-          onSubmitClick={this.handleSumbitClick}
-          onCloseEditBlock={this.handleSumbitClick} 
-          onClose={this.handleClickOutside}
-          isEdited={false} />
+          <AddBlockForm
+            user={user}
+            course={course}
+            onSubmitClick={this.handleSumbitClick}
+            onCloseEditBlock={this.handleSumbitClick}
+            onClose={this.handleClickOutside}
+            editing={false}
+          />
         )}
       </div>
     );

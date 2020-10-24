@@ -19,25 +19,25 @@ class BlockDetail extends PureComponent {
 
   state = {
     dialogOpen: false,
-    course: {...this.props.course}
+    course: { ...this.props.course }
   };
 
   calculateBottomPosition = (pTop) => {
     if (pTop > window.innerHeight * 0.7)
       return `2px`
-    else 
+    else
       return `auto`;
   }
 
   calculateTopPosition = (pTop) => {
     if (pTop > window.innerHeight * 0.7)
       return `auto`
-    else 
+    else
       return `${pTop}px`;
   }
 
   handleClickOutside = () => {
-    if(!this.state.dialogOpen) {
+    if (!this.state.dialogOpen) {
       this.props.onOutsideClick();
     }
   }
@@ -46,41 +46,43 @@ class BlockDetail extends PureComponent {
 
   handleClickDelete = () => {
     this.props.onClickDelete(this.props.course);
-    this.setState({dialogOpen:false})
+    this.setState({ dialogOpen: false })
   }
 
   handleClickEdit = () => {
     this.props.onClickEdit();
-    this.setState({dialogOpen:false})
+    this.setState({ dialogOpen: false })
   }
 
   onClickEditBlock = () => {
-    this.setState({dialogOpen:true})
+    this.setState({ dialogOpen: true })
   }
 
   onCloseEditBlock = () => {
-    this.setState({dialogOpen:false})
+    this.setState({ dialogOpen: false })
   }
 
   showEditButton = (color) => {
     if (this.props.course.isMine) {
-      return(
+      return (
         <Tooltip title="Upraviť blok" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.onClickEditBlock}>
             <EditIcon nativecolor={color} />
           </IconButton>
         </Tooltip>)
-  }}
-  
+    }
+  }
+
   showExchangeButton = (color) => {
     if (this.props.course.isMine) {
-      return(
+      return (
         <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.handleClickExchange}>
             <SwapIcon nativecolor={color} />
           </IconButton>
         </Tooltip>)
-  }}
+    }
+  }
 
   convertNameToEmail(teacherName) {
     let result = "";
@@ -91,7 +93,7 @@ class BlockDetail extends PureComponent {
       charsBeforeDot++;
       if (teacherName[i] === ('.')) {
         result = result.substring(0, result.length - charsBeforeDot);
-        
+
       }
       if (teacherName[i] === (' ')) {
         charsBeforeDot = 0;
@@ -173,14 +175,15 @@ class BlockDetail extends PureComponent {
           </div>
         </div>
         {dialogOpen && (
-          <AddBlockForm 
-          id={this.props.course.id}
-          user={user} 
-          course={course} 
-          onSubmitClick={this.handleClickEdit}
-          onCloseEditBlock={this.onCloseEditBlock} 
-          onClose={this.handleClickOutside}
-          isEdited={true} />
+          <AddBlockForm
+            id={this.props.course.id}
+            user={user}
+            course={course}
+            onSubmitClick={this.handleClickEdit}
+            onCloseEditBlock={this.onCloseEditBlock}
+            onClose={this.handleClickOutside}
+            editing={true}
+          />
         )}
       </div>
     );
