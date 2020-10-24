@@ -127,10 +127,10 @@ class BlockDetail extends PureComponent {
       <div className="block-detail" style={style}>
         <div className="header" style={{ backgroundColor }}>
           <div className="buttons">
-            {course.type !== 'lecture' && (
+            {(
               <span>
                 {this.showEditButton(color)}
-                {this.showExchangeButton(color)}
+                {course.type !== 'lecture' && (this.showExchangeButton(color))}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
                     <DeleteIcon nativecolor={color} />
