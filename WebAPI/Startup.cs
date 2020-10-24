@@ -255,6 +255,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<PathSettings>>().Value);
+
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
