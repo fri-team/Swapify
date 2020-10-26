@@ -185,11 +185,11 @@ namespace WebAPI
             {
                 app.UseExceptionHandler("/Error");
 
-                CreateDbSeedAsyncProduction(app.ApplicationServices);
-
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseSpaStaticFiles();
+
+                CreateDbSeedAsyncProduction(app.ApplicationServices);
             }
 
             app.UseCors("SwapifyCorsPolicy");
@@ -257,6 +257,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<PathSettings>>().Value);
+
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
@@ -362,7 +364,7 @@ namespace WebAPI
 
         private async Task CreateDbSeedAsyncProduction(IServiceProvider serviceProvider)
         {
-            _logger.LogInformation("Creating DB seed for production");
+            _logger.LogInformation("Creating DB seed");
             try
             {
                 _logger.LogInformation("Creating testing user");
@@ -371,16 +373,10 @@ namespace WebAPI
                 _logger.LogInformation("Creating courses");
                 DbSeed.CreateTestingCourses(serviceProvider);
                 _logger.LogInformation("Courses created");
-                await DbSeed.CreateTestingExchangesAsync(serviceProvider);
-                _logger.LogInformation("Testing exchanges created.");
-                await DbSeed.CreateTestingNotifications(serviceProvider);
-                _logger.LogInformation("Testing notifications created.");
-                _logger.LogInformation("TEMPORARY:_absPathForFixedDB::" + _absPathForFixedDB);
-                DbSeed.ImportTestDbForProduction(_runner, _absPathForFixedDB, DatabaseName);
             }
             catch (Exception e)
             {
-                _logger.LogError($"Exception during creating DB seed for production:\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
             }
         }
     }

@@ -1,4 +1,4 @@
-using FRITeam.Swapify.Backend.CourseParser;
+﻿using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
@@ -18,14 +18,14 @@ namespace FRITeam.Swapify.Backend.DbSeed
 {
     public static class DbSeed
     {
-        private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
-        private static readonly Guid Oleg3Guid = Guid.Parse("7c9e6679-7425-40de-944b-e07fc1f90ae7");
-        private static readonly Guid NikitaGuid = Guid.Parse("9D10B8E1-25EB-44F1-AD54-6EFCB4809FD1");
-        private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+        private static readonly Guid OlegGuid = Guid.NewGuid();
+        private static readonly Guid Oleg2Guid = Guid.NewGuid();
+        private static readonly Guid Oleg3Guid = Guid.NewGuid();
+        private static readonly Guid NikitaGuid = Guid.NewGuid();
+        private static readonly Guid OlegStudentGuid = Guid.NewGuid();
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
-        private static readonly Guid OlegStudent3Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
-        private static readonly Guid NikitaStudentGuid = Guid.Parse("612D23A9-DE25-4EA6-95EA-9944829E3C14");
+        private static readonly Guid OlegStudent3Guid = Guid.NewGuid();
+        private static readonly Guid NikitaStudentGuid = Guid.NewGuid();
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -265,15 +265,6 @@ namespace FRITeam.Swapify.Backend.DbSeed
             paRunner.Import("Swapify", "Notification", paPath + "\\Notification.json", true);
             paRunner.Import("Swapify", "Student", paPath + "\\Student.json", true);
             paRunner.Import("Swapify", "users", paPath + "\\users.json", true);
-        }
-
-        public static void ImportTestDbForProduction(Mongo2Go.MongoDbRunner paRunner, string paPath, string databaseName)
-        {
-            paRunner.Import(databaseName, "BlockChangeRequest", paPath + "\\BlockChangeRequest.json", true);
-            paRunner.Import(databaseName, "Course", paPath + "\\Course.json", true);
-            paRunner.Import(databaseName, "Notification", paPath + "\\Notification.json", true);
-            paRunner.Import(databaseName, "Student", paPath + "\\Student.json", true);
-            paRunner.Import(databaseName, "users", paPath + "\\users.json", true);
         }
     }
 }
