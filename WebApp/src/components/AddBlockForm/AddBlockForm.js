@@ -181,7 +181,7 @@ class AddBlockForm extends Component {
               <TextField
                 label="Dĺžka"
                 type="number"
-                InputProps={{ inputProps: { min: 2, max: 4 } }}
+                InputProps={{ inputProps: { min: 1, max: 10 } }}
                 name="length"
                 value={length}
                 onChange={this.handleChange}
