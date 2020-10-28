@@ -55,6 +55,7 @@
 .PageSwitcher {
   display: flex;
   flex: 0;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-bottom: 10%;
 }
@@ -141,7 +142,7 @@
   color: white;
   border: none;
   outline: none;
-  padding: 10px 70px;
+  padding: 10px 50px;
   font-size: .9em;
   font-weight: 500;
   float: right;
@@ -154,6 +155,7 @@
   display: inline-block;
   border-bottom: 1.5px solid #28515b;
   padding-bottom: 5px;
+  margin-top: 20px;
   //font-size: 1.1em;
   cursor: pointer;
 }
@@ -208,17 +210,6 @@
   margin-bottom: 5vh;
 }
 
-//for smartphones and tablets
-@media screen and (max-device-width: 1024px)
-              and (min-device-width: 320px) {
-  .logo {
-    height: 150px;
-  }
-  .each-slide > div {
-    height: 250px;
-  }
-}
-
 .each-slide span {
   padding: 3vh;
   font-size: 2em;
@@ -230,5 +221,22 @@
   -webkit-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
   -moz-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
   box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
+}
+
+//for smartphones and tablets
+@media screen and (max-width: 1024px)
+              and (min-width: 320px) {
+  .logo {
+    background-size: 50%;
+    height: 150px;
+  }
+  .each-slide > div {
+    height: 250px;
+  }
+
+  .each-slide span {
+    padding: 1.7vh;
+    font-size: 1.5em;
+  }
 }
 
