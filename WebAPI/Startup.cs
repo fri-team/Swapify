@@ -365,11 +365,8 @@ namespace WebAPI
             _logger.LogInformation("Creating DB seed");
             try
             {
-                _logger.LogInformation("Creating testing user");
-                await DbSeed.CreateTestingUserAsync(serviceProvider);
-                _logger.LogInformation("Oleg created");
                 _logger.LogInformation("Creating courses");
-                DbSeed.CreateTestingCourses(serviceProvider);
+                DbSeed.CreateTestingCourses(serviceProvider); //its not necessary to call this when database is already loaded
                 _logger.LogInformation("Courses created");
             }
             catch (Exception e)
