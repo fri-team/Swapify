@@ -188,6 +188,8 @@ namespace WebAPI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseSpaStaticFiles();
+
+                CreateDbSeedAsyncProduction(app.ApplicationServices);
             }
 
             app.UseCors("SwapifyCorsPolicy");
@@ -353,6 +355,21 @@ namespace WebAPI
                 await DbSeed.CreateTestingNotifications(serviceProvider);
                 _logger.LogInformation("Testing notifications created.");
                 DbSeed.ImportTestDb(_runner, _absPathForFixedDB);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+            }
+        }
+
+        private async Task CreateDbSeedAsyncProduction(IServiceProvider serviceProvider)
+        {
+            _logger.LogInformation("Creating DB seed");
+            try
+            {
+                _logger.LogInformation("Creating courses");
+                DbSeed.CreateTestingCourses(serviceProvider); //its not necessary to call this when database is already loaded
+                _logger.LogInformation("Courses created");
             }
             catch (Exception e)
             {
