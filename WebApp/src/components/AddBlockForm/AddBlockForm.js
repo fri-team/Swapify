@@ -39,7 +39,7 @@ class AddBlockForm extends Component {
     room: this.props.course.room,
     day: this.props.course.day,
     startBlock: padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'),
-    length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
+    length: this.props.course.endBlock - this.props.course.startBlock,
     type: this.props.course.type,
     suggestions: [],
     user: this.props.user,
@@ -73,7 +73,13 @@ class AddBlockForm extends Component {
 
   handleChange = evt => {
     const { name, value } = evt.target;
-    this.setState({ [name]: value });
+    if (value > 14 - this.props.course.startBlock) {
+      this.setState({ [name]: (14 - this.props.course.startBlock) });
+    } else if (value < 1) {
+      this.setState({ [name]: 1 });
+    } else {
+      this.setState({ [name]: value });
+    }
   }
 
   canSubmit = () => {
@@ -181,7 +187,7 @@ class AddBlockForm extends Component {
               <TextField
                 label="Dĺžka"
                 type="number"
-                InputProps={{ inputProps: { min: 1, max: 10 } }}
+                InputProps={{ inputProps: { min: 1, max: 14 - this.props.course.startBlock } }}
                 name="length"
                 value={length}
                 onChange={this.handleChange}
