@@ -242,7 +242,6 @@ namespace FRITeam.Swapify.Backend.DbSeed
             var json = File.ReadAllText(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
 
-            Dictionary<string, Course> dic = new Dictionary<string, Course>();
             foreach (var crs in courses)
             {
                 Course course = new Course()
@@ -251,11 +250,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName
                 };
-                dic[crs.CourseCode] = course;
+
+                var c = courseCollection.Find(x => x.CourseCode == crs.CourseCode).SingleOrDefault();
+                if (c == null)
+                {
+                    courseCollection.InsertOne(course);
+                }
             }
-            long count = courseCollection.Count(x => x.Id != null);
-            if (count == 0)
-                courseCollection.InsertMany(dic.Select(x => x.Value));
         }
 
         public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
