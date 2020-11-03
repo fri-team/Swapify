@@ -13,7 +13,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Development
     
-    -    buildx
+    - name: buildx
       uses: docker/setup-buildx-action@v1
       id: buildx
       with:
