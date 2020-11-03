@@ -73,10 +73,29 @@ class AddBlockForm extends Component {
 
   handleChange = evt => {
     const { name, value } = evt.target;
-    if (value > 14 - this.props.course.startBlock) {
-      this.setState({ [name]: (14 - this.props.course.startBlock) });
-    } else if (value < 1) {
-      this.setState({ [name]: 1 });
+    if (name == "length") {
+      if (value > 20 - this.state.startBlock.substring(0, 2)) {
+        this.setState({ [name]: (20 - this.state.startBlock.substring(0, 2)) });
+      } else if (value < 1) {
+        this.setState({ [name]: 1 });
+      } else {
+        this.setState({ [name]: value });
+      }
+    } else if (name == "startBlock") {
+      if (value.substring(0,2) < "07") {
+        this.setState({ [name]: "07:00" });
+      } else if (value.substring(0,2) > "19") {
+        let val = "19";
+        if (this.state.length > (20 - val)) {
+          this.setState({ length: (20 - val) });
+        }
+        this.setState({ [name]: "19:00" });
+      } else {
+        if (this.state.length > (20 - value.substring(0,2))) {
+          this.setState({ length: (20 - value.substring(0,2)) });
+        }
+        this.setState({ [name]: value });
+      }
     } else {
       this.setState({ [name]: value });
     }
@@ -111,7 +130,6 @@ class AddBlockForm extends Component {
     this.setState({loading: false});
     onClose();
   }
-
 
   render() {
     const { onClose } = this.props
@@ -187,7 +205,7 @@ class AddBlockForm extends Component {
               <TextField
                 label="Dĺžka"
                 type="number"
-                InputProps={{ inputProps: { min: 1, max: 14 - this.props.course.startBlock } }}
+                InputProps={{ inputProps: { min: 1, max: (20 - this.state.startBlock.substring(0,2)) } }}
                 name="length"
                 value={length}
                 onChange={this.handleChange}
