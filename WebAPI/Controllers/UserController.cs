@@ -168,7 +168,7 @@ namespace WebAPI.Controllers
             try
             {
                 body.Email = body.Email.ToLower();
-                var user = await _userService.GetUserByEmailAsync(body.Email); // cannot reach mongoDB
+                var user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
