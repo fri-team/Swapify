@@ -11,8 +11,8 @@ jobs:
     - name: 1. Checkout github actions
       uses: actions/checkout@v2
       
-    - name: Build the docker-compose stack
-      run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+    - name: Build the docker-compose
+      run: docker-compose up -d
     - name: Check running containers
       run: docker ps -a
     - name: Check logs
