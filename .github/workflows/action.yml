@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: 1. Checkout github actions
       uses: actions/checkout@v2
+      env:
+        ASPNETCORE_ENVIRONMENT: Development
       
     - name: Build the docker-compose
       run: docker-compose up -d
