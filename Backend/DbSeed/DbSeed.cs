@@ -1,4 +1,4 @@
-using FRITeam.Swapify.Backend.CourseParser;
+﻿using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
@@ -18,14 +18,14 @@ namespace FRITeam.Swapify.Backend.DbSeed
 {
     public static class DbSeed
     {
-        private static readonly Guid OlegGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly Guid Oleg2Guid = Guid.Parse("60030252-5873-4fe4-b32e-9c7e0d5e3517");
-        private static readonly Guid Oleg3Guid = Guid.Parse("7c9e6679-7425-40de-944b-e07fc1f90ae7");
-        private static readonly Guid NikitaGuid = Guid.Parse("9D10B8E1-25EB-44F1-AD54-6EFCB4809FD1");
-        private static readonly Guid OlegStudentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+        private static readonly Guid OlegGuid = Guid.NewGuid();
+        private static readonly Guid Oleg2Guid = Guid.NewGuid();
+        private static readonly Guid Oleg3Guid = Guid.NewGuid();
+        private static readonly Guid NikitaGuid = Guid.NewGuid();
+        private static readonly Guid OlegStudentGuid = Guid.NewGuid();
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
-        private static readonly Guid OlegStudent3Guid = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
-        private static readonly Guid NikitaStudentGuid = Guid.Parse("612D23A9-DE25-4EA6-95EA-9944829E3C14");
+        private static readonly Guid OlegStudent3Guid = Guid.NewGuid();
+        private static readonly Guid NikitaStudentGuid = Guid.NewGuid();
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -242,7 +242,6 @@ namespace FRITeam.Swapify.Backend.DbSeed
             var json = File.ReadAllText(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
 
-            Dictionary<string, Course> dic = new Dictionary<string, Course>();
             foreach (var crs in courses)
             {
                 Course course = new Course()
@@ -251,11 +250,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName
                 };
-                dic[crs.CourseCode] = course;
+
+                var c = courseCollection.Find(x => x.CourseCode == crs.CourseCode).SingleOrDefault();
+                if (c == null)
+                {
+                    courseCollection.InsertOne(course);
+                }
             }
-            long count = courseCollection.Count(x => x.Id != null);
-            if (count == 0)
-                courseCollection.InsertMany(dic.Select(x => x.Value));
         }
 
         public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
