@@ -1,38 +1,21 @@
-name: GitHub Actions
+name: Actions with docker
 on:
   push:
 
 jobs:  
-  build-and-test:
-    name: github_actions_build-and-test
+  action_build:
+    name: actions_build
     runs-on: ubuntu-latest
     
     steps:
     - name: 1. Checkout github actions
       uses: actions/checkout@v2
-    
-    - name: 2. Setup dotnet
-      uses: actions/setup-dotnet@v1
-      with:
-       dotnet-version: '3.1.100'
-    
-    - name: 3. Build dotnet
-      run: dotnet build ./Swapify.sln
       
-    - name: 4. Run BackendTest
-      run: dotnet test Tests/BackendTest/BackendTest.csproj
-    
-    - name: 5. Setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.11.1
-    
-    - name: 6. npm install
-      run: |
-        cd WebApp
-        npm install
-            
-    - name: 7. npm test
-      run: |
-        cd WebApp
-        npm test -t src/
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+    - name: Check running containers
+      run: docker ps -a
+    - name: Check logs
+      run: docker logs backend
+    - name: Run test suite
+      run: docker exec backend pytest --skip-auth
