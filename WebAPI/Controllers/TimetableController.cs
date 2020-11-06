@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
 
+        private const int TIME_PERIOD_IN_HOURS = 12;
         public TimetableController(ILogger<TimetableController> logger, ISchoolScheduleProxy schoolScheduleProxy,
             IStudentService studentService, IUserService userService, ICourseService courseService)
         {
@@ -132,8 +133,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetCourseTimetable(string courseId, string studentId)
         {
             bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
-            var _course = await _courseService.FindByIdAsync(courseGuid);
-            
+            var _course = await _courseService.FindByIdAsync(courseGuid);          
             if (!isValidCourseGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
@@ -154,10 +154,19 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
             }
-
+            var isOutDated = false;
+            if (_course.LastUpdateOfTimetable != null)
+            {
+                TimeSpan difference = (DateTime)_course.LastUpdateOfTimetable - DateTime.Now;
+                if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) isOutDated = true;
+            }           
+            if (_course.LastUpdateOfTimetable == null || isOutDated)
+            {
+                await _courseService.FindCourseTimetableFromProxy(_course.CourseCode, _course);
+                await _courseService.UpdateAsync(_course);
+            }
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();
-
             foreach (var block in _course.Timetable.AllBlocks)
             {
                 TimetableBlock timetableBlock = new TimetableBlock

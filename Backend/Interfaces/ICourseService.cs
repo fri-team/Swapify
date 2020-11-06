@@ -16,5 +16,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         string FindCourseShortCutFromProxy(Course course);
         Task<Course> FindCourseTimetableFromProxy(Guid guid);
         Task<Course> FindCourseTimetableFromProxy(string shortCut, Course course);
+        Task UpdateAsync(Course course);
     }
 }

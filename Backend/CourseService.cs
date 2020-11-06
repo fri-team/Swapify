@@ -64,29 +64,38 @@ namespace FRITeam.Swapify.Backend
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false, CourseName = courseName };
-                string shortCut = FindCourseShortCutFromProxy(course);
-                await FindCourseTimetableFromProxy(shortCut, course);                
+                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, LastUpdateOfTimetable = null, CourseName = courseName };
+                if (string.IsNullOrEmpty(courseShortcut))
+                {
+                    course.CourseCode = FindCourseShortCutFromProxy(course);
+                }
+                await FindCourseTimetableFromProxy(course.CourseCode, course);                
                 await this.AddAsync(course);
             }
             else
             {
-                if (course.Timetable == null || !course.IsLoaded)
+                if (course.Timetable == null || course.LastUpdateOfTimetable == null)
                 {
                     course.Timetable = new Timetable();
-                    string shortCut = this.FindCourseShortCutFromProxy(course);
-                    await this.FindCourseTimetableFromProxy(shortCut, course);
+                    if (string.IsNullOrEmpty(courseShortcut))                    
+                    {
+                        course.CourseCode = FindCourseShortCutFromProxy(course);
+                    }
+                    await this.FindCourseTimetableFromProxy(course.CourseCode, course);
                     await this.UpdateAsync(course);
                 }
             }
             return course;
-        }       
+        }
         public string FindCourseShortCutFromProxy(Course course)
-        {
+        {            
             foreach (var _course in _courseProxy.GetByCourseName(course.CourseName))
             {
-                if (_course.ShortCut.Substring(0, course.CourseCode.Length).Equals(course.CourseCode))
-                    return _course.ShortCut;
+                if (_course.ShortCut.Contains(','))
+                {
+                    course.CourseCode = _course.ShortCut.Substring(0, _course.ShortCut.IndexOf(','));
+                    break;
+                }                
             }
             return course.CourseCode;
         }
@@ -106,7 +115,7 @@ namespace FRITeam.Swapify.Backend
                 return null;
             }
             Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course = new Course() { Timetable = timetable, IsLoaded = true};
+            course = new Course() { Timetable = timetable, LastUpdateOfTimetable = System.DateTime.Now};
             return course;
         }
 
@@ -127,8 +136,8 @@ namespace FRITeam.Swapify.Backend
                 return null;
             }
             Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course.Timetable = t;
-            course.IsLoaded = true;
+            course.Timetable = t;            
+            course.LastUpdateOfTimetable = System.DateTime.Now;
             return course;
         }
 
