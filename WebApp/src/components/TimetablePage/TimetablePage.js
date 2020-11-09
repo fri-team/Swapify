@@ -14,7 +14,6 @@ import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDet
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
 import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
-import axios from "axios";
 
 import GifAddCourse from "../../images/swapify-addCourse.gif";
 import GifShowCourseTimetable from "../../images/swapify-showCourseTimetable.gif";
@@ -63,21 +62,18 @@ class TimetablePage extends PureComponent {
   handleSubmit(e) {
     e.preventDefault();
 
-    const body = {
-      Email: this.props.user.mail,
-      Content: this.state.message,
-    };
+    this.props.sendFeedback(
+      this.props.user.email,
+      this.props.user.name + " " + this.props.user.surname,
+      this.state.subject,
+      this.state.message
+    );
 
-    axios({
-      method: "post",
-      url: "/api/user/sendFeedback",
-      data: body,
-    })
-      .then(() => {
-        this.setState({ mailUsModalWindowOpen: false });
-        alert("Spätná väzba bola odoslaná.");
-      })
-      .catch((error) => alert(error));
+    this.setState({ 
+      mailUsModalWindowOpen: false,
+      message: "",
+      subject: ""
+    });
   }
 
   render() {

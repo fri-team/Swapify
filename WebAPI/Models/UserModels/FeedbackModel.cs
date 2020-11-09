@@ -8,7 +8,13 @@ namespace WebAPI.Models.UserModels
         [EmailAddress(ErrorMessage = "Zadaná emailová adresa nie je validná.")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Meno užívateľa je povinné.")]
+        public string Name { get; set; }
+
+        public string Subject { get; set; }
+
+
         [Required(ErrorMessage = "Obsah je povinný.")]
-        public string Content { get; set; }
+        public string Body { get; set; }
     }
 }
