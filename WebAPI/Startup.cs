@@ -213,8 +213,7 @@ namespace WebAPI
             });
 
 
-            // Do we even use this???
-            /*
+
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
@@ -225,7 +224,6 @@ namespace WebAPI
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
-            */
         }
 
         private void LoadAndValidateSettings(IServiceCollection services)

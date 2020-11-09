@@ -114,12 +114,6 @@ namespace WebAPI.Controllers
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
         {
-            //Console.WriteLine("Body is: " + body);
-            //Console.WriteLine("UserId is: " + body.UserId);
-            //Console.WriteLine("Token is: " + body.Token);
-            //_logger.LogWarning("Body is: " + body);
-            //_logger.LogWarning("UserId is: " + body.UserId);
-            //_logger.LogWarning("Token is: " + body.Token);
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
@@ -174,7 +168,7 @@ namespace WebAPI.Controllers
             try
             {
                 body.Email = body.Email.ToLower();
-                var user = await _userService.GetUserByEmailAsync(body.Email); // cannot reach mongoDB
+                var user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
