@@ -55,6 +55,7 @@
 .PageSwitcher {
   display: flex;
   flex: 0;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-bottom: 10%;
 }
@@ -141,7 +142,7 @@
   color: white;
   border: none;
   outline: none;
-  padding: 10px 70px;
+  padding: 10px 50px;
   font-size: .9em;
   font-weight: 500;
   float: right;
@@ -154,6 +155,7 @@
   display: inline-block;
   border-bottom: 1.5px solid #28515b;
   padding-bottom: 5px;
+  margin-top: 20px;
   //font-size: 1.1em;
   cursor: pointer;
 }
@@ -187,9 +189,7 @@
 .logo {
   background: url('../../images/logo.png') center no-repeat;
   background-size: 40%;
-  height: 150px;
-  margin-top: 50px;
-  margin-bottom: 20px;
+  height: 25vh;
 }
 
 
@@ -205,17 +205,38 @@
   align-items: center;
   justify-content: center;
   background-size: cover;
-  height: 600px;
+  height: 55vh;
   font-family: 'Roboto', sans-serif;
+  margin-bottom: 5vh;
 }
 
 .each-slide span {
-  padding: 20px;
-  font-size: 35px;
+  padding: 3vh;
+  font-size: 2em;
+  margin-left: 3vw;
+  margin-right: 3vw;
+  margin-top: 3vh;
   background: white;
   color: black;
   -webkit-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
   -moz-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
   box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
+}
+
+//for smartphones and tablets
+@media screen and (max-width: 1024px)
+              and (min-width: 320px) {
+  .logo {
+    background-size: 50%;
+    height: 150px;
+  }
+  .each-slide > div {
+    height: 250px;
+  }
+
+  .each-slide span {
+    padding: 1.7vh;
+    font-size: 1.5em;
+  }
 }
 
