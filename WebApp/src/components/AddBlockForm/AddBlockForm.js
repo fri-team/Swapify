@@ -94,7 +94,7 @@ class AddBlockForm extends Component {
         if (this.state.length > (20 - value.substring(0,2))) {
           this.setState({ length: (20 - value.substring(0,2)) });
         }
-        this.setState({ [name]: value });
+        this.setState({ [name]: value.substring(0,3) + "00" });
       }
     } else {
       this.setState({ [name]: value });
