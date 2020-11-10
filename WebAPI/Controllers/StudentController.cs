@@ -170,7 +170,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            Course newCourse = await _courseService.FindByNameAsync(updateBlockModel.TimetableBlock.CourseName);
+            Course newCourse = await _courseService.FindByCodeAsync(updateBlockModel.TimetableBlock.CourseShortcut);
             if (newCourse == null)
             {
                 return ErrorResponse($"New course: {updateBlockModel.TimetableBlock.CourseName} does not exist.");
