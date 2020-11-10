@@ -39,7 +39,7 @@ class AddBlockForm extends Component {
     room: this.props.course.room,
     day: this.props.course.day,
     startBlock: padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'),
-    length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
+    length: this.props.course.endBlock - this.props.course.startBlock,
     type: this.props.course.type,
     suggestions: [],
     user: this.props.user,
@@ -73,7 +73,32 @@ class AddBlockForm extends Component {
 
   handleChange = evt => {
     const { name, value } = evt.target;
-    this.setState({ [name]: value });
+    if (name == "length") {
+      if (value > 20 - this.state.startBlock.substring(0, 2)) {
+        this.setState({ [name]: (20 - this.state.startBlock.substring(0, 2)) });
+      } else if (value < 1) {
+        this.setState({ [name]: 1 });
+      } else {
+        this.setState({ [name]: value });
+      }
+    } else if (name == "startBlock") {
+      if (value.substring(0,2) < "07") {
+        this.setState({ [name]: "07:00" });
+      } else if (value.substring(0,2) > "19") {
+        let val = "19";
+        if (this.state.length > (20 - val)) {
+          this.setState({ length: (20 - val) });
+        }
+        this.setState({ [name]: "19:00" });
+      } else {
+        if (this.state.length > (20 - value.substring(0,2))) {
+          this.setState({ length: (20 - value.substring(0,2)) });
+        }
+        this.setState({ [name]: value.substring(0,3) + "00" });
+      }
+    } else {
+      this.setState({ [name]: value });
+    }
   }
 
   canSubmit = () => {
@@ -105,7 +130,6 @@ class AddBlockForm extends Component {
     this.setState({loading: false});
     onClose();
   }
-
 
   render() {
     const { onClose } = this.props
@@ -181,7 +205,7 @@ class AddBlockForm extends Component {
               <TextField
                 label="Dĺžka"
                 type="number"
-                InputProps={{ inputProps: { min: 1, max: 10 } }}
+                InputProps={{ inputProps: { min: 1, max: (20 - this.state.startBlock.substring(0,2)) } }}
                 name="length"
                 value={length}
                 onChange={this.handleChange}
