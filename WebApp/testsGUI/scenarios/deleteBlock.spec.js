@@ -5,7 +5,7 @@ Before((I) => {
     I.amOnPage('/timetable');
 });
 
-Scenario('[DELETE01] Verify, if subject with lecture and exercise will be deleted from timetable ',async (I) => {
+Scenario('[DELETE01] Verify, if subject with lecture and exercise will be deleted from timetable',async (I) => {
     I.click(locate('.block').withText('5II212'));
     I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
     I.click(locate('.block').withText('5II212'));
@@ -14,10 +14,9 @@ Scenario('[DELETE01] Verify, if subject with lecture and exercise will be delete
 });
 
 Scenario('[DELETE02] Verify, if only lecture will be removed and excercise will stay',async (I) => {
-    //5II212 subject
-    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').at(2))).toString().substr(0,6);
+    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').withText('5UI102').at(1))).toString().substr(0,6);
     
-    I.click(locate('.block').at(2));
+    I.click(locate('.block').withText('5UI102').at(1));
     I.dontSeeElement({ react: 'button' , props: { title : 'Požiadať o výmenu'}});
     I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
 
@@ -25,10 +24,9 @@ Scenario('[DELETE02] Verify, if only lecture will be removed and excercise will 
 });
 
 Scenario('[DELETE03] Verify, if only exercise will be removed and lecture will stay',async (I) => {
-    //5IA202 subject
-    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').at(5))).toString().substr(0,6);
+    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').withText('5II208').at(2))).toString().substr(0,6);
 
-    I.click(locate('.block').at(5));
+    I.click(locate('.block').withText('5II208').at(2));
     I.seeElement({ react: 'button' , props: { title : 'Požiadať o výmenu'}});
     I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
 
