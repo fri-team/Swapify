@@ -100,7 +100,9 @@ class TimetablePage extends PureComponent {
           open={this.state.sidebarOpen}
           onClose={() => this.setState({ sidebarOpen: false })}
         />
-        <TimetableContainer />
+        <TimetableContainer 
+          history={this.props.history}
+        />
 
         <StyledCarousel
           label="Poďme na to!"

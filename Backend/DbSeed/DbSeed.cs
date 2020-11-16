@@ -1,4 +1,4 @@
-﻿using FRITeam.Swapify.Backend.CourseParser;
+using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
