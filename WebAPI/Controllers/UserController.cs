@@ -11,6 +11,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
 using System.Net;
+using System.Net.Http;
 
 namespace WebAPI.Controllers
 {
@@ -22,6 +23,7 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly Uri _baseUrl;
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public UserController(ILogger<UserController> logger, IUserService userService, IEmailService emailService,
             IOptions<EnvironmentSettings> environmentSettings)
@@ -35,7 +37,25 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
-        {
+        { 
+            var values = new Dictionary<string, string>();
+            values.Add("secret", "6Le7o-MZAAAAAKu26wOnHXzXpc9rwZG9PiMAkiii");
+            values.Add("response", body.Captcha);
+            values.Add("Client", "swapify.fri.uniza.sk");
+
+            var content = new FormUrlEncodedContent(values);
+            // TO-DO: ešte treba pozrieť a opýtať sa na to
+            #pragma warning disable S1075 // URIs should not be hardcoded
+            var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
+            #pragma warning restore S1075 // URIs should not be hardcoded
+            var responseString = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation("Martin: " + responseString[6]);
+
+            if (responseString[5] != 's')
+            {
+                return BadRequest();
+            }
+
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var addResult = await _userService.AddUserAsync(user, body.Password);
@@ -82,7 +102,6 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
             return Ok();
         }
-
 
         [AllowAnonymous]
         [HttpPost("deleteUser")]
