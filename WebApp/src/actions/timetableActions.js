@@ -25,15 +25,19 @@ import {
 import data from './timetableData.json';
 import { loadExchangeRequests } from './exchangeActions';
 import { blockNumberToHour } from '../util/convertFunctions';
+import { PERSONALNUMBER } from '../util/routes';
 
-export function loadMyTimetable(userEmail) {
+export function loadMyTimetable(user, history) {
   return dispatch => {
     dispatch({
       type: LOAD_MY_TIMETABLE
     });
+    if (user.personalNumber == null) {
+      history.push(PERSONALNUMBER);
+    }
     axios({
       method: 'get',
-      url: '/api/student/getStudentTimetable/' + userEmail
+      url: '/api/student/getStudentTimetable/' + user.email
     })
       .then(res => {
         dispatch({
@@ -47,8 +51,6 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        // window.location.replace("http://localhost:3000/personal-number");
-        // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
           payload: {
