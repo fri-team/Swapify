@@ -286,11 +286,16 @@ class RegisterPage extends Component {
               </label>
             </div>
 
-            <div className="FormField">
+            <div className="FormField captchaClass">
               <ReCAPTCHA
                 sitekey="6Le7o-MZAAAAAJWfgcDXtafnZWrHmFxg2vAwH7OQ"
                 onChange={this.onChangeCaptcha}
               />
+              <p id="catpchaText">
+                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
+                <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
+                <a href="https://policies.google.com/terms"> Podmienkami služieb</a> ,ktoré sú uplatnené.
+              </p>
               <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
             </div>
             
