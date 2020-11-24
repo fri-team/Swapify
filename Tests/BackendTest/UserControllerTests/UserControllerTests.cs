@@ -385,8 +385,11 @@ namespace BackendTest.UserControllerTests
 
             var result = await controller.Login(loginModel);
 
-            // Don't show if user with this email exists
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+
+            //dynamic badRequestObject = (BadRequestObjectResult)result;
+            //string error = badRequestObject.Value.Error;
+            //Assert.Equal($"Používateľ {TesterEmail} neexistuje.", error);
         }
 
         [Fact]
