@@ -23,7 +23,7 @@ class ConfirmEmailPage extends Component {
           <div>
             <p>{ this.state.confirmationResult }</p>
             <Button 
-              variant="text"
+              variant="contained"
               size="small"
               component={Link} to={HOME}
             >
