@@ -12,7 +12,7 @@ Scenario('[PENUM01] Verify, if change of personal number (existing) will bring s
     I.click('Zmeniť číslo');
     I.see('Zadajte osobné číslo');
     I.seeElement({ react: 'TextField' , props: { id : 'personalNumber' }});
-    I.fillField('Zadajte osobné číslo', '558875');
+    I.fillField('Zadajte osobné číslo', '558888');
     I.click('Uložiť');
     I.wait(3);
     I.seeElement({ react: 'Timetable' });
