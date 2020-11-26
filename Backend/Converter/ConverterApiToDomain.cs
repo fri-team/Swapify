@@ -67,7 +67,7 @@ namespace FRITeam.Swapify.Backend.Converter
             IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
                 {
-                    ScheduleHourContent b1 = group.Last();
+                    ScheduleHourContent b1 = group.First();
                     return b1.Day == b2.Day
                         && b1.CourseName == b2.CourseName
                         && b1.TeacherName == b2.TeacherName

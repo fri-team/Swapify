@@ -20,8 +20,7 @@ namespace WebAPI.Controllers
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
-        private readonly ICourseService _courseService;
-
+        private readonly ICourseService _courseService;        
         public TimetableController(ILogger<TimetableController> logger, ISchoolScheduleProxy schoolScheduleProxy,
             IStudentService studentService, IUserService userService, ICourseService courseService)
         {
@@ -88,8 +87,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
             var timetable = _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
-            if (timetable == null)
-                return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
+            if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
 
             FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
 
@@ -131,17 +129,11 @@ namespace WebAPI.Controllers
         [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
         public async Task<IActionResult> GetCourseTimetable(string courseId, string studentId)
         {
-            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
-            var _course = await _courseService.FindByIdAsync(courseGuid);
-            
+            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);            
             if (!isValidCourseGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
-            }
-            if (_course == null)
-            {
-                return ErrorResponse($"Course with id: {courseId} does not exist.");
-            }
+            }            
 
             bool isValidStudentGUID = Guid.TryParse(studentId, out Guid studentGuid);
             var _student = await _studentService.FindByIdAsync(studentGuid);
@@ -154,10 +146,13 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
             }
-
+            var _course = await _courseService.FindCourseTimetableFromProxy(courseGuid);
+            if (_course == null)
+            {
+                return ErrorResponse($"Course with id: {courseId} does not exist.");
+            }            
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();
-
             foreach (var block in _course.Timetable.AllBlocks)
             {
                 TimetableBlock timetableBlock = new TimetableBlock
