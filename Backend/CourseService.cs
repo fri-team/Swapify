@@ -19,6 +19,7 @@ namespace FRITeam.Swapify.Backend
         private IMongoCollection<Course> _courseCollection => _database.GetCollection<Course>(nameof(Course));
         private readonly ISchoolScheduleProxy _scheduleProxy;
         private readonly ISchoolCourseProxy _courseProxy;
+        private const int TIME_PERIOD_IN_HOURS = 12;
 
         public CourseService(ILogger<CourseService> logger, IMongoDatabase database, ISchoolScheduleProxy scheduleProxy, ISchoolCourseProxy courseProxy)
         {
@@ -58,18 +59,18 @@ namespace FRITeam.Swapify.Backend
         /// If course with exists, function returns ID. If course doesnt exist function
         /// saves this course and returns id of saved course.
         /// </summary>
-        public async Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName)
+        public async Task<Course> GetOrAddNotExistsCourse(string courseCode, string courseName)
         {
-            var course = await (string.IsNullOrEmpty(courseShortcut) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseShortcut));
+            var course = await (string.IsNullOrEmpty(courseCode) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseCode));
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, LastUpdateOfTimetable = null, CourseName = courseName };
-                if (string.IsNullOrEmpty(courseShortcut))
+                course = new Course() { CourseCode = courseCode, Timetable = timetable, LastUpdateOfTimetable = null, CourseName = courseName };
+                if (string.IsNullOrEmpty(courseCode))
                 {
                     course.CourseCode = FindCourseShortCutFromProxy(course);
                 }
-                await FindCourseTimetableFromProxy(course.CourseCode, course);                
+                await FindCourseTimetableFromProxy(course);                
                 await this.AddAsync(course);
             }
             else
@@ -77,11 +78,11 @@ namespace FRITeam.Swapify.Backend
                 if (course.Timetable == null || course.LastUpdateOfTimetable == null)
                 {
                     course.Timetable = new Timetable();
-                    if (string.IsNullOrEmpty(courseShortcut))                    
+                    if (string.IsNullOrEmpty(courseCode))                    
                     {
                         course.CourseCode = FindCourseShortCutFromProxy(course);
                     }
-                    await this.FindCourseTimetableFromProxy(course.CourseCode, course);
+                    await this.FindCourseTimetableFromProxy(course);
                     await this.UpdateAsync(course);
                 }
             }
@@ -108,37 +109,39 @@ namespace FRITeam.Swapify.Backend
                 _logger.LogError($"Course with id {guid.ToString()} not exist");
                 return null;
             }
-            var schedule = _scheduleProxy.GetBySubjectCode(course.CourseName);
-            if (schedule == null)
-            {
-                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                return null;
-            }
-            Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course = new Course() { Timetable = timetable, LastUpdateOfTimetable = System.DateTime.Now};
-            return course;
+            return await FindCourseTimetableFromProxy(course);            
         }
 
-        public async Task<Course> FindCourseTimetableFromProxy(string shortCut, Course course)
-        {
-            IEnumerable<ScheduleHourContent> schedule = null;
-            try
+        public async Task<Course> FindCourseTimetableFromProxy(Course course)
+        {                       
+            var isOutDated = false;
+            if (course.LastUpdateOfTimetable != null)
             {
-                schedule = _scheduleProxy.GetBySubjectCode(shortCut);
-            } catch (Exception ex)
-            {
-                _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+                TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
+                if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) isOutDated = true;
             }
-            
-            if (schedule == null)
+            if (course.LastUpdateOfTimetable == null || isOutDated)
             {
-                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                return null;
+                IEnumerable<ScheduleHourContent> schedule = null;
+                try
+                {
+                    schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+                }                
+                if (schedule == null)
+                {
+                    _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
+                    return null;
+                }
+                Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
+                course.Timetable = timetable;
+                course.LastUpdateOfTimetable = System.DateTime.Now;
+                await UpdateAsync(course);
             }
-            Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course.Timetable = t;            
-            course.LastUpdateOfTimetable = System.DateTime.Now;
-            return course;
+            return course;            
         }
 
         public async Task UpdateAsync(Course course)
