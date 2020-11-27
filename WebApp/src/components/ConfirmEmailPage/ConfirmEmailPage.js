@@ -22,13 +22,14 @@ class ConfirmEmailPage extends Component {
           }          
           <div>
             <p>{ this.state.confirmationResult }</p>
-            <Button 
-              variant="contained"
-              size="small"
-              component={Link} to={HOME}
-            >
-              Domov
-            </Button>
+              <Button 
+                variant="contained"
+                size="small"
+                align="center"
+                component={Link} to={HOME}
+              >
+                Domov
+              </Button>
           </div>
         </ElevatedBox>
       </MacBackground>
