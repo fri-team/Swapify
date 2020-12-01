@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         { 
             var values = new Dictionary<string, string>();
-            values.Add("secret", "key");
+            values.Add("secret", "6Leax_QZAAAAANMhLoxGdj4eX_MURv_Uu9tRm8ZF");
             values.Add("response", body.Captcha);
             values.Add("client", "swapify.fri.uniza.sk");
 
@@ -185,7 +185,7 @@ namespace WebAPI.Controllers
             try
             {
                 var values = new Dictionary<string, string>();
-                values.Add("secret", "key");
+                values.Add("secret", "6Leax_QZAAAAANMhLoxGdj4eX_MURv_Uu9tRm8ZF");
                 values.Add("response", body.Captcha);
                 values.Add("client", "swapify.fri.uniza.sk");
 

@@ -288,7 +288,7 @@ class RegisterPage extends Component {
 
             <div className="FormField captchaClass">
               <ReCAPTCHA
-                sitekey="key"
+                sitekey="6Leax_QZAAAAAAkhmrsKnKaY0w5YgTXqpdmdV3Xj"
                 onChange={this.onChangeCaptcha}
               />
               <p id="catpchaText">
