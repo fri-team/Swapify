@@ -5,10 +5,7 @@ import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, SETNEWPASSWORD, PERSONA
 
 import {
   HomePage,
-  RegisterPage,
   ConfirmEmailPage,
-  //LoginPage,
-  AboutUsPage,
   TimetablePage,
   NotFoundPage,
   SetNewPasswordPage,
@@ -29,8 +26,8 @@ export default class App extends Component {
             <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
             <Route path={LOGIN} component={onlyNotAuth(HomePage)} />
             <Route path={PERSONALNUMBER} component={onlyAuth(PersonalNumber)} />
-            <Route path={REGISTER} component={onlyNotAuth(RegisterPage)} />
-            <Route path={ABOUTUS} component={onlyNotAuth(AboutUsPage)} />
+            <Route path={REGISTER} component={onlyNotAuth(HomePage)} />
+            <Route path={ABOUTUS} component={onlyNotAuth(HomePage)} />
             <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />
             <Route path={SETNEWPASSWORD} component={onlyNotAuth(SetNewPasswordPage)} />
             <Route path={PRIVACYPOLICY} component={onlyNotAuth(PrivacyPolicyPage)} /> 
