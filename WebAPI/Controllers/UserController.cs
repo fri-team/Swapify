@@ -37,16 +37,13 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
-        { 
+        {
             var values = new Dictionary<string, string>();
-            values.Add("secret", "6Leax_QZAAAAANMhLoxGdj4eX_MURv_Uu9tRm8ZF");
+            values.Add("secret", _emailService.GetCaptchaInfo(1));
             values.Add("response", body.Captcha);
-            values.Add("client", "swapify.fri.uniza.sk");
 
             var content = new FormUrlEncodedContent(values);
-            #pragma warning disable S1075 // URIs should not be hardcoded
-            var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
-            #pragma warning restore S1075 // URIs should not be hardcoded
+            var response = await _httpClient.PostAsync(_emailService.GetCaptchaInfo(2), content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             if (responseString[5] != 's')
@@ -185,14 +182,11 @@ namespace WebAPI.Controllers
             try
             {
                 var values = new Dictionary<string, string>();
-                values.Add("secret", "6Leax_QZAAAAANMhLoxGdj4eX_MURv_Uu9tRm8ZF");
+                values.Add("secret", _emailService.GetCaptchaInfo(1));
                 values.Add("response", body.Captcha);
-                values.Add("client", "swapify.fri.uniza.sk");
 
                 var content = new FormUrlEncodedContent(values);
-                #pragma warning disable S1075 // URIs should not be hardcoded
-                var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
-                #pragma warning restore S1075 // URIs should not be hardcoded
+                var response = await _httpClient.PostAsync(_emailService.GetCaptchaInfo(2), content);
                 var responseString = await response.Content.ReadAsStringAsync();
 
                 if (responseString[5] != 's')

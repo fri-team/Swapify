@@ -5,5 +5,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
     {
         bool SendFeedbackEmail(string userEmail, string userName, string subject, string body);
         bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType);
+        string GetCaptchaInfo(int index);
     }
 }

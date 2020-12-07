@@ -14,14 +14,25 @@ namespace FRITeam.Swapify.Backend
         private readonly ILoggerFactory _loggerFactory;
         private readonly MailingSettings _emailSettings;
         private readonly EnvironmentSettings _environmentSettings;
+        private readonly RecaptchaSettings _recaptchaSettings;
 
         public EmailService(ILoggerFactory loggerFactory, IOptions<MailingSettings> emailSettings,
-            IOptions<EnvironmentSettings> environmentSettings)
+            IOptions<EnvironmentSettings> environmentSettings, IOptions<RecaptchaSettings> recaptchaSettings)
         {
             _logger = loggerFactory.CreateLogger(GetType().FullName);
             _loggerFactory = loggerFactory;
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
+            _recaptchaSettings = recaptchaSettings.Value;
+        }
+
+        public String GetCaptchaInfo(int index)
+        {
+            if (index == 1)
+            {
+                return _recaptchaSettings.PrivateKey;
+            }
+            return _recaptchaSettings.URL;
         }
 
         public bool SendFeedbackEmail(string userEmail, string userName, string subject, string body)
