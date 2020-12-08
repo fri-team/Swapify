@@ -5,8 +5,9 @@ WORKDIR /app/WebApp
 # Copy the FE source from your machine onto the container.
 COPY ./WebApp ./
 RUN npm install
+RUN npm update -g npm
 # Run clean FE build
-RUN npm run build:CI
+RUN npm run build
 
 # Build .NET Core app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-build
