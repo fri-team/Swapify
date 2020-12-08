@@ -119,7 +119,7 @@ class BlockDetail extends PureComponent {
     const email = this.convertNameToEmail(course.teacher);
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = toMaterialStyle(
-      course.courseShortcut || ''
+      course.courseCode || ''
     );
     const style = { top: `${this.calculateTopPosition(top)}`, left: `${left}px`, bottom: `${this.calculateBottomPosition(top)}`, position: `absolute`, width: `20%` };
     const dialogOpen = this.state.dialogOpen;

@@ -89,8 +89,7 @@ namespace WebAPI.Controllers
             var timetable = _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
             if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
 
-            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
-
+            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
             Student student = user.Student;
             if (student == null)
             {
@@ -163,7 +162,7 @@ namespace WebAPI.Controllers
                     EndBlock = block.StartHour - 6 + block.Duration,
                     CourseId = _course.Id.ToString(),
                     CourseName = _course.CourseName,
-                    CourseShortcut = _course.CourseCode ?? "",
+                    CourseCode = _course.CourseCode ?? "",
                     Room = block.Room,
                     Teacher = block.Teacher,
                     Type = (TimetableBlockType)block.BlockType

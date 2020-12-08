@@ -61,40 +61,45 @@ namespace FRITeam.Swapify.Backend
         /// </summary>
         public async Task<Course> GetOrAddNotExistsCourse(string courseCode, string courseName)
         {
-            var course = await (string.IsNullOrEmpty(courseCode) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseCode));
+            var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseCode, Timetable = timetable, LastUpdateOfTimetable = null, CourseName = courseName };
+                course = new Course() {
+                    CourseCode = courseCode,
+                    Timetable = timetable,
+                    LastUpdateOfTimetable = null,
+                    CourseName = courseName                    
+                };                
                 if (string.IsNullOrEmpty(courseCode))
                 {
-                    course.CourseCode = FindCourseShortCutFromProxy(course);
+                    course.CourseCode = FindCourseCodeFromProxy(course);
                 }
                 await FindCourseTimetableFromProxy(course);                
-                await this.AddAsync(course);
+                await AddAsync(course);
             }
             else
-            {
+            {                
                 if (course.Timetable == null || course.LastUpdateOfTimetable == null)
                 {
                     course.Timetable = new Timetable();
                     if (string.IsNullOrEmpty(courseCode))                    
                     {
-                        course.CourseCode = FindCourseShortCutFromProxy(course);
-                    }
-                    await this.FindCourseTimetableFromProxy(course);
-                    await this.UpdateAsync(course);
+                        course.CourseCode = FindCourseCodeFromProxy(course);
+                    }                
+                    await FindCourseTimetableFromProxy(course);
+                    await UpdateAsync(course);
                 }
             }
             return course;
         }
-        public string FindCourseShortCutFromProxy(Course course)
+        public string FindCourseCodeFromProxy(Course course)
         {            
             foreach (var _course in _courseProxy.GetByCourseName(course.CourseName))
             {
-                if (_course.ShortCut.Contains(','))
+                if (_course.Code.Contains(','))
                 {
-                    course.CourseCode = _course.ShortCut.Substring(0, _course.ShortCut.IndexOf(','));
+                    course.CourseCode = _course.Code.Substring(0, _course.Code.IndexOf(','));
                     break;
                 }                
             }
@@ -114,7 +119,7 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindCourseTimetableFromProxy(Course course)
         {                       
-            var isOutDated = false;
+            var isOutDated = false;            
             if (course.LastUpdateOfTimetable != null)
             {
                 TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
@@ -147,6 +152,6 @@ namespace FRITeam.Swapify.Backend
         public async Task UpdateAsync(Course course)
         {
             await _courseCollection.ReplaceOneAsync(x => x.Id == course.Id, course);
-        }
+        }       
     }
 }

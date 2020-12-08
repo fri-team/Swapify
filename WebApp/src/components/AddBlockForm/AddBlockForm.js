@@ -34,7 +34,7 @@ class AddBlockForm extends Component {
   state = {
     id: this.props.course.id,
     courseName: this.props.course.courseName,
-    courseShortcut: this.props.course.courseShortcut,
+    courseCode: this.props.course.courseCode,
     teacher: this.props.course.teacher,
     room: this.props.course.room,
     day: this.props.course.day,
@@ -67,7 +67,7 @@ class AddBlockForm extends Component {
   }
 
   handleCourse = courseName => {
-    this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
+    this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
     this.setState({courseName: courseName.split(' (')[0]});
   } 
 
@@ -133,7 +133,7 @@ class AddBlockForm extends Component {
 
   render() {
     const { onClose } = this.props
-    const { day, courseName, courseShortcut, teacher, room, startBlock, length, type, suggestions } = this.state;
+    const { day, courseName, courseCode: courseCode, teacher, room, startBlock, length, type, suggestions } = this.state;
     return (
       <form>
         <Dialog open onClose={evt => {
@@ -149,7 +149,7 @@ class AddBlockForm extends Component {
           <DialogContent>
             <FlexBox>
               <Autocomplete
-                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseShortcut + ")"}
+                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseCode + ")"}
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}
