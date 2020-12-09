@@ -25,7 +25,7 @@ Scenario('[ADD01] Add new block.', async (I) => {
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'informatika 1',
-            courseShortcut: '11M151',
+            courseCode: '11M151',
             day: 1,
             startBlock: 1,
             endBlock: 3,
@@ -53,7 +53,7 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'algebra',
-            courseShortcut: '5BF101',
+            courseCode: '5BF101',
             day: 3,
             startBlock: 1,
             endBlock: 4,

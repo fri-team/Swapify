@@ -12,7 +12,7 @@ export function groupByTimeBlocks(timetable) {
     'day',
     'startBlock',
     'endBlock',
-    'courseShortcut'
+    'courseCode'
   ]);
   const groupsByDay = _.groupBy(ordered, 'day');
   const groupsByDayAndStartBlock = _.map(groupsByDay, g =>
@@ -60,7 +60,7 @@ const TimetableBlocks = props => {
       }
       blocks.push(
         <TimetableBlockContainer
-          key={`${block.courseShortcut}-${block.day}x${block.startBlock}`}
+          key={`${block.courseCode}-${block.day}x${block.startBlock}`}
           {...block}
           cssClasses={classes}
           style={{
