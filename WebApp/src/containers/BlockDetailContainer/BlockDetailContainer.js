@@ -31,6 +31,11 @@ class BlockDetailContainer extends Component {
     this.props.actions.hideDetail();
   }
 
+  onClickAdd = (block) => {
+    this.props.timetableActions.addBlock(block, this.state.user.email);
+    this.props.actions.hideDetail();
+  }
+
   render() {
     const { isVisible, top, left, course } = this.props;
     return (
@@ -44,6 +49,7 @@ class BlockDetailContainer extends Component {
         onExchangeRequest={this.exchangeRequest}
         onClickDelete={this.onClickDelete}
         onClickEdit={this.onClickEdit}
+        onClickAdd={this.onClickAdd}
       />
     );
   }

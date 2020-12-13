@@ -36,7 +36,7 @@ function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, sele
         fontWeight: isSelected ? 500 : 400,
       }}
     >
-      {suggestion.label}
+      {suggestion.label.split(')')[0]+")"}
     </MenuItem>
   );
 }
@@ -81,7 +81,7 @@ function IntegrationDownshift(props) {
                     renderSuggestion({
                       suggestion,
                       index,
-                      itemProps: getItemProps({ item: suggestion.label }),
+                      itemProps: getItemProps({ item: suggestion.label}),
                       highlightedIndex,
                       selectedItem,
                     }),
