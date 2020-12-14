@@ -36,7 +36,7 @@ function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, sele
         fontWeight: isSelected ? 500 : 400,
       }}
     >
-      {suggestion.label.split(')')[0]+")"}
+      {suggestion.label}
     </MenuItem>
   );
 }

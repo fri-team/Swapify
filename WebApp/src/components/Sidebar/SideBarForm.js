@@ -14,12 +14,7 @@ import { map } from 'lodash';
 import { connect } from 'react-redux';
 import {
   showCourseTimetable
-} from '../../actions/timetableActions';
-//import * as timetableActions from '../../actions/timetableActions';
-
-//import { bindActionCreators } from 'redux';
-//import * as actions from '../../actions/blockDetailActions';
-
+}  from '../../actions/timetableActions';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -31,7 +26,7 @@ const FlexBox = styled.div`
 class SideBarForm extends Component {
     state = {
         courseId: '',
-        pole:[],
+        courseInfo:[],
         courseName: '',
         courseShortcut: '',
         suggestions: [],
@@ -41,7 +36,8 @@ class SideBarForm extends Component {
     fetchCourses = () => {
         const fetch = throttle(500, courseName => {
           axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
-            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')' + x.id})) });
+            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
+            this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')' + x.id})) });
           });
         })
         return courseName => {
@@ -69,7 +65,14 @@ class SideBarForm extends Component {
     handleCourse = (courseName) => {
       this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
       this.setState({courseName: courseName.split(' (')[0]});
-      this.setState({courseId: courseName.split(')')[1]});
+
+      for(var i = 0; i < this.state.courseInfo.length; i++){
+        var shortCut = this.state.courseInfo[i].label.split(' (').pop().split(')')[0];
+        var name = this.state.courseInfo[i].label.split(' (')[0];
+        if(courseName.split(' (')[0] === name && courseName.split(' (').pop().split(')')[0] === shortCut) {
+          this.setState({courseId: this.state.courseInfo[i].label.split(')')[1]});         
+        }
+      }     
     } 
 
     render() {
@@ -133,8 +136,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  //actions: bindActionCreators(actions, dispatch),
-  //timetableActions: bindActionCreators(timetableActions, dispatch),
   showCourseTimetable: (courseId, courseName) => dispatch(showCourseTimetable(courseId, courseName)),
 });
 
