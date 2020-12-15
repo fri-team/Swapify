@@ -8,7 +8,7 @@
 }
 
 .App__Aside {
-  width: 60% !important;
+  width: 60%;
   background-color: white;
   overflow: auto;
 }
@@ -188,55 +188,91 @@
 
 .logo {
   background: url('../../images/logo.png') center no-repeat;
-  background-size: 40%;
-  height: 25vh;
+  background-size: 30%;
+  height: 30%;
 }
 
 
-.slide-container {
+.home-image {
   background: url('../../images/home-background.png') center no-repeat;
-  background-size: 90%;
-  text-align: center;
-  margin: auto; 
+  background-size: 70%;
+  height: 70%;
+  width: auto;
 }
 
-.each-slide > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  height: 55vh;
-  font-family: 'Roboto', sans-serif;
-  margin-bottom: 5vh;
+@media only screen and (max-width: 1300px) {
+  .AboutUsContainer h1 {
+    text-align: center;
+    padding-top: 40px;
+  }
+
+  .AboutUsLogos {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .AboutUsLogos img{
+    width: 100%;
+    height: auto;
+  }
 }
 
-.each-slide span {
-  padding: 3vh;
-  font-size: 2em;
-  margin-left: 3vw;
-  margin-right: 3vw;
-  margin-top: 3vh;
-  background: white;
-  color: black;
-  -webkit-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
-  -moz-box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
-  box-shadow: 10px 10px 17px 5px rgba(0,0,0,0.25);
-}
-
-//for smartphones and tablets
-@media screen and (max-width: 1024px)
-              and (min-width: 320px) {
+@media only screen and (max-width: 600px) {
   .logo {
-    background-size: 50%;
-    height: 150px;
-  }
-  .each-slide > div {
-    height: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    height: 20vh;
+    background-size: 70%;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
   }
 
-  .each-slide span {
-    padding: 1.7vh;
-    font-size: 1.5em;
+  .PageSwitcher {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .PageSwitcher__Item {
+    display: inline;
+  }
+
+  .home-image {
+    display: none;
+  }
+
+  .App {
+    display: block;
+  }
+
+  .App__Aside {
+    width: 100%;
+    display: block;
+    height: 500 px;
+  }
+
+  .App__Form {
+    width: 100%;
+    display: block;
+  }
+
+  .AboutUsContainer h1 {
+    text-align: center;
+    padding-top: 40px;
+  }
+
+  .AboutUsLogos {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .AboutUsLogos img{
+    width: 100%;
+    height: auto;
   }
 }
-
