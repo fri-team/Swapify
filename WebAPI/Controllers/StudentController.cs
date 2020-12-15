@@ -104,6 +104,11 @@ namespace WebAPI.Controllers
 
             Block block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
 
+            if (student.Timetable.IsSubjectPresentInTimetable(block))
+            {
+                return ErrorResponse($"Course: {timetableBlock.CourseName} is already present.");
+            }
+
             student.Timetable.AddNewBlock(block);
             await _studentService.UpdateStudentAsync(student);
             //return block with new id 
