@@ -13,7 +13,7 @@ import axios from 'axios';
 import { map } from 'lodash';
 import { connect } from 'react-redux';
 import {
-  showCourseTimetable
+  showCourseTimetable, hideCourseTimetable, loadMyTimetable
 }  from '../../actions/timetableActions';
 
 const FlexBox = styled.div`
@@ -133,10 +133,13 @@ SideBarForm.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   ...state.timetable,
+  user: state.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   showCourseTimetable: (courseId, courseName) => dispatch(showCourseTimetable(courseId, courseName)),
+  hideCourseTimetable: (courseId) => dispatch(hideCourseTimetable(courseId)),
+  loadMyTimetable: (user, history) => dispatch(loadMyTimetable(user, history))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBarForm);

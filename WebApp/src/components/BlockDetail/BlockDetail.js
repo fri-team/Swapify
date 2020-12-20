@@ -73,8 +73,6 @@ class BlockDetail extends PureComponent {
     }
 
     this.props.onClickAdd(body);
-
-    this.props.hideCourseTimetable(this.props.course.id);
   }
 
   onClickEditBlock = () => {
@@ -236,3 +234,4 @@ BlockDetail.propTypes = {
 };
 
 export default onClickOutside(BlockDetail);
+
