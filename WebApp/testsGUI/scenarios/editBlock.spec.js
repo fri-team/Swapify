@@ -7,7 +7,7 @@ Before((I) => {
 
 Scenario('[EDIT01] Verify, that modified length of subject will be correctly display on board', async(I) => {
 
-    I.click(locate('.block').withText('5IA202'));
+    I.click(locate('.block').withText('5IS208'));
     I.click({ react: 'button' , props: { title : 'Upraviť blok'}});
 
     I.clearField('length');
@@ -17,15 +17,16 @@ Scenario('[EDIT01] Verify, that modified length of subject will be correctly dis
 
     I.wait(1);
 
+    I.click({ react: 'Block', props: { i: 3, j: 8 }});
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
-            courseName : 'teória informácie',
-            courseShortcut: '5IA202',
-            day: 1,
-            startBlock: 9,
-            endBlock: 10,
+            courseName : 'architektúry informačných systémov',
+            courseShortcut: '5IS208',
+            day: 3,
+            startBlock: 8,
+            endBlock: 9,
             room: 'RC009',
-            teacher: 'doc. RNDr. Stanislav Palúch CSc.',
+            teacher: 'doc. Mgr. Ondrej Šuch PhD.',
             type: 'lecture'
         }
     });
@@ -56,6 +57,7 @@ Scenario('[EDIT02] Verify, if edited subject is saved (with informations) on boa
 
     I.wait(1);
 
+    I.click({ react: 'Block', props: { i: 3, j: 1 }});
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'jazyk anglický 6',
@@ -88,6 +90,7 @@ Scenario('[EDIT03] Verify, if lecture will be changed to laboratory', async(I) =
     I.click({xpath: "//input[@type='radio'][contains(@value,'laboratory')]"});
     I.click(locate('span').withText('Uložiť'));
 
+    I.click({ react: 'Block', props: { i: 1, j: 9 }});
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'teória informácie',
