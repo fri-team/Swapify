@@ -290,6 +290,7 @@ class RegisterPage extends Component {
               <ReCAPTCHA
                 sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
                 onChange={this.onChangeCaptcha}
+                hl="sk"
               />
               <p id="catpchaText">
                 Táto stránka je chránená pomocou služby ReCAPTCHA a Google

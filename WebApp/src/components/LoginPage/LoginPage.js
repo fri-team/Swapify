@@ -176,13 +176,21 @@ class LoginPage extends PureComponent {
               <ReCAPTCHA
                 sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
                 onChange={this.onChangeCaptcha}
+                hl="sk"
               />
               <p id="catpchaText">
                 Táto stránka je chránená pomocou služby ReCAPTCHA a Google
                 <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
-                <a href="https://policies.google.com/terms"> Podmienkami služieb</a> ,ktoré sú uplatnené.
+                <a href="https://policies.google.com/terms"> Podmienkami služieb</a>, ktoré sú uplatnené.
               </p>
               <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
+            </div>
+            <div className="FormField">
+              <a onClick={this.changeForm} className="FormField__Link">
+                {!this.state.resetingPassword
+                  ? "Ak si zabudol heslo, klikni na tento link"
+                  : " Späť na login"}
+              </a>
             </div>
 
             <div className="FormField">
@@ -191,14 +199,6 @@ class LoginPage extends PureComponent {
                   ? "Prihlásiť sa"
                   : "Resetovať heslo"}
               </button>
-            </div>
-
-            <div className="FormField">
-              <a onClick={this.changeForm} className="FormField__Link">
-                {!this.state.resetingPassword
-                  ? "Ak si zabudol heslo, klikni na tento link"
-                  : " Späť na login"}
-              </a>
             </div>
           </form>
         ) : (
