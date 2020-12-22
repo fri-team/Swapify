@@ -23,7 +23,6 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly Uri _baseUrl;
-        private static readonly HttpClient _httpClient = new HttpClient();
 
         public UserController(ILogger<UserController> logger, IUserService userService, IEmailService emailService,
             IOptions<EnvironmentSettings> environmentSettings)
@@ -38,15 +37,7 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
-            var values = new Dictionary<string, string>();
-            values.Add("secret", _emailService.GetCaptchaInfo(1));
-            values.Add("response", body.Captcha);
-
-            var content = new FormUrlEncodedContent(values);
-            var response = await _httpClient.PostAsync(_emailService.GetCaptchaInfo(2), content);
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            if (responseString[5] != 's')
+            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
             {
                 return BadRequest();
             }
@@ -181,17 +172,9 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var values = new Dictionary<string, string>();
-                values.Add("secret", _emailService.GetCaptchaInfo(1));
-                values.Add("response", body.Captcha);
-
-                var content = new FormUrlEncodedContent(values);
-                var response = await _httpClient.PostAsync(_emailService.GetCaptchaInfo(2), content);
-                var responseString = await response.Content.ReadAsStringAsync();
-
-                if (responseString[5] != 's')
+                if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    return ErrorResponse("Captcha nie je v poriadku.");
+                    return BadRequest();
                 }
 
                 body.Email = body.Email.ToLower();
