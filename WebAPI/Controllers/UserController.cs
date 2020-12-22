@@ -11,6 +11,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
 using System.Net;
+using System.Net.Http;
 
 namespace WebAPI.Controllers
 {
@@ -36,6 +37,11 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
+            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            {
+                return BadRequest();
+            }
+
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var addResult = await _userService.AddUserAsync(user, body.Password);
@@ -82,7 +88,6 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
             return Ok();
         }
-
 
         [AllowAnonymous]
         [HttpPost("deleteUser")]
@@ -167,6 +172,11 @@ namespace WebAPI.Controllers
         {
             try
             {
+                if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+                {
+                    return BadRequest();
+                }
+
                 body.Email = body.Email.ToLower();
                 var user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)

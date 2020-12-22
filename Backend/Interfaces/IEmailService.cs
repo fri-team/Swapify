@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend.Interfaces
 {
@@ -5,5 +6,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
     {
         bool SendFeedbackEmail(string userEmail, string userName, string subject, string body);
         bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType);
+        Task<bool> GetCaptchaNotPassed(string captcha);
     }
 }

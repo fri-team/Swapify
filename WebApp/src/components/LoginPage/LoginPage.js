@@ -4,6 +4,7 @@ import { login } from "../../actions/userActions";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import './LoginPage.scss';
+import ReCAPTCHA from "react-google-recaptcha";
 class LoginPage extends PureComponent {
   constructor() {
     super();
@@ -17,11 +18,13 @@ class LoginPage extends PureComponent {
       emailNotConfirmed: false,
       sendConfirmEmailAgainResult: "",
       resetingPassword: false,
-      wrongCredentials: false
+      wrongCredentials: false,
+      captchaValue : null
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
   }
 
   handleChange(e) {
@@ -34,6 +37,15 @@ class LoginPage extends PureComponent {
       serverErrors: "",
       wrongCredentials: false
     });
+  }
+
+  onChangeCaptcha(value) {
+    if (value) {
+      document.getElementById('captchaLabel').style.display = 'none';
+      this.setState({
+        captchaValue : value
+      });
+    }
   }
 
   changeForm = () => {
@@ -60,13 +72,21 @@ class LoginPage extends PureComponent {
   handleSubmit(e) {
     e.preventDefault();
 
+    if (this.state.captchaValue == null) {
+      document.getElementById('captchaLabel').style.display = 'block';
+      return;
+    } else {
+      document.getElementById('captchaLabel').style.display = 'none';
+    }
+
     if (!this.state.resetingPassword) {
       const { dispatch } = this.props;
       this.setState({ emailNotConfirmed: false });
 
       const body = {
         email: this.state.email,
-        password: this.state.password
+        password: this.state.password,
+        captcha: this.state.captchaValue
       };
 
       axios({
@@ -90,7 +110,8 @@ class LoginPage extends PureComponent {
         });
     } else {
       const body = {
-        email: this.state.email
+        email: this.state.email,
+        captcha: this.state.captchaValue
       };
 
       axios({
@@ -151,20 +172,33 @@ class LoginPage extends PureComponent {
               </div>
             )}
 
-            <div className="FormField">
-              <button className="FormField__Button">
-                {!this.state.resetingPassword
-                  ? "Prihlásiť sa"
-                  : "Resetovať heslo"}
-              </button>
+            <div className="FormField captchaClass">
+              <ReCAPTCHA
+                sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
+                onChange={this.onChangeCaptcha}
+                hl="sk"
+              />
+              <p id="catpchaText">
+                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
+                <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
+                <a href="https://policies.google.com/terms"> Podmienkami služieb</a>, ktoré sú uplatnené.
+              </p>
+              <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
             </div>
-
             <div className="FormField">
               <a onClick={this.changeForm} className="FormField__Link">
                 {!this.state.resetingPassword
                   ? "Ak si zabudol heslo, klikni na tento link"
                   : " Späť na login"}
               </a>
+            </div>
+
+            <div className="FormField">
+              <button className="FormField__Button">
+                {!this.state.resetingPassword
+                  ? "Prihlásiť sa"
+                  : "Resetovať heslo"}
+              </button>
             </div>
           </form>
         ) : (

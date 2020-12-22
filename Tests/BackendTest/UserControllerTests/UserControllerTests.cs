@@ -129,7 +129,8 @@ namespace BackendTest.UserControllerTests
                 Surname = "Testovaci",
                 Email = TesterEmail,
                 Password = "Heslo.123",
-                PasswordAgain = "Heslo.123"
+                PasswordAgain = "Heslo.123",
+                Captcha = "03AGdBq24EkHfGqLA5vekYiF9hc_LTwnA90BAotSo_n8By1jNE3Tx9kyzVNSuxWvqCxjZauf4H9rCKwv8Tf9_eNjoNLPuxPI3FIm4RHgd5DY6AUlDmgM-nxLOoj5JjaVo-kCHXGPJC3qFwrgOz2nhtJ2Rj9PvfXhLDhH69sibVW6XjlrD0wg0wyX_ZgA6sp_LnMHC71mUDjpspzrQGQflI1Q8L1j683KGETNOKDSD8b3Ub7Fp93juSBupviH570AFrMBO3kCAtk2ki5OxLGvVGjaJb_GzbxFCWKPaDTYh1rwlDaoJrbLA6sw56u8hcN2vcjxHD_93JI3yCCVSf17gRtKo-zZRtHsQXXPqRsotmmesJLvnb5qVuiQ5dNY-rTg62av5JwNS1wGfMIm96FFtZIizrATORR8ybMA"
             };
         }
 
@@ -156,7 +157,8 @@ namespace BackendTest.UserControllerTests
             return new LoginModel
             {
                 Email = "tester@testovaci.com",
-                Password = "Heslo.123"
+                Password = "Heslo.123",
+                Captcha = "03AGdBq24Cv6W4h249g3x4rzRbtCUkmW-j3kDGPsLhKAywBAoc9CPKnyAvwKqRe54Z195iSv0EsqTkGn1XJE3refW1hOcYYCz56v6K1_brvqEPayV523y9my6RKpyT8vX1g1v5HG8Js1kfnB4y36rI6a15m-fR6Wlha_8cIWFgfPUhnWB3I4PP_GiON4JHQr9zXyHTiCscZ-OoA4YSSypArX-3fjFkDGTzM1_1I_NvBOfyKBIlJ7D8uFrqtiXlH0mMrMoYnbthHjkZ6sHX25CZ-QuZUzYoL_dod-bB_W5KMsr-OIPApgp6Yl0uZnqHej3CfjS4NYl14rLKz4Tfnx5UdNadySTcfz4sFhaVnf_fTFDM7qD5vsFawwGrPoNBuFBi5JZ0HkstY-UT56i8LhhuEgxzlUeAskX45w"
             };
         }
 

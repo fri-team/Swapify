@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -14,14 +17,36 @@ namespace FRITeam.Swapify.Backend
         private readonly ILoggerFactory _loggerFactory;
         private readonly MailingSettings _emailSettings;
         private readonly EnvironmentSettings _environmentSettings;
+        private readonly RecaptchaSettings _recaptchaSettings;
+        private readonly HttpClient _httpClient;
 
         public EmailService(ILoggerFactory loggerFactory, IOptions<MailingSettings> emailSettings,
-            IOptions<EnvironmentSettings> environmentSettings)
+            IOptions<EnvironmentSettings> environmentSettings, IOptions<RecaptchaSettings> recaptchaSettings)
         {
             _logger = loggerFactory.CreateLogger(GetType().FullName);
             _loggerFactory = loggerFactory;
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
+            _recaptchaSettings = recaptchaSettings.Value;
+            _httpClient = new HttpClient();
+        }
+
+        public async Task<bool> GetCaptchaNotPassed(string captcha)
+        {
+            var values = new Dictionary<string, string>();
+            values.Add("secret", _recaptchaSettings.PrivateKey);
+            values.Add("response", captcha);
+
+            var content = new FormUrlEncodedContent(values);
+            var response = await _httpClient.PostAsync(_recaptchaSettings.URL, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            if (responseString[5] != 's')
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool SendFeedbackEmail(string userEmail, string userName, string subject, string body)

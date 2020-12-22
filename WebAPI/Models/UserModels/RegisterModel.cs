@@ -21,5 +21,8 @@ namespace WebAPI.Models.UserModels
         [Required(ErrorMessage = "Potvrdenie hesla je povinné.")]
         [Compare("Password", ErrorMessage = "Heslá sa nezhodujú.")]
         public string PasswordAgain { get; set; }
+
+        [Required(ErrorMessage = "Prosím vyplňte že nie ste robot.")]
+        public string Captcha { get; set; }
     }
 }

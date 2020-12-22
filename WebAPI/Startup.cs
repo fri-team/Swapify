@@ -232,7 +232,6 @@ namespace WebAPI
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
 
             var mailSettings = Configuration.GetSection("MailingSettings");
-
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
@@ -241,11 +240,15 @@ namespace WebAPI
             var pathSettings = Configuration.GetSection("PathSettings");
             if (pathSettings.Get<PathSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(PathSettings)} configuration section.");
+            var recaptchaSettings = Configuration.GetSection("RecaptchaSettings");
+            if (recaptchaSettings.Get<RecaptchaSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(RecaptchaSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
+            services.Configure<RecaptchaSettings>(recaptchaSettings);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
@@ -255,6 +258,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<EnvironmentSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<PathSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<RecaptchaSettings>>().Value);
 
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
