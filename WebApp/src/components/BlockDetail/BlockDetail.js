@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
-import _ from 'lodash';
+import _, { padStart, parseInt, replace } from 'lodash';
 import toMaterialStyle from 'material-color-hash';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
 import SwapIcon from '@material-ui/icons/SwapHorizSharp';
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import Location from '../svg/Location';
@@ -54,6 +55,26 @@ class BlockDetail extends PureComponent {
     this.setState({ dialogOpen: false })
   }
 
+  handleClickAdd = () => {
+    const body = {
+      user: this.props.user,
+      timetableBlock: {
+        id: this.props.course.id,
+        day: this.props.course.day,
+        startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
+        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 + 
+                  parseInt(this.props.course.endBlock - this.props.course.startBlock),
+        courseName: this.props.course.courseName,
+        courseShortcut: this.props.course.courseShortcut,
+        room: this.props.course.room,
+        teacher: this.props.course.teacher,
+        type: this.props.course.type
+      }
+    }
+
+    this.props.onClickAdd(body);
+  }
+
   onClickEditBlock = () => {
     this.setState({ dialogOpen: true })
   }
@@ -81,6 +102,18 @@ class BlockDetail extends PureComponent {
             <SwapIcon nativecolor={color} />
           </IconButton>
         </Tooltip>)
+    }
+  }
+
+  showAddButton = (color) => {
+    if(!this.props.course.isMine) {
+      return (
+        <Tooltip title="Pridať blok" placement="top" TransitionComponent={Zoom}>
+          <IconButton onClick={this.handleClickAdd}>
+            <AddIcon nativecolor={color} />
+          </IconButton>
+        </Tooltip>
+      )
     }
   }
 
@@ -131,6 +164,7 @@ class BlockDetail extends PureComponent {
               <span>
                 {this.showEditButton(color)}
                 {course.type !== 'lecture' && (this.showExchangeButton(color))}
+                {this.showAddButton(color)}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
                     <DeleteIcon nativecolor={color} />
@@ -200,3 +234,4 @@ BlockDetail.propTypes = {
 };
 
 export default onClickOutside(BlockDetail);
+

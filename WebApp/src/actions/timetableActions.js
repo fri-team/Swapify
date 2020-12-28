@@ -293,6 +293,56 @@ export function addBlock(body, userEmail) {
   };
 }
 
+export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
+  return dispatch => {
+    dispatch({
+      type: ADD_BLOCK
+    });
+    axios({
+      method: 'post',
+      url: `/api/student/addNewBlock`,
+      data: body
+    })
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/student/getStudentTimetable/' + userEmail
+      })
+        .then(res => {
+          dispatch({
+            type: HIDE_COURSE_TIMETABLE,
+            payload: {
+              timetable: res.data.blocks
+            }
+          });
+
+          axios({
+            method: 'get',
+            url: '/api/student/getStudentTimetable/' + userEmail
+          })
+            .then(res => {
+              dispatch({
+                type: LOAD_MY_TIMETABLE_DONE,
+                payload: {
+                  timetable: res.data.blocks
+                }
+              });
+            })
+
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
+      });
+    });
+  };
+}
+
 export function editBlock(body, userEmail) {
   return dispatch => {
     dispatch({

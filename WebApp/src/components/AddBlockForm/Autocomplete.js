@@ -81,7 +81,7 @@ function IntegrationDownshift(props) {
                     renderSuggestion({
                       suggestion,
                       index,
-                      itemProps: getItemProps({ item: suggestion.label }),
+                      itemProps: getItemProps({ item: suggestion.label}),
                       highlightedIndex,
                       selectedItem,
                     }),
