@@ -15,6 +15,7 @@ import Sidebar from './Sidebar';
 class SidebarContainer extends PureComponent {
   state = {
     value: 0,
+    sideBarFormOpen: false,
   };
 
   componentDidMount() {
@@ -33,9 +34,23 @@ class SidebarContainer extends PureComponent {
     }
   };
 
+  handleAddClick = () => {
+    if(!this.state.sideBarFormOpen) {
+      this.setState({ sideBarFormOpen: true});
+    } else {
+      this.setState({ sideBarFormOpen: false});
+    }
+  };
+
+  handleClickOutsideSideBarForm = () => {
+    this.setState({sideBarFormOpen: false});
+  }
+
+
   render() {
     const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
     const { value } = this.state;
+    const { sideBarFormOpen } = this.state;
     const courses = _.map(myCourseNames, course => ({
       courseName: course.courseName,
       courseId: course.courseId,
@@ -49,7 +64,10 @@ class SidebarContainer extends PureComponent {
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}
-        exchangeRequests={exchangeRequests}        
+        exchangeRequests={exchangeRequests} 
+        addClickHandle={this.handleAddClick}
+        sideBarFormOpen={sideBarFormOpen}
+        onCloseForm={this.handleClickOutsideSideBarForm}     
       />
     );
   }

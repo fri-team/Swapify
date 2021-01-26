@@ -15,7 +15,7 @@ namespace FRITeam.Swapify.APIWrapper
 
         public IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber)
         {
-            string semester = getCurrentSemesterShortCut();
+            string semester = GetCurrentSemesterShortCut();
             return CallScheduleContentApi(5, personalNumber + semester);
         }
 
@@ -31,7 +31,7 @@ namespace FRITeam.Swapify.APIWrapper
 
         public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
         {
-            string addition = ",5,1,1" + getCurrentSemesterShortCut();
+            string addition = ",5,1,1" + GetCurrentSemesterShortCut();
             return CallScheduleContentApi(4, subjectCode + addition);
         }
 
@@ -73,7 +73,7 @@ namespace FRITeam.Swapify.APIWrapper
             return ResponseParser.ParseResponse(myResponse);
         }
 
-        private string getCurrentSemesterShortCut()
+        private string GetCurrentSemesterShortCut()
             {
             DateTime localDate = DateTime.Now;
             DateTime winterSemesterStart = new DateTime(localDate.Year, 9, 1); //start of winter semester 1.9.

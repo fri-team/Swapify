@@ -389,9 +389,9 @@ namespace BackendTest.UserControllerTests
 
             Assert.IsType<BadRequestObjectResult>(result);
 
-            dynamic badRequestObject = (BadRequestObjectResult)result;
-            string error = badRequestObject.Value.Error;
-            Assert.Equal($"Používateľ {TesterEmail} neexistuje.", error);
+            //dynamic badRequestObject = (BadRequestObjectResult)result;
+            //string error = badRequestObject.Value.Error;
+            //Assert.Equal($"Používateľ {TesterEmail} neexistuje.", error);
         }
 
         [Fact]
@@ -437,7 +437,7 @@ namespace BackendTest.UserControllerTests
 
             dynamic badRequestObject = (BadRequestObjectResult)result;
             string error = badRequestObject.Value.Error;
-            Assert.Equal("Zadané heslo nie je správne.", error);
+            Assert.Equal("E-mailová adresa a heslo nie sú správne.", error);
 
         }
 
@@ -476,11 +476,8 @@ namespace BackendTest.UserControllerTests
 
             var result = await controller.ResetPassword(resetPassModel);
 
-            Assert.IsType<BadRequestObjectResult>(result);
-
-            dynamic badRequestObject = (BadRequestObjectResult)result;
-            string error = badRequestObject.Value.Error;
-            Assert.Equal($"Používateľ {TesterEmail} neexistuje.", error);
+            // Yes, reset password email sent message even when user doesn't have to exist
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]
@@ -614,7 +611,8 @@ namespace BackendTest.UserControllerTests
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
 
-            Assert.IsType<BadRequestObjectResult>(result);
+            // expect Ok result anyway, it's not revealed if user exists
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]

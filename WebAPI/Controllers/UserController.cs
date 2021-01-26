@@ -148,7 +148,7 @@ namespace WebAPI.Controllers
             if (user == null)
             {
                 _logger.LogWarning($"Invalid send confirmation email attempt. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                return Ok();
             }
 
             if (user.EmailConfirmed)
@@ -182,7 +182,7 @@ namespace WebAPI.Controllers
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
-                    return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
                 if (!user.EmailConfirmed)
@@ -195,7 +195,7 @@ namespace WebAPI.Controllers
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                    return ErrorResponse("Zadané heslo nie je správne.");
+                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
                 var authUser = new AuthenticatedUserModel(user, token);
@@ -224,7 +224,7 @@ namespace WebAPI.Controllers
             if (user == null)
             {
                 _logger.LogInformation($"Invalid password reset attemp. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                return Ok();
             }
 
             if (!user.EmailConfirmed)

@@ -19,6 +19,7 @@ namespace FRITeam.Swapify.Backend
         private IMongoCollection<Course> _courseCollection => _database.GetCollection<Course>(nameof(Course));
         private readonly ISchoolScheduleProxy _scheduleProxy;
         private readonly ISchoolCourseProxy _courseProxy;
+        private const int TIME_PERIOD_IN_HOURS = 12;
 
         public CourseService(ILogger<CourseService> logger, IMongoDatabase database, ISchoolScheduleProxy scheduleProxy, ISchoolCourseProxy courseProxy)
         {
@@ -58,35 +59,49 @@ namespace FRITeam.Swapify.Backend
         /// If course with exists, function returns ID. If course doesnt exist function
         /// saves this course and returns id of saved course.
         /// </summary>
-        public async Task<Course> GetOrAddNotExistsCourse(string courseShortcut, string courseName)
+        public async Task<Course> GetOrAddNotExistsCourse(string courseCode, string courseName)
         {
-            var course = await (string.IsNullOrEmpty(courseShortcut) ? this.FindByNameAsync(courseName) : this.FindByCodeAsync(courseShortcut));
+            var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
             {
                 var timetable = new Timetable();
-                course = new Course() { CourseCode = courseShortcut, Timetable = timetable, IsLoaded = false, CourseName = courseName };
-                string shortCut = FindCourseShortCutFromProxy(course);
-                await FindCourseTimetableFromProxy(shortCut, course);                
-                await this.AddAsync(course);
+                course = new Course() {
+                    CourseCode = courseCode,
+                    Timetable = timetable,
+                    LastUpdateOfTimetable = null,
+                    CourseName = courseName                    
+                };                
+                if (string.IsNullOrEmpty(courseCode))
+                {
+                    course.CourseCode = FindCourseCodeFromProxy(course);
+                }
+                await FindCourseTimetableFromProxy(course);                
+                await AddAsync(course);
             }
             else
-            {
-                if (course.Timetable == null || !course.IsLoaded)
+            {                
+                if (course.Timetable == null || course.LastUpdateOfTimetable == null)
                 {
                     course.Timetable = new Timetable();
-                    string shortCut = this.FindCourseShortCutFromProxy(course);
-                    await this.FindCourseTimetableFromProxy(shortCut, course);
-                    await this.UpdateAsync(course);
+                    if (string.IsNullOrEmpty(courseCode))                    
+                    {
+                        course.CourseCode = FindCourseCodeFromProxy(course);
+                    }                
+                    await FindCourseTimetableFromProxy(course);
+                    await UpdateAsync(course);
                 }
             }
             return course;
-        }       
-        public string FindCourseShortCutFromProxy(Course course)
-        {
+        }
+        public string FindCourseCodeFromProxy(Course course)
+        {            
             foreach (var _course in _courseProxy.GetByCourseName(course.CourseName))
             {
-                if (_course.ShortCut.Substring(0, course.CourseCode.Length).Equals(course.CourseCode))
-                    return _course.ShortCut;
+                if (_course.Code.Contains(','))
+                {
+                    course.CourseCode = _course.Code.Substring(0, _course.Code.IndexOf(','));
+                    break;
+                }                
             }
             return course.CourseCode;
         }
@@ -99,42 +114,44 @@ namespace FRITeam.Swapify.Backend
                 _logger.LogError($"Course with id {guid.ToString()} not exist");
                 return null;
             }
-            var schedule = _scheduleProxy.GetBySubjectCode(course.CourseName);
-            if (schedule == null)
-            {
-                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                return null;
-            }
-            Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course = new Course() { Timetable = timetable, IsLoaded = true};
-            return course;
+            return await FindCourseTimetableFromProxy(course);            
         }
 
-        public async Task<Course> FindCourseTimetableFromProxy(string shortCut, Course course)
-        {
-            IEnumerable<ScheduleHourContent> schedule = null;
-            try
+        public async Task<Course> FindCourseTimetableFromProxy(Course course)
+        {                       
+            var isOutDated = false;            
+            if (course.LastUpdateOfTimetable != null)
             {
-                schedule = _scheduleProxy.GetBySubjectCode(shortCut);
-            } catch (Exception ex)
-            {
-                _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+                TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
+                if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) isOutDated = true;
             }
-            
-            if (schedule == null)
+            if (course.LastUpdateOfTimetable == null || isOutDated)
             {
-                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                return null;
+                IEnumerable<ScheduleHourContent> schedule = null;
+                try
+                {
+                    schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+                }                
+                if (schedule == null)
+                {
+                    _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
+                    return null;
+                }
+                Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
+                course.Timetable = timetable;
+                course.LastUpdateOfTimetable = System.DateTime.Now;
+                await UpdateAsync(course);
             }
-            Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course.Timetable = t;
-            course.IsLoaded = true;
-            return course;
+            return course;            
         }
 
         public async Task UpdateAsync(Course course)
         {
             await _courseCollection.ReplaceOneAsync(x => x.Id == course.Id, course);
-        }
+        }       
     }
 }

@@ -13,8 +13,13 @@ import Grid from '@material-ui/core/Grid';
 import { dayHourToString } from '../../util/dateTimeFormatter';
 import { CardHeader } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+//import SidebarForm from '../Sidebar/SidebarForm';
+import SideBarForm from './SideBarForm';
 
 import './Sidebar.scss';
+
 
 const StyledTab= withStyles({
   root: {
@@ -22,7 +27,7 @@ const StyledTab= withStyles({
   }
 })(Tab);
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests }) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, sideBarFormOpen,onCloseForm}) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange}>
@@ -31,8 +36,11 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
       </Tabs>
     </AppBar>
     <div className="drawerWrapper">
-      {value === 0 &&
-        <List>
+    {value === 0 &&                
+        <List> 
+          <Tooltip title="Pridať predmet" placement="top">
+            <IconButton onClick={addClickHandle}><AddIcon/></IconButton>
+          </Tooltip>
           {courses.map(({ courseId, courseName, checked }) => (
             <ListItem button key={courseId}>
               <FormControlLabel
@@ -49,6 +57,11 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
             </ListItem>
 
           ))}
+          {sideBarFormOpen && 
+            <SideBarForm
+              onClose={onCloseForm}           
+            />
+          }        
         </List>
       }
       {value === 1 &&

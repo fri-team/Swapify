@@ -19,6 +19,7 @@ export const getUserData = payload => {
     isAuthenticated: true,
     token: payload.token,
     studentId: payload.studentId,
+    personalNumber: payload.personalNumber,
     validTo
   };
 };

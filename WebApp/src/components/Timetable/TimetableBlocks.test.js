@@ -11,25 +11,25 @@ describe('groupByTimeBlocks()', () => {
         day: 1,
         startBlock: 7,
         endBlock: 9,
-        courseShortcut: 'TI',
+        courseCode: 'TI',
       },
       {
         day: 2,
         startBlock: 6,
         endBlock: 8,
-        courseShortcut: 'TI',
+        courseCode: 'TI',
       },
       {
         day: 1,
         startBlock: 4,
         endBlock: 6,
-        courseShortcut: 'DISS',
+        courseCode: 'DISS',
       },
       {
         day: 1,
         startBlock: 7,
         endBlock: 9,
-        courseShortcut: 'DISS',
+        courseCode: 'DISS',
       },
     ];
     // group courses on Monday block 7
@@ -39,7 +39,7 @@ describe('groupByTimeBlocks()', () => {
           day: 1,
           startBlock: 4,
           endBlock: 6,
-          courseShortcut: 'DISS',
+          courseCode: 'DISS',
         },
       ],
       [
@@ -47,13 +47,13 @@ describe('groupByTimeBlocks()', () => {
           day: 1,
           startBlock: 7,
           endBlock: 9,
-          courseShortcut: 'DISS',
+          courseCode: 'DISS',
         },
         {
           day: 1,
           startBlock: 7,
           endBlock: 9,
-          courseShortcut: 'TI',
+          courseCode: 'TI',
         },
       ],
       [
@@ -61,7 +61,7 @@ describe('groupByTimeBlocks()', () => {
           day: 2,
           startBlock: 6,
           endBlock: 8,
-          courseShortcut: 'TI',
+          courseCode: 'TI',
         },
       ],
     ];

@@ -58,5 +58,14 @@ namespace FRITeam.Swapify.Entities
             Block other = obj as Block;
             return (IsSameAs(other) && this.CourseId == other.CourseId);
         }
+
+        public bool SubjectIsAlreadyPresent(Block b)
+        {
+            return (this.Day == b?.Day) &&
+                   ((this.StartHour >= b?.StartHour && this.StartHour <= b?.StartHour + b?.Duration) ||
+                   (this.StartHour + this.Duration >= b?.StartHour && this.StartHour + this.Duration <= b?.StartHour + b?.Duration)) &&
+                   (this.CourseId == b?.CourseId);
+        }
+
     }
 }
