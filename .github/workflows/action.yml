@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 1. Checkout github actions
+    - name: '1. Checkout github actions'
       uses: actions/checkout@v2
       env:
-        ASPNETCORE_ENVIRONMENT: Development
+        ASPNETCORE_ENVIRONMENT: Production
 
     - name: Build
       run: docker build .
