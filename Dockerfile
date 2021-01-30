@@ -4,7 +4,7 @@ FROM node AS react-build
 WORKDIR /app/WebApp
 # Copy the FE source from your machine onto the container.
 COPY ./WebApp ./
-RUN npm install
+RUN npm install npm@latest
 # Run clean FE build
 RUN npm run build:CI
 
