@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@develop
+      - uses: actions/checkout@v2
 #         env:
 #           ASPNETCORE_ENVIRONMENT: Production
 
