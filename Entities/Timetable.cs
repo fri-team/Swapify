@@ -93,5 +93,11 @@ namespace FRITeam.Swapify.Entities
         {
             return _blocks.Any(x => x.IsSameAs(bl));
         }
+
+        public bool IsSubjectPresentInTimetable(Block bl)
+        {
+            return _blocks.Any(x => x.SubjectIsAlreadyPresent(bl));
+        }
+
     }
 }

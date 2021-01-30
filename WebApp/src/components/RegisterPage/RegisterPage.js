@@ -7,6 +7,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { HOME } from '../../util/routes';
+import ReCAPTCHA from "react-google-recaptcha";
 //import Modal from '../Modal/Modal';
 //import Backdrop from '../Backdrop/Backdrop';
 //import {Document, Page} from 'react-pdf';
@@ -98,13 +99,23 @@ class RegisterPage extends Component {
       submitted: false,
       serverErrors: [],
       hasAgreed: false,
-      privacyPolicyOpened : false
+      privacyPolicyOpened : false,
+      captchaValue : null
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
   }
 
+  onChangeCaptcha(value) {
+    if (value) {
+      document.getElementById('captchaLabel').style.display = 'none';
+      this.setState({
+        captchaValue : value
+      });
+    }
+  }
 
   handleChange = event => {
     //event.preventDefault();
@@ -121,7 +132,8 @@ class RegisterPage extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const body = {
+
+    const bodyValidation = {
       name: this.state.name,
       surname: this.state.surname,
       email: this.state.email,
@@ -129,8 +141,25 @@ class RegisterPage extends Component {
       passwordAgain: this.state.passwordAgain
     };
 
-    const validation = validator.validate(body);
+    const validation = validator.validate(bodyValidation);
+
     this.setState({ validation, submitted: true });
+
+    if (this.state.captchaValue == null) {
+      document.getElementById('captchaLabel').style.display = 'block';
+      return;
+    } else {
+      document.getElementById('captchaLabel').style.display = 'none';
+    }
+
+    const body = {
+      name: this.state.name,
+      surname: this.state.surname,
+      email: this.state.email,
+      password: this.state.password,
+      passwordAgain: this.state.passwordAgain,
+      captcha: this.state.captchaValue
+    };
 
     if (validation.isValid) {
       axios({
@@ -257,6 +286,20 @@ class RegisterPage extends Component {
               </label>
             </div>
 
+            <div className="FormField captchaClass">
+              <ReCAPTCHA
+                sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
+                onChange={this.onChangeCaptcha}
+                hl="sk"
+              />
+              <p id="catpchaText">
+                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
+                <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
+                <a href="https://policies.google.com/terms"> Podmienkami služieb</a> ,ktoré sú uplatnené.
+              </p>
+              <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
+            </div>
+            
             <div className="FormField">
               <button className="FormField__Button">
                 Registrovať sa
@@ -294,3 +337,12 @@ RegisterPage.propTypes = {
 };
 
 export default connect()(RegisterPage);
+
+/*
+<div className="FormField">
+              <LoadCanvasTemplate />
+              <div>
+                <input placeholder="Vložte kód vyššie" id="user_captcha_input" name="user_captcha_input" type="text"></input>
+              </div>
+            </div>
+*/

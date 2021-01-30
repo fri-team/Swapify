@@ -1,4 +1,4 @@
-﻿using FRITeam.Swapify.Backend.CourseParser;
+using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
@@ -248,7 +248,8 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 {
                     Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
-                    CourseName = crs.CourseName
+                    CourseName = crs.CourseName,
+                    LastUpdateOfTimetable = null
                 };
 
                 var c = courseCollection.Find(x => x.CourseCode == crs.CourseCode).SingleOrDefault();

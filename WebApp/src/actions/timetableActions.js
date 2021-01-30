@@ -25,15 +25,19 @@ import {
 import data from './timetableData.json';
 import { loadExchangeRequests } from './exchangeActions';
 import { blockNumberToHour } from '../util/convertFunctions';
+import { PERSONALNUMBER } from '../util/routes';
 
-export function loadMyTimetable(userEmail) {
+export function loadMyTimetable(user, history) {
   return dispatch => {
     dispatch({
       type: LOAD_MY_TIMETABLE
     });
+    if (user.personalNumber == null) {
+      history.push(PERSONALNUMBER);
+    }
     axios({
       method: 'get',
-      url: '/api/student/getStudentTimetable/' + userEmail
+      url: '/api/student/getStudentTimetable/' + user.email
     })
       .then(res => {
         dispatch({
@@ -47,8 +51,6 @@ export function loadMyTimetable(userEmail) {
         dispatch({
           type: LOAD_MY_TIMETABLE_FAIL
         });
-        // window.location.replace("http://localhost:3000/personal-number");
-        // fallback if API is not running, TODO: remove in the future
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
           payload: {
@@ -280,6 +282,56 @@ export function addBlock(body, userEmail) {
               timetable: res.data.blocks
             }
           });
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
+      });
+    });
+  };
+}
+
+export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
+  return dispatch => {
+    dispatch({
+      type: ADD_BLOCK
+    });
+    axios({
+      method: 'post',
+      url: `/api/student/addNewBlock`,
+      data: body
+    })
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/student/getStudentTimetable/' + userEmail
+      })
+        .then(res => {
+          dispatch({
+            type: HIDE_COURSE_TIMETABLE,
+            payload: {
+              timetable: res.data.blocks
+            }
+          });
+
+          axios({
+            method: 'get',
+            url: '/api/student/getStudentTimetable/' + userEmail
+          })
+            .then(res => {
+              dispatch({
+                type: LOAD_MY_TIMETABLE_DONE,
+                payload: {
+                  timetable: res.data.blocks
+                }
+              });
+            })
+
         })
     })
     .catch(() => {

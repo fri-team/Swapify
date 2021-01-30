@@ -59,22 +59,14 @@ namespace WebAPI.Controllers
             foreach (var block in student.Timetable.AllBlocks)
             {
                 TimetableBlock timetableBlock = new TimetableBlock();
-                Course course = await _courseService.FindByIdAsync(block.CourseId);
+                Course course = await _courseService.FindByIdAsync(block.CourseId);                
                 timetableBlock.Id = block.BlockId.ToString();
                 timetableBlock.Day = block.Day.GetHashCode();
                 timetableBlock.StartBlock = block.StartHour - 6;
                 timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
                 timetableBlock.CourseId = course.Id.ToString();
                 timetableBlock.CourseName = course.CourseName;
-                if (course.CourseCode == null)
-                {
-                    timetableBlock.CourseShortcut = "";
-                }
-                else
-                {
-                    timetableBlock.CourseShortcut = course.CourseCode;
-                }
-
+                timetableBlock.CourseCode = course.CourseCode;
                 timetableBlock.Room = block.Room;
                 timetableBlock.Teacher = block.Teacher;
                 timetableBlock.Type = (TimetableBlockType)block.BlockType;
@@ -102,7 +94,8 @@ namespace WebAPI.Controllers
             }
 
             TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
-            Course course = await _courseService.GetOrAddNotExistsCourse(timetableBlock.CourseShortcut, timetableBlock.CourseName);
+            Course course = await _courseService.GetOrAddNotExistsCourse(timetableBlock.CourseCode,
+                timetableBlock.CourseName);
 
             if (course == null)
             {
@@ -110,6 +103,11 @@ namespace WebAPI.Controllers
             }
 
             Block block = TimetableBlock.ConvertToBlock(timetableBlock, course.Id);
+
+            if (student.Timetable.IsSubjectPresentInTimetable(block))
+            {
+                return ErrorResponse($"Course: {timetableBlock.CourseName} is already present.");
+            }
 
             student.Timetable.AddNewBlock(block);
             await _studentService.UpdateStudentAsync(student);
@@ -170,7 +168,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
             }
 
-            Course newCourse = await _courseService.FindByNameAsync(updateBlockModel.TimetableBlock.CourseName);
+            Course newCourse = await _courseService.FindByCodeAsync(updateBlockModel.TimetableBlock.CourseCode);
             if (newCourse == null)
             {
                 return ErrorResponse($"New course: {updateBlockModel.TimetableBlock.CourseName} does not exist.");

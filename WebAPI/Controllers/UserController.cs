@@ -11,6 +11,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
 using System.Net;
+using System.Net.Http;
 
 namespace WebAPI.Controllers
 {
@@ -36,6 +37,11 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
+            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            {
+                return BadRequest();
+            }
+
             body.Email = body.Email.ToLower();
             User user = new User(body.Email, body.Name, body.Surname);
             var addResult = await _userService.AddUserAsync(user, body.Password);
@@ -83,7 +89,6 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-
         [AllowAnonymous]
         [HttpPost("deleteUser")]
         public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel body)
@@ -114,12 +119,6 @@ namespace WebAPI.Controllers
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel body)
         {
-            //Console.WriteLine("Body is: " + body);
-            //Console.WriteLine("UserId is: " + body.UserId);
-            //Console.WriteLine("Token is: " + body.Token);
-            //_logger.LogWarning("Body is: " + body);
-            //_logger.LogWarning("UserId is: " + body.UserId);
-            //_logger.LogWarning("Token is: " + body.Token);
             var user = await _userService.GetUserByIdAsync(body.UserId);
             if (user == null)
             {
@@ -149,7 +148,7 @@ namespace WebAPI.Controllers
             if (user == null)
             {
                 _logger.LogWarning($"Invalid send confirmation email attempt. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                return Ok();
             }
 
             if (user.EmailConfirmed)
@@ -173,12 +172,17 @@ namespace WebAPI.Controllers
         {
             try
             {
+                if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+                {
+                    return BadRequest();
+                }
+
                 body.Email = body.Email.ToLower();
-                var user = await _userService.GetUserByEmailAsync(body.Email); // cannot reach mongoDB
+                var user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
-                    return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
                 if (!user.EmailConfirmed)
@@ -191,7 +195,7 @@ namespace WebAPI.Controllers
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                    return ErrorResponse("Zadané heslo nie je správne.");
+                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
                 var authUser = new AuthenticatedUserModel(user, token);
@@ -220,7 +224,7 @@ namespace WebAPI.Controllers
             if (user == null)
             {
                 _logger.LogInformation($"Invalid password reset attemp. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+                return Ok();
             }
 
             if (!user.EmailConfirmed)
@@ -272,7 +276,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            if (!_emailService.SendFeedbackEmail(body.Email, body.Content))
+            if (!_emailService.SendFeedbackEmail(body.Email, body.Name, body.Subject, body.Body))
             {
                 _logger.LogError($"Error when sending feedback email from user {body.Email}.");
                 return BadRequest();

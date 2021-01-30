@@ -12,12 +12,14 @@ export const messageChanged = (text) => {
     };
 };
 
-export function sendFeedback(mail, message) {
+export function sendFeedback(mail, name, subject, message) {
     return function(dispatch) {
         const body = {
             Email: mail,
-            Content: message
-        };
+            Name: name,
+            Subject: subject,
+            Body: message
+          };
           
         axios({
             method: "post",

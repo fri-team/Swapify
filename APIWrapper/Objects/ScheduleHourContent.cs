@@ -39,22 +39,21 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         public string RoomName { get; }
 
         /// <summary>
-        /// Subject shortcut
+        /// Subject code
         /// </summary>
-        public string CourseShortcut { get; }
+        public string CourseCode { get; }
 
         /// <summary>
         /// Full name of subject
         /// </summary>
-        public string CourseName { get; }        
-
+        public string CourseName { get; }
         /// <summary>
         /// Type of subject - compulsory, optional, compulsoryElective
         /// </summary>
         public SubjectType SubjectType { get; }
 
         public ScheduleHourContent(int day, int blockNumber, bool isBlocked, LessonType lessonType,
-            string teacherName, string roomName, string subjectShortcut, string subjectName,
+            string teacherName, string roomName, string subjectCode, string subjectName,
             SubjectType subjectType)
         {
             Day = day;
@@ -63,8 +62,8 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             LessonType = lessonType;
             TeacherName = teacherName;
             RoomName = roomName;
-            CourseShortcut = subjectShortcut;
-            CourseName = subjectName;
+            CourseCode = subjectCode;
+            CourseName = subjectName;            
             SubjectType = subjectType;
         }
         

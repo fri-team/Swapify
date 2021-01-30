@@ -9,5 +9,8 @@ namespace WebAPI.Models.UserModels
 
         [Required(ErrorMessage = "Heslo je povinné.")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Prosím vyplňte že nie ste robot.")]
+        public string Captcha { get; set; }
     }
 }

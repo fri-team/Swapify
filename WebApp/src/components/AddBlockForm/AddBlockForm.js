@@ -34,12 +34,12 @@ class AddBlockForm extends Component {
   state = {
     id: this.props.course.id,
     courseName: this.props.course.courseName,
-    courseShortcut: this.props.course.courseShortcut,
+    courseCode: this.props.course.courseCode,
     teacher: this.props.course.teacher,
     room: this.props.course.room,
     day: this.props.course.day,
     startBlock: padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'),
-    length: (this.props.course.length == 2) ? 2 : this.props.course.endBlock - this.props.course.startBlock,
+    length: this.props.course.endBlock - this.props.course.startBlock,
     type: this.props.course.type,
     suggestions: [],
     user: this.props.user,
@@ -67,13 +67,38 @@ class AddBlockForm extends Component {
   }
 
   handleCourse = courseName => {
-    this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
+    this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
     this.setState({courseName: courseName.split(' (')[0]});
   } 
 
   handleChange = evt => {
     const { name, value } = evt.target;
-    this.setState({ [name]: value });
+    if (name == "length") {
+      if (value > 20 - this.state.startBlock.substring(0, 2)) {
+        this.setState({ [name]: (20 - this.state.startBlock.substring(0, 2)) });
+      } else if (value < 1) {
+        this.setState({ [name]: 1 });
+      } else {
+        this.setState({ [name]: value });
+      }
+    } else if (name == "startBlock") {
+      if (value.substring(0,2) < "07") {
+        this.setState({ [name]: "07:00" });
+      } else if (value.substring(0,2) > "19") {
+        let val = "19";
+        if (this.state.length > (20 - val)) {
+          this.setState({ length: (20 - val) });
+        }
+        this.setState({ [name]: "19:00" });
+      } else {
+        if (this.state.length > (20 - value.substring(0,2))) {
+          this.setState({ length: (20 - value.substring(0,2)) });
+        }
+        this.setState({ [name]: value.substring(0,3) + "00" });
+      }
+    } else {
+      this.setState({ [name]: value });
+    }
   }
 
   canSubmit = () => {
@@ -106,10 +131,9 @@ class AddBlockForm extends Component {
     onClose();
   }
 
-
   render() {
     const { onClose } = this.props
-    const { day, courseName, courseShortcut, teacher, room, startBlock, length, type, suggestions } = this.state;
+    const { day, courseName, courseCode: courseCode, teacher, room, startBlock, length, type, suggestions } = this.state;
     return (
       <form>
         <Dialog open onClose={evt => {
@@ -125,7 +149,7 @@ class AddBlockForm extends Component {
           <DialogContent>
             <FlexBox>
               <Autocomplete
-                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseShortcut + ")"}
+                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseCode + ")"}
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}
@@ -181,7 +205,7 @@ class AddBlockForm extends Component {
               <TextField
                 label="Dĺžka"
                 type="number"
-                InputProps={{ inputProps: { min: 1, max: 10 } }}
+                InputProps={{ inputProps: { min: 1, max: (20 - this.state.startBlock.substring(0,2)) } }}
                 name="length"
                 value={length}
                 onChange={this.handleChange}

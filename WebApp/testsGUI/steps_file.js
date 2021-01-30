@@ -23,6 +23,13 @@ module.exports = function () {
             I.fillField('Zadajte osobné číslo', persNum);
             I.click('Uložiť');
         },
+        
+        async updateField(fieldName, value) {
+            const I = this;
+            I.click(fieldName);
+            I.pressKey(['Shift', 'Home']);
+            I.pressKey(value);
+        },
 
         async eval(fn, message, ...args) {
             message && this.say(message);

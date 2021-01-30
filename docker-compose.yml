@@ -24,12 +24,12 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     ports:
-      - 80:80
-      # - 443:443
+      # - 80:80
+      - 443:443
       # - 0.0.0.0:3000:3000
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - BaseUrl=http://18.193.17.141
+      - BaseUrl=https://18.193.17.141
       - JwtSecret=CchangOrDNChanngSecr
       - NODE_ENV=production
     # links:

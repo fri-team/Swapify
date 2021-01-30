@@ -17,7 +17,7 @@ class Timetable extends React.Component {
   state = {
     course: {
       courseName: '',
-      courseShortcut: '',
+      courseCode: '',
       teacher: '',
       room: '',
       day: null,

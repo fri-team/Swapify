@@ -1,3 +1,18 @@
 .wrongCredentials {
     color: red;
 }
+
+#captchaLabel {
+    display: none;
+    color: red;
+  }
+
+#catpchaText {
+    color: black;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.FormField > .FormField__Link {
+    margin-top: 0;
+}
