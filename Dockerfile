@@ -4,7 +4,10 @@ FROM node AS react-build
 WORKDIR /app/WebApp
 # Copy the FE source from your machine onto the container.
 COPY ./WebApp ./
-RUN npm install npm@latest
+# Install latest npm
+RUN npm install -g npm@6.14.11
+# Install required node modules
+RUN npm install
 # Run clean FE build
 RUN npm run build:CI
 
@@ -26,6 +29,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
-EXPOSE 443
+EXPOSE 80 443
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
 # EXPOSE 300

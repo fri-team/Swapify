@@ -22,9 +22,17 @@ services:
     volumes:
       # - /home/ubuntu/Swapify/:
       - ./logs:/app/logs
+      # - .docker_compose_volume/nginx:/var/log/nginx
+      # - ./var/log/nginx:/var/log/nginx
+      # Volumes we need for TLS
+      # - ./etc/ssl:/etc/ssl # dhparams file
+      - ./etc/letsencrypt/live:/root/.dotnet/https # current certificate
+      - ./etc/letsencrypt/archive:/root/.dotnet/https # all certificates (symlinks from /live points here) 
+      # - ./etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+      # - ./etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
     restart: unless-stopped
     ports:
-      # - 80:80
+      - 80:80
       - 443:443
       # - 0.0.0.0:3000:3000
     environment:
