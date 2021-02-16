@@ -1,18 +1,19 @@
-version: '3'
+version: '3.1'
 services:
   # nginx:
   #   image: nginx:latest
   #   container_name: webserver
   #   restart: unless-stopped
   #   ports:
-  #     - 0.0.0.0:80:80
-  #     - 0.0.0.0:443:443
+  #     - 80:80
+  #     - 443:443
   #   volumes:
-  #     - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/nginx.conf
-  #     - /home/ubuntu/SwapifySSL:/etc/ssl/private
-  #   expose:
-  #     - 80
-  #     - 443
+  #     - /nginx.conf:/etc/nginx/
+  #     # - /home/ubuntu/SwapifySSL:/etc/ssl/private
+  #     - /etc/letsencrypt/*:/etc/letsencrypt/* # current certificate
+  # #   expose:
+  # #     - 80
+  # #     - 443
   swapify:
     build:
       context: .
@@ -26,6 +27,7 @@ services:
       # - ./var/log/nginx:/var/log/nginx
       # Volumes we need for TLS
       # - ./etc/ssl:/etc/ssl # dhparams file
+      - ./etc/letsencrypt
       - ./etc/letsencrypt/live:/root/.dotnet/https # current certificate
       - ./etc/letsencrypt/archive:/root/.dotnet/https # all certificates (symlinks from /live points here) 
       # - ./etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
@@ -44,6 +46,7 @@ services:
     #   - db
     depends_on:
       - mongodb
+      # - nginx
     links:
       - mongodb
   mongodb:

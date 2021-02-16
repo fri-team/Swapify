@@ -4,7 +4,7 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:5000/",
-      "sslPort": 0
+      "sslPort": 44381
     }
   },
   "profiles": {
@@ -23,7 +23,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
         "JwtSecret": "CchangeThisJWTSecreeeetPleasse",
-        "BaseUrl": "http://18.193.17.141:80/"
+        "BaseUrl": "https://18.193.17.141:443/",
+        "applicationUrl": "https://swapify.fri.uniza:443;http://swapify.fri.uniza:80"
       }
     }
   }

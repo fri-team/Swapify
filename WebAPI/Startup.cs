@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using WebAPI.Models.DatabaseModels;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAPI
 {
@@ -101,6 +102,13 @@ namespace WebAPI
             }
             else
             {
+                // Production
+                services.AddHttpsRedirection(opts => {
+                    opts.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                    opts.HttpsPort = 443;
+                });
+
+
                 services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
                 var settings = new MongoClientSettings
                 {
@@ -187,7 +195,7 @@ namespace WebAPI
 
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-                app.UseSpaStaticFiles();
+                //app.UseSpaStaticFiles();
 
                 CreateDbSeedAsyncProduction(app.ApplicationServices);
             }
@@ -196,9 +204,13 @@ namespace WebAPI
             app.UseCors("AllowCredentials");
 
             // Serve index.html and static resources from wwwroot/
-            app.UseDefaultFiles();
-            //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
+            //app.UseDefaultFiles();
+
             app.UseStaticFiles();
+            app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
+            app.UseSpaStaticFiles();
+
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -376,7 +388,7 @@ namespace WebAPI
             }
             catch (Exception e)
             {
-                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed (Production) :\n{e.Message}");
             }
         }
     }
