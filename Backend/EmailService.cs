@@ -28,7 +28,13 @@ namespace FRITeam.Swapify.Backend
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
             _recaptchaSettings = recaptchaSettings.Value;
-            _httpClient = new HttpClient();
+
+            // this has to be done proberly
+            // this is just a temporary fix
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            _httpClient = new HttpClient(clientHandler);
+            //_httpClient = new HttpClient();
         }
 
         public async Task<bool> GetCaptchaNotPassed(string captcha)

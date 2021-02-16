@@ -37,56 +37,62 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel body)
         {
-            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
-            {
-                return BadRequest();
-            }
-
-            body.Email = body.Email.ToLower();
-            User user = new User(body.Email, body.Name, body.Surname);
-            var addResult = await _userService.AddUserAsync(user, body.Password);
-
-            if (!addResult.Succeeded)
-            {
-                var existingUser = await _userService.GetUserByEmailAsync(body.Email);
-                // user hasn't confirmed email
-                if (existingUser != null && !existingUser.EmailConfirmed)
+            try {
+                if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    Console.WriteLine("existingUser: " + existingUser);
-                    string newToken = await _userService.GenerateEmailConfirmationTokenAsync(existingUser);
-                    string newCallbackUrl = new Uri(_baseUrl, $@"confirmEmail/{existingUser.Id}/{newToken}").ToString();
+                    return BadRequest();
+                }
 
-                    if (!_emailService.SendConfirmationEmail(body.Email, newCallbackUrl, "RegistrationEmail"))
+                body.Email = body.Email.ToLower();
+                User user = new User(body.Email, body.Name, body.Surname);
+                var addResult = await _userService.AddUserAsync(user, body.Password);
+
+                if (!addResult.Succeeded)
+                {
+                    var existingUser = await _userService.GetUserByEmailAsync(body.Email);
+                    // user hasn't confirmed email
+                    if (existingUser != null && !existingUser.EmailConfirmed)
                     {
-                        _logger.LogError($"Error when sending confirmation email to user {body.Email}. Errors: {addResult.Errors} URI: {newCallbackUrl}");
-                        return BadRequest();
+                        Console.WriteLine("existingUser: " + existingUser);
+                        string newToken = await _userService.GenerateEmailConfirmationTokenAsync(existingUser);
+                        string newCallbackUrl = new Uri(_baseUrl, $@"confirmEmail/{existingUser.Id}/{newToken}").ToString();
+
+                        if (!_emailService.SendConfirmationEmail(body.Email, newCallbackUrl, "RegistrationEmail"))
+                        {
+                            _logger.LogError($"Error when sending confirmation email to user {body.Email}. Errors: {addResult.Errors} URI: {newCallbackUrl}");
+                            return BadRequest();
+                        }
+                        _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+                        return Ok();
                     }
-                    _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
-                    return Ok();
+                    else
+                    {
+                        _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", addResult.Errors));
+                        Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(addResult.Errors);
+                        return ValidationError(identityErrors);
+                    }
                 }
-                else
+
+                _logger.LogInformation($"User {body.Email} created.");
+                string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+                user = await _userService.GetUserByEmailAsync(body.Email);
+                string callbackUrl = new Uri(_baseUrl, $@"confirmEmail/{user.Id}/{token}").ToString();
+
+                if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
                 {
-                    _logger.LogInformation(ControllerExtensions.IdentityErrorBuilder($"Error when creating user {body.Email}. Identity errors: ", addResult.Errors));
-                    Dictionary<string, string[]> identityErrors = ControllerExtensions.IdentityErrorsToDictionary(addResult.Errors);
-                    return ValidationError(identityErrors);
+                    _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
+                    var deleteResult = await _userService.DeleteUserAsyc(user);
+                    if (deleteResult.Succeeded)
+                        _logger.LogInformation($"User {body.Email} deleted.");
+                    return BadRequest();
                 }
+                _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
+                return Ok();
             }
-
-            _logger.LogInformation($"User {body.Email} created.");
-            string token = await _userService.GenerateEmailConfirmationTokenAsync(user);
-            user = await _userService.GetUserByEmailAsync(body.Email);
-            string callbackUrl = new Uri(_baseUrl, $@"confirmEmail/{user.Id}/{token}").ToString();
-
-            if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RegistrationEmail"))
+            catch (Exception ex)
             {
-                _logger.LogError($"Error when sending confirmation email to user {body.Email}.");
-                var deleteResult = await _userService.DeleteUserAsyc(user);
-                if (deleteResult.Succeeded)
-                    _logger.LogInformation($"User {body.Email} deleted.");
-                return BadRequest();
+                return ErrorResponse("Error HERE: " + ex.ToString());
             }
-            _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
-            return Ok();
         }
 
         [AllowAnonymous]
@@ -174,7 +180,8 @@ namespace WebAPI.Controllers
             {
                 if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    return BadRequest();
+                    return ErrorResponse($"Google reCaptcha overenie neprešlo.");
+                    //return BadRequest();
                 }
 
                 body.Email = body.Email.ToLower();
