@@ -14,21 +14,75 @@ Scenario('[DELETE01] Verify, if subject with lecture and exercise will be delete
 });
 
 Scenario('[DELETE02] Verify, if only lecture will be removed and excercise will stay',async (I) => {
-    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').withText('5UI102').at(1))).toString().substr(0,6);
-    
-    I.click(locate('.block').withText('5UI102').at(1));
-    I.dontSeeElement({ react: 'button' , props: { title : 'Požiadať o výmenu'}});
+    I.click({ react: 'Block', props: { i: 2, j: 8 }});
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'teória spoľahlivosti',
+            courseShortcut: '5UI102',
+            day: 2,
+            startBlock: 8,
+            endBlock: 10,
+            room: 'RB002',
+            teacher: 'prof. Ing. Elena Zaitseva PhD.',
+            type: 'lecture'
+        }
+    });
     I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
 
-    I.seeElement(locate('.block').withText(nameOfDeletedSubject));
+    I.click({ react: 'Block', props: { i: 2, j: 8 }});
+    I.seeElement({ react: 'AddBlockForm' });
+    I.click('.MuiTouchRipple-root');
+
+    I.wait(1);
+
+    I.click({ react: 'Block', props: { i: 2, j: 10 }});
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'teória spoľahlivosti',
+            courseShortcut: '5UI102',
+            day: 2,
+            startBlock: 10,
+            endBlock: 12,
+            room: 'RA201',
+            teacher: 'prof. Ing. Elena Zaitseva PhD.',
+            type: 'laboratory'
+        }
+    });
 });
 
 Scenario('[DELETE03] Verify, if only exercise will be removed and lecture will stay',async (I) => {
-    let nameOfDeletedSubject = (await I.grabTextFrom(locate('.block').withText('5II208').at(2))).toString().substr(0,6);
-
-    I.click(locate('.block').withText('5II208').at(2));
-    I.seeElement({ react: 'button' , props: { title : 'Požiadať o výmenu'}});
+    I.click({ react: 'Block', props: { i: 4, j: 6 }});
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'diskrétna simulácia',
+            courseShortcut: '5II208',
+            day: 4,
+            startBlock: 6,
+            endBlock: 8,
+            room: 'RB054',
+            teacher: ' Ing. Peter Jankovič PhD.',
+            type: 'laboratory'
+        }
+    });
     I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
 
-    I.seeElement(locate('.block').withText(nameOfDeletedSubject));
+    I.click({ react: 'Block', props: { i: 4, j: 6 }});
+    I.seeElement({ react: 'AddBlockForm' });
+    I.click('.MuiTouchRipple-root');
+
+    I.wait(1);
+
+    I.click({ react: 'Block', props: { i: 2, j: 4 }});
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'diskrétna simulácia',
+            courseShortcut: '5II208',
+            day: 2,
+            startBlock: 4,
+            endBlock: 6,
+            room: 'RC009',
+            teacher: 'doc. Ing. Norbert Adamko PhD.',
+            type: 'lecture'
+        }
+    });
 });
