@@ -25,6 +25,7 @@ namespace BackendTest
             DbRegistration.Init();
             _runner = RUN_WITH_STANDARD_PORT ? MongoDbRunner.StartForDebugging() : MongoDbRunner.Start();
             MongoClient = new MongoClient(_runner.ConnectionString);
+
         }
         #region IDisposable
 

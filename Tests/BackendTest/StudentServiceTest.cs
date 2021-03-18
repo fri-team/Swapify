@@ -17,7 +17,6 @@ namespace BackendTest
     [Collection("Database collection")]
     public class StudentServiceTest : IClassFixture<Mongo2GoFixture>
     {
-        private const string PersonalNumber = "559841";
         private readonly Mongo2GoFixture _mongoFixture;
         private readonly IMongoDatabase _database;
         private readonly Mock<ILogger<SchoolScheduleProxy>> _loggerMockSchedule;
@@ -32,7 +31,7 @@ namespace BackendTest
             _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
         }
 
-
+/*
         [Fact]
         public async Task AssingTimetableToStudent()
         {
@@ -42,10 +41,10 @@ namespace BackendTest
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
 
 
-            var timetable = serviceSchedule.GetByPersonalNumber(PersonalNumber);
+            var timetable = serviceSchedule.GetByPersonalNumber("558188");
             Student student = new Student
             {
-                PersonalNumber = PersonalNumber,
+                PersonalNumber = "558188",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
             };
 
@@ -61,8 +60,8 @@ namespace BackendTest
 
             student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
         }
-
-
+*/
+/*
         [Fact]
         public async Task AddStudentTest()
         {
@@ -72,10 +71,10 @@ namespace BackendTest
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
             StudentService stSer = new StudentService(_database);
 
-            var timetable = serviceSchedule.GetByPersonalNumber(PersonalNumber);
+            var timetable = serviceSchedule.GetByPersonalNumber("558188");
             Student st = new Student
             {
-                PersonalNumber = PersonalNumber,
+                PersonalNumber = "558188",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
             };
             Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
@@ -94,12 +93,13 @@ namespace BackendTest
 
             st = await stSer.FindByIdAsync(st.Id);
             st.Id.Should().NotBeEmpty();
-            st.PersonalNumber.Should().Be(PersonalNumber);
+            st.PersonalNumber.Should().Be("558188");
             st.Timetable.AllBlocks.Last().Day.Should().Be(Day.Thursday);
             st.Timetable.AllBlocks.Last().Duration.Should().Be(2);
             st.Timetable.AllBlocks.Last().StartHour.Should().Be(16);
             st.Timetable.AllBlocks.Last().BlockType.Should().Be(BlockType.Lecture);
         }
+*/
 
 
         [Fact]
