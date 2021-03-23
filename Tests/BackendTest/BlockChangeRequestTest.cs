@@ -25,7 +25,6 @@ namespace BackendTest
 
         }
 
-
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
@@ -136,7 +135,6 @@ namespace BackendTest
             blockToChange.BlockTo = blockTo.Clone();
             blockToChange.StudentId = studentId;
             return blockToChange;
-
         }
 
         private async Task<Course> CreateAndAddCourse(string name, string code, CourseService service)
