@@ -25,7 +25,6 @@ namespace BackendTest
 
         }
 
-/*
         [Fact]
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
@@ -35,7 +34,7 @@ namespace BackendTest
             var schoolScheduleProxy = new SchoolScheduleProxy();
             var schoolCourseProxy = new SchoolCourseProxy();
             CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy, schoolCourseProxy);
-
+            
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
             Course course2 = await CreateAndAddCourse("Programovanie", "11111", courseService);
 
@@ -84,8 +83,8 @@ namespace BackendTest
             blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
             blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
         }
-*/
-/*
+
+
         [Fact]
         public async Task CancelExchangeTest()
         {
@@ -115,7 +114,7 @@ namespace BackendTest
             (await blockChangeService.CancelExchangeRequest(blockToChange1)).Should().Be(true);
             blockChangeService.FindWaitingStudentRequests(student.Id).Result.Count.Should().Be(1);
         }
-*/
+        
         private Block CreateBlock(BlockType blockType, Day day, byte duration, byte startHour, Guid courseId)
         {
             return new Block()
@@ -136,7 +135,6 @@ namespace BackendTest
             blockToChange.BlockTo = blockTo.Clone();
             blockToChange.StudentId = studentId;
             return blockToChange;
-
         }
 
         private async Task<Course> CreateAndAddCourse(string name, string code, CourseService service)
