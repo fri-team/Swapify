@@ -59,6 +59,7 @@ class AddBlockForm extends Component {
         this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
       });
     })
+
     return courseName => {
       if (courseName && courseName.length > 1) {
         fetch(courseName);
@@ -66,10 +67,31 @@ class AddBlockForm extends Component {
     }
   }
 
-  handleCourse = courseName => {
+  fetchCourseBlock = courseName => {
     this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
     this.setState({courseName: courseName.split(' (')[0]});
-  } 
+
+    const startBlock = parseInt(this.state.startBlock.split(':')[0]);
+    
+    var j = 0;
+    for (var i = 0; i < this.state.suggestions.length; i++) {
+      if (this.state.suggestions[i].courseName == courseName.split(' (')[0]) {
+        j = i;
+      }
+    } 
+    
+    axios.get(`/api/timetable/getCourseBlock/${this.state.suggestions[j].id}/${startBlock}/${this.state.day}`).then(({ data }) => {
+      this.setState({ teacher: data.teacher });
+      this.setState({ room: data.room });
+      this.setState({ length: data.endBlock - data.startBlock });
+      this.setState({ type: data.type });
+    });
+  }
+
+  // handleCourse = courseName => {
+  //   this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
+  //   this.setState({courseName: courseName.split(' (')[0]});
+  // } 
 
   handleChange = evt => {
     const { name, value } = evt.target;
@@ -154,7 +176,7 @@ class AddBlockForm extends Component {
                 value={courseName}
                 suggestions={suggestions}
                 inputvaluechange={this.fetchCourses()}
-                onChange={this.handleCourse}
+                onChange={this.fetchCourseBlock}
                 margin="normal"
                 fullWidth
                 required

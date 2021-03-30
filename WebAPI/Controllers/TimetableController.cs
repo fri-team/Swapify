@@ -174,5 +174,42 @@ namespace WebAPI.Controllers
 
             return Ok(timetable);
         }
+
+        [HttpGet("getCourseBlock/{courseId}/{startBlock}/{day}")]
+        public async Task<IActionResult> GetBlockOfCourse(string courseId, int startBlock, int day)
+        {
+            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
+            if (!isValidCourseGUID)
+            {
+                return ErrorResponse($"Course id: {courseId} is not valid GUID.");
+            }
+
+            var _course = await _courseService.FindCourseTimetableFromProxy(courseGuid);
+            if (_course == null)
+            {
+                return ErrorResponse($"Course with code: {courseId} does not exist.");
+            }
+
+            foreach (var block in _course.Timetable.AllBlocks)
+            {
+                if (block.StartHour == startBlock && block.Day.GetHashCode() == day)
+                {
+                    return Ok(new TimetableBlock
+                    {
+                        Id = block.BlockId.ToString(),
+                        Day = block.Day.GetHashCode(),
+                        StartBlock = block.StartHour - 6,
+                        EndBlock = block.StartHour - 6 + block.Duration,
+                        CourseId = _course.Id.ToString(),
+                        CourseName = _course.CourseName,
+                        CourseCode = _course.CourseCode ?? "",
+                        Room = block.Room,
+                        Teacher = block.Teacher,
+                        Type = (TimetableBlockType)block.BlockType
+                    });
+                }                       
+            }
+            return NotFound("Course not found");
+        }
     }
 }

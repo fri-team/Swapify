@@ -9,6 +9,8 @@ using FRITeam.Swapify.APIWrapper;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.APIWrapper.Objects;
+using System.Globalization;
+using System.Text;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -50,9 +52,37 @@ namespace FRITeam.Swapify.Backend
             return await _courseCollection.Find(x => x.CourseName.Equals(name.ToLower())).FirstOrDefaultAsync();
         }
 
+        private string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         public List<Course> FindByStartName(string courseStartsWith)
         {
-            return _courseCollection.Find(x => x.CourseName.ToLower().Contains(courseStartsWith.ToLower())).ToList();
+            List<Course> courses = _courseCollection.Find(x => x.CourseName.StartsWith(courseStartsWith.First().ToString())).ToList();
+
+            courseStartsWith = RemoveDiacritics(courseStartsWith);
+
+            List<Course> finded = new List<Course>();
+            foreach (var course in courses)
+            {
+                if (RemoveDiacritics(course.CourseName).Contains(courseStartsWith))
+                    finded.Add(course);
+            }
+
+            return finded;
         }
 
         /// <summary>
