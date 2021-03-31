@@ -3,6 +3,7 @@ using System;
 
 namespace FRITeam.Swapify.Entities
 {
+    [MongoDB.Bson.Serialization.Attributes.BsonIgnoreExtraElements]
     public class Course : BaseEntity
     {
         /// <summary>
@@ -12,7 +13,6 @@ namespace FRITeam.Swapify.Entities
         public string CourseCode { get; set; }        
         public string CourseName { get; set; }
         public Timetable Timetable { get; set; }
-        public bool IsLoaded { get; set; }
         public DateTime? LastUpdateOfTimetable { get; set; }
     }
 }
