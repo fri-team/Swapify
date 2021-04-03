@@ -61,6 +61,7 @@ class BlockDetail extends PureComponent {
       timetableBlock: {
         id: this.props.course.id,
         day: this.props.course.day,
+        courseCode: this.props.course.courseCode,
         startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
         endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 + 
                   parseInt(this.props.course.endBlock - this.props.course.startBlock),
