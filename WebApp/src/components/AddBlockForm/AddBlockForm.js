@@ -55,7 +55,7 @@ class AddBlockForm extends Component {
 
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
-      axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
+      axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.studentId}`).then(({ data }) => {
         this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
       });
     })
@@ -85,7 +85,12 @@ class AddBlockForm extends Component {
       this.setState({ room: data.room });
       this.setState({ length: data.endBlock - data.startBlock });
       this.setState({ type: data.type });
+    }).catch(function (error) {
+      if (error.response.status == '404') {
+        alert('Upozornenie: zadaný predmet sa v tomto čase nevyučuje');
+      }
     });
+    
   }
 
   // handleCourse = courseName => {

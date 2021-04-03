@@ -119,10 +119,13 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("course/getCoursesAutoComplete/{courseName}")]
-        public IActionResult GetCoursesAutoComplete(string courseName)
+        [HttpGet("course/getCoursesAutoComplete/{courseName}/{studentId}")]
+        public async Task<IActionResult> GetCoursesAutoComplete(string courseName, string studentId)
         {
-            return Ok(_courseService.FindByStartName(courseName));
+            Guid.TryParse(studentId, out Guid studentGuid);
+            var _student = await _studentService.FindByIdAsync(studentGuid);
+
+            return Ok(_courseService.FindByStartName(courseName, _student != null ? _student.PersonalNumber : "5"));
         }
 
         [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
