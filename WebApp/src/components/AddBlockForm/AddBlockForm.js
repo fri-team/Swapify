@@ -93,11 +93,6 @@ class AddBlockForm extends Component {
     
   }
 
-  // handleCourse = courseName => {
-  //   this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
-  //   this.setState({courseName: courseName.split(' (')[0]});
-  // } 
-
   handleChange = evt => {
     const { name, value } = evt.target;
     if (name == "length") {
