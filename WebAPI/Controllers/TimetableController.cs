@@ -181,8 +181,7 @@ namespace WebAPI.Controllers
         [HttpGet("getCourseBlock/{courseId}/{startBlock}/{day}")]
         public async Task<IActionResult> GetBlockOfCourse(string courseId, int startBlock, int day)
         {
-            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
-            if (!isValidCourseGUID)
+            if (!Guid.TryParse(courseId, out Guid courseGuid))
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
             }

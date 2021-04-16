@@ -71,19 +71,25 @@ namespace FRITeam.Swapify.Backend
 
         public List<Course> FindByStartName(string courseStartsWith, string personalNumber)
         {
-            courseStartsWith = RemoveDiacritics(courseStartsWith);
-
-            List<Course> allCourses = _courseCollection.Find(x => true).ToList();
-            List<Course> finded = new List<Course>();
-            foreach (var course in allCourses)
+            if (courseStartsWith.Length > 2)
             {
-                if (course.CourseName.Length >= courseStartsWith.Length &&
-                    RemoveDiacritics(course.CourseName).Substring(0, courseStartsWith.Length).Equals(courseStartsWith))
-                    finded.Add(course);
-            }
+                courseStartsWith = RemoveDiacritics(courseStartsWith);
 
-            return finded.OrderByDescending(course => course.CourseCode.First() == personalNumber.First())
-                .ThenBy(course => course.CourseName).ToList();
+                List<Course> allCourses = _courseCollection.Find(x => true).ToList();
+                List<Course> founded = new List<Course>();
+                foreach (var course in allCourses)
+                {
+                    if (course.CourseName.Length >= courseStartsWith.Length &&
+                        RemoveDiacritics(course.CourseName).Substring(0, courseStartsWith.Length).Equals(courseStartsWith))
+                        founded.Add(course);
+                }
+
+                return founded.OrderByDescending(course => course.CourseCode.First() == personalNumber.First())
+                    .ThenBy(course => course.CourseName).ToList();
+            } else
+            {
+                return new List<Course>();
+            }
         }
 
         /// <summary>

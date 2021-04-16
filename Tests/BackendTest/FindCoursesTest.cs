@@ -18,19 +18,23 @@ namespace BackendTest
         private readonly IMongoDatabase _database;
         private readonly Mock<ILogger<CourseService>> _loggerMockCourse;
 
+        private ISchoolScheduleProxy _schoolScheduleProxy;
+        private ISchoolCourseProxy _schoolCourseProxy;
+
         public FindCoursesTest(Mongo2GoFixture mongoFixture)
         {
             _mongoFixture = mongoFixture;
             _loggerMockCourse = new Mock<ILogger<CourseService>>();
-            _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");        
+            _database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
+
+            _schoolScheduleProxy = new SchoolScheduleProxy();
+            _schoolCourseProxy = new SchoolCourseProxy();
         }
 
         [Fact]
         public async Task FindCoursetWithoutWritingAccents()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, _schoolScheduleProxy, _schoolCourseProxy);
 
             Course course = new Course
             {
@@ -46,9 +50,7 @@ namespace BackendTest
         [Fact]
         public async Task FindCourseWithWritingAccents()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, _schoolScheduleProxy, _schoolCourseProxy);
 
             Course course = new Course
             {
@@ -64,9 +66,7 @@ namespace BackendTest
         [Fact]
         public async Task FindCoursesAndReturnItInSortedWay()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
-            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
+            CourseService courseService = new CourseService(_loggerMockCourse.Object, _database, _schoolScheduleProxy, _schoolCourseProxy);
 
             Course course = new Course
             {
