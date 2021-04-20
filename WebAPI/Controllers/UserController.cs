@@ -11,7 +11,7 @@ using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
 using WebAPI.Extensions;
 using System.Net;
-using System.Net.Http;
+using FRITeam.Swapify.Backend;
 
 namespace WebAPI.Controllers
 {
@@ -165,27 +165,51 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
             return Ok();
         }
-
+        
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
             try
             {
-                if (!body.Email.Equals("oleg@swapify.com"))
+                if (!body.Email.Equals("oleg@swapify.com") && _emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+                    return BadRequest();
+                }
+
+                UserInformations ldapInformations = null;
+
+                User user = null;
+
+                if (body.Ldap)
+                {
+                    ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
+                    if (ldapInformations == null)
                     {
-                        return BadRequest();
+                        _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
+                        return ErrorResponse($"Meno a heslo nie sú správne.");
                     }
-                }               
+                    user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+                    if (user == null && !_userService.AddLdapUser(ldapInformations).Result)
+                    {
+                        _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
+                        return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
+                    }
+                    body.Email = ldapInformations.Email;
+                }
 
                 body.Email = body.Email.ToLower();
-                var user = await _userService.GetUserByEmailAsync(body.Email);
+                user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
+                }
+
+                if (user.IsLdapUser && !body.Ldap)
+                {
+                    _logger.LogInformation($"Invalid login attemp. User {body.Email} does exist but is LDAP user.");
+                    return ErrorResponse($"Heslo nie je správne.");
                 }
 
                 if (!user.EmailConfirmed)
@@ -194,7 +218,7 @@ namespace WebAPI.Controllers
                     return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
                 }
 
-                var token = await _userService.Authenticate(body.Email, body.Password);
+                var token = await _userService.Authenticate(body.Email, user.IsLdapUser ? "Heslo123" : body.Password);
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
@@ -202,6 +226,10 @@ namespace WebAPI.Controllers
                 }
 
                 var authUser = new AuthenticatedUserModel(user, token);
+                if (user.IsLdapUser && user.Student == null && ldapInformations != null)
+                {
+                    authUser.FirstTimePN = ldapInformations.PersonalNumber;
+                }
                 return Ok(authUser);
             }
             catch (Exception ex)
