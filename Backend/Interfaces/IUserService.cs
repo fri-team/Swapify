@@ -18,5 +18,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<IdentityResult> DeleteUserAsyc(User user);
         Task<IdentityResult> UpdateUserAsync(User userToUpdate);
         JwtSecurityToken Renew(string jwtToken);
+        UserInformations GetUserFromLDAP(string login, string password);
+        Task<bool> AddLdapUser(UserInformations informations);
     }
 }

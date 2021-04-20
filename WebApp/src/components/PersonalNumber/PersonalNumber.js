@@ -10,16 +10,14 @@ import { MacBackground } from '..';
 import { TIMETABLE } from '../../util/routes';
 import { ClipLoader } from "react-spinners";
 
-
 class PersonalNumber extends React.Component {
   state = {
     loading: false,
     personalNumber: '',
     user: this.props.user,
     existing: false,
-    
+    firstTimePN: this.props.firstTimePN,
   }
-
 
   onKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -27,7 +25,6 @@ class PersonalNumber extends React.Component {
       this.Submit();
     }
   }
-
 
   Submit = () => {
     this.setState({loading: true});
@@ -68,12 +65,13 @@ class PersonalNumber extends React.Component {
                 <FormControl
                     fullWidth
                 >
+                  {/*this.state.firstTimePN.length == 6 ? this.setState({ personalNumber: this.state.firstTimePN }) : ""*/}
                     <TextField
                       error={(this.state.personalNumber.length !== 6 && this.state.personalNumber !== "") || this.state.existing}
                       id="personalNumber"
                       value={this.state.personalNumber}
                       onChange={this.handleSubmit}
-                      label="Zadajte osobné číslo"
+                      label={"Zadajte osobné číslo" + this.state.firstTimePN}
                       placeholder="Príklad 555000"
                       margin="normal"
                       fullWidth

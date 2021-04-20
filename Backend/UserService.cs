@@ -119,5 +119,37 @@ namespace FRITeam.Swapify.Backend
         {
             return await _userManager.UpdateAsync(userToUpdate);
         }
+
+        public UserInformations GetUserFromLDAP(string login, string password)
+        {
+            if (login.Contains('@'))
+            {
+                return null;
+            }
+
+            login += "@fri.uniza.sk";
+
+            OptionsLdap options = new OptionsLdap
+            {
+                SecureSocketLayer = false,
+                BaseDN = "DC=fri,DC=uniza,DC=sk",
+                HostName = "ldapbdc.fri.uniza.sk",
+                Port = 389,
+            };
+
+            AuthenticatorLdap authenticatorLdap = new AuthenticatorLdap(options);
+            UserInformations informations = authenticatorLdap.Authenticate(login, password);
+            return informations;
+        }
+
+        public async Task<bool> AddLdapUser(UserInformations informations)
+        {
+            string[] names = informations.Name.Split(" ");
+            User user = new User(informations.Email, names[0], names[1]);
+            user.EmailConfirmed = true;
+            user.IsLdapUser = true;
+            var addResult = await AddUserAsync(user, "Heslo123");
+            return addResult.Succeeded;
+        }
     }
 }

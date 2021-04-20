@@ -14,6 +14,7 @@ namespace WebAPI.Models.UserModels
         public DateTime ValidTo { get; set; }
         public string StudentId { get; set; }
         public string PersonalNumber { get; set; }
+        public string FirstTimePN { get; set; }
 
         public AuthenticatedUserModel(User user, JwtSecurityToken token)
         {
@@ -26,6 +27,7 @@ namespace WebAPI.Models.UserModels
                 StudentId = user.Student?.Id.ToString();
                 PersonalNumber = user.Student?.PersonalNumber;
             }
+            FirstTimePN = "";
             Token = token.RawData;
             ValidTo = token.ValidTo;
         }
