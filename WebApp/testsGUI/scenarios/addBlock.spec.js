@@ -63,3 +63,92 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
         }
     });
 });
+
+Scenario('[ADD03] Check, if subject is founded without accent', async (I) => {
+    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.fillField('courseName', 'architektury informacnych systemov');
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+    I.seeInField('courseName', 'architektúry informačných systémov (5IS208)');
+});
+
+Scenario('[ADD04] Check, if subject is founded with accent', async (I) => {
+    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.fillField('courseName', 'číslicové počítače');
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+    I.seeInField('courseName', 'číslicové počítače (5BH118)');
+});
+
+Scenario('[ADD05] Check, if founded subjects is sorted by faculty of student', async (I) => {
+    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.fillField('courseName', 'architektury');
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+    I.seeInField('courseName', 'architektúry informačných systémov (5IS208)');
+
+    I.clearField('courseName');
+    I.fillField('courseName', 'architektury');
+
+    I.wait(1);
+
+    I.pressKey("ArrowDown");
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+    I.seeInField('courseName', 'architektúry zariadení (8KB048)');
+});
+
+//Test requires actual schedule of subject
+Scenario('[ADD06] Check, if forms in add block form will pre-fill', async (I) => {
+    I.click({ react: 'Block', props: { i: 3, j: 4 }});
+    I.fillField('courseName', 'architektury informacnych systemov');
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+
+    I.seeInField('teacher', ' Ing. Ivana Brídová PhD.');
+    I.seeInField('room', 'RB003');
+    I.seeInField('length', '2');
+    I.seeElement({ react: 'FormControlLabel', props: { value: 'laboratory' }});
+});
+
+Scenario('[ADD07] Add subject for summer semester from sidebar', async (I) => {
+    I.click(locate('.MuiIconButton-label'));
+    I.click(locate('button').withAttr({ title: 'Pridať predmet' }));
+
+    I.fillField('courseName', 'metaheuristiky');
+
+    I.pressKey("ArrowDown");
+    I.pressKey("Enter");
+
+    I.click("Vyhľadať");
+
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'metaheuristiky',
+        }
+    });
+
+    I.click({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'metaheuristiky',
+        }
+    });
+    
+    I.click({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'metaheuristiky',
+        }
+    });
+
+    I.click({ react: 'button' , props: { title : 'Pridať blok'}});
+
+    I.seeElement({ 
+        react: 'TimetableBlock', props: { 
+            courseName : 'metaheuristiky',
+        }
+    });
+
+    I.click(locate('.MuiIconButton-label'));
+    
+    I.seeElement(locate('label').withText('metaheuristiky'));
+});
