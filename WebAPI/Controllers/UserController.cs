@@ -95,17 +95,30 @@ namespace WebAPI.Controllers
         {
             body.Email = body.Email.ToLower();
             var user = await _userService.GetUserByEmailAsync(body.Email);
+
             if (user == null)
             {
                 _logger.LogInformation($"Invalid user delete attemp. User {body.Email} doesn't exist.");
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            var token = await _userService.Authenticate(body.Email, body.Password);
-            if (token == null)
+            if (user.IsLdapUser)
             {
-                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                return ErrorResponse("Zadané heslo nie je správne.");
+                UserInformations ldapInfo = _userService.GetUserFromLDAP(body.Email.Split('@')[0], body.Password);
+                if (ldapInfo == null)
+                {
+                    _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                    return ErrorResponse("Zadané heslo nie je správne.");
+                }
+            }
+            else
+            {
+                var token = await _userService.Authenticate(body.Email, body.Password);
+                if (token == null)
+                {
+                    _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                    return ErrorResponse("Zadané heslo nie je správne.");
+                }
             }
 
             var deleteResult = await _userService.DeleteUserAsyc(user);
@@ -196,10 +209,17 @@ namespace WebAPI.Controllers
                         return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
                     }
                     body.Email = ldapInformations.Email;
+                    if (user == null)
+                    {
+                        user = await _userService.GetUserByEmailAsync(body.Email);
+                    }
                 }
-
-                body.Email = body.Email.ToLower();
-                user = await _userService.GetUserByEmailAsync(body.Email);
+                else
+                {
+                    body.Email = body.Email.ToLower();
+                    user = await _userService.GetUserByEmailAsync(body.Email);
+                }
+                
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
