@@ -94,8 +94,7 @@ class LoginPage extends PureComponent {
       data: body
     })
     .then(({ data }) => {
-        //this.props.setState({ firstTimePN: data.firstTimePN });
-        dispatch(login(data));
+        dispatch(login(data)); 
       })
       .catch(error => {
         if (error.response.status === 403) {

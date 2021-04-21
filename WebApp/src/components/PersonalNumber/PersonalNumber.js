@@ -16,7 +16,7 @@ class PersonalNumber extends React.Component {
     personalNumber: '',
     user: this.props.user,
     existing: false,
-    firstTimePN: this.props.firstTimePN,
+    firstTimePN: this.props.user.firstTimePN,
   }
 
   onKeyDown = (event) => {
@@ -69,9 +69,9 @@ class PersonalNumber extends React.Component {
                     <TextField
                       error={(this.state.personalNumber.length !== 6 && this.state.personalNumber !== "") || this.state.existing}
                       id="personalNumber"
-                      value={this.state.personalNumber}
+                      value={this.state.firstTimePN}
                       onChange={this.handleSubmit}
-                      label={"Zadajte osobné číslo" + this.state.firstTimePN}
+                      label={"Zadajte osobné číslo"}
                       placeholder="Príklad 555000"
                       margin="normal"
                       fullWidth
