@@ -9,6 +9,8 @@ using FRITeam.Swapify.APIWrapper;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.APIWrapper.Objects;
+using System.Globalization;
+using System.Text;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -50,9 +52,44 @@ namespace FRITeam.Swapify.Backend
             return await _courseCollection.Find(x => x.CourseName.Equals(name.ToLower())).FirstOrDefaultAsync();
         }
 
-        public List<Course> FindByStartName(string courseStartsWith)
+        private string RemoveDiacritics(string text)
         {
-            return _courseCollection.Find(x => x.CourseName.ToLower().Contains(courseStartsWith.ToLower())).ToList();
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        public List<Course> FindByStartName(string courseStartsWith, string personalNumber)
+        {
+            if (courseStartsWith.Length > 2)
+            {
+                courseStartsWith = RemoveDiacritics(courseStartsWith);
+
+                List<Course> allCourses = _courseCollection.Find(x => true).ToList();
+                List<Course> founded = new List<Course>();
+                foreach (var course in allCourses)
+                {
+                    if (course.CourseName.Length >= courseStartsWith.Length &&
+                        RemoveDiacritics(course.CourseName).Substring(0, courseStartsWith.Length).Equals(courseStartsWith))
+                        founded.Add(course);
+                }
+
+                return founded.OrderByDescending(course => course.CourseCode.First() == personalNumber.First())
+                    .ThenBy(course => course.CourseName).ToList();
+            } else
+            {
+                return new List<Course>();
+            }
         }
 
         /// <summary>

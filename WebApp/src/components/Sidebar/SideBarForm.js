@@ -35,11 +35,12 @@ class SideBarForm extends Component {
 
     fetchCourses = () => {
         const fetch = throttle(500, courseName => {
-          axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}`).then(({ data }) => {
+          axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.studentId}`).then(({ data }) => {
             this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
             this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')' + x.id})) });
           });
         })
+
         return courseName => {
           if (courseName && courseName.length > 1) {
             fetch(courseName);

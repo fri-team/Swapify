@@ -119,10 +119,13 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("course/getCoursesAutoComplete/{courseName}")]
-        public IActionResult GetCoursesAutoComplete(string courseName)
+        [HttpGet("course/getCoursesAutoComplete/{courseName}/{studentId}")]
+        public async Task<IActionResult> GetCoursesAutoComplete(string courseName, string studentId)
         {
-            return Ok(_courseService.FindByStartName(courseName));
+            Guid.TryParse(studentId, out Guid studentGuid);
+            var _student = await _studentService.FindByIdAsync(studentGuid);
+
+            return Ok(_courseService.FindByStartName(courseName, _student != null ? _student.PersonalNumber : "5"));
         }
 
         [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
@@ -173,6 +176,42 @@ namespace WebAPI.Controllers
             timetable.Blocks = Blocks;
 
             return Ok(timetable);
+        }
+
+        [HttpGet("getCourseBlock/{courseId}/{startBlock}/{day}")]
+        public async Task<IActionResult> GetBlockOfCourse(string courseId, int startBlock, int day)
+        {
+            if (!Guid.TryParse(courseId, out Guid courseGuid))
+            {
+                return ErrorResponse($"Course id: {courseId} is not valid GUID.");
+            }
+
+            var _course = await _courseService.FindCourseTimetableFromProxy(courseGuid);
+            if (_course == null)
+            {
+                return ErrorResponse($"Course with code: {courseId} does not exist.");
+            }
+
+            foreach (var block in _course.Timetable.AllBlocks)
+            {
+                if (block.StartHour == startBlock && block.Day.GetHashCode() == day)
+                {
+                    return Ok(new TimetableBlock
+                    {
+                        Id = block.BlockId.ToString(),
+                        Day = block.Day.GetHashCode(),
+                        StartBlock = block.StartHour - 6,
+                        EndBlock = block.StartHour - 6 + block.Duration,
+                        CourseId = _course.Id.ToString(),
+                        CourseName = _course.CourseName,
+                        CourseCode = _course.CourseCode ?? "",
+                        Room = block.Room,
+                        Teacher = block.Teacher,
+                        Type = (TimetableBlockType)block.BlockType
+                    });
+                }                       
+            }
+            return NotFound("Course not found");
         }
     }
 }
