@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         {
             if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
             {
-                return BadRequest();
+                return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
             }
 
             body.Email = body.Email.ToLower();
@@ -178,7 +178,53 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Confirmation email to user {user.Email} sent.");
             return Ok();
         }
-        
+
+        [AllowAnonymous]
+        [HttpPost("loginLdap")]
+        public async Task<IActionResult> LoginLdap([FromBody] LoginModel body)
+        {
+            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            {
+                return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
+            }
+
+            if (body.Email.Contains('@'))
+            {
+                return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
+            }
+
+            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
+
+            if (ldapInformations == null)
+            {
+                _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Meno a heslo nie sú správne.");
+            }
+
+            ldapInformations.Email = ldapInformations.Email.ToLower();
+
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+
+            if (user == null)
+            {
+                if (!_userService.AddLdapUser(ldapInformations).Result)
+                {
+                    _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
+                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
+                }
+                user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+                var token = await _userService.Authenticate(ldapInformations.Email, "Heslo123");
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
+                auth.FirstTimePN = ldapInformations.PersonalNumber;
+                return Ok(auth);
+            }
+            else
+            {
+                var token = await _userService.Authenticate(ldapInformations.Email, "Heslo123");
+                return Ok(new AuthenticatedUserModel(user, token));
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
@@ -187,49 +233,21 @@ namespace WebAPI.Controllers
             {
                 if (!body.Email.Equals("oleg@swapify.com") && _emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    return BadRequest();
+                    return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
                 }
 
-                UserInformations ldapInformations = null;
-
-                User user = null;
-
-                if (body.Ldap)
+                if (!body.Email.Contains('@'))
                 {
-                    ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
-                    if (ldapInformations == null)
-                    {
-                        _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
-                        return ErrorResponse($"Meno a heslo nie sú správne.");
-                    }
-                    user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                    if (user == null && !_userService.AddLdapUser(ldapInformations).Result)
-                    {
-                        _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
-                        return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
-                    }
-                    body.Email = ldapInformations.Email;
-                    if (user == null)
-                    {
-                        user = await _userService.GetUserByEmailAsync(body.Email);
-                    }
+                    return ErrorResponse($"Zlý email.");
                 }
-                else
-                {
-                    body.Email = body.Email.ToLower();
-                    user = await _userService.GetUserByEmailAsync(body.Email);
-                }
-                
+
+                body.Email = body.Email.ToLower();
+                User user = await _userService.GetUserByEmailAsync(body.Email);
+
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
-                }
-
-                if (user.IsLdapUser && !body.Ldap)
-                {
-                    _logger.LogInformation($"Invalid login attemp. User {body.Email} does exist but is LDAP user.");
-                    return ErrorResponse($"Heslo nie je správne.");
                 }
 
                 if (!user.EmailConfirmed)
@@ -238,7 +256,7 @@ namespace WebAPI.Controllers
                     return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
                 }
 
-                var token = await _userService.Authenticate(body.Email, user.IsLdapUser ? "Heslo123" : body.Password);
+                var token = await _userService.Authenticate(body.Email, body.Password);
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
@@ -246,10 +264,6 @@ namespace WebAPI.Controllers
                 }
 
                 var authUser = new AuthenticatedUserModel(user, token);
-                if (user.IsLdapUser && user.Student == null && ldapInformations != null)
-                {
-                    authUser.FirstTimePN = ldapInformations.PersonalNumber;
-                }
                 return Ok(authUser);
             }
             catch (Exception ex)

@@ -21,7 +21,7 @@ class LoginPage extends PureComponent {
       resetingPassword: false,
       loginWithLDAP: false,
       wrongCredentials: false,
-      captchaValue : null
+      captchaValue: null,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -87,10 +87,10 @@ class LoginPage extends PureComponent {
     return null;
   }
 
-  loginUser(body, dispatch) {
+  loginUser(body, dispatch, endUrl) {
     axios({
       method: "post",
-      url: "/api/user/login",
+      url: "/api/user/" + endUrl,
       data: body
     })
     .then(({ data }) => {
@@ -122,7 +122,7 @@ class LoginPage extends PureComponent {
           captcha: 'test-user'
         };
         
-        this.loginUser(body, dispatch);
+        this.loginUser(body, dispatch, "login");
       } else {
         document.getElementById('captchaLabel').style.display = 'block';
       }   
@@ -136,14 +136,14 @@ class LoginPage extends PureComponent {
       this.setState({ emailNotConfirmed: false });
 
       const body = {
-        ldap: false,
         email: this.state.email,
         password: this.state.password,
         captcha: this.state.captchaValue
       };
 
-      this.loginUser(body, dispatch);
-    } else if (this.state.resetingPassword) {
+      this.loginUser(body, dispatch, "login");
+    } 
+    else if (this.state.resetingPassword) {
       const body = {
         email: this.state.email,
         captcha: this.state.captchaValue
@@ -160,17 +160,18 @@ class LoginPage extends PureComponent {
         .catch(error => {
           this.setState({ serverErrors: error.response.data.error });
         });
-    } else {
+    } 
+    else {
       const { dispatch } = this.props;
+      this.setState({ emailNotConfirmed: false });
 
       const body = {
-        ldap: true,
         email: this.state.name,
         password: this.state.password,
         captcha: this.state.captchaValue
       };
 
-      this.loginUser(body, dispatch);
+      this.loginUser(body, dispatch, "loginLdap");
     }
   }
 

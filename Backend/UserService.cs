@@ -122,11 +122,6 @@ namespace FRITeam.Swapify.Backend
 
         public UserInformations GetUserFromLDAP(string login, string password)
         {
-            if (login.Contains('@'))
-            {
-                return null;
-            }
-
             login += "@fri.uniza.sk";
 
             OptionsLdap options = new OptionsLdap

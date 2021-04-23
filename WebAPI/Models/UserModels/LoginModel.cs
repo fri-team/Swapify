@@ -4,8 +4,6 @@ namespace WebAPI.Models.UserModels
 {
     public class LoginModel
     {
-        [Required(ErrorMessage = "...")]
-        public bool Ldap { get; set; }
         [Required(ErrorMessage = "Prihlasovacie meno je povinné.")]
         public string Email { get; set; }
 
