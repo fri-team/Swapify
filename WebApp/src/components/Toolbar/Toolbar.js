@@ -69,6 +69,23 @@ class AppToolbar extends PureComponent {
       );
     }
 
+    let button1;
+    if (this.props.timetable.isAddBlockMode) {
+      button1 = (
+        <Button
+          variant="contained"
+          color="default"
+          size="small"
+          className="backToTimetable"
+          onClick={() => {
+            this.props.timetableActions.hideCourseTimetable();
+          }}
+        >
+          Späť na rozvrh
+        </Button>
+      );
+    }
+
     const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
     const url = this.checkUrl();
     return (
@@ -90,6 +107,7 @@ class AppToolbar extends PureComponent {
             <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
               {button}
+              {button1}
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}

@@ -49,6 +49,7 @@ export const initState = {
   displayedTimetable: [],
   addedBlocks: [],
   isExchangeMode: false,
+  isAddBlockMode: false,
   isBlockRemoved: false,
   blockFromExchange: null,
 };
@@ -102,6 +103,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
     case SHOW_COURSE_TIMETABLE:
       return {
         ...state,
+        isAddBlockMode: true,
         displayedCourses: _.concat(state.displayedCourses, payload.courseId),
         displayedTimetable: mergeTimerablesShow(
           state.myTimetable,
@@ -159,6 +161,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
 
       return {
         ...state,
+        isAddBlockMode: false,
         displayedCourses: displayedCourses,
         displayedTimetable: mergeTimetables(
           state.myTimetable,
