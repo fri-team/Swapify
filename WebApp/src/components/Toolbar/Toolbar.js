@@ -51,9 +51,9 @@ class AppToolbar extends PureComponent {
   
   render() {
     
-    let button;
+    let buttonExchangeMode;
     if (this.props.timetable.isExchangeMode) {
-      button = (
+      buttonExchangeMode = (
         <Button
           variant="contained"
           color="default"
@@ -69,9 +69,9 @@ class AppToolbar extends PureComponent {
       );
     }
 
-    let button1;
-    if (this.props.timetable.isAddBlockMode) {
-      button1 = (
+    let buttonAddMode;
+    if (this.props.timetable.isAddBlockMode && !this.props.timetable.isExchangeMode) {
+      buttonAddMode = (
         <Button
           variant="contained"
           color="default"
@@ -106,8 +106,8 @@ class AppToolbar extends PureComponent {
             
             <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
-              {button}
-              {button1}
+              {buttonExchangeMode}
+              {buttonAddMode}
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
