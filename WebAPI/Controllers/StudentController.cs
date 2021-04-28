@@ -35,6 +35,12 @@ namespace WebAPI.Controllers
         {
             _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
             User user = await _userService.GetUserByEmailAsync(userEmail);
+
+            if (user.Student == null)
+            {
+                return Ok(new Timetable());
+            }
+
             string studentId = user.Student.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
@@ -44,7 +50,7 @@ namespace WebAPI.Controllers
 
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
-            {
+            {             
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
             }
 
