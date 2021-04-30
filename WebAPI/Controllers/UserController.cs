@@ -194,6 +194,7 @@ namespace WebAPI.Controllers
             }
 
             UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
+            body.Password = "Heslo123";
 
             if (ldapInformations == null)
             {
