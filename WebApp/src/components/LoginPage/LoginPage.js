@@ -93,8 +93,8 @@ class LoginPage extends PureComponent {
       url: "/api/user/" + endUrl,
       data: body
     })
-    .then(({ data }) => {
-        dispatch(login(data)); 
+    .then(({ data }) => { 
+      dispatch(login(data));
       })
       .catch(error => {
         if (error.response.status === 403) {

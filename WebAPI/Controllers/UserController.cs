@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using WebAPI.Models.UserModels;
-using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
-using WebAPI.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Net;
-using FRITeam.Swapify.Backend;
+using System.Threading.Tasks;
+using WebAPI.Extensions;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
@@ -207,20 +207,21 @@ namespace WebAPI.Controllers
 
             if (user == null)
             {
-                if (!_userService.AddLdapUser(ldapInformations).Result)
+                if (!_userService.AddLdapUser(ldapInformations, body.Password).Result)
                 {
                     _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                var token = await _userService.Authenticate(ldapInformations.Email, "Heslo123");
+                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
                 auth.FirstTimePN = ldapInformations.PersonalNumber;
+
                 return Ok(auth);
             }
             else
             {
-                var token = await _userService.Authenticate(ldapInformations.Email, "Heslo123");
+                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
                 return Ok(new AuthenticatedUserModel(user, token));
             }
         }

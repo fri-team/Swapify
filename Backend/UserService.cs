@@ -137,13 +137,13 @@ namespace FRITeam.Swapify.Backend
             return informations;
         }
 
-        public async Task<bool> AddLdapUser(UserInformations informations)
+        public async Task<bool> AddLdapUser(UserInformations informations, string password)
         {
             string[] names = informations.Name.Split(" ");
             User user = new User(informations.Email, names[0], names[1]);
             user.EmailConfirmed = true;
             user.IsLdapUser = true;
-            var addResult = await AddUserAsync(user, "Heslo123");
+            var addResult = await AddUserAsync(user,password);
             return addResult.Succeeded;
         }
     }
