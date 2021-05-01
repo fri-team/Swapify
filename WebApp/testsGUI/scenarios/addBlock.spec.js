@@ -85,7 +85,6 @@ Scenario('[ADD05] Check, if founded subjects is sorted by faculty of student', a
     I.fillField('courseName', 'architektury');
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
-    I.seeInField('courseName', 'architektúry informačných systémov (5IS208)');
 
     let first = (await I.grabValueFrom('courseName')).toString().split('(')[1].charAt(0);
 
@@ -97,7 +96,6 @@ Scenario('[ADD05] Check, if founded subjects is sorted by faculty of student', a
     I.pressKey("ArrowDown");
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
-    I.seeInField('courseName', 'architektúry zariadení (8KB048)');
 
     let second = (await I.grabValueFrom('courseName')).toString().split('(')[1].charAt(0);
 
