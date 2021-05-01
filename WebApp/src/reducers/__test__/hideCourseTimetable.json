@@ -57,6 +57,7 @@
       "Architektúry informačných systémov",
       "Teória informácie"
     ],
+    "isAddBlockMode": false,
     "isLoadingCourse": false,
     "courseTimetables": {
       "Teória informácie": [
@@ -157,6 +158,7 @@
     ]
   },
   "stateAfter": {
+    "isAddBlockMode": false,
     "isLoadingMyTimetable": false,
     "myTimetable": [
       {

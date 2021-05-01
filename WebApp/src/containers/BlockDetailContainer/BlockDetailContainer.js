@@ -33,7 +33,7 @@ class BlockDetailContainer extends Component {
 
   onClickAdd = (block) => {
     this.props.timetableActions.addBlockAndHideOthersWithSameCourseId(block, this.state.user.email);
-    this.props.actions.hideDetail();  
+    this.props.actions.hideDetail();
   }
 
   render() {
