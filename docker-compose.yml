@@ -1,58 +1,53 @@
 version: '3'
 services:
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: webserver
-  #   restart: unless-stopped
-  #   ports:
-  #     - 0.0.0.0:80:80
-  #     - 0.0.0.0:443:443
-  #   volumes:
-  #     - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/nginx.conf
-  #     - /home/ubuntu/SwapifySSL:/etc/ssl/private
-  #   expose:
-  #     - 80
-  #     - 443
-  swapify:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: swapify-app
-    container_name: swapify
-    volumes:
-      # - /home/ubuntu/Swapify/:
-      - ./logs:/app/logs
-    restart: unless-stopped
-    ports:
-      - 80:80
-      # - 443:443
-      # - 0.0.0.0:3000:3000
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - BaseUrl=http://3.121.231.86
-      - JwtSecret=CchangOrDNChanngSecr
-      - NODE_ENV=production
-    # links:
-    #   - db
-    depends_on:
-      - mongodb
-    links:
-      - mongodb
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    volumes:
-      - ./data:/data/db
-    # expose:
-    #   - 80
-      # - BaseUrl=http://18.184.180.36:80/
-  # ci:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile-CI
-  #   image: tests
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Production
-  #     - BaseUrl=http://18.184.180.36:80/
-  #     - JwtSecret=CchangOrDNChanngSecr
-  #     - NODE_ENV=production
+ swapify:
+  build:
+   context: .
+   dockerfile: Dockerfile
+  image: swapify-app
+  container_name: swapify
+  volumes:
+   # - /home/ubuntu/Swapify/:
+   - ./logs:/app/logs
+  restart: unless-stopped
+  expose:
+   - 5020
+   # - 443:443
+   # - 0.0.0.0:3000:3000
+  environment:
+   - ASPNETCORE_ENVIRONMENT=Production
+   - ASPNETCORE_URLS=http://+:5020
+   - BaseUrl=http://3.121.231.86:80
+   - JwtSecret=CchangOrDNChanngSecr
+   - NODE_ENV=production
+  #links:
+   #- db
+  depends_on:
+   - mongodb
+  links:
+   - mongodb
+ mongodb:
+  image: mongo
+  container_name: mongodb
+  volumes:
+   - ./data:/data/db
+ nginx:
+  restart: unless-stopped
+  image: nginx
+  container_name: nginx
+  volumes:
+   - /home/ubuntu/ssl/privkey.pem:/etc/ssl/private/privkey.pem
+   - /home/ubuntu/ssl/fullchain.pem:/etc/ssl/private/fullchain.pem   
+   - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/conf.d/default.conf
+   - ./certbot/conf:/etc/letsencrypt
+   - ./certbot/www:/var/www/certbot
+  ports:
+   - 80:80
+   - 443:443
+  command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+ certbot:
+  image: certbot/certbot
+  volumes:
+   - ./certbot/conf:/etc/letsencrypt
+   - ./certbot/www:/var/www/certbot
+  entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

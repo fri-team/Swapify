@@ -29,6 +29,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
-EXPOSE 80
+#EXPOSE 5020
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
 # EXPOSE 300
