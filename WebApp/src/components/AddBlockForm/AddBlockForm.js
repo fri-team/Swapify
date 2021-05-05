@@ -23,6 +23,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Autocomplete from './Autocomplete';
 import * as timetableActions from '../../actions/timetableActions';
 import { ClipLoader } from "react-spinners";
+import { SliderPicker } from 'react-color';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -44,7 +45,8 @@ class AddBlockForm extends Component {
     suggestions: [],
     user: this.props.user,
     editing: this.props.editing,
-    loading: false
+    loading: false,
+    blockColor: '#fff'
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -153,6 +155,10 @@ class AddBlockForm extends Component {
     onClose();
   }
 
+  handleChangeComplete = (color) => {
+    this.setState({blockColor: color.hex});
+  }
+
   render() {
     const { onClose } = this.props
     const { day, courseName, courseCode: courseCode, teacher, room, startBlock, length, type, suggestions } = this.state;
@@ -234,7 +240,7 @@ class AddBlockForm extends Component {
                 margin="normal"
                 fullWidth
                 required
-              />
+              />         
               <RadioGroup
                 name="type"
                 value={type}
@@ -244,6 +250,10 @@ class AddBlockForm extends Component {
                 <FormControlLabel label="Laboratórium" value="laboratory" control={<Radio />} />
                 <FormControlLabel label="Cvičenie" value="excercise" control={<Radio />} />
               </RadioGroup>
+              <SliderPicker
+                color={ this.state.blockColor }
+                onChangeComplete={this.handleChangeComplete}
+              />
             </FlexBox>
           </DialogContent>
           <DialogActions>
