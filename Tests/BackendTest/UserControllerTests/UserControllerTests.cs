@@ -19,6 +19,7 @@ namespace BackendTest.UserControllerTests
     {
         private readonly Mock<ILogger<UserController>> _loggerMock;
         private readonly Mock<IOptions<EnvironmentSettings>> _envSettingsMock;
+        private readonly Mock<IOptions<LdapSettings>> _ldapSettings;
         private const string TesterEmail = "tester@testovaci.com";
 
         public UserControllerTests()
@@ -27,6 +28,9 @@ namespace BackendTest.UserControllerTests
             EnvironmentSettings envSettings = new EnvironmentSettings() { BaseUrl = "http://localhost:3000/", JwtSecret = "DoNotUseMeInProduction", Environment = "Development" };
             _envSettingsMock = new Mock<IOptions<EnvironmentSettings>>();
             _envSettingsMock.Setup(x => x.Value).Returns(envSettings);
+            LdapSettings ldapSettings = new LdapSettings() { BaseDN = "5", HostName = "4", Port = "123", SecureSocketLayer = "false" };
+            _ldapSettings = new Mock<IOptions<LdapSettings>>();
+            _ldapSettings.Setup(x => x.Value).Returns(ldapSettings);
         }
 
         #region Mocks
@@ -37,7 +41,7 @@ namespace BackendTest.UserControllerTests
             return new UserService(_envSettingsMock.Object,
                 MockUserManager(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, resetPasswordSuccess).Object,
-                MockSignInManager(loginSuccess).Object);
+                MockSignInManager(loginSuccess).Object, _ldapSettings.Object);
         }
 
         private static Mock<TestUserManager> MockUserManager(bool createUserSuccess, bool findUserByIdSuccess,
