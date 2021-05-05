@@ -194,7 +194,7 @@ namespace WebAPI.Controllers
             }
 
             UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
-            body.Password = "Heslo123";
+            body.Password = _userService.getDefaultLdapPassword();
 
             if (ldapInformations == null)
             {
@@ -208,7 +208,7 @@ namespace WebAPI.Controllers
 
             if (user == null)
             {
-                if (!_userService.AddLdapUser(ldapInformations, body.Password).Result)
+                if (!_userService.AddLdapUser(ldapInformations).Result)
                 {
                     _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
