@@ -6,22 +6,17 @@ services:
    dockerfile: Dockerfile
   image: swapify-app
   container_name: swapify
-  volumes:
-   # - /home/ubuntu/Swapify/:
+  volumes:   
    - ./logs:/app/logs
   restart: unless-stopped
   expose:
-   - 5020
-   # - 443:443
-   # - 0.0.0.0:3000:3000
+   - 5020   
   environment:
    - ASPNETCORE_ENVIRONMENT=Production
    - ASPNETCORE_URLS=http://+:5020
    - BaseUrl=http://3.121.231.86:80
    - JwtSecret=CchangOrDNChanngSecr
-   - NODE_ENV=production
-  #links:
-   #- db
+   - NODE_ENV=production  
   depends_on:
    - mongodb
   links:
