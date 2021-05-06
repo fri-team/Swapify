@@ -17,13 +17,16 @@ namespace FRITeam.Swapify.Backend
         private readonly EnvironmentSettings _environmentSettings;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly LdapSettings _ldapSettings;
+        private readonly string DEFAULT_LDAP_PASSWORD = "Heslo123";
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings)
         {
             _environmentSettings = environmentSettings.Value;
             _userManager = userManager;
             _signInManager = signInManager;
+            _ldapSettings = ldapSettings.Value;
         }
 
         public async Task<JwtSecurityToken> Authenticate(string login, string password)
@@ -118,6 +121,38 @@ namespace FRITeam.Swapify.Backend
         public async Task<IdentityResult> UpdateUserAsync(User userToUpdate)
         {
             return await _userManager.UpdateAsync(userToUpdate);
+        }
+
+        public UserInformations GetUserFromLDAP(string login, string password)
+        {
+            login += "@fri.uniza.sk";
+
+            OptionsLdap options = new OptionsLdap
+            {
+                SecureSocketLayer = bool.Parse(_ldapSettings.SecureSocketLayer),
+                BaseDN = _ldapSettings.BaseDN,
+                HostName = _ldapSettings.HostName,
+                Port = int.Parse(_ldapSettings.Port),
+            };
+
+            AuthenticatorLdap authenticatorLdap = new AuthenticatorLdap(options);
+            UserInformations informations = authenticatorLdap.Authenticate(login, password);
+            return informations;
+        }
+
+        public async Task<bool> AddLdapUser(UserInformations informations)
+        {
+            string[] names = informations.Name.Split(" ");
+            User user = new User(informations.Email, names[0], names[1]);
+            user.EmailConfirmed = true;
+            user.IsLdapUser = true;
+            var addResult = await AddUserAsync(user, DEFAULT_LDAP_PASSWORD);
+            return addResult.Succeeded;
+        }
+
+        public string getDefaultLdapPassword()
+        {
+            return DEFAULT_LDAP_PASSWORD;
         }
     }
 }

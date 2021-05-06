@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.Entities.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,12 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetStudentNotifications(string email)
         {
             User user = await _userService.GetUserByEmailAsync(email);
+
+            if (user.Student == null)
+            {
+                return Ok(new List<Notification>());
+            }
+
             var notifications = await _notificationService.GetStudentNotifications(user.Student.Id);
             return Ok(notifications);
         }

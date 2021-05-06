@@ -243,12 +243,16 @@ namespace WebAPI
             var recaptchaSettings = Configuration.GetSection("RecaptchaSettings");
             if (recaptchaSettings.Get<RecaptchaSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(RecaptchaSettings)} configuration section.");
+            var ldapSettings = Configuration.GetSection("LdapSettings");
+            if (ldapSettings.Get<LdapSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(LdapSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
             services.Configure<RecaptchaSettings>(recaptchaSettings);
+            services.Configure<LdapSettings>(ldapSettings);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
@@ -260,6 +264,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<PathSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<RecaptchaSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<LdapSettings>>().Value);
 
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
