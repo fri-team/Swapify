@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
+using System.Text;
+using System.IO;
 
 namespace WebAPI.Controllers
 {
@@ -75,6 +77,98 @@ namespace WebAPI.Controllers
             timetable.Blocks = Blocks;
 
             return Ok(timetable);
+        }
+
+        [HttpGet("getStudentTimetableCalendar/{userEmail}")]
+        public async Task<IActionResult> GetStudentTimetableCalendar(string userEmail)
+        {
+            _logger.LogInformation($"[API getStudentTimetable] Getting timetable calendar for test student");
+            User user = await _userService.GetUserByEmailAsync(userEmail);
+            string studentId = user.Student.Id.ToString();
+            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
+            if (!isValidGUID)
+            {
+                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
+            }
+
+            var student = await _studentService.FindByIdAsync(guid);
+            if (student == null)
+            {
+                return ErrorResponse($"Student with id: {studentId} does not exist.");
+            }
+
+            if (student.Timetable == null)
+            {
+                return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
+            }
+            DateTime dateNow = DateTime.Now;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("BEGIN:VCALENDAR");
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("CALSCALE:GREGORIAN");
+            sb.AppendLine("METHOD:PUBLISH");
+
+            sb.AppendLine("BEGIN:VTIMEZONE");
+            sb.AppendLine("TZID:Europe/Amsterdam");
+            sb.AppendLine("BEGIN:STANDARD");
+            sb.AppendLine("TZOFFSETTO:+0100");
+            sb.AppendLine("TZOFFSETFROM:+0100");
+            sb.AppendLine("END:STANDARD");
+            sb.AppendLine("END:VTIMEZONE");
+
+            var dayOfWeek = 0;
+            switch (dateNow.DayOfWeek)
+            {
+                case DayOfWeek.Sunday:
+                    dayOfWeek = 7;
+                    break;
+                case DayOfWeek.Monday:
+                    dayOfWeek = 1;
+                    break;
+                case DayOfWeek.Tuesday:
+                    dayOfWeek = 2;
+                    break;
+                case DayOfWeek.Wednesday:
+                    dayOfWeek = 3;
+                    break;
+                case DayOfWeek.Thursday:
+                    dayOfWeek = 4;
+                    break;
+                case DayOfWeek.Friday:
+                    dayOfWeek = 5;
+                    break;
+                case DayOfWeek.Saturday:
+                    dayOfWeek = 6;
+                    break;
+            }
+
+            foreach (var block in student.Timetable.AllBlocks)
+            {
+                Course course = await _courseService.FindByIdAsync(block.CourseId);
+
+                //add the event
+                sb.AppendLine("BEGIN:VEVENT");
+
+                dateNow = DateTime.Now;
+                dateNow = dateNow.AddDays(-dayOfWeek + block.Day.GetHashCode())
+                    .AddHours(-dateNow.Hour +block.StartHour)
+                    .AddMinutes(-dateNow.Minute);
+
+                //with time zone specified
+                sb.AppendLine("DTSTART;TZID=Europe/Amsterdam:" + dateNow.ToString("yyyyMMddTHHmm00"));
+                sb.AppendLine("DTEND;TZID=Europe/Amsterdam:" + dateNow.AddHours(block.Duration).ToString("yyyyMMddTHHmm00"));
+
+                sb.AppendLine("SUMMARY:" + course.CourseName);
+                sb.AppendLine("DESCRIPTION:" + block.Room + ", " + block.Teacher);
+                sb.AppendLine("PRIORITY:3");
+                sb.AppendLine("END:VEVENT");
+            }
+
+            //end calendar item
+            sb.AppendLine("END:VCALENDAR");
+
+            return Ok(sb.ToString());
         }
 
         [HttpPost("addNewBlock")]
