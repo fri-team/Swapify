@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using WebAPI.Models.UserModels;
-using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Options;
-using WebAPI.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
+using WebAPI.Extensions;
+using WebAPI.Models.UserModels;
 
 namespace WebAPI.Controllers
 {
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         {
             if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
             {
-                return BadRequest();
+                return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
             }
 
             body.Email = body.Email.ToLower();
@@ -95,17 +95,30 @@ namespace WebAPI.Controllers
         {
             body.Email = body.Email.ToLower();
             var user = await _userService.GetUserByEmailAsync(body.Email);
+
             if (user == null)
             {
                 _logger.LogInformation($"Invalid user delete attemp. User {body.Email} doesn't exist.");
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            var token = await _userService.Authenticate(body.Email, body.Password);
-            if (token == null)
+            if (user.IsLdapUser)
             {
-                _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                return ErrorResponse("Zadané heslo nie je správne.");
+                UserInformations ldapInfo = _userService.GetUserFromLDAP(body.Email.Split('@')[0], body.Password);
+                if (ldapInfo == null)
+                {
+                    _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                    return ErrorResponse("Zadané heslo nie je správne.");
+                }
+            }
+            else
+            {
+                var token = await _userService.Authenticate(body.Email, body.Password);
+                if (token == null)
+                {
+                    _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
+                    return ErrorResponse("Zadané heslo nie je správne.");
+                }
             }
 
             var deleteResult = await _userService.DeleteUserAsyc(user);
@@ -167,21 +180,72 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost("loginLdap")]
+        public async Task<IActionResult> LoginLdap([FromBody] LoginModel body)
+        {
+            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            {
+                return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
+            }
+
+            if (body.Email.Contains('@'))
+            {
+                return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
+            }
+
+            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
+            body.Password = _userService.getDefaultLdapPassword();
+
+            if (ldapInformations == null)
+            {
+                _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Meno a heslo nie sú správne.");
+            }
+
+            ldapInformations.Email = ldapInformations.Email.ToLower();
+
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+
+            if (user == null)
+            {
+                if (!_userService.AddLdapUser(ldapInformations).Result)
+                {
+                    _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
+                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
+                }
+                user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
+                auth.FirstTimePN = ldapInformations.PersonalNumber;
+
+                return Ok(auth);
+            }
+            else
+            {
+                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
+                return Ok(new AuthenticatedUserModel(user, token));
+            }
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
             try
             {
-                if (!body.Email.Equals("oleg@swapify.com"))
+                if (!body.Email.Equals("oleg@swapify.com") && _emailService.GetCaptchaNotPassed(body.Captcha).Result)
                 {
-                    if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
-                    {
-                        return BadRequest();
-                    }
-                }               
+                    return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
+                }
+
+                if (!body.Email.Contains('@'))
+                {
+                    return ErrorResponse($"Zlý email.");
+                }
 
                 body.Email = body.Email.ToLower();
-                var user = await _userService.GetUserByEmailAsync(body.Email);
+                User user = await _userService.GetUserByEmailAsync(body.Email);
+
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");

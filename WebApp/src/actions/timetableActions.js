@@ -34,6 +34,9 @@ export function loadMyTimetable(user, history) {
     });
     if (user.personalNumber == null) {
       history.push(PERSONALNUMBER);
+      if (user.firstTimePN != null) {
+        user.personalNumber = user.firstTimePN;
+      }     
     }
     axios({
       method: 'get',
@@ -225,7 +228,7 @@ export function exchangeConfirm(blockTo) {
           dispatch(loadMyTimetable(user.email));
         }
         dispatch(hideCourseTimetable(bl.id));
-        dispatch(action);        
+        dispatch(action);       
         dispatch(loadExchangeRequests());
       })
       .catch(() => {

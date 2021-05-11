@@ -11,6 +11,7 @@ class LoginPage extends PureComponent {
 
     this.state = {
       email: "",
+      name: "",
       password: "",
       submitted: false,
       success: false,
@@ -18,8 +19,9 @@ class LoginPage extends PureComponent {
       emailNotConfirmed: false,
       sendConfirmEmailAgainResult: "",
       resetingPassword: false,
+      loginWithLDAP: false,
       wrongCredentials: false,
-      captchaValue : null
+      captchaValue: null,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -48,12 +50,28 @@ class LoginPage extends PureComponent {
     }
   }
 
-  changeForm = () => {
+  changeFormToResetPassword = () => {
     if (this.state.resetingPassword) {
       this.setState({ resetingPassword: false });
     } else {
       this.setState({ resetingPassword: true });
     }
+    this.setState({
+      serverErrors: "",
+      wrongCredentials: false
+    });
+  };
+
+  changeFormToLDAPLogin = () => {
+    if (this.state.loginWithLDAP) {
+      this.setState({ loginWithLDAP: false });
+    } else {
+      this.setState({ loginWithLDAP: true });
+    }
+    this.setState({
+      serverErrors: "",
+      wrongCredentials: false
+    });
   };
 
   WrongCredentialsMessage(props) {
@@ -69,14 +87,14 @@ class LoginPage extends PureComponent {
     return null;
   }
 
-  loginUser(body, dispatch) {
+  loginUser(body, dispatch, endUrl) {
     axios({
       method: "post",
-      url: "/api/user/login",
+      url: "/api/user/" + endUrl,
       data: body
     })
-    .then(({ data }) => {
-        dispatch(login(data));
+    .then(({ data }) => { 
+      dispatch(login(data));
       })
       .catch(error => {
         if (error.response.status === 403) {
@@ -98,12 +116,13 @@ class LoginPage extends PureComponent {
       if (this.state.email.toLowerCase() == 'oleg@swapify.com') {
         const { dispatch } = this.props;
         const body = {
+          ldap: false,
           email: this.state.email,
           password: this.state.password,
           captcha: 'test-user'
         };
         
-        this.loginUser(body, dispatch);
+        this.loginUser(body, dispatch, "login");
       } else {
         document.getElementById('captchaLabel').style.display = 'block';
       }   
@@ -112,7 +131,7 @@ class LoginPage extends PureComponent {
       document.getElementById('captchaLabel').style.display = 'none';
     }
 
-    if (!this.state.resetingPassword) {
+    if (!this.state.resetingPassword && !this.state.loginWithLDAP) {
       const { dispatch } = this.props;
       this.setState({ emailNotConfirmed: false });
 
@@ -122,8 +141,9 @@ class LoginPage extends PureComponent {
         captcha: this.state.captchaValue
       };
 
-      this.loginUser(body, dispatch);
-    } else {
+      this.loginUser(body, dispatch, "login");
+    } 
+    else if (this.state.resetingPassword) {
       const body = {
         email: this.state.email,
         captcha: this.state.captchaValue
@@ -140,6 +160,18 @@ class LoginPage extends PureComponent {
         .catch(error => {
           this.setState({ serverErrors: error.response.data.error });
         });
+    } 
+    else {
+      const { dispatch } = this.props;
+      this.setState({ emailNotConfirmed: false });
+
+      const body = {
+        email: this.state.name,
+        password: this.state.password,
+        captcha: this.state.captchaValue
+      };
+
+      this.loginUser(body, dispatch, "loginLdap");
     }
   }
 
@@ -153,24 +185,44 @@ class LoginPage extends PureComponent {
         />
         {this.state.sendConfirmEmailAgainResult === "" ? (
           <form onSubmit={this.handleSubmit} className="FormFields">
-            <div className="FormField">
-              <TextField
-                label="E-Mailová adresa"
-                type="email"
-                required
-                name="email"
-                className="FormField__Label"
-                error={this.state.wrongCredentials}
-                value={this.state.email}
-                onChange={this.handleChange}
-                fullWidth
-              />
-            </div>
+            {!this.state.loginWithLDAP && (
+              <div className="FormField">
+                <TextField
+                  label="E-Mailová adresa"
+                  type="email"
+                  required
+                  name="email"
+                  className="FormField__Label"
+                  error={this.state.wrongCredentials}
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </div>
+            )}
+            
+            {this.state.loginWithLDAP && (
+              <div className="FormField">
+                <TextField
+                  label="Školské meno"
+                  type="text"
+                  required
+                  name="name"
+                  className="FormField__Label"
+                  error={this.state.wrongCredentials}
+                  value={this.state.name}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </div>
+            )}
+
             <div style={messageStyle}>
               <p>
                 Na zadanú emailovú adresu bol zaslaný email pre obnovenie hesla.
               </p>
             </div>
+
             {!this.state.resetingPassword && (
               <div className="FormField">
                 <TextField
@@ -200,14 +252,25 @@ class LoginPage extends PureComponent {
               </p>
               <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
             </div>
-            <div className="FormField">
-              <a onClick={this.changeForm} className="FormField__Link">
+
+            <div>
+              <a onClick={this.changeFormToResetPassword} className="FormField__Link">
                 {!this.state.resetingPassword
                   ? "Ak si zabudol heslo, klikni na tento link"
-                  : " Späť na login"}
+                  : "Späť na login"}
               </a>
             </div>
 
+            {!this.state.resetingPassword && (
+              <div>
+                <a onClick={this.changeFormToLDAPLogin} className="FormField__Link">
+                  {!this.state.loginWithLDAP
+                    ? "Ak sa chceš prihlásiť cez FRI login, klikni na tento link"
+                    : "Späť na Swapify login"}
+                </a>
+              </div>
+            )}
+            
             <div className="FormField">
               <button className="FormField__Button">
                 {!this.state.resetingPassword

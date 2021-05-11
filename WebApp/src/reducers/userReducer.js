@@ -20,6 +20,7 @@ export const getUserData = payload => {
     token: payload.token,
     studentId: payload.studentId,
     personalNumber: payload.personalNumber,
+    firstTimePN: payload.firstTimePN,
     validTo
   };
 };
