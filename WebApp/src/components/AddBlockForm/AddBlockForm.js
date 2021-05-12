@@ -24,6 +24,7 @@ import Autocomplete from './Autocomplete';
 import * as timetableActions from '../../actions/timetableActions';
 import { ClipLoader } from "react-spinners";
 import { SliderPicker } from 'react-color';
+import toMaterialStyle from 'material-color-hash';
 
 const FlexBox = styled.div`
   min-width: 400px;
@@ -46,7 +47,7 @@ class AddBlockForm extends Component {
     user: this.props.user,
     editing: this.props.editing,
     loading: false,
-    blockColor: '#fff'
+    blockColor: toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -120,6 +121,8 @@ class AddBlockForm extends Component {
         }
         this.setState({ [name]: value.substring(0,3) + "00" });
       }
+    } else if (name == "colorOfBlock") {
+      this.setState({blockColor: value})
     } else {
       this.setState({ [name]: value });
     }
@@ -250,6 +253,18 @@ class AddBlockForm extends Component {
                 <FormControlLabel label="Laboratórium" value="laboratory" control={<Radio />} />
                 <FormControlLabel label="Cvičenie" value="excercise" control={<Radio />} />
               </RadioGroup>
+
+              <TextField
+                 label="Farba bloku"
+                 type="text"
+                 inputProps={{ step: 3600 }}
+                 name="colorOfBlock"
+                 value={this.state.blockColor}
+                 onChange={this.handleChange}
+                 margin="normal"
+                 fullWidth
+                 required
+              />
               <SliderPicker
                 color={ this.state.blockColor }
                 onChangeComplete={this.handleChangeComplete}
