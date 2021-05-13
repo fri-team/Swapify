@@ -72,7 +72,7 @@ jobs:
    - name: Login to DockerHub
      uses: docker/login-action@v1 
      with:
-      username: branoswaptest
+      username: swapifyapp
       password: ${{ secrets.DOCKERHUB_PASSWORD }}
    - name: Build and push
      id: docker_build
@@ -80,21 +80,7 @@ jobs:
      with:
       context: .
       push: true
-      tags: branoswaptest/swapify-app
-#   - name: Setup Node.js (NPM)
-#     uses: actions/setup-node@v2
-#     with:
-#      node-version: '12.11.1'     
-#       - name: '1. Checkout github actions'
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '12'
-#   - name: Build_and_push
-#     run: |
-#        docker login --username branoswaptest --password ${{ secrets.DOCKERHUB_PASSWORD }} docker.io
-#        docker build --tag branoswaptest/swapify-app .
-#        docker push branoswaptest/swapify-app
-#        docker logout branoswaptest/swapify-app        
+      tags: swapifyapp/swapify-app        
    - name: Configure_SSH
      run: |
           mkdir -p ~/.ssh/
@@ -122,13 +108,13 @@ jobs:
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
      run: ssh aws 'cd /home/ubuntu/Swapify;        
-        sudo cat /home/ubuntu/mypassfile.txt | sudo docker login --username branoswaptest --password-stdin docker.io;        
+        sudo cat /home/ubuntu/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
         sudo rm /home/ubuntu/mypassfile.txt;
         sudo docker-compose down;
         sudo docker rmi swapify-app -f;
-        sudo docker rmi branoswaptest/swapify-app -f;
+        sudo docker rmi swapifyapp/swapify-app -f;
         sudo docker system prune -f;
-        sudo docker pull branoswaptest/swapify-app;
-        sudo docker tag branoswaptest/swapify-app swapify-app;
+        sudo docker pull swapifyapp/swapify-app;
+        sudo docker tag swapifyapp/swapify-app swapify-app;
         sudo docker-compose up -d;
         sudo docker logout'                
