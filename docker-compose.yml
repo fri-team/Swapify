@@ -6,22 +6,17 @@ services:
    dockerfile: Dockerfile
   image: swapify-app
   container_name: swapify
-  volumes:
-   # - /home/ubuntu/Swapify/:
+  volumes:   
    - ./logs:/app/logs
   restart: unless-stopped
   expose:
-   - 5020
-   # - 443:443
-   # - 0.0.0.0:3000:3000
+   - 5020   
   environment:
    - ASPNETCORE_ENVIRONMENT=Production
    - ASPNETCORE_URLS=http://+:5020
    - BaseUrl=http://3.121.231.86:80
-   - JwtSecret=##JWTKEY##   
-   - NODE_ENV=production
-  #links:
-   #- db
+   - JwtSecret=CchangOrDNChanngSecr
+   - NODE_ENV=production  
   depends_on:
    - mongodb
   links:
@@ -36,8 +31,6 @@ services:
   image: nginx
   container_name: nginx
   volumes:
-   - /home/ubuntu/ssl/privkey.pem:/etc/ssl/private/privkey.pem
-   - /home/ubuntu/ssl/fullchain.pem:/etc/ssl/private/fullchain.pem   
    - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/conf.d/default.conf
    - ./certbot/conf:/etc/letsencrypt
    - ./certbot/www:/var/www/certbot
