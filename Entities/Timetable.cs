@@ -89,6 +89,17 @@ namespace FRITeam.Swapify.Entities
             return false;
         }
 
+        public void UpdateColorOfBlocksWithSameCourseId(Block block)
+        {
+            for (int i = 0; i < _blocks.Count; i++)
+            {
+                if (_blocks[i].CourseId == block.CourseId)
+                {
+                    _blocks[i].BlockColor = block.BlockColor;
+                }
+            }
+        }
+
         public bool ContainsBlock(Block bl)
         {
             return _blocks.Any(x => x.IsSameAs(bl));
