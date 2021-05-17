@@ -15,7 +15,7 @@ services:
    - ASPNETCORE_ENVIRONMENT=Production
    - ASPNETCORE_URLS=http://+:5020
    - BaseUrl=http://3.121.231.86:80
-   - JwtSecret=CchangOrDNChanngSecr
+   - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
   depends_on:
    - mongodb

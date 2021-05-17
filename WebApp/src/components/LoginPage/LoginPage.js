@@ -241,7 +241,7 @@ class LoginPage extends PureComponent {
 
             <div className="FormField captchaClass">
               <ReCAPTCHA
-                sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
+                sitekey="##RECAPTCHA_FRONT_END_KEY##"
                 onChange={this.onChangeCaptcha}
                 hl="sk"
               />
