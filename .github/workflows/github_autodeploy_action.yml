@@ -3,6 +3,7 @@ on:
  push:
   branches:
    - develop
+   - 463_DNS_links
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
