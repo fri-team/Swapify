@@ -3,6 +3,7 @@ on:
  push:
   branches:
    - develop
+   - 317_copy
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
@@ -81,12 +82,17 @@ jobs:
       context: .
       push: true
       tags: swapifyapp/swapify-app        
-   - name: Configure_SSH
+   - name: Configure_SSH_and_files_to_be_copied
      run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/aws.key
           chmod 600 ~/.ssh/aws.key
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" > mypassfile.txt
+          mkdir filesToCopy
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
+          cp docker-compose.yml filesToCopy/docker-compose.yml
+          cp nginx.conf filesToCopy/nginx.conf
+          cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh
+          cp Dockerfile filesToCopy/Dockerfile
           cat >>~/.ssh/config <<END
           Host aws
             HostName $SSH_HOST
@@ -98,18 +104,18 @@ jobs:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.PRIVATE_KEY}}
           SSH_HOST: ${{ secrets.HOST }}   
-   - name: Copy_file
+   - name: Copy_files
      uses: garygrossgarten/github-action-scp@release
      with:
-      local: mypassfile.txt
-      remote: /home/ubuntu/mypassfile.txt
+      local: filesToCopy
+      remote: /home/ubuntu/Swapify/mypassfile.txt
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
      run: ssh aws 'cd /home/ubuntu/Swapify;        
-        sudo cat /home/ubuntu/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
-        sudo rm /home/ubuntu/mypassfile.txt;
+        sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
+        sudo rm /home/ubuntu/Swapify/mypassfile.txt;
         sudo docker-compose down;
         sudo docker rmi swapify-app -f;
         sudo docker rmi swapifyapp/swapify-app -f;
