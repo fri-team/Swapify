@@ -22,8 +22,8 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
-        "JwtSecret": "CchangeThisJWTSecreeeetPleasse",
-        "BaseUrl": "http://18.193.17.141:80/"
+        "JwtSecret": "##JWTKEY##",
+        "BaseUrl": "https://swapify.fri.uniza.sk/"
       }
     }
   }

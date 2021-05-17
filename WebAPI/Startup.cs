@@ -71,13 +71,11 @@ namespace WebAPI
                     options.AddPolicy("SwapifyCorsPolicy",
                     builder =>
                     {
-                        builder.WithOrigins("http://18.193.17.141",
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",
                                             "http://swapify.fri.uniza.sk",
-                                            "http://*swapify.fri.uniza.sk",
-                                            "http://localhost:3000",
-                                            "https://18.193.17.141",
-                                            "https://swapify.fri.uniza.sk",
                                             "https://*swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk",                                            
+                                            "http://localhost:3000",                                            
                                             "https://localhost:3000")
                         .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
@@ -87,13 +85,11 @@ namespace WebAPI
                     options.AddPolicy("AllowCredentials",
                     builder =>
                     {
-                        builder.WithOrigins("http://18.193.17.141",
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",
                                             "http://swapify.fri.uniza.sk",
+                                            "https://*swapify.fri.uniza.sk",                                                                        
                                             "http://*swapify.fri.uniza.sk",
-                                            "http://localhost:3000",
-                                            "https://18.193.17.141",
-                                            "https://swapify.fri.uniza.sk",
-                                            "https://*swapify.fri.uniza.sk",
+                                            "http://localhost:3000",                                                                                                                                   
                                             "https://localhost:3000")
                                .AllowCredentials();
                     });
@@ -116,12 +112,10 @@ namespace WebAPI
                     options.AddPolicy("SwapifyCorsPolicy",
                     builder =>
                     {
-                        builder.WithOrigins("http://18.193.17.141",
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",                                        
                                             "http://swapify.fri.uniza.sk",
-                                            "http://*swapify.fri.uniza.sk",
-                                            "https://18.193.17.141",
-                                            "https://swapify.fri.uniza.sk",
-                                            "https://*swapify.fri.uniza.sk")
+                                            "https://*swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk")
                         .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
@@ -130,12 +124,10 @@ namespace WebAPI
                     options.AddPolicy("AllowCredentials",
                     builder =>
                     {
-                        builder.WithOrigins("http://18.193.17.141",
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",                                            
                                             "http://swapify.fri.uniza.sk",
-                                            "http://*swapify.fri.uniza.sk",
-                                            "https://18.193.17.141",
-                                            "https://swapify.fri.uniza.sk",
-                                            "https://*swapify.fri.uniza.sk")
+                                            "https://*swapify.fri.uniza.sk",
+                                            "http://*swapify.fri.uniza.sk")
                                .AllowCredentials();
                     });
                 });
