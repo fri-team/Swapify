@@ -2,8 +2,7 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop
-   - 317_copy
+   - develop   
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
@@ -18,49 +17,49 @@ jobs:
      with:
         find: "##JWTKEY##" #STRING TO FIND
         replace: "${{ secrets.JWT_SECRET }}" #STRING TO REPLACE WITH
-   - name: replace_front_end_recaptcha_key
+   - name: Replace frontend recaptcha key
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##RECAPTCHA_FRONT_END_KEY##"
         replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
         include: "WebApp/" #searches only WebApp directory
-   - name: replace_back_end_recaptcha_key
+   - name: Replace backend recaptcha key
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##RECAPTCHA_BACK_END_KEY##"
         replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
         include: "appsettings.json" #finds and replaces only given file
-   - name: replace_SMTP_SERVER
+   - name: Replace SMTP SERVER
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##SMTP_SERVER##"
         replace: "${{ secrets.SMTP_SERVER }}"
         include: "appsettings.json"
-   - name: replace_SMTP_PORT
+   - name: Replace SMTP PORT
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##SMTP_PORT##"
         replace: "${{ secrets.SMTP_PORT }}"
         include: "appsettings.json"
-   - name: replace_MAIL_USERNAME
+   - name: Replace MAIL USERNAME
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##MAIL_USERNAME##"
         replace: "${{ secrets.MAIL_USERNAME }}"
         include: "appsettings.json"
-   - name: replace_SENDER_EMAIL
+   - name: Replace SENDER EMAIL
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##SENDER_EMAIL##"
         replace: "${{ secrets.SENDER_EMAIL }}"
         include: "appsettings.json"
-   - name: replace_MAIL_PASSWORD
+   - name: Replace MAIL PASSWORD
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##MAIL_PASSWORD##"
         replace: "${{ secrets.MAIL_PASSWORD }}"
         include: "appsettings.json"
-   - name: replace_FEEDBACK_MAIL
+   - name: Replace FEEDBACK MAIL
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##FEEDBACK_MAIL##"
@@ -82,7 +81,7 @@ jobs:
       context: .
       push: true
       tags: swapifyapp/swapify-app
-   - name: Configure_SSH_and_files_to_be_copied
+   - name: Configure SSH and prepare files to be copied
      run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/aws.key
@@ -104,7 +103,7 @@ jobs:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.PRIVATE_KEY}}
           SSH_HOST: ${{ secrets.HOST }}   
-   - name: Copy_files #copies all files inside filesToCopy directory
+   - name: Copy files to AWS #copies all files inside filesToCopy directory
      uses: garygrossgarten/github-action-scp@release
      with:
       local: filesToCopy #what to copy
