@@ -108,7 +108,7 @@ jobs:
      uses: garygrossgarten/github-action-scp@release
      with:
       local: filesToCopy
-      remote: /home/ubuntu/Swapify/mypassfile.txt
+      remote: /home/ubuntu/Swapify
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
