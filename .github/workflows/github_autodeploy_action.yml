@@ -13,23 +13,23 @@ jobs:
   runs-on: ubuntu-latest    
   steps:
    - uses: actions/checkout@v2
-   - name: Replace jwt private key    
+   - name: Replace jwt private key #FIND AND REPLACE, by default searches all files
      uses: jacobtomlinson/gha-find-replace@master
      with:
-        find: "##JWTKEY##"
-        replace: "${{ secrets.JWT_SECRET }}"
+        find: "##JWTKEY##" #STRING TO FIND
+        replace: "${{ secrets.JWT_SECRET }}" #STRING TO REPLACE WITH
    - name: replace_front_end_recaptcha_key
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##RECAPTCHA_FRONT_END_KEY##"
         replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
-        include: "WebApp/"
+        include: "WebApp/" #searches only WebApp directory
    - name: replace_back_end_recaptcha_key
      uses: jacobtomlinson/gha-find-replace@master
      with:
         find: "##RECAPTCHA_BACK_END_KEY##"
         replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
-        include: "appsettings.json"
+        include: "appsettings.json" #finds and replaces only given file
    - name: replace_SMTP_SERVER
      uses: jacobtomlinson/gha-find-replace@master
      with:
@@ -81,7 +81,7 @@ jobs:
      with:
       context: .
       push: true
-      tags: swapifyapp/swapify-app        
+      tags: swapifyapp/swapify-app
    - name: Configure_SSH_and_files_to_be_copied
      run: |
           mkdir -p ~/.ssh/
@@ -104,11 +104,11 @@ jobs:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.PRIVATE_KEY}}
           SSH_HOST: ${{ secrets.HOST }}   
-   - name: Copy_files
+   - name: Copy_files #copies all files inside filesToCopy directory
      uses: garygrossgarten/github-action-scp@release
      with:
-      local: filesToCopy
-      remote: /home/ubuntu/Swapify
+      local: filesToCopy #what to copy
+      remote: /home/ubuntu/Swapify #destination
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
@@ -116,6 +116,7 @@ jobs:
      run: ssh aws 'cd /home/ubuntu/Swapify;        
         sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
         sudo rm /home/ubuntu/Swapify/mypassfile.txt;
+        sudo chmod +x init-letsencrypt.sh;
         sudo docker-compose down;
         sudo docker rmi swapify-app -f;
         sudo docker rmi swapifyapp/swapify-app -f;
@@ -123,4 +124,4 @@ jobs:
         sudo docker pull swapifyapp/swapify-app;
         sudo docker tag swapifyapp/swapify-app swapify-app;
         sudo docker-compose up -d;
-        sudo docker logout'                
+        sudo docker logout;'         
