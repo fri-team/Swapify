@@ -11,8 +11,7 @@ services:
   #     - /home/ubuntu/Swapify/nginx.conf:/etc/nginx/nginx.conf
   #     - /home/ubuntu/SwapifySSL:/etc/ssl/private
   #   expose:
-  #     - 80
-  #     - 443
+  #     - 80  
   swapify:
     build:
       context: .
