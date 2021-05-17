@@ -165,6 +165,9 @@ namespace WebAPI.Controllers
                 sb.AppendLine("DTSTART;TZID=Europe/Amsterdam:" + dateNow.ToString("yyyyMMddTHHmm00"));
                 sb.AppendLine("DTEND;TZID=Europe/Amsterdam:" + dateNow.AddHours(block.Duration).ToString("yyyyMMddTHHmm00"));
 
+                // i did not find anything to retrieve start or end of semester so it will repeat 13 weeks from now
+
+                sb.AppendLine("RRULE:FREQ=WEEKLY;COUNT=13");
                 sb.AppendLine("SUMMARY:" + course.CourseName);
                 sb.AppendLine("DESCRIPTION:" + block.Room + ", " + block.Teacher);
                 sb.AppendLine("PRIORITY:3");
