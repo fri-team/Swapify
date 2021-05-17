@@ -23,7 +23,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
         "JwtSecret": "##JWTKEY##",
-        "BaseUrl": "http://3.121.231.86:80/"
+        "BaseUrl": "https://swapify.fri.uniza.sk/"
       }
     }
   }
