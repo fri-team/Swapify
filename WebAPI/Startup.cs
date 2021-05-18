@@ -153,8 +153,7 @@ namespace WebAPI
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();
-
-            
+            services.AddSingleton<ICalendarService, CalendarService>();
 
             services.AddControllersWithViews();
 
@@ -246,6 +245,9 @@ namespace WebAPI
             var ldapSettings = Configuration.GetSection("LdapSettings");
             if (ldapSettings.Get<LdapSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(LdapSettings)} configuration section.");
+            var calendarSettings = Configuration.GetSection("CalendarSettings");
+            if (calendarSettings.Get<CalendarSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(CalendarSettings)} configuration section.");
 
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
@@ -253,6 +255,7 @@ namespace WebAPI
             services.Configure<EnvironmentSettings>(Configuration);
             services.Configure<RecaptchaSettings>(recaptchaSettings);
             services.Configure<LdapSettings>(ldapSettings);
+            services.Configure<CalendarSettings>(calendarSettings);
 
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
@@ -266,6 +269,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<RecaptchaSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<LdapSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<CalendarSettings>>().Value);
 
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
