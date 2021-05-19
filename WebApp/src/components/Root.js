@@ -6,13 +6,15 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ConnectedRouter } from 'connected-react-router'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import pink from '@material-ui/core/colors/pink';
+import grey from '@material-ui/core/colors/grey';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import { App, LoadingPage } from './';
 
 const styledTheme = {
   color: {
     primary: blue[500],
-    secondary: pink[500]
+    secondary: grey[500],
+    tetriary: blueGrey[500]
   }
 };
 
@@ -22,7 +24,8 @@ const muiTheme = createMuiTheme({
   },
   palette: {
     primary: blue,
-    secondary: pink
+    secondary: grey,
+    tetriary: blueGrey
   }
 });
 

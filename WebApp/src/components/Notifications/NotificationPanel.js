@@ -81,9 +81,9 @@ class NotificationPanel extends Component {
             <div className="">                                                                  
                 <div className={"notification-badge" + badge} onClick={this.onProfileClick}>{unreadNotificationsCount}</div>
                 <NotificationsIcon onClick={this.onProfileClick}/>
-                <div className={"notification-panel " + this.state.notificationPanelVisibility}>
-                    <div className="notification-panel-header clearfix">
-                        <strong>Notifikácie</strong>                        
+                <div className={"notification-panel " + this.state.notificationPanelVisibility} style={{ backgroundColor: this.props.darkMode ? "#303030" : "white", color: this.props.darkMode ? "white" : "black" }}>
+                    <div className="notification-panel-header clearfix" style={{ backgroundColor: this.props.darkMode ? "#303030" : "white"}}>
+                        <strong style={{ color: this.props.darkMode ? "white" : "black" }}>Notifikácie</strong>                        
                     </div>
                     <div className="notification-panel-content">
                         {notificationComponents}

@@ -14,6 +14,7 @@ import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDet
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
 import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import axios from "axios";
 
 import GifAddCourse from "../../images/swapify-addCourse.gif";
 import GifShowCourseTimetable from "../../images/swapify-showCourseTimetable.gif";
@@ -21,7 +22,7 @@ import GifAskForExchange from "../../images/swapify-askForExchange.gif";
 
 import "./TimetablePage.scss";
 
-const { red, green, blue } = require("@material-ui/core/colors");
+const { red, green, blue, blueGrey } = require("@material-ui/core/colors");
 
 const carouselStyles = {
   content: {
@@ -40,13 +41,15 @@ class TimetablePage extends PureComponent {
       sidebarOpen: false,
       helpModalWindowOpen: false,
       mailUsModalWindowOpen: false,
+      changeDarkMode: false,
       user: props.user,
       message: "",
       subject: "",
+      darkMode: true
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getDarkMode();
   }
 
   handleChange(e) {
@@ -69,17 +72,52 @@ class TimetablePage extends PureComponent {
       this.state.message
     );
 
-    this.setState({ 
+    this.setState({
       mailUsModalWindowOpen: false,
       message: "",
       subject: ""
     });
   }
 
+  getDarkMode() {
+    const body = {
+      email: this.state.user.email,
+      darkMode: "true"
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/getDarkMode",
+      data: body
+    }).then(response => {
+      this.setState({ darkMode: response.data });
+    });
+  }
+
+  swapDarkMode() {
+    var dark = !this.state.darkMode;
+    this.setState({ darkMode: dark });
+
+    const body = {
+      email: this.state.user.email,
+      darkMode: dark
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/setDarkMode",
+      data: body
+    }).then();
+  }
+
   render() {
     return (
       <div className="app-container">
         <Toolbar
+          darkMode = { this.state.darkMode }
+          changeDarkMode={() =>
+            this.swapDarkMode()
+          }
           toggleSidebar={() =>
             this.setState((prevState) => ({
               sidebarOpen: !prevState.sidebarOpen,
@@ -97,10 +135,12 @@ class TimetablePage extends PureComponent {
           }
         />
         <SidebarContainer
+          darkMode = { this.state.darkMode }
           open={this.state.sidebarOpen}
           onClose={() => this.setState({ sidebarOpen: false })}
         />
-        <TimetableContainer 
+        <TimetableContainer
+          darkMode = { this.state.darkMode }
           history={this.props.history}
         />
 
@@ -116,8 +156,8 @@ class TimetablePage extends PureComponent {
             title="Pridaj si blok predmetu"
             subtitle='Klikni na miesto v rozvrhu, kde má začínať blok. Napíš jeho názov, meno profesora, miestnosť. 
             Zvoľ či sa jedná o prednášku, cvičenie alebo laboratórium, poprípade zmeň jeho dĺžku a klikni na "ULOŽIŤ".'
-            mediaBackgroundStyle={{ backgroundColor: red[400] }}
-            style={{ backgroundColor: red[600] }}
+            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : red[400] }}
+            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : red[600] }}
           />
           <Slide
             media={
@@ -129,8 +169,8 @@ class TimetablePage extends PureComponent {
             title="Zobraz si rozvrh predmetu"
             subtitle="Pozri sa ako vyzerá rozvrh predmetu v porovnaní s Tvojím vlastným. V bočnom menu si zvoľ predmety, 
             ktorých rozvrhy chceš vidieť v tom svojom."
-            mediaBackgroundStyle={{ backgroundColor: green[400] }}
-            style={{ backgroundColor: green[600] }}
+            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : green[400] }}
+            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : green[600] }}
           />
           <Slide
             media={
@@ -140,8 +180,8 @@ class TimetablePage extends PureComponent {
             subtitle='Vyber si cvičenie, ktoré si chceš vymeniť, klikni naň a zvoľ "Požiadať o výmenu". Následne si vyber 
             zo zobrazených cvičení to, ktoré ti najviac vyhovuje. Potom už len čakaj kým, si niekto bude chcieť vymeniť 
             dané cvičenie tiež.'
-            mediaBackgroundStyle={{ backgroundColor: blue[400] }}
-            style={{ backgroundColor: blue[600] }}
+            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : blue[400] }}
+            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : blue[600] }}
           />
         </StyledCarousel>
 
@@ -155,8 +195,10 @@ class TimetablePage extends PureComponent {
           }
           aria-labelledby="max-width-dialog-title"
         >
-          <DialogTitle id="max-width-dialog-title">Napíšte nám</DialogTitle>
-          <DialogContent className="dialogMailUsContent">
+          <DialogTitle id="max-width-dialog-title"
+          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>Napíšte nám</DialogTitle>
+          <DialogContent className="dialogMailUsContent" 
+          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>
             <FormControl fullWidth>
               <TextField
                 id="outlined-basic"

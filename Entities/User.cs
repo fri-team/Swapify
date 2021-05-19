@@ -8,6 +8,7 @@ namespace FRITeam.Swapify.Entities
         public string Surname { get; set; }
         public Student Student { get; set; }
         public bool IsLdapUser { get; set; }
+        public bool DarkMode { get; set; }
 
         public User()
         {
@@ -21,6 +22,7 @@ namespace FRITeam.Swapify.Entities
             Surname = surname;
             Student = null;
             IsLdapUser = false;
+            DarkMode = false;
         }
     }
 }

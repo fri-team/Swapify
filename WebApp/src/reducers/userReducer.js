@@ -21,6 +21,7 @@ export const getUserData = payload => {
     studentId: payload.studentId,
     personalNumber: payload.personalNumber,
     firstTimePN: payload.firstTimePN,
+    darkMode: payload.darkMode,
     validTo
   };
 };
