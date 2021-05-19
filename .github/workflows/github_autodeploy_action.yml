@@ -2,7 +2,8 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop   
+   - develop
+   - 465_ldap
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
