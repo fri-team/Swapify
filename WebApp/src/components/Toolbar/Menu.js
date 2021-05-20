@@ -85,14 +85,14 @@ export default class Menu extends PureComponent {
   };
 
   render() {
-    const { username, email, onLogout, selectPersonalNumber } = this.props;
+    const { username, email, onLogout, selectPersonalNumber, changeDarkMode } = this.props;
     const { x, y } = this.state;
-    const width = 300;
+    const width = 400;
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>
           <Shaddow>
-            <Content width={width}>
+            <Content width={width} style={{ backgroundColor: this.props.darkMode ? "#303030" : "white", color: this.props.darkMode ? "white" : "black" }}>
               <PadBox>
                 <FlexBox>
                   <UserAvatar size={70} username={username} />
@@ -113,6 +113,9 @@ export default class Menu extends PureComponent {
                     onClick={selectPersonalNumber}
                   >
                     Zmeniť číslo
+                  </MenuButton>
+                  <MenuButton variant="contained" onClick={changeDarkMode}>
+                    Dark mode
                   </MenuButton>
                   <MenuButton variant="contained" onClick={onLogout}>
                     Odhlásiť

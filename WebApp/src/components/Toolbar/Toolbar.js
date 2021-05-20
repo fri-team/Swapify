@@ -85,12 +85,11 @@ class AppToolbar extends PureComponent {
         </Button>
       );
     }
-
-    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
+    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow, changeDarkMode } = this.props;
     const url = this.checkUrl();
     return (
       <ToolbarWrapper>
-        <AppBar position="static">
+        <AppBar position="static" color={ this.props.darkMode ? "secondary" : "primary" }>
           <Toolbar>
             { !url && (
             <IconButton
@@ -115,12 +114,14 @@ class AppToolbar extends PureComponent {
               />
               {this.state.showMenu && (
                 <Menu
+                  darkMode={this.props.darkMode} 
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
                   selectPersonalNumber={this.changePersonalNumber}
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
+                  changeDarkMode={changeDarkMode}
                 />
               )}
             </IconTray>
@@ -154,7 +155,7 @@ class AppToolbar extends PureComponent {
                 color="inherit"
                 aria-label="Notifications"
               >
-                <NotificationPanel />
+                <NotificationPanel darkMode={this.props.darkMode}/>
               </IconButton>
             </Tooltip>
           </Toolbar>
