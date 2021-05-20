@@ -19,18 +19,15 @@ namespace FRITeam.Swapify.Backend
             _calendarSettings = calendarSettings.Value;
 
             DateTime dateNow = DateTime.Now;
-            bool isWinter = dateNow.Month >= _calendarSettings.StartWinterMonth && dateNow.Month <= _calendarSettings.EndWinterMonth && dateNow.Day <= _calendarSettings.EndWinterDay;
-
-            if (isWinter)
+            if(dateNow.CompareTo(_calendarSettings.StartWinter) == 1 && dateNow.CompareTo(_calendarSettings.EndWinter) == -1)
             {
-                startDateTime = new DateTime(dateNow.Year, _calendarSettings.StartWinterMonth, _calendarSettings.StartWinterDay);
-                endDateTime = new DateTime(dateNow.Year, _calendarSettings.EndWinterMonth, _calendarSettings.EndWinterDay).AddDays(1); // we add one day for recurring events
+                startDateTime = _calendarSettings.StartWinter;
+                endDateTime = _calendarSettings.EndWinter;
             }
             else
             {
-                bool isNextYear = dateNow.Month != 12;
-                startDateTime = new DateTime(dateNow.Year + (isNextYear ? 0 : 1), _calendarSettings.StartSummerMonth, _calendarSettings.StartSummerDay);
-                endDateTime = new DateTime(dateNow.Year + (isNextYear ? 0 : 1), _calendarSettings.EndSummerMonth, _calendarSettings.EndSummerDay).AddDays(1); // we add one day for recurring events
+                startDateTime = _calendarSettings.StartSummer;
+                endDateTime = _calendarSettings.EndSummer;
             }
             dayOfWeek = dateNow.DayOfWeek == DayOfWeek.Sunday ? 7 : (int) dateNow.DayOfWeek;
         }
