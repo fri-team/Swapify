@@ -13,6 +13,7 @@ namespace FRITeam.Swapify.Entities
         public byte Duration { get; set; }
         public string Room { get; set; }
         public string Teacher { get; set; }
+        public string BlockColor { get; set; }
 
         public Block() { }
 

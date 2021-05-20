@@ -16,6 +16,7 @@ namespace WebAPI.Models.TimetableModels
         public string Room { get; set; }
         public string Teacher { get; set; }
         public TimetableBlockType Type { get; set; }
+        public string BlockColor { get; set; }
 
         public static Block ConvertToBlock(TimetableBlock blockToConvert, Guid courseId)
         {            
@@ -30,7 +31,8 @@ namespace WebAPI.Models.TimetableModels
             block.Duration = (byte)(blockToConvert.EndBlock - blockToConvert.StartBlock);
             block.Room = blockToConvert.Room;
             block.Teacher = blockToConvert.Teacher;
-            block.BlockType = (BlockType)blockToConvert.Type;           
+            block.BlockType = (BlockType)blockToConvert.Type;
+            block.BlockColor = blockToConvert.BlockColor;
             return block;
         }
     }
