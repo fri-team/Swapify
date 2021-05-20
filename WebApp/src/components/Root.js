@@ -5,9 +5,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ConnectedRouter } from 'connected-react-router'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import grey from '@material-ui/core/colors/grey';
-import blueGrey from '@material-ui/core/colors/blueGrey';
+import { blueGrey, blue, grey } from '@material-ui/core/colors';
 import { App, LoadingPage } from './';
 
 const styledTheme = {
