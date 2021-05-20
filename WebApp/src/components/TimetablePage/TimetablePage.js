@@ -14,6 +14,7 @@ import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDet
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
 import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import * as actions from '../../actions/timetableActions';
 
 import GifAddCourse from "../../images/swapify-addCourse.gif";
 import GifShowCourseTimetable from "../../images/swapify-showCourseTimetable.gif";
@@ -84,6 +85,22 @@ class TimetablePage extends PureComponent {
             this.setState((prevState) => ({
               sidebarOpen: !prevState.sidebarOpen,
             }))
+          }
+          exportCalendar={() => 
+            {
+              // not exactly sure how to work with these actions so I imported it like this
+              actions.loadMyTimetableCalendar(this.props.user, this.props.history).then(res => {
+                var uri = "data:text/calendar;charset=utf8," + res;
+
+                var downloadLink = document.createElement("a");
+                downloadLink.href = uri;
+                downloadLink.download = "timetable.ics";
+
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+              })
+            }
           }
           toggleHelpModalWindow={() =>
             this.setState((prevState) => ({

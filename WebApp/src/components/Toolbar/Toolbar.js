@@ -20,6 +20,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
+import CalendarIcon from '@material-ui/icons/CalendarToday'
 import logo from '../../images/logowhite.png';
 
 const ToolbarWrapper = styled.div`
@@ -86,7 +87,7 @@ class AppToolbar extends PureComponent {
       );
     }
 
-    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
+    const { user, toggleSidebar, exportCalendar, toggleHelpModalWindow, toggleMailUsModalWindow } = this.props;
     const url = this.checkUrl();
     return (
       <ToolbarWrapper>
@@ -129,6 +130,16 @@ class AppToolbar extends PureComponent {
               {user.name} {user.surname}
             </p>
             
+			<Tooltip title="Stiahnuť kalendár" placement="top" TransitionComponent={Zoom}>
+              <IconButton
+                color="inherit"
+                aria-label="CalendarExport"
+                onClick={exportCalendar}
+              >
+                <CalendarIcon />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Zobraz pomocník" placement="top" TransitionComponent={Zoom}>
               <IconButton
                 color="inherit"
