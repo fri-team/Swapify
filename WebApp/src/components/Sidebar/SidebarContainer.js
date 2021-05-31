@@ -46,7 +46,6 @@ class SidebarContainer extends PureComponent {
     this.setState({sideBarFormOpen: false});
   }
 
-
   render() {
     const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
     const { value } = this.state;
@@ -57,7 +56,7 @@ class SidebarContainer extends PureComponent {
       checked: _.includes(displayedCourses, course.courseId)
     }));
     return (
-      <Sidebar
+      <Sidebar 
         open={open}
         onClose={onClose}
         courses={courses}
@@ -68,6 +67,7 @@ class SidebarContainer extends PureComponent {
         addClickHandle={this.handleAddClick}
         sideBarFormOpen={sideBarFormOpen}
         onCloseForm={this.handleClickOutsideSideBarForm}     
+        darkMode={this.props.darkMode}
       />
     );
   }

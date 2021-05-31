@@ -18,6 +18,13 @@ $border: $border-width solid $border-color;
     background-color: $background-color;
 }
 
+.border-cell-dark {
+    padding: 1em;
+    border: $border;
+    background-color: #202020;
+    color: white;
+}
+
 .centered {
     text-align: center;
 }
@@ -25,6 +32,13 @@ $border: $border-width solid $border-color;
 .border-cells,
 .blocks {
     grid-area: blocks;
+}
+
+.border-cells-dark {
+    grid-area: blocks;
+    background-color: #202020;
+    color: white;
+    border-color: white;
 }
 
 .blocks {

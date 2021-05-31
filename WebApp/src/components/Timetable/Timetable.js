@@ -5,14 +5,6 @@ import TimetableBlocks from './TimetableBlocks';
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import './Timetable.scss';
 
-const Block = ({ i, j, openAddBlock }) => (
-  <div
-    className="border-cell"
-    style={{ gridRow: i, gridColumn: j }}
-    onClick={() => openAddBlock(i, j)}
-  />
-)
-
 class Timetable extends React.Component {
   state = {
     course: {
@@ -47,15 +39,22 @@ class Timetable extends React.Component {
   };
 
   render() {
+    const Block = ({ i, j, openAddBlock }) => (
+      <div
+        className={this.props.darkMode ? "border-cell-dark" : "border-cell" }
+        style={{ gridRow: i, gridColumn: j }}
+        onClick={() => openAddBlock(i, j)}
+      />
+    );
     const { colHeadings, rowHeadings, items, user } = this.props
     const { dialogOpen, course } = this.state
     const hours = map(colHeadings, (col, idx) => (
-      <div key={idx} className="border-cell centered">
+      <div key={idx} className={this.props.darkMode ? "border-cell-dark centered" : "border-cell centered" }>
         {col}
       </div>
     ));
     const days = map(rowHeadings, (row, idx) => (
-      <div key={idx} className="border-cell">
+      <div key={idx} className={this.props.darkMode ? "border-cell-dark" : "border-cell" }>
         {row}
       </div>
     ));
@@ -63,7 +62,7 @@ class Timetable extends React.Component {
     for (let i = 1; i <= days.length; i++) {
       for (let j = 1; j <= hours.length; j++) {
         borderCells.push(
-          <Block key={`${i}x${j}`} i={i} j={j} openAddBlock={this.openAddBlock} />
+          <Block key={`${i}x${j}`} i={i} j={j} openAddBlock={this.openAddBlock} className={this.props.darkMode ? "border-cell-dark" : "border-cell" }/>
         );
       }
     }
@@ -79,7 +78,7 @@ class Timetable extends React.Component {
 
     return (
       <div className="timetable">
-        <div className="border-cell" />
+        <div className={this.props.darkMode ? "border-cell-dark" : "border-cell" }/>
         <div style={hoursStyle}>{hours}</div>
         <div style={daysStyle}>{days}</div>
         <TimetableBlocks
@@ -87,7 +86,7 @@ class Timetable extends React.Component {
           rows={days.length}
           items={items}
         />
-        <div className="border-cells" style={style}>
+        <div className={ this.props.darkMode ? "border-cells-dark" : "border-cells" } style={style}>
           {borderCells}
         </div>
         {dialogOpen && (

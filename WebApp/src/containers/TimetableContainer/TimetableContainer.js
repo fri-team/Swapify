@@ -10,12 +10,12 @@ class TimetableContainer extends Component {
     super(props);
 
     this.props.actions.loadMyTimetable(this.props.user, this.props.history);
-
   }
 
   render() {
     return (
       <Timetable
+        darkMode={this.props.darkMode}
         colHeadings={this.props.colHeadings}
         rowHeadings={this.props.rowHeadings}
         items={this.props.displayedTimetable}
