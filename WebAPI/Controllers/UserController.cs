@@ -252,6 +252,12 @@ namespace WebAPI.Controllers
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
+                if (user.IsLdapUser)
+                {
+                    _logger.LogInformation($"User {body.Email} is ldap user no classic.");
+                    return ErrorResponse($"Musite sa prihlásiť cez Ldap prihlásenie, pretože email je študentský.");
+                }
+
                 if (!user.EmailConfirmed)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
@@ -292,6 +298,12 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation($"Invalid password reset attemp. User {body.Email} doesn't exist.");
                 return Ok();
+            }
+
+            if (user.IsLdapUser)
+            {
+                _logger.LogInformation($"Password reset attemp for Ldap user {body.Email}.");
+                return ErrorResponse($"Heslo pre Ldap používateľa nemožno zmeniť.");
             }
 
             if (!user.EmailConfirmed)
@@ -351,6 +363,39 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Feedback email from user {body.Email} sent.");
 
             return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("setDarkMode")]
+        public async Task<IActionResult> ChangeDarkModeForUser([FromBody] DarkModeModel body)
+        {
+            body.Email = body.Email.ToLower();
+
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid dark mode change. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            user.DarkMode = body.DarkMode.Equals("true");
+            await _userService.UpdateUserAsync(user);
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("getDarkMode")]
+        public async Task<IActionResult> GetDarkModeForUser([FromBody] DarkModeModel body)
+        {
+            body.Email = body.Email.ToLower();
+
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid dark mode change. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+            return Ok(user.DarkMode);
         }
     }
 }

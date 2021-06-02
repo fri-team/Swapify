@@ -76,6 +76,7 @@ namespace WebAPI.Controllers
                 timetableBlock.Room = block.Room;
                 timetableBlock.Teacher = block.Teacher;
                 timetableBlock.Type = (TimetableBlockType)block.BlockType;
+                timetableBlock.BlockColor = block.BlockColor;
                 Blocks.Add(timetableBlock);
             }
             timetable.Blocks = Blocks;
@@ -116,6 +117,7 @@ namespace WebAPI.Controllers
             }
 
             student.Timetable.AddNewBlock(block);
+            student.Timetable.UpdateColorOfBlocksWithSameCourseId(block);
             await _studentService.UpdateStudentAsync(student);
             //return block with new id 
             return Ok(newBlockModel.TimetableBlock);
@@ -184,6 +186,7 @@ namespace WebAPI.Controllers
 
             if (student.Timetable.UpdateBlock(newBlock))
             {
+                student.Timetable.UpdateColorOfBlocksWithSameCourseId(newBlock);
                 await _studentService.UpdateStudentAsync(student);
             }
             else
