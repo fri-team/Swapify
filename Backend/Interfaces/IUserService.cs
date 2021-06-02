@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace FRITeam.Swapify.Backend.Interfaces
 {
@@ -18,7 +19,7 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<IdentityResult> DeleteUserAsyc(User user);
         Task<IdentityResult> UpdateUserAsync(User userToUpdate);
         JwtSecurityToken Renew(string jwtToken);
-        UserInformations GetUserFromLDAP(string login, string password);
+        UserInformations GetUserFromLDAP(string login, string password, ILogger logger);
         Task<bool> AddLdapUser(UserInformations informations);
         string getDefaultLdapPassword();
     }

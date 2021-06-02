@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
 
             if (user.IsLdapUser)
             {
-                UserInformations ldapInfo = _userService.GetUserFromLDAP(body.Email.Split('@')[0], body.Password);
+                UserInformations ldapInfo = _userService.GetUserFromLDAP(body.Email.Split('@')[0], body.Password, _logger);
                 if (ldapInfo == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
@@ -193,7 +193,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
             }
 
-            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password);
+            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
             body.Password = _userService.getDefaultLdapPassword();
 
             if (ldapInformations == null)

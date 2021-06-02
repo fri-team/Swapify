@@ -7,6 +7,7 @@ using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -123,7 +124,7 @@ namespace FRITeam.Swapify.Backend
             return await _userManager.UpdateAsync(userToUpdate);
         }
 
-        public UserInformations GetUserFromLDAP(string login, string password)
+        public UserInformations GetUserFromLDAP(string login, string password, ILogger logger)
         {
             login += "@fri.uniza.sk";
 
@@ -136,7 +137,7 @@ namespace FRITeam.Swapify.Backend
             };
 
             AuthenticatorLdap authenticatorLdap = new AuthenticatorLdap(options);
-            UserInformations informations = authenticatorLdap.Authenticate(login, password);
+            UserInformations informations = authenticatorLdap.Authenticate(login, password, logger);
             return informations;
         }
 
