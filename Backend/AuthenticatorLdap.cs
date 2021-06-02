@@ -17,21 +17,21 @@ namespace FRITeam.Swapify.Backend
             UserInformations userInformations = null;
             try
             {
-                logger.LogInformation("LDAP: Trying connection to LDAP");
+                logger.LogDebug("LDAP: Trying connection to LDAP");
                 var connection = new LdapConnection { SecureSocketLayer = _options.SecureSocketLayer };
                 string[] attributes = new[] { "samaccountname", "displayname", "uidnumber", "mail" };
                 connection.Connect(_options.HostName, _options.Port);
                 connection.Bind(username, password);
                 if (connection.Bound)
                 {
-                    logger.LogInformation("LDAP: Connected to LDAP with username " + username);
+                    logger.LogDebug("LDAP: Connected to LDAP with username " + username);
                     var results = connection.Search(_options.BaseDN, LdapConnection.ScopeSub,
                     $"samaccountname={username.Split("@")[0]}", attributes, false);
 
                     if (results.HasMore())
                     {
                         var attributeSet = results.Next().GetAttributeSet();
-                        logger.LogInformation("LDAP: LDAP has data for user " + username);
+                        logger.LogDebug("LDAP: LDAP has data for user " + username);
                         userInformations = new UserInformations
                         {
                             Name = attributeSet.GetAttribute("displayname")?.StringValue ?? null,
