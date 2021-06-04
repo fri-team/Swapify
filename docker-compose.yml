@@ -9,8 +9,8 @@ services:
   volumes:   
    - ./logs:/app/logs
   restart: unless-stopped
-  expose:
-   - 5020   
+  ports:
+   - 5020:5020   
   environment:
    - ASPNETCORE_ENVIRONMENT=Production
    - ASPNETCORE_URLS=http://+:5020
