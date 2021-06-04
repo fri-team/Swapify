@@ -10,10 +10,10 @@ services:
    - ./logs:/app/logs
   restart: unless-stopped
   ports:
-   - 5020:5020   
+   - 443:443   
   environment:
    - ASPNETCORE_ENVIRONMENT=Production
-   - ASPNETCORE_URLS=http://+:5020
+   - ASPNETCORE_URLS=http://+:443
    - BaseUrl=https://swapify.fri.uniza.sk
    - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
@@ -36,7 +36,7 @@ services:
    - ./certbot/www:/var/www/certbot
   ports:
    - 80:80
-   - 443:443
+   #- 443:443
   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
  certbot:
   image: certbot/certbot

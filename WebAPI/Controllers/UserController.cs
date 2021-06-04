@@ -192,20 +192,18 @@ namespace WebAPI.Controllers
             {
                 return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
             }
-
-            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
-            body.Password = _userService.getDefaultLdapPassword();
+            _logger.LogInformation($"Request init from ldap.");
+            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);            
+            _logger.LogInformation($"Response received from ldap.");
+            body.Password = _userService.GetDefaultLdapPassword();
 
             if (ldapInformations == null)
             {
                 _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
                 return ErrorResponse($"Meno a heslo nie sú správne.");
             }
-
             ldapInformations.Email = ldapInformations.Email.ToLower();
-
-            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);            
             if (user == null)
             {
                 if (!_userService.AddLdapUser(ldapInformations).Result)
@@ -217,7 +215,6 @@ namespace WebAPI.Controllers
                 var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
                 auth.FirstTimePN = ldapInformations.PersonalNumber;
-
                 return Ok(auth);
             }
             else

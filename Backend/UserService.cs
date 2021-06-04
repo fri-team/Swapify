@@ -151,7 +151,7 @@ namespace FRITeam.Swapify.Backend
             return addResult.Succeeded;
         }
 
-        public string getDefaultLdapPassword()
+        public string GetDefaultLdapPassword()
         {
             return DEFAULT_LDAP_PASSWORD;
         }

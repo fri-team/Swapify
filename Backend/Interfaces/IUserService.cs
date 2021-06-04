@@ -21,6 +21,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         JwtSecurityToken Renew(string jwtToken);
         UserInformations GetUserFromLDAP(string login, string password, ILogger logger);
         Task<bool> AddLdapUser(UserInformations informations);
-        string getDefaultLdapPassword();
+        string GetDefaultLdapPassword();
     }
 }
