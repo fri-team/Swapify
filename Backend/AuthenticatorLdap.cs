@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Novell.Directory.Ldap;
 
 namespace FRITeam.Swapify.Backend
@@ -17,23 +12,26 @@ namespace FRITeam.Swapify.Backend
             _options = options;
         }
 
-        public UserInformations Authenticate(string username, string password)
+        public UserInformations Authenticate(string username, string password, ILogger logger)
         {
             UserInformations userInformations = null;
             try
             {
+                logger.LogDebug("LDAP: Trying connection to LDAP");
                 var connection = new LdapConnection { SecureSocketLayer = _options.SecureSocketLayer };
                 string[] attributes = new[] { "samaccountname", "displayname", "uidnumber", "mail" };
                 connection.Connect(_options.HostName, _options.Port);
                 connection.Bind(username, password);
                 if (connection.Bound)
                 {
+                    logger.LogDebug("LDAP: Connected to LDAP with username " + username);
                     var results = connection.Search(_options.BaseDN, LdapConnection.ScopeSub,
                     $"samaccountname={username.Split("@")[0]}", attributes, false);
 
                     if (results.HasMore())
                     {
                         var attributeSet = results.Next().GetAttributeSet();
+                        logger.LogDebug("LDAP: LDAP has data for user " + username);
                         userInformations = new UserInformations
                         {
                             Name = attributeSet.GetAttribute("displayname")?.StringValue ?? null,
@@ -46,6 +44,7 @@ namespace FRITeam.Swapify.Backend
             }
             catch(LdapException e)
             {
+                logger.LogError("LDAP: Error when authenticating to LDAP: " + e.ToString());
                 return null;
             }
             return userInformations;
