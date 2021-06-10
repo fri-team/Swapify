@@ -48,7 +48,7 @@ function getSuggestions(suggestions, value) {
   return inputLength === 0
     ? []
     : filter(suggestions, () => {
-      const keep = count < 5;
+      const keep = count < 50;
       if (keep) {
         count += 1;
       }

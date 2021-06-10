@@ -14,5 +14,7 @@ namespace FRITeam.Swapify.Entities
         public string CourseName { get; set; }
         public Timetable Timetable { get; set; }
         public DateTime? LastUpdateOfTimetable { get; set; }
+        public string YearOfStudy { get; set; }
+        public string StudyType { get; set; }
     }
 }
