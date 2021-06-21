@@ -27,7 +27,7 @@ namespace FRITeam.Swapify.APIWrapper
         /// Return schedule for whole week by subject code
         /// </summary>
         /// <param name="subjectCode">subject code</param>
-        IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode);
+        IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType);
 
         /// <summary>
         /// Return schedule for whole week from file for test purposes

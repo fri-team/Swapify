@@ -29,6 +29,8 @@ class SideBarForm extends Component {
         courseInfo:[],
         courseName: '',
         courseShortcut: '',
+        yearOfStudy: '',
+        studyType: '',
         suggestions: [],
         loading: false
     };
@@ -36,8 +38,8 @@ class SideBarForm extends Component {
     fetchCourses = () => {
         const fetch = throttle(500, courseName => {
           axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.studentId}`).then(({ data }) => {
-            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
-            this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')' + x.id})) });
+            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.yearOfStudy + ".r," + this.cutStudyType(x.studyType)})) });
+            this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.id + "," + x.yearOfStudy + "," + this.cutStudyType(x.studyType)})) });
           });
         })
 
@@ -48,6 +50,15 @@ class SideBarForm extends Component {
         }
     }
 
+    cutStudyType = (studyType) => {
+      var array = studyType.split(' ');
+      var returnedString = '';
+      for (var i = 0; i < 2; i++) {
+        returnedString += array[i].substring(0,3) + '.' 
+      }
+      return returnedString;
+    }
+
     canSubmit = () => {
         const { courseName } = this.state;
         return courseName != '' ? true : false;
@@ -56,7 +67,7 @@ class SideBarForm extends Component {
     submit = () => {
       const { courseId, courseName } = this.state;
       const { onClose } = this.props;
-
+      
       this.props.showCourseTimetable(courseId, courseName);  
       
       this.setState({loading: false});
@@ -64,21 +75,25 @@ class SideBarForm extends Component {
     }
 
     handleCourse = (courseName) => {
-      this.setState({courseShortcut: courseName.split(' (').pop().split(')')[0]});
+      this.setState({courseShortcut: courseName.split(' (').pop().split(') ')[0]});
       this.setState({courseName: courseName.split(' (')[0]});
 
       for(var i = 0; i < this.state.courseInfo.length; i++){
-        var shortCut = this.state.courseInfo[i].label.split(' (').pop().split(')')[0];
+        var shortCut = this.state.courseInfo[i].label.split(' (').pop().split(') ')[0];
         var name = this.state.courseInfo[i].label.split(' (')[0];
-        if(courseName.split(' (')[0] === name && courseName.split(' (').pop().split(')')[0] === shortCut) {
-          this.setState({courseId: this.state.courseInfo[i].label.split(')')[1]});         
+        var year = this.state.courseInfo[i].label.split(',')[1];
+        var type = this.state.courseInfo[i].label.split(',')[2];
+
+        if(courseName.split(' (')[0] === name && courseName.split(' (').pop().split(') ')[0] === shortCut
+          && courseName.split(') ')[1].split(',')[0] === year+'.r' && courseName.split(') ')[1].split(',')[1] === type) {
+          this.setState({courseId: this.state.courseInfo[i].label.split(') ')[1].split(',')[0]});
         }
       }     
     } 
 
     render() {
         const { onClose } = this.props
-        const { courseName,courseShortcut, suggestions } = this.state;
+        const { courseName,courseShortcut, yearOfStudy, studyType, suggestions } = this.state;
         return (
           <form>
             <Dialog open onClose={evt => {
@@ -93,7 +108,7 @@ class SideBarForm extends Component {
               <DialogContent>
                   <FlexBox>
                   <Autocomplete
-                    placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseShortcut + ")"}
+                    placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseShortcut + ") " + yearOfStudy + ".r," + studyType}
                     name="courseName"
                     value={courseName}
                     suggestions={suggestions}

@@ -15,8 +15,7 @@ namespace CoursesParser
             List<CourseItem> allCourses = parser.ParseFaculties();
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(allCourses);
             var actDate = DateTime.Now;
-            File.WriteAllText($"courses_{actDate.Year}_{actDate.Month}_{actDate.Day}.json", json);
-
+            File.WriteAllText($"courses_{actDate.Year}_{actDate.Month}_{actDate.Day}.json", json);            
         }
     }
 }

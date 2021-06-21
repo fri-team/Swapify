@@ -66,12 +66,12 @@ namespace FRITeam.Swapify.Backend
                 }
             }
 
-            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC).TrimStart(' ').ToLower();
         }
 
         public List<Course> FindByStartName(string courseStartsWith, string personalNumber)
         {
-            if (courseStartsWith.Length > 2)
+            if (courseStartsWith != null && courseStartsWith.Length > 2)
             {
                 courseStartsWith = RemoveDiacritics(courseStartsWith);
 
@@ -79,8 +79,9 @@ namespace FRITeam.Swapify.Backend
                 List<Course> founded = new List<Course>();
                 foreach (var course in allCourses)
                 {
-                    if (course.CourseName.Length >= courseStartsWith.Length &&
-                        RemoveDiacritics(course.CourseName).Substring(0, courseStartsWith.Length).Equals(courseStartsWith))
+                    string courseNameWithoutDia = RemoveDiacritics(course.CourseName);
+                    if (courseNameWithoutDia.Length >= courseStartsWith.Length &&
+                        courseNameWithoutDia.Substring(0, courseStartsWith.Length).Equals(courseStartsWith))
                         founded.Add(course);
                 }
 
@@ -166,8 +167,8 @@ namespace FRITeam.Swapify.Backend
             {
                 IEnumerable<ScheduleHourContent> schedule = null;
                 try
-                {
-                    schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode);
+                {               
+                    schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode,course.YearOfStudy, course.StudyType);
                 }
                 catch (Exception ex)
                 {

@@ -47,7 +47,9 @@ class AddBlockForm extends Component {
     user: this.props.user,
     editing: this.props.editing,
     loading: false,
-    blockColor: toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor
+    blockColor: toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor,
+    yearOfStudy: '',
+    studyType: '',
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
@@ -59,7 +61,7 @@ class AddBlockForm extends Component {
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
       axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.studentId}`).then(({ data }) => {
-        this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +')'})) });
+        this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') '+ x.yearOfStudy + ".r," + this.cutStudyType(x.studyType)})) });
       });
     })
 
@@ -70,15 +72,25 @@ class AddBlockForm extends Component {
     }
   }
 
+  cutStudyType = (studyType) => {
+    var array = studyType.split(' ');
+    var returnedString = '';
+    for (var i = 0; i < 2; i++) {
+      returnedString += array[i].substring(0,3) + '.' 
+    }
+    return returnedString;
+  }
+
   fetchCourseBlock = courseName => {
-    this.setState({courseCode: courseName.split(' (').pop().split(')')[0]});
+    this.setState({courseCode: courseName.split(' (').pop().split(') ')[0]});
     this.setState({courseName: courseName.split(' (')[0]});
 
     const startBlock = parseInt(this.state.startBlock.split(':')[0]);
-    
+
     var j = 0;
     for (var i = 0; i < this.state.suggestions.length; i++) {
-      if (this.state.suggestions[i].courseName == courseName.split(' (')[0]) {
+      if (this.state.suggestions[i].courseName == courseName.split(' (')[0] && this.state.suggestions[i].courseCode == courseName.split(' (')[1].split(') ')[0] &&
+          this.state.suggestions[i].yearOfStudy + '.r' == courseName.split(') ')[1].split(',')[0] && this.cutStudyType(this.state.suggestions[i].studyType) == courseName.split(') ')[1].split(',')[1]) {
         j = i;
       }
     } 
@@ -180,7 +192,7 @@ class AddBlockForm extends Component {
           <DialogContent>
             <FlexBox>
               <Autocomplete
-                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseCode + ")"}
+                placeholder={courseName == "" ? "Zadajte názov predmetu *" : courseName + " (" + courseCode + ") "}
                 name="courseName"
                 value={courseName}
                 suggestions={suggestions}

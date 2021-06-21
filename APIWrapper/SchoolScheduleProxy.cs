@@ -29,9 +29,11 @@ namespace FRITeam.Swapify.APIWrapper
             return CallScheduleContentApi(3, roomNumber);
         }
 
-        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode)
+        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
         {
-            string addition = ",5,1,1" + GetCurrentSemesterShortCut();
+            char numStudyType = studyType.Contains("bak") ? '2' : studyType.Contains("inž") ? '1' : studyType.Contains("dokt") ? '3' : ' ';
+
+            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy + GetCurrentSemesterShortCut();
             return CallScheduleContentApi(4, subjectCode + addition);
         }
 

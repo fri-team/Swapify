@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Entities.Notifications;
+using System.Text;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {
@@ -249,10 +250,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
                     CourseName = crs.CourseName,
-                    LastUpdateOfTimetable = null
+                    LastUpdateOfTimetable = null,
+                    YearOfStudy = crs.YearOfStudy,
+                    StudyType = crs.StudyType
                 };
 
-                var c = courseCollection.Find(x => x.CourseCode == crs.CourseCode).SingleOrDefault();
+                Course c = courseCollection.Find(x => x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType).SingleOrDefault();
+
                 if (c == null)
                 {
                     courseCollection.InsertOne(course);
