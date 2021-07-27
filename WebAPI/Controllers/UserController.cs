@@ -193,7 +193,14 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
             }
             _logger.LogInformation($"Request init from ldap.");
-            UserInformations ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);            
+            UserInformations ldapInformations = null;
+            try
+            {
+                ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
+            } catch (Exception e)
+            {
+                _logger.LogError($"Exception " + e.ToString());
+            }                    
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
 
