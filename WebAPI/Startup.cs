@@ -20,7 +20,6 @@ using FRITeam.Swapify.Backend.Settings;
 using FRITeam.Swapify.Entities;
 using Microsoft.Extensions.Options;
 using System;
-using System.IO;
 using WebAPI.Filters;
 using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
@@ -30,8 +29,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using WebAPI.Models.DatabaseModels;
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace WebAPI
 {
@@ -138,7 +135,7 @@ namespace WebAPI
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();            
-            services.AddControllersWithViews().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Path).Assembly));
+            services.AddControllersWithViews();
             // In production, the React files will be served from this directory
             if (Environment.IsProduction())
             {
