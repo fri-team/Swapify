@@ -183,7 +183,7 @@ namespace WebAPI.Controllers
         [HttpPost("loginLdap")]
         public async Task<IActionResult> LoginLdap([FromBody] LoginModel body)
         {
-            if (_emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            if (await _emailService.GetCaptchaNotPassed(body.Captcha))
             {
                 return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
             }
@@ -236,45 +236,38 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
             try
-            {
-                if (!body.Email.Equals("oleg@swapify.com") && _emailService.GetCaptchaNotPassed(body.Captcha).Result)
+            {                
+                if (await _emailService.GetCaptchaNotPassed(body.Captcha))
                 {
                     return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
                 }
-
                 if (!body.Email.Contains('@'))
                 {
                     return ErrorResponse($"Zlý email.");
-                }
-
+                }                
                 body.Email = body.Email.ToLower();
                 User user = await _userService.GetUserByEmailAsync(body.Email);
-
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
-
                 if (user.IsLdapUser)
                 {
                     _logger.LogInformation($"User {body.Email} is ldap user no classic.");
                     return ErrorResponse($"Musite sa prihlásiť cez Ldap prihlásenie, pretože email je študentský.");
                 }
-
                 if (!user.EmailConfirmed)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
                     return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
                 }
-
                 var token = await _userService.Authenticate(body.Email, body.Password);
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
-
                 var authUser = new AuthenticatedUserModel(user, token);
                 return Ok(authUser);
             }

@@ -11,19 +11,18 @@
     "WebAPI": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
         "JwtSecret": "DoNotUseMeInProduction",
-        "BaseUrl": "http://localhost:3000/"
+        "BaseUrl": "http://localhost:3000/",
+        "ASPNETCORE_ENVIRONMENT": "DevelopmentVS"
       },
       "applicationUrl": "http://localhost:5000/"
     },
-
     "AWS": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production",
         "JwtSecret": "##JWTKEY##",
-        "BaseUrl": "https://swapify.fri.uniza.sk/"
+        "BaseUrl": "https://swapify.fri.uniza.sk/",
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     }
   }

@@ -30,70 +30,41 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using WebAPI.Models.DatabaseModels;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace WebAPI
 {
     public class Startup
     {
         private const string DatabaseName = "SwapifyDB";
-        private const string DatabaseNameDev = "Swapify";
+        private const string DatabaseNameDevVS = "Swapify";
+        private const string EnviromentDevVS = "DevelopmentVS";
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
-        private Mongo2Go.MongoDbRunner _runner;
-        private String _absPathForFixedDB;
-        private readonly string SwapifyCorsOrigins = "_swapifyCorsOrigins";
+        private Mongo2Go.MongoDbRunner _runner;                
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
-            Environment = environment;
+            Environment = environment;            
             DbRegistration.Init();
             _logger = loggerFactory.CreateLogger<Startup>();
-            _absPathForFixedDB = Path.GetFullPath("..\\Tests\\FixedDB");
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
-
-            if (Environment.IsDevelopment())
+            if (Environment.IsEnvironment(EnviromentDevVS))
             {
                 _logger.LogInformation("Starting Mongo2Go");
                 _runner = Mongo2Go.MongoDbRunner.StartForDebugging();
-                MongoClientSettings settings = new MongoClientSettings();
-                settings.GuidRepresentation = GuidRepresentation.Standard;
-
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDev));
-
-                services.AddCors(options =>
+                MongoClientSettings settings = new MongoClientSettings
                 {
-                    options.AddPolicy("SwapifyCorsPolicy",
-                    builder =>
-                    {
-                        builder.WithOrigins("https://swapify.fri.uniza.sk",
-                                            "http://swapify.fri.uniza.sk",
-                                            "https://*swapify.fri.uniza.sk",
-                                            "http://*swapify.fri.uniza.sk",                                            
-                                            "http://localhost:3000",                                            
-                                            "https://localhost:3000")
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                    });
-
-                    options.AddPolicy("AllowCredentials",
-                    builder =>
-                    {
-                        builder.WithOrigins("https://swapify.fri.uniza.sk",
-                                            "http://swapify.fri.uniza.sk",
-                                            "https://*swapify.fri.uniza.sk",                                                                        
-                                            "http://*swapify.fri.uniza.sk",
-                                            "http://localhost:3000",                                                                                                                                   
-                                            "https://localhost:3000")
-                               .AllowCredentials();
-                    });
-                });
+                    GuidRepresentation = GuidRepresentation.Standard
+                };
+                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDevVS));                
             }
             else
             {
@@ -103,16 +74,17 @@ namespace WebAPI
                     Server = new MongoServerAddress("mongodb", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
                 };
-
                 services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
-                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
-
+                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);                
+            }
+            if (Environment.IsProduction())
+            {
                 services.AddCors(options =>
                 {
                     options.AddPolicy("SwapifyCorsPolicy",
                     builder =>
                     {
-                        builder.WithOrigins("https://swapify.fri.uniza.sk",                                        
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",
                                             "http://swapify.fri.uniza.sk",
                                             "https://*swapify.fri.uniza.sk",
                                             "http://*swapify.fri.uniza.sk")
@@ -120,23 +92,44 @@ namespace WebAPI
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
-
                     options.AddPolicy("AllowCredentials",
                     builder =>
                     {
-                        builder.WithOrigins("https://swapify.fri.uniza.sk",                                            
+                        builder.WithOrigins("https://swapify.fri.uniza.sk",
                                             "http://swapify.fri.uniza.sk",
                                             "https://*swapify.fri.uniza.sk",
                                             "http://*swapify.fri.uniza.sk")
                                .AllowCredentials();
                     });
                 });
-            }
-
-
+            } else
+            {
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("SwapifyCorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost",
+                                            "https://localhost",
+                                            "http://localhost:3000",
+                                            "https://localhost:3000")
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+                    options.AddPolicy("AllowCredentials",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost",
+                                            "https://localhost",
+                                            "http://localhost:3000",
+                                            "https://localhost:3000")
+                               .AllowCredentials();
+                    });
+                });
+            }            
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
                 Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
-
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
@@ -144,12 +137,8 @@ namespace WebAPI
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<INotificationService, NotificationService>();
-
-            
-
-            services.AddControllersWithViews();
-
+            services.AddSingleton<INotificationService, NotificationService>();            
+            services.AddControllersWithViews().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Path).Assembly));
             // In production, the React files will be served from this directory
             if (Environment.IsProduction())
             {
@@ -160,42 +149,33 @@ namespace WebAPI
                     configuration.RootPath = "wwwroot";
                 });
             }
-
             LoadAndValidateSettings(services);
             ConfigureAuthorization(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-
-                CreateDbSeedAsync(app.ApplicationServices);
-            }
-            else
+        {            
+            if (env.IsProduction())
             {
                 app.UseExceptionHandler("/Error");
-
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseSpaStaticFiles();
-
                 CreateDbSeedAsyncProduction(app.ApplicationServices);
             }
-
+            else
+            {
+                app.UseDeveloperExceptionPage();                
+                CreateDbSeedAsync(app.ApplicationServices);
+            }
             app.UseCors("SwapifyCorsPolicy");
             app.UseCors("AllowCredentials");
-
             // Serve index.html and static resources from wwwroot/
-            app.UseDefaultFiles();
-            //app.UseHttpsRedirection(); // redirects to https when user puts url in browser, we don't have this now
+            app.UseDefaultFiles();            
             app.UseStaticFiles();
-            app.UseRouting();
-
+            app.UseRouting();            
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -203,15 +183,11 @@ namespace WebAPI
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapControllers();
             });
-
-
-
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
                 spa.Options.SourcePath = "wwwroot";
-
-                if (env.IsDevelopment())
+                if (env.IsEnvironment(EnviromentDevVS))
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
@@ -222,7 +198,6 @@ namespace WebAPI
         {
             _logger.LogInformation("Validating settings");
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
-
             var mailSettings = Configuration.GetSection("MailingSettings");
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
@@ -238,14 +213,12 @@ namespace WebAPI
             var ldapSettings = Configuration.GetSection("LdapSettings");
             if (ldapSettings.Get<LdapSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(LdapSettings)} configuration section.");
-
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
             services.Configure<RecaptchaSettings>(recaptchaSettings);
             services.Configure<LdapSettings>(ldapSettings);
-
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
@@ -258,7 +231,6 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<RecaptchaSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<LdapSettings>>().Value);
-
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
 
@@ -297,12 +269,12 @@ namespace WebAPI
         {
             _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
-            if (Environment.IsDevelopment())
+            if (Environment.IsEnvironment(EnviromentDevVS))
             {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = _runner.ConnectionString + DatabaseNameDev,
-                    DatabaseName = DatabaseNameDev
+                    ConnectionString = _runner.ConnectionString + DatabaseNameDevVS,
+                    DatabaseName = DatabaseNameDevVS
                 };
             }
             else
@@ -320,15 +292,11 @@ namespace WebAPI
                 options.Password.RequireNonAlphanumeric = (bool)settings.RequireNonAlphanumeric;
                 options.Password.RequireUppercase = (bool)settings.RequireUppercase;
                 options.Password.RequireLowercase = (bool)settings.RequireLowercase;
-
                 options.SignIn.RequireConfirmedEmail = (bool)settings.RequireConfirmedEmail;
-
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)settings.DefaultLockoutTimeSpan);
                 options.Lockout.MaxFailedAccessAttempts = (int)settings.MaxFailedAccessAttempts;
-
                 options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
             };
-
             return configuration;
         }
 
@@ -344,18 +312,19 @@ namespace WebAPI
         {
             _logger.LogInformation("Creating DB seed");
             try
-            {
-                _logger.LogInformation("Creating testing user");
+            {                
+                _logger.LogInformation("Creating users");
                 await DbSeed.CreateTestingUserAsync(serviceProvider);
-                _logger.LogInformation("Oleg created");
+                _logger.LogInformation("Users created");
                 _logger.LogInformation("Creating courses");
-                DbSeed.CreateTestingCourses(serviceProvider);
-                _logger.LogInformation("Courses created");
+                await DbSeed.LoadTestingCoursesAsync(serviceProvider);                                
+                _logger.LogInformation("Courses created");                
+                _logger.LogInformation("Creating exchanges");
                 await DbSeed.CreateTestingExchangesAsync(serviceProvider);
-                _logger.LogInformation("Testing exchanges created.");
+                _logger.LogInformation("Exchanges created.");
+                _logger.LogInformation("Creating notifications");
                 await DbSeed.CreateTestingNotifications(serviceProvider);
-                _logger.LogInformation("Testing notifications created.");
-                DbSeed.ImportTestDb(_runner, _absPathForFixedDB);
+                _logger.LogInformation("Notifications created.");
             }
             catch (Exception e)
             {
@@ -369,7 +338,7 @@ namespace WebAPI
             try
             {
                 _logger.LogInformation("Creating courses");
-                DbSeed.CreateTestingCourses(serviceProvider); //its not necessary to call this when database is already loaded
+                await DbSeed.LoadTestingCoursesAsync(serviceProvider); //its not necessary to call this when database is already loaded
                 _logger.LogInformation("Courses created");
             }
             catch (Exception e)
