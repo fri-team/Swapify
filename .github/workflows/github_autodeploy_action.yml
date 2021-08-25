@@ -20,27 +20,21 @@ jobs:
    - name: Replace frontend recaptcha key
      uses: jacobtomlinson/gha-find-replace@master
      with:
-        find: "##RECAPTCHA_FRONT_END_KEY##"
+        find: "6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
         replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
         include: "WebApp/" #searches only WebApp directory
    - name: Replace backend recaptcha key
      uses: jacobtomlinson/gha-find-replace@master
      with:
-        find: "##RECAPTCHA_BACK_END_KEY##"
+        find: "6LeJhgIaAAAAANEP4LvIQo25l4AReIwyWnfq0VXX"
         replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
         include: "appsettings.json" #finds and replaces only given file
    - name: Replace SMTP SERVER
      uses: jacobtomlinson/gha-find-replace@master
      with:
-        find: "##SMTP_SERVER##"
+        find: "smtp_server@email.toberemoved.com"
         replace: "${{ secrets.SMTP_SERVER }}"
-        include: "appsettings.json"
-   - name: Replace SMTP PORT
-     uses: jacobtomlinson/gha-find-replace@master
-     with:
-        find: "##SMTP_PORT##"
-        replace: "${{ secrets.SMTP_PORT }}"
-        include: "appsettings.json"
+        include: "appsettings.json"  
    - name: Replace MAIL USERNAME
      uses: jacobtomlinson/gha-find-replace@master
      with:
@@ -50,7 +44,7 @@ jobs:
    - name: Replace SENDER EMAIL
      uses: jacobtomlinson/gha-find-replace@master
      with:
-        find: "##SENDER_EMAIL##"
+        find: "sender.toberemoved@email.com"
         replace: "${{ secrets.SENDER_EMAIL }}"
         include: "appsettings.json"
    - name: Replace MAIL PASSWORD

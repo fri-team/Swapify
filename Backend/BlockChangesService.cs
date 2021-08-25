@@ -46,7 +46,7 @@ namespace FRITeam.Swapify.Backend
             BlockChangeRequest a = null;
             if (request.Status == ExchangeStatus.WaitingForExchange)
             {
-                a = _blockChangesCollection.FindOneAndDelete(
+                a = await _blockChangesCollection.FindOneAndDeleteAsync(
                     x => x.StudentId == request.StudentId &&
                          x.BlockFrom.CourseId == request.BlockFrom.CourseId &&
                          x.BlockFrom.StartHour == request.BlockFrom.StartHour &&

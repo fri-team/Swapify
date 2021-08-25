@@ -10,10 +10,8 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Entities.Notifications;
-using System.Text;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {
@@ -27,14 +25,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
         private static readonly Guid OlegStudent3Guid = Guid.NewGuid();
         private static readonly Guid NikitaStudentGuid = Guid.NewGuid();
-
+        
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var usersCollection = dbService.GetCollection<User>("users");            
-
             string email = "oleg@swapify.com";
-            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            User oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             if (oleg == null)
             {
                 User user = new User
@@ -50,15 +47,15 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     SecurityStamp = OlegGuid.ToString("D"),
                     Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid, OlegGuid)
                 };
-                
+
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                await usersCollection.InsertOneAsync(user);
             }
 
             email = "oleg2@swapify.com";
-            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             if (oleg == null)
             {
                 User user = new User
@@ -78,11 +75,11 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                await usersCollection.InsertOneAsync(user);
             }
 
             email = "oleg3@swapify.com";
-            oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             if (oleg == null)
             {
                 User user = new User
@@ -102,11 +99,11 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                await usersCollection.InsertOneAsync(user);
             }
 
             email = "nikita@swapify.com";
-            User nikita = usersCollection.Find(x => x.Email == email).SingleOrDefault();
+            User nikita = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             if (nikita == null)
             {
                 User user = new User
@@ -126,19 +123,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 var password = new PasswordHasher<User>();
                 var hashed = password.HashPassword(user, "Heslo123");
                 user.PasswordHash = hashed;
-                usersCollection.InsertOne(user);
+                await usersCollection.InsertOneAsync(user);
             }
-        }
-
+        }       
         public static async Task CreateTestingExchangesAsync(IServiceProvider serviceProvider)
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();            
             var blockExchangeCollection = dbService.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
             var usersCollection = dbService.GetCollection<User>("users");
-
             string email = "oleg@swapify.com";
-            User oleg = usersCollection.Find(x => x.Email == email).SingleOrDefault();
-
+            var oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             var courseService = serviceProvider.GetRequiredService<ICourseService>();
             var course2 = await courseService.FindByNameAsync("multimediálne informačné systémy");
 
@@ -161,19 +155,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
                         Day = Day.Friday,
                         StartHour = 15
                     }
-                });                
+                });
             }
-        }
-
+        }        
         public static async Task CreateTestingNotifications(IServiceProvider serviceProvider)
-        {
-            var db = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var notificationsCollection = db.GetCollection<Notification>(nameof(Notification));
-
+        {            
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();            
+            var notificationsCollection = dbService.GetCollection<Notification>(nameof(Notification));
             // insert testing notification only if notifications collection is empty
             if (notificationsCollection.CountDocuments(notification => true) > 0)
                 return;
-
             var notifications = new List<Notification>
             {
                 new SimpleMessageNotification()
@@ -213,36 +204,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     Read = true
                 }
             };
-
             await notificationsCollection.InsertManyAsync(notifications);
-        }
+        }        
 
-        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid), Guid userId = default(Guid))
+        public static async Task LoadTestingCoursesAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var studentCollection = dbService.GetCollection<Student>(nameof(Student));
-
-            Student student = new Student
-            {
-                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
-                Timetable = new Timetable(),
-                PersonalNumber = null,
-                UserId = userId
-            };
-
-            studentCollection.InsertOne(student);
-            return student;
-        }
-
-        public static void CreateTestingCourses(IServiceProvider serviceProvider)
-        {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var courseCollection = dbService.GetCollection<Course>(nameof(Course));
-            
-            var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();
-            var json = File.ReadAllText(path.Value.CoursesJsonPath);
+            var courseCollection = dbService.GetCollection<Course>(nameof(Course));            
+            var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();            
+            var json = await File.ReadAllTextAsync(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
-
             foreach (var crs in courses)
             {
                 Course course = new Course()
@@ -254,23 +225,33 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     YearOfStudy = crs.YearOfStudy,
                     StudyType = crs.StudyType
                 };
-
-                Course c = courseCollection.Find(x => x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType).SingleOrDefault();
-
-                if (c == null)
-                {
-                    courseCollection.InsertOne(course);
-                }
-            }
+                Course c = await courseCollection.Find(x => x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType).SingleOrDefaultAsync();
+                if (c != null) continue;                
+                await courseCollection.InsertOneAsync(course);                
+            }            
         }
 
-        public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
+        //public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
+        //{
+        //    paRunner.Import("Swapify", "BlockChangeRequest", paPath + Path.DirectorySeparatorChar + "BlockChangeRequest.json", true);
+        //    paRunner.Import("Swapify", "Course", paPath + Path.DirectorySeparatorChar + "Course.json", true);
+        //    paRunner.Import("Swapify", "Notification", paPath + Path.DirectorySeparatorChar + "Notification.json", true);
+        //    paRunner.Import("Swapify", "Student", paPath + Path.DirectorySeparatorChar + "Student.json", true);
+        //    paRunner.Import("Swapify", "users", paPath + Path.DirectorySeparatorChar + "users.json", true);
+        //}      
+        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid), Guid userId = default(Guid))
         {
-            paRunner.Import("Swapify", "BlockChangeRequest", paPath + "\\BlockChangeRequest.json", true);
-            paRunner.Import("Swapify", "Course", paPath + "\\Course.json", true);
-            paRunner.Import("Swapify", "Notification", paPath + "\\Notification.json", true);
-            paRunner.Import("Swapify", "Student", paPath + "\\Student.json", true);
-            paRunner.Import("Swapify", "users", paPath + "\\users.json", true);
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
+            var studentCollection = dbService.GetCollection<Student>(nameof(Student));
+            Student student = new Student
+            {
+                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Timetable = new Timetable(),
+                PersonalNumber = null,
+                UserId = userId
+            };
+            await studentCollection.InsertOneAsync(student);
+            return student;
         }
     }
 }

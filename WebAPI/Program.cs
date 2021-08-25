@@ -19,7 +19,6 @@ namespace WebAPI
                 environment = "Production";
             }
             NLog.Logger logger = NLog.LogManager.LoadConfiguration($"nlog.{environment}.config").GetCurrentClassLogger();
-
             logger.Info($"Application starting in {environment} environment");
             try
             {

@@ -329,3 +329,8 @@ logs/
 
 # Include SonarScanner files
 !SonarQube/**
+
+
+#Ignore temporary db and logs
+data/
+logs/
