@@ -14,48 +14,48 @@ jobs:
   steps:
    - uses: actions/checkout@v2
    - name: Replace jwt private key #FIND AND REPLACE, by default searches all files
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "##JWTKEY##" #STRING TO FIND
         replace: "${{ secrets.JWT_SECRET }}" #STRING TO REPLACE WITH
    - name: Replace frontend recaptcha key
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
         replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
-        include: "WebApp/" #searches only WebApp directory
+        #include: "WebApp/**" #searches only WebApp directory
    - name: Replace backend recaptcha key
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "6LeJhgIaAAAAANEP4LvIQo25l4AReIwyWnfq0VXX"
         replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
         include: "appsettings.json" #finds and replaces only given file
    - name: Replace SMTP SERVER
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "smtp_server@email.toberemoved.com"
         replace: "${{ secrets.SMTP_SERVER }}"
         include: "appsettings.json"  
    - name: Replace MAIL USERNAME
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "##MAIL_USERNAME##"
         replace: "${{ secrets.MAIL_USERNAME }}"
         include: "appsettings.json"
    - name: Replace SENDER EMAIL
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "sender.toberemoved@email.com"
         replace: "${{ secrets.SENDER_EMAIL }}"
         include: "appsettings.json"
    - name: Replace MAIL PASSWORD
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "##MAIL_PASSWORD##"
         replace: "${{ secrets.MAIL_PASSWORD }}"
         include: "appsettings.json"
    - name: Replace FEEDBACK MAIL
-     uses: jacobtomlinson/gha-find-replace@master
+     uses: jacobtomlinson/gha-find-replace@v2
      with:
         find: "##FEEDBACK_MAIL##"
         replace: "${{ secrets.FEEDBACK_MAIL }}"
