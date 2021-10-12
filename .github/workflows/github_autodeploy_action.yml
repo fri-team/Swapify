@@ -3,6 +3,7 @@ on:
  push:
   branches:
    - develop  
+   - 492_recaptcha
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
