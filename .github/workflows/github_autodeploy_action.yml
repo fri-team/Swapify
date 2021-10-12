@@ -23,7 +23,7 @@ jobs:
      with:
         find: "6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
         replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
-        #include: "WebApp/**" #searches only WebApp directory
+        include: "WebApp/**" #searches only WebApp directory
    - name: Replace backend recaptcha key
      uses: jacobtomlinson/gha-find-replace@v2
      with:
