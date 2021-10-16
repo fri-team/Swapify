@@ -3,6 +3,7 @@ on:
  push:
   branches:
    - develop
+   - "#494_subjects_not_loaded"
 
 env:
  ASPNETCORE_ENVIRONMENT: Production

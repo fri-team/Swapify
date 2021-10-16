@@ -106,17 +106,10 @@ namespace WebAPI.Controllers
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
-            if (student.PersonalNumber != null && student.PersonalNumber.Equals(body.PersonalNumber))
-            {
-                return Ok(student.Timetable);
-            }
-            else
-            {
-                student.PersonalNumber = body.PersonalNumber;
-                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
-                await _userService.UpdateUserAsync(user);
-                return Ok(student.Timetable);
-            }
+            student.PersonalNumber = body.PersonalNumber;
+            await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+            await _userService.UpdateUserAsync(user);
+            return Ok(student.Timetable);
         }
 
         [HttpGet("course/getCoursesAutoComplete/{courseName}/{studentId}")]
