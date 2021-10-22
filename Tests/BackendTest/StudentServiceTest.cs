@@ -109,7 +109,7 @@ namespace BackendTest
             Block bl2 = new Block { Room = "room2" };
             Block bl3 = new Block { Room = "room3" };
 
-            st.Timetable = new Timetable();
+            st.Timetable = new Timetable(Semester.GetSemester());
             st.Timetable.AddNewBlock(bl1);
             st.Timetable.AddNewBlock(bl2);
             await stSer.AddAsync(st);

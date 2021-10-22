@@ -20,15 +20,22 @@ namespace WebAPI.Controllers
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
-        private readonly ICourseService _courseService;        
-        public TimetableController(ILogger<TimetableController> logger, ISchoolScheduleProxy schoolScheduleProxy,
-            IStudentService studentService, IUserService userService, ICourseService courseService)
+        private readonly ICourseService _courseService;
+        private readonly IBlockChangesService _blockChangesService;
+        public TimetableController(ILogger<TimetableController> logger,
+            ISchoolScheduleProxy schoolScheduleProxy,
+            IStudentService studentService,
+            IUserService userService,
+            ICourseService courseService,
+            IBlockChangesService blockChangesService
+            )
         {
             _logger = logger;
             _schoolScheduleProxy = schoolScheduleProxy;
             _studentService = studentService;
             _userService = userService;
             _courseService = courseService;
+            _blockChangesService = blockChangesService;
         }
 
         [HttpPost("initializeTimetableForTestUsers")]
@@ -88,7 +95,6 @@ namespace WebAPI.Controllers
             }
             var timetable = _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
             if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
-
             FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
             Student student = user.Student;
             if (student == null)
@@ -106,8 +112,13 @@ namespace WebAPI.Controllers
                 await _userService.UpdateUserAsync(user);
                 return Ok(student.Timetable);
             }
-            student.PersonalNumber = body.PersonalNumber;
+            student.PersonalNumber = body.PersonalNumber;            
             await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+            var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
+            foreach (var item in requests)
+            {
+                await _blockChangesService.CancelExchangeRequest(item);
+            }
             await _userService.UpdateUserAsync(user);
             return Ok(student.Timetable);
         }
@@ -117,7 +128,6 @@ namespace WebAPI.Controllers
         {
             Guid.TryParse(studentId, out Guid studentGuid);
             var _student = await _studentService.FindByIdAsync(studentGuid);
-
             return Ok(_courseService.FindByStartName(courseName, _student != null ? _student.PersonalNumber : "5"));
         }
 

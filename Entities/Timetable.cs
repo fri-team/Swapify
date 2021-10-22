@@ -8,27 +8,28 @@ namespace FRITeam.Swapify.Entities
 {
     public class Timetable : BaseEntity
     {
-        private List<Block> _blocks;
+        public Semester Semester { get; private set; }
 
+        private List<Block> _blocks;       
         public virtual IList<Block> AllBlocks
         {
             get => _blocks.AsReadOnly();
         }
 
-        public Timetable()
+        public Timetable(Semester semester)
         {
             _blocks = new List<Block>();
+            Semester = semester;
         }
 
         public Timetable Clone()
         {
-            var newTimetable = new Timetable();
+            var newTimetable = new Timetable(Semester);
             foreach (var block in _blocks)
             {
                 block.BlockId = Guid.NewGuid();
                 newTimetable.AddNewBlock(block.Clone());
             }
-
             return newTimetable;
         }
 
@@ -108,6 +109,16 @@ namespace FRITeam.Swapify.Entities
         public bool IsSubjectPresentInTimetable(Block bl)
         {
             return _blocks.Any(x => x.SubjectIsAlreadyPresent(bl));
+        }
+
+        public bool IsOutDated()
+        {
+            Semester s = Semester.GetSemester();
+            if (s != null)
+            {
+                return !s.Equals(Semester);
+            }
+            return false;
         }
 
     }

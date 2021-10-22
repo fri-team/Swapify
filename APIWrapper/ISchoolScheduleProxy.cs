@@ -9,30 +9,30 @@ namespace FRITeam.Swapify.APIWrapper
         /// Return schedule for whole week by student number
         /// </summary>
         /// <param name="personalNumber">student number</param>
-        IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber);
+        ScheduleTimetable GetByPersonalNumber(string personalNumber);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number
         /// </summary>
         /// <param name="teacherNumber">teacher unique number</param>
-        IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber);
+        ScheduleTimetable GetByTeacherName(string teacherNumber);
 
         /// <summary>
         /// Return schedule for whole week by room number
         /// </summary>
         /// <param name="roomNumber">room number</param>
-        IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber);
+        ScheduleTimetable GetByRoomNumber(string roomNumber);
 
         /// <summary>
         /// Return schedule for whole week by subject code
         /// </summary>
         /// <param name="subjectCode">subject code</param>
-        IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType);
+        ScheduleTimetable GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType);
 
         /// <summary>
         /// Return schedule for whole week from file for test purposes
         /// </summary>
         /// <param name="fileName">file name</param>
-        IEnumerable<ScheduleHourContent> GetFromJsonFile(string fileName);
+        ScheduleTimetable GetFromJsonFile(string fileName);
     }
 }

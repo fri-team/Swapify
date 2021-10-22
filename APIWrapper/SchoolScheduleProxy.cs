@@ -1,4 +1,5 @@
 using FRITeam.Swapify.APIWrapper.Objects;
+using FRITeam.Swapify.Entities;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -13,43 +14,57 @@ namespace FRITeam.Swapify.APIWrapper
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public IEnumerable<ScheduleHourContent> GetByPersonalNumber(string personalNumber)
+        public ScheduleTimetable GetByPersonalNumber(string personalNumber)
         {
-            string semester = GetCurrentSemesterShortCut();
-            return CallScheduleContentApi(5, personalNumber + semester);
+            Semester semester = Semester.GetSemester();
+            return CallScheduleContentApi(5, personalNumber + FormatSemesterForApi(semester), semester);
         }
 
-        public IEnumerable<ScheduleHourContent> GetByTeacherName(string teacherNumber)
+        public ScheduleTimetable GetByTeacherName(string teacherNumber)
         {
-            return CallScheduleContentApi(1, teacherNumber);
+            return CallScheduleContentApi(1, teacherNumber, Semester.GetSemester());
         }
 
-        public IEnumerable<ScheduleHourContent> GetByRoomNumber(string roomNumber)
+        public ScheduleTimetable GetByRoomNumber(string roomNumber)
         {
-            return CallScheduleContentApi(3, roomNumber);
+            return CallScheduleContentApi(3, roomNumber, Semester.GetSemester());
         }
 
-        public IEnumerable<ScheduleHourContent> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
+        public ScheduleTimetable GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
         {
-            char numStudyType = studyType.Contains("bak") ? '2' : studyType.Contains("inž") ? '1' : studyType.Contains("dokt") ? '3' : ' ';
-
-            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy + GetCurrentSemesterShortCut();
-            return CallScheduleContentApi(4, subjectCode + addition);
+            char numStudyType;
+            if (studyType.Contains("bak"))
+            {
+                numStudyType = '2';
+            } else if (studyType.Contains("inž"))
+            {
+                numStudyType = '1';
+            } else if (studyType.Contains("dokt"))
+            {
+                numStudyType = '3';
+            } else
+            {
+                numStudyType = ' ';
+            }             
+            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy + FormatSemesterForApi(Semester.GetSemester());
+            return CallScheduleContentApi(4, subjectCode + addition, Semester.GetSemester());
         }
 
-        public IEnumerable<ScheduleHourContent> GetFromJsonFile(string fileName)
+        public ScheduleTimetable GetFromJsonFile(string fileName)
         {
             var myJson = "";
-
             using (StreamReader file = File.OpenText($@"..\Tests\{fileName}"))
             {
                 myJson = file.ReadToEnd();
             }
-
-            return ResponseParser.ParseResponse(myJson);
+            return new ScheduleTimetable()
+            {
+                ScheduleHourContents = ResponseParser.ParseResponse(myJson),
+                Semester = Semester.GetSemester()
+            };
         }
 
-        private IEnumerable<ScheduleHourContent> CallScheduleContentApi(int type, string requestContent)
+        private ScheduleTimetable CallScheduleContentApi(int type, string requestContent, Semester semester)
         {
             string address =  $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
             var myResponse = "";
@@ -72,31 +87,19 @@ namespace FRITeam.Swapify.APIWrapper
                 _logger.Error(ex);
                 throw;
             }
-            return ResponseParser.ParseResponse(myResponse);
-        }
-
-        private string GetCurrentSemesterShortCut()
+            return new ScheduleTimetable()
             {
-            DateTime localDate = DateTime.Now;
-            DateTime winterSemesterStart = new DateTime(localDate.Year, 9, 1); //start of winter semester 1.9.
-            DateTime endOfTheYear = new DateTime(localDate.Year, 12, 31, 23,59,59); //end of the year
-            DateTime newYear = new DateTime(localDate.Year, 1, 1); //end of the year
-            DateTime winterSemesterEnd = new DateTime(localDate.Year, 2, 15); //end of winter semester and start of summer semester 15.2.
-            DateTime summerSemesterEnd = new DateTime(localDate.Year, 7, 1); //end of summer semester 1.7.
-
-            //if current semester is winter semester <1.9.; 31.12.>
-            if (localDate.CompareTo(winterSemesterStart) != -1 && localDate.CompareTo(endOfTheYear) == -1)
-                return $"&r={localDate.Year}&s=Z";
-
-            //if current semester is winter semester <1.1.; 15.2.)
-            if (localDate.CompareTo(newYear) != -1 && localDate.CompareTo(winterSemesterEnd) == -1)
-                return $"&r={localDate.Year - 1}&s=Z";
-
-            //if current semester is summer semester <15.2.; 1.7.)
-            if (localDate.CompareTo(winterSemesterEnd) != -1 && localDate.CompareTo(summerSemesterEnd) == -1)
-                return $"&r={localDate.Year - 1}&s=L";
-
-            return "";
+                ScheduleHourContents = ResponseParser.ParseResponse(myResponse),
+                Semester = semester
+            };
+        }        
+        private string FormatSemesterForApi(Semester semester)
+        {
+            if (semester == null)
+            {
+                return string.Empty;
+            }
+            return $"&r={semester.Year}&s={(char)semester.SemesterValue}";
         }
     }
 

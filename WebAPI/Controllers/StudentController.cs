@@ -3,12 +3,13 @@ using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Entities.Enums;
 using WebAPI.Models.UserModels;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
+using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.Backend.Converter;
 
 namespace WebAPI.Controllers
 {
@@ -20,13 +21,22 @@ namespace WebAPI.Controllers
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
+        private readonly ISchoolScheduleProxy _schoolScheduleProxy;
+        private readonly IBlockChangesService _blockChangesService;
 
-        public StudentController(ILogger<TimetableController> logger, IStudentService studentService, IUserService userService, ICourseService courseService)
+        public StudentController(ILogger<TimetableController> logger,
+            IStudentService studentService,
+            IUserService userService,
+            ICourseService courseService,
+            ISchoolScheduleProxy schoolScheduleProxy,
+            IBlockChangesService blockChangesService)
         {
             _logger = logger;
             _studentService = studentService;
             _userService = userService;
             _courseService = courseService;
+            _schoolScheduleProxy = schoolScheduleProxy;
+            _blockChangesService = blockChangesService;
         }
 
 
@@ -35,33 +45,41 @@ namespace WebAPI.Controllers
         {
             _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
             User user = await _userService.GetUserByEmailAsync(userEmail);
-
             if (user.Student == null)
             {
                 return Ok(new Timetable());
             }
-
             string studentId = user.Student.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
                 return ErrorResponse($"Student id: {studentId} is not valid GUID.");
             }
-
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {             
                 return ErrorResponse($"Student with id: {studentId} does not exist.");
             }
-
             if (student.Timetable == null)
             {
                 return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
             }
-
+            if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
+            {
+                var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
+                await _studentService.UpdateStudentTimetableAsync(student,
+                    await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
+                );
+                await _userService.UpdateUserAsync(user);
+                var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
+                foreach (var item in requests)
+                {
+                    await _blockChangesService.CancelExchangeRequest(item);
+                }
+            }
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();
-
             foreach (var block in student.Timetable.AllBlocks)
             {
                 TimetableBlock timetableBlock = new TimetableBlock();
@@ -80,7 +98,6 @@ namespace WebAPI.Controllers
                 Blocks.Add(timetableBlock);
             }
             timetable.Blocks = Blocks;
-
             return Ok(timetable);
         }
 

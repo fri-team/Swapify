@@ -26,9 +26,7 @@ services:
   image: mongo
   container_name: mongodb
   ports:
-   - 27017:27017
-#  volumes:
-#   - ./data:/data/db
+   - 27018:27017
  nginx:
   restart: unless-stopped
   image: nginx

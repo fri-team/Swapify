@@ -32,6 +32,7 @@ namespace BackendTest
         [Fact]
         public void ConvertTest_MergeSameBlocksWithDifferentTeacher()
         {
+            
             var blocks = new List<Block>()
             {
                 new Block()
@@ -151,7 +152,6 @@ namespace BackendTest
                     CourseId = Guid.Empty
                 }
             };
-
             timetable.AllBlocks.Should().BeEquivalentTo(mergedBlocks);            
         }
     }
