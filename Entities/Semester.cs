@@ -26,21 +26,21 @@ namespace FRITeam.Swapify.Entities
                 return new Semester
                 {
                     Year = localDate.Year,
-                    SemesterValue = Semester.SemesterShortcut.Winter
+                    SemesterValue = SemesterShortcut.Winter
                 };
             //if current semester is winter semester <1.1.; 15.2.)
             if (localDate.CompareTo(newYear) != -1 && localDate.CompareTo(winterSemesterEnd) == -1)
                 return new Semester()
                 {
                     Year = localDate.Year - 1,
-                    SemesterValue = Semester.SemesterShortcut.Winter
+                    SemesterValue = SemesterShortcut.Winter
                 };
             //if current semester is summer semester <15.2.; 1.7.)
             if (localDate.CompareTo(winterSemesterEnd) != -1 && localDate.CompareTo(summerSemesterEnd) == -1)
                 return new Semester()
                 {
                     Year = localDate.Year - 1,
-                    SemesterValue = Semester.SemesterShortcut.Summer
+                    SemesterValue = SemesterShortcut.Summer
                 };
             return null;
         }
@@ -50,6 +50,11 @@ namespace FRITeam.Swapify.Entities
             return obj is Semester semester &&
                    Year == semester.Year &&
                    SemesterValue == semester.SemesterValue;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Year, SemesterValue);
         }
     }
 }
