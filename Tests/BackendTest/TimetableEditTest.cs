@@ -70,7 +70,7 @@ namespace BackendTest
     {
         public static Timetable GetFakeTimetable()
         {
-            Timetable tt = new Timetable();
+            Timetable tt = new Timetable(Semester.GetSemester());
 
             tt.AddNewBlock(new Block
             {

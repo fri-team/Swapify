@@ -101,11 +101,10 @@ namespace FRITeam.Swapify.Backend
         {
             var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
-            {
-                var timetable = new Timetable();
+            {                
                 course = new Course() {
                     CourseCode = courseCode,
-                    Timetable = timetable,
+                    Timetable = new Timetable(Semester.GetSemester()),
                     LastUpdateOfTimetable = null,
                     CourseName = courseName                    
                 };                
@@ -116,18 +115,14 @@ namespace FRITeam.Swapify.Backend
                 await FindCourseTimetableFromProxy(course);                
                 await AddAsync(course);
             }
-            else
-            {                
-                if (course.Timetable == null || course.LastUpdateOfTimetable == null)
+            else if (IsCourseOutOfDate(course))
+            {                                             
+                if (string.IsNullOrEmpty(courseCode))                    
                 {
-                    course.Timetable = new Timetable();
-                    if (string.IsNullOrEmpty(courseCode))                    
-                    {
-                        course.CourseCode = FindCourseCodeFromProxy(course);
-                    }                
-                    await FindCourseTimetableFromProxy(course);
-                    await UpdateAsync(course);
-                }
+                    course.CourseCode = FindCourseCodeFromProxy(course);
+                }                
+                await FindCourseTimetableFromProxy(course);
+                await UpdateAsync(course);                
             }
             return course;
         }
@@ -137,7 +132,7 @@ namespace FRITeam.Swapify.Backend
             {
                 if (_course.Code.Contains(','))
                 {
-                    course.CourseCode = _course.Code.Substring(0, _course.Code.IndexOf(','));
+                    course.CourseCode = _course.Code.Substring(0, _course.Code.IndexOf(','));                    
                     break;
                 }                
             }
@@ -156,40 +151,39 @@ namespace FRITeam.Swapify.Backend
         }
 
         public async Task<Course> FindCourseTimetableFromProxy(Course course)
-        {                       
-            var isOutDated = false;            
-            if (course.LastUpdateOfTimetable != null)
-            {
-                TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
-                if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) isOutDated = true;
+        {                                       
+            ScheduleTimetable schedule = null;
+            try
+            {               
+                schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode,course.YearOfStudy, course.StudyType);
             }
-            if (course.LastUpdateOfTimetable == null || isOutDated)
+            catch (Exception ex)
             {
-                IEnumerable<ScheduleHourContent> schedule = null;
-                try
-                {               
-                    schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode,course.YearOfStudy, course.StudyType);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
-                }                
-                if (schedule == null)
-                {
-                    _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                    return null;
-                }
-                Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-                course.Timetable = timetable;
-                course.LastUpdateOfTimetable = System.DateTime.Now;
-                await UpdateAsync(course);
+                _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+            }                
+            if (schedule == null)
+            {
+                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
+                return null;
             }
+            Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
+            course.Timetable = timetable;
+            course.LastUpdateOfTimetable = DateTime.Now;
+            await UpdateAsync(course);            
             return course;            
         }
 
         public async Task UpdateAsync(Course course)
         {
             await _courseCollection.ReplaceOneAsync(x => x.Id == course.Id, course);
-        }       
+        }
+
+        private bool IsCourseOutOfDate(Course course)
+        {
+            if (course.Timetable == null || course.LastUpdateOfTimetable == null || course.Timetable.Semester == null) return true;
+            TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
+            if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) return true;                                 
+            return course.Timetable.IsOutDated();
+        }
     }
 }

@@ -246,7 +246,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             Student student = new Student
             {
                 Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
-                Timetable = new Timetable(),
+                Timetable = new Timetable(Semester.GetSemester()),
                 PersonalNumber = null,
                 UserId = userId
             };
