@@ -33,7 +33,11 @@ namespace FRITeam.Swapify.APIWrapper
         public ScheduleTimetable GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
         {
             char numStudyType;
-            if (studyType.Contains("bak"))
+            if (string.IsNullOrEmpty(studyType))
+            {
+                numStudyType = ' ';
+            }
+            else if (studyType.Contains("bak"))
             {
                 numStudyType = '2';
             } else if (studyType.Contains("inž"))
