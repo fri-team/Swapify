@@ -104,7 +104,7 @@ namespace FRITeam.Swapify.Backend
             {                
                 course = new Course() {
                     CourseCode = courseCode,
-                    Timetable = null,
+                    Timetable = new Timetable(Semester.GetSemester()),
                     LastUpdateOfTimetable = null,
                     CourseName = courseName                    
                 };                

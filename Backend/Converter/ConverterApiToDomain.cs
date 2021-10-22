@@ -84,15 +84,13 @@ namespace FRITeam.Swapify.Backend.Converter
                         StartHour = (byte)(firstInGroup.BlockNumber + 6), // block number start 1 but starting hour in school is 7:00
                         Duration = (byte)(group.Last().BlockNumber - firstInGroup.BlockNumber + 1)
                     };
-
                     if (!isTimetableForCourse)
                     {
                         Course course = await courseService.GetOrAddNotExistsCourse(firstInGroup.CourseCode,
-                            firstInGroup.CourseName);                                                
-                        Block courseBlock = course.Timetable.GetBlock(block);
+                            firstInGroup.CourseName);                                              
+                        Block courseBlock = course.Timetable?.GetBlock(block);
                         if (courseBlock != null)
                             block.BlockId = courseBlock.BlockId;
-
                         block.CourseId = course.Id;
                     }
 
