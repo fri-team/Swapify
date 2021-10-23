@@ -219,6 +219,8 @@ namespace WebAPI.Controllers
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+                var confirmToken = await _userService.GenerateEmailConfirmationTokenAsync(user);
+                await _userService.ConfirmEmailAsync(user, confirmToken);
                 var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
                 auth.FirstTimePN = ldapInformations.PersonalNumber;

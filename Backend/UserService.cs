@@ -19,7 +19,6 @@ namespace FRITeam.Swapify.Backend
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly LdapSettings _ldapSettings;
-        private readonly string DEFAULT_LDAP_PASSWORD = "Heslo123";
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
             SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings)
@@ -144,16 +143,17 @@ namespace FRITeam.Swapify.Backend
         public async Task<bool> AddLdapUser(UserInformations informations)
         {
             string[] names = informations.Name.Split(" ");
-            User user = new User(informations.Email, names[0], names[1]);
-            user.EmailConfirmed = true;
-            user.IsLdapUser = true;
-            var addResult = await AddUserAsync(user, DEFAULT_LDAP_PASSWORD);
+            User user = new User(informations.Email, names[0], names[1])
+            {
+                IsLdapUser = true
+            };
+            var addResult = await AddUserAsync(user, GetDefaultLdapPassword());
             return addResult.Succeeded;
         }
 
         public string GetDefaultLdapPassword()
         {
-            return DEFAULT_LDAP_PASSWORD;
+            return "Heslo123";
         }
     }
 }
