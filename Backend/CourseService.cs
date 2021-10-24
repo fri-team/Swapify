@@ -152,22 +152,43 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindCourseTimetableFromProxy(Course course)
         {                                       
-            ScheduleTimetable schedule = null;
-            try
-            {               
-                schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode,course.YearOfStudy, course.StudyType);
-            }
-            catch (Exception ex)
+            List<ScheduleTimetable> schedules = new List<ScheduleTimetable>();
+            int years = course.StudyType.Contains("inž") ? 2 : 3;
+            for (int i = 1; i <= years; i++)
             {
-                _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
-            }                
-            if (schedule == null)
-            {
-                _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
-                return null;
+                try
+                {
+                    ScheduleTimetable schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode, i + "", course.StudyType);
+                    if (schedule != null)
+                    {
+                        schedules.Add(schedule);
+                    }
+                } catch (Exception ex)
+                {
+                    _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
+                }
+
+                if (schedules == null)
+                {
+                    _logger.LogError($"Unable to load schedule for subject {course.CourseCode}. Schedule proxy returned null");
+                    return null;
+                }
             }
-            Timetable timetable = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
-            course.Timetable = timetable;
+            course.Timetable = new Timetable(Semester.GetSemester());
+
+            schedules.ForEach(async (schedule) => {
+                Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
+                if (t != null)
+                {
+                    foreach (Block b in t.AllBlocks)
+                    {
+                        if (!course.Timetable.ContainsBlock(b))
+                        {
+                            course.Timetable.AddNewBlock(b);
+                        }
+                    }
+                }
+            });
             course.LastUpdateOfTimetable = DateTime.Now;
             await UpdateAsync(course);            
             return course;            
