@@ -39,7 +39,6 @@ namespace BackendTest
             CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
             SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
 
-
             var timetable = serviceSchedule.GetByPersonalNumber("559841");
             Student student = new Student
             {

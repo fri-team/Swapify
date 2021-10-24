@@ -101,12 +101,13 @@ namespace FRITeam.Swapify.Backend
         {
             var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
-            {                
+            {
                 course = new Course() {
                     CourseCode = courseCode,
                     Timetable = new Timetable(Semester.GetSemester()),
                     LastUpdateOfTimetable = null,
-                    CourseName = courseName                    
+                    CourseName = courseName,
+                    StudyType = getCourseStudyType(courseCode)
                 };                
                 if (string.IsNullOrEmpty(courseCode))
                 {
@@ -205,6 +206,20 @@ namespace FRITeam.Swapify.Backend
             TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
             if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) return true;                                 
             return course.Timetable.IsOutDated();
+        }
+
+        private String getCourseStudyType(String subjectCode)
+        {
+            if (subjectCode[3] == '1')
+            {
+                return "Denné inžinierske štúdium";
+            } else if (subjectCode[3] == '2')
+            {
+                return "Denné bakalárske štúdium";
+            } else
+            {
+                return "Denné doktorandské štúdium";
+            }
         }
     }
 }
