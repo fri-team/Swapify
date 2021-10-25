@@ -104,7 +104,7 @@ namespace FRITeam.Swapify.Backend
             return await _userManager.DeleteAsync(user);
         }
 
-        private JwtSecurityToken GenerateJwtToken(string login)
+        public JwtSecurityToken GenerateJwtToken(string login)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var secret = Encoding.ASCII.GetBytes(_environmentSettings.JwtSecret);

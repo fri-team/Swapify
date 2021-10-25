@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WebAPI.Controllers;
 using WebAPI.Models.UserModels;
 using Xunit;
+using MongoDB.Driver;
 
 namespace BackendTest.UserControllerTests
 {
@@ -42,6 +43,12 @@ namespace BackendTest.UserControllerTests
                 MockUserManager(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, resetPasswordSuccess).Object,
                 MockSignInManager(loginSuccess).Object, _ldapSettings.Object);
+        }
+
+        private StudentService MockStudentService()
+        {
+            IMongoDatabase database = new Mongo2GoFixture().MongoClient.GetDatabase("StudentsDB");
+            return new StudentService(database);
         }
 
         private static Mock<TestUserManager> MockUserManager(bool createUserSuccess, bool findUserByIdSuccess,
@@ -201,7 +208,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -218,7 +226,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(false),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -235,7 +244,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                  MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                  MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                 MockStudentService());
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -252,7 +262,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
 
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
@@ -270,7 +281,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -290,7 +302,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -308,7 +321,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess, confirmEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -329,7 +343,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -346,7 +361,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -366,7 +382,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -386,7 +403,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -407,7 +425,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -433,7 +452,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -458,7 +478,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -475,7 +496,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -495,7 +517,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -519,7 +542,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(false),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -539,7 +563,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -555,7 +580,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -571,7 +597,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -593,7 +620,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess, resetPasswordSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -610,7 +638,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -631,7 +660,8 @@ namespace BackendTest.UserControllerTests
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                 confirmEmailSuccess, emailAlreadyConfirmed),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -648,7 +678,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(false),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -665,7 +696,8 @@ namespace BackendTest.UserControllerTests
             UserController controller = new UserController(_loggerMock.Object,
                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
                 MockEmailService(true),
-                _envSettingsMock.Object);
+                _envSettingsMock.Object,
+                MockStudentService());
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
