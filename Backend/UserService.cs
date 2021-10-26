@@ -145,7 +145,8 @@ namespace FRITeam.Swapify.Backend
             string[] names = informations.Name.Split(" ");
             User user = new User(informations.Email, names[0], names[1])
             {
-                IsLdapUser = true
+                IsLdapUser = true,
+                EmailConfirmed = true
             };
             var addResult = await AddUserAsync(user, GetDefaultLdapPassword());
             return addResult.Succeeded;
