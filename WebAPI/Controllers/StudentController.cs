@@ -56,7 +56,8 @@ namespace WebAPI.Controllers
 
             if (student.Timetable == null)
             {
-                return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
+                _logger.Log(LogLevel.Error, $"Timetable for student with id: {studentId} does not exist.");
+                return Ok(new Timetable());
             }
 
             var timetable = new Timetable();
