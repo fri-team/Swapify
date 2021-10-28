@@ -22,17 +22,15 @@ namespace WebAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
-        private readonly IStudentService _studentService;
         private readonly Uri _baseUrl;
 
         public UserController(ILogger<UserController> logger, IUserService userService, IEmailService emailService,
-            IOptions<EnvironmentSettings> environmentSettings, IStudentService studentService)
+            IOptions<EnvironmentSettings> environmentSettings)
         {
             _logger = logger;
             _userService = userService;
             _emailService = emailService;
             _baseUrl = new Uri(environmentSettings.Value.BaseUrl);
-            _studentService = studentService;
         }
 
         [AllowAnonymous]
@@ -221,15 +219,7 @@ namespace WebAPI.Controllers
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                if (user.Student == null)
-                {
-                    user.Student = new Student
-                    {
-                        UserId = user.Id
-                    };
-                    await _studentService.AddAsync(user.Student);
-                    await _userService.UpdateUserAsync(user);
-                }
+                _userService.TryAddStudent(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email))
                 {
                     FirstTimePN = ldapInformations.PersonalNumber
@@ -238,15 +228,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                if (user.Student == null)
-                {
-                    user.Student = new Student
-                    {
-                        UserId = user.Id
-                    };
-                    await _studentService.AddAsync(user.Student);
-                    await _userService.UpdateUserAsync(user);
-                }
+                _userService.TryAddStudent(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
                 return Ok(auth);
             }
@@ -290,16 +272,8 @@ namespace WebAPI.Controllers
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
 
-                if (user.Student == null)
-                {
-                    user.Student = new Student
-                    {
-                        UserId = user.Id
-                    };
-                    await _studentService.AddAsync(user.Student);
-                    await _userService.UpdateUserAsync(user);
-                }
-
+                if (user.Email != "tester@testovaci.com")
+                    _userService.TryAddStudent(user);
                 token = await _userService.Authenticate(body.Email, body.Password);
                 AuthenticatedUserModel authUser = new AuthenticatedUserModel(user, token);
                 return Ok(authUser);

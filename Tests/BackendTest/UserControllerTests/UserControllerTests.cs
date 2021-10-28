@@ -42,13 +42,7 @@ namespace BackendTest.UserControllerTests
             return new UserService(_envSettingsMock.Object,
                 MockUserManager(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
                     confirmEmailSuccess, emailAlreadyConfirmed, resetPasswordSuccess).Object,
-                MockSignInManager(loginSuccess).Object, _ldapSettings.Object);
-        }
-
-        private StudentService MockStudentService()
-        {
-            IMongoDatabase database = new Mongo2GoFixture().MongoClient.GetDatabase("StudentsDB");
-            return new StudentService(database);
+                MockSignInManager(loginSuccess).Object, _ldapSettings.Object, null);
         }
 
         private static Mock<TestUserManager> MockUserManager(bool createUserSuccess, bool findUserByIdSuccess,
@@ -158,7 +152,7 @@ namespace BackendTest.UserControllerTests
         {
             return new DeleteUserModel
             {
-                Email = "tester@testovaci.com",
+                Email = TesterEmail,
                 Password = "Heslo.123"
             };
         }
@@ -167,7 +161,7 @@ namespace BackendTest.UserControllerTests
         {
             return new LoginModel
             {
-                Email = "tester@testovaci.com",
+                Email = TesterEmail,
                 Password = "Heslo.123",
                 Captcha = "03AGdBq24Cv6W4h249g3x4rzRbtCUkmW-j3kDGPsLhKAywBAoc9CPKnyAvwKqRe54Z195iSv0EsqTkGn1XJE3refW1hOcYYCz56v6K1_brvqEPayV523y9my6RKpyT8vX1g1v5HG8Js1kfnB4y36rI6a15m-fR6Wlha_8cIWFgfPUhnWB3I4PP_GiON4JHQr9zXyHTiCscZ-OoA4YSSypArX-3fjFkDGTzM1_1I_NvBOfyKBIlJ7D8uFrqtiXlH0mMrMoYnbthHjkZ6sHX25CZ-QuZUzYoL_dod-bB_W5KMsr-OIPApgp6Yl0uZnqHej3CfjS4NYl14rLKz4Tfnx5UdNadySTcfz4sFhaVnf_fTFDM7qD5vsFawwGrPoNBuFBi5JZ0HkstY-UT56i8LhhuEgxzlUeAskX45w"
             };
@@ -177,7 +171,7 @@ namespace BackendTest.UserControllerTests
         {
             return new ResetPasswordModel
             {
-                Email = "tester@testovaci.com"
+                Email = TesterEmail
             };
         }
 
@@ -196,7 +190,7 @@ namespace BackendTest.UserControllerTests
         {
             return new SendEmailConfirmTokenAgainModel
             {
-                Email = "tester@testovaci.com"
+                Email = TesterEmail
             };
         }
         #endregion
@@ -204,12 +198,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Register_AddUserIdentityError_BadRequestObject()
         {
-            bool createUserSuccess = false;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess),
+                MockUserService(false),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -220,14 +212,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Register_EmailServiceError_BadRequest()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, true),
                 MockEmailService(false),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -238,14 +226,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Register_RegisterUser_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                 MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
-                 MockEmailService(true),
-                _envSettingsMock.Object,
-                 MockStudentService());
+                MockUserService(true, true, true),
+                MockEmailService(true),
+                _envSettingsMock.Object);
             RegisterModel registerModel = CreateRegisterModel();
 
             var result = await controller.Register(registerModel);
@@ -256,14 +240,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ConfirmEmail_UserNotExists_BadRequest()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = false;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, false, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
 
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
@@ -275,14 +255,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ConfirmEmail_ConfirmEmailIdentityError_BadRequest()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -293,17 +269,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ConfirmEmail_EmailAlreadyConfirmed_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -314,15 +283,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ConfirmEmail_ConfirmSuccess_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess, confirmEmailSuccess),
+                MockUserService(true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ConfirmEmailModel confirmEmailModel = CreateConfirmEmailModel();
 
             var result = await controller.ConfirmEmail(confirmEmailModel);
@@ -333,18 +297,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task DeleteUser_DeleteUserSuccess_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
-            bool loginSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
+                MockUserService(true, true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -355,14 +311,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task DeleteUser_UserNotExists_BadRequestObjectResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = false;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, false),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -373,17 +325,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task DeleteUser_WrongPassword_BadRequestObject()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             var deleteUserModel = CreateDeleteUserModel();
 
             var result = await controller.DeleteUser(deleteUserModel);
@@ -398,13 +343,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Login_UserNotExists_BadRequestObject()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess),
+                MockUserService(true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -419,14 +361,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Login_EmailNotConfirmed_ObjectResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -443,17 +381,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Login_WrongPassword_BadRequestObject()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -468,18 +399,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task Login_LoginSuccess_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
-            bool loginSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess),
+                MockUserService(true, true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             LoginModel loginModel = CreateLoginModel();
 
             var result = await controller.Login(loginModel);
@@ -490,14 +413,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ResetPassword_UserNotExists_BadRequestObject()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = false;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true,false),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -509,16 +428,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ResetPassword_EmailNotConfirmed_BadRequestObject()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess),
+                MockUserService(true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -533,17 +446,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ResetPassword_EmailServiceError_BadRequestResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(false),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -554,17 +460,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task ResetPassword_ResetSucces_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             ResetPasswordModel resetPassModel = CreateResetPasswordModel();
 
             var result = await controller.ResetPassword(resetPassModel);
@@ -575,13 +474,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SetNewPassword_UserNotExists_BadRequest()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = false;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess),
+                MockUserService(true, false),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -592,13 +488,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SetNewPassword_ResetPassError_BadRequestObjectResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess),
+                MockUserService(true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -609,19 +502,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SetNewPassword_ResetPassSuccess_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
-            bool loginSuccess = true;
-            bool resetPasswordSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                    confirmEmailSuccess, emailAlreadyConfirmed, loginSuccess, resetPasswordSuccess),
+                MockUserService(true, true, true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SetNewPasswordModel setNewPassModel = CreateSetNewPasswordModel();
 
             var result = await controller.SetNewPassword(setNewPassModel);
@@ -632,14 +516,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SendEmailConfirmTokenAgain_UserNotExists_BadRequestObjectResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = false;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true,false),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -651,17 +531,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SendEmailConfirmTokenAgain_EmailAlreadyConfirmed_BadRequestObjectResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
-            bool confirmEmailSuccess = true;
-            bool emailAlreadyConfirmed = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess,
-                confirmEmailSuccess, emailAlreadyConfirmed),
+                MockUserService(true, true, true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -672,14 +545,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SendEmailConfirmTokenAgain_EmailServiceError_BadRequestResult()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, true),
                 MockEmailService(false),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);
@@ -690,14 +559,10 @@ namespace BackendTest.UserControllerTests
         [Fact]
         public async Task SendEmailConfirmTokenAgain_EmailSuccess_Ok()
         {
-            bool createUserSuccess = true;
-            bool findUserByIdSuccess = true;
-            bool findUserByEmailSuccess = true;
             UserController controller = new UserController(_loggerMock.Object,
-                MockUserService(createUserSuccess, findUserByIdSuccess, findUserByEmailSuccess),
+                MockUserService(true, true, true),
                 MockEmailService(true),
-                _envSettingsMock.Object,
-                MockStudentService());
+                _envSettingsMock.Object);
             SendEmailConfirmTokenAgainModel sendEmailConfirmTokenModel = CreateSendEmailConfirmTokenAgain();
 
             var result = await controller.SendEmailConfirmTokenAgain(sendEmailConfirmTokenModel);

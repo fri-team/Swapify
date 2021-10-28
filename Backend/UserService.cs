@@ -19,14 +19,16 @@ namespace FRITeam.Swapify.Backend
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly LdapSettings _ldapSettings;
+        private readonly IStudentService _studentService;
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
-            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings)
+            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, IStudentService studentService)
         {
             _environmentSettings = environmentSettings.Value;
             _userManager = userManager;
             _signInManager = signInManager;
             _ldapSettings = ldapSettings.Value;
+            _studentService = studentService;
         }
 
         public async Task<JwtSecurityToken> Authenticate(string login, string password)
@@ -150,6 +152,19 @@ namespace FRITeam.Swapify.Backend
             };
             var addResult = await AddUserAsync(user, GetDefaultLdapPassword());
             return addResult.Succeeded;
+        }
+
+        public async void TryAddStudent(User user)
+        {
+            if (user.Student == null)
+            {
+                user.Student = new Student
+                {
+                    UserId = user.Id
+                };
+                await _studentService.AddAsync(user.Student);
+                await UpdateUserAsync(user);
+            }
         }
 
         public string GetDefaultLdapPassword()
