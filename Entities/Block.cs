@@ -42,24 +42,19 @@ namespace FRITeam.Swapify.Entities
 
         public Block Clone()
         {
-            var newBlock = new Block();
-            newBlock.BlockId = this.BlockId;
-            newBlock.BlockType = this.BlockType;
-            newBlock.CourseId = this.CourseId;
-            newBlock.Day = this.Day;
-            newBlock.Duration = this.Duration;
-            newBlock.Room = this.Room;
-            newBlock.StartHour = this.StartHour;
-            newBlock.Teacher = this.Teacher;
+            var newBlock = new Block
+            {
+                BlockId = this.BlockId,
+                BlockType = this.BlockType,
+                CourseId = this.CourseId,
+                Day = this.Day,
+                Duration = this.Duration,
+                Room = this.Room,
+                StartHour = this.StartHour,
+                Teacher = this.Teacher
+            };
             return newBlock;
-        }
-
-        public override bool Equals(object obj)
-        {
-            Block other = obj as Block;
-            return (IsSameAs(other) && this.CourseId == other.CourseId);
-        }
-
+        }        
         public bool SubjectIsAlreadyPresent(Block b)
         {
             return (this.Day == b?.Day) &&
@@ -68,5 +63,21 @@ namespace FRITeam.Swapify.Entities
                    (this.CourseId == b?.CourseId);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Block block &&
+                   BlockType == block.BlockType &&
+                   CourseId.Equals(block.CourseId) &&
+                   Day == block.Day &&
+                   StartHour == block.StartHour &&
+                   Duration == block.Duration &&
+                   Room == block.Room &&
+                   Teacher == block.Teacher;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(BlockType, CourseId, Day, StartHour, Duration, Room, Teacher);
+        }
     }
 }

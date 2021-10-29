@@ -128,15 +128,12 @@ namespace FRITeam.Swapify.Backend
             return course;
         }
         public string FindCourseCodeFromProxy(Course course)
-        {            
-            foreach (var _course in _courseProxy.GetByCourseName(course.CourseName))
+        {
+            var c = _courseProxy.GetByCourseName(course.CourseName).First(c => c.Code.Contains(','));
+            if (c != null)
             {
-                if (_course.Code.Contains(','))
-                {
-                    course.CourseCode = _course.Code.Substring(0, _course.Code.IndexOf(','));                    
-                    break;
-                }                
-            }
+                course.CourseCode = c.Code.Substring(0, c.Code.IndexOf(','));
+            }            
             return course.CourseCode;
         }
 

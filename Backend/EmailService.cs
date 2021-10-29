@@ -28,8 +28,10 @@ namespace FRITeam.Swapify.Backend
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
             _recaptchaSettings = recaptchaSettings.Value;
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            HttpClientHandler clientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+            };
             _httpClient = new HttpClient(clientHandler);
         }
 
@@ -57,7 +59,7 @@ namespace FRITeam.Swapify.Backend
             {
                 MimeMessage mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress(userName, userEmail));
-                mailMessage.To.Add(new MailboxAddress(_emailSettings.FeedbackEmail));
+                mailMessage.To.Add(MailboxAddress.Parse(_emailSettings.FeedbackEmail));
                 mailMessage.Subject = subject + " (" + userEmail + ")";
                 mailMessage.Body = new TextPart("html")
                 {

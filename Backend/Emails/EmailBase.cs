@@ -23,7 +23,7 @@ namespace FRITeam.Swapify.Backend.Emails
             Logger = loggerFactory.CreateLogger(GetType().FullName);
             OutputDirLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Sender = new MailboxAddress(senderDisplayName, sender);
-            Receiver = new MailboxAddress(receiver);
+            Receiver = MailboxAddress.Parse(receiver);
             BaseUrl = baseUrl;
             BodyBuilder = new BodyBuilder();
         }

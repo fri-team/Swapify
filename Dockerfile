@@ -12,7 +12,7 @@ RUN npm install
 RUN npm run build:CI
 
 # Build .NET Core app
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS dotnet-build
 WORKDIR /src
 # COPY ./ ./
 COPY ./WebAPI/WebAPI.csproj .
@@ -25,7 +25,7 @@ WORKDIR /src/WebAPI
 RUN dotnet publish -c Release -o /app
 
 # Assemble final container
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs

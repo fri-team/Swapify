@@ -7,7 +7,7 @@ Web based application enabling students of [University of Zilina](http://www.uni
 ### Prerequirements
 * Docker
 * Visual Studio
-* ASP.NET Core 3.1
+* ASP.NET 5
 * Visual Studio Code
 * Node.js
 * NPM

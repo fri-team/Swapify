@@ -34,10 +34,10 @@ namespace FRITeam.Swapify.Backend
                         logger.LogDebug("LDAP: LDAP has data for user " + username);
                         userInformations = new UserInformations
                         {
-                            Name = attributeSet.GetAttribute("displayname")?.StringValue ?? null,
-                            Login = attributeSet.GetAttribute("samaccountname")?.StringValue ?? null,
-                            PersonalNumber = attributeSet.GetAttribute("uidnumber")?.StringValue ?? null,
-                            Email = attributeSet.GetAttribute("mail")?.StringValue ?? null,
+                            Name = attributeSet.GetAttribute("displayname")?.StringValue,
+                            Login = attributeSet.GetAttribute("samaccountname")?.StringValue,
+                            PersonalNumber = attributeSet.GetAttribute("uidnumber")?.StringValue,
+                            Email = attributeSet.GetAttribute("mail")?.StringValue,
                         };
                     }
                 }
