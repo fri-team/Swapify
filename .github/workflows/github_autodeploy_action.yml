@@ -82,7 +82,7 @@ jobs:
           chmod 600 ~/.ssh/aws.key
           mkdir filesToCopy
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
-          cp docker-compose.yml filesToCopy/docker-compose.yml
+          cp docker-compose.production.yml filesToCopy/docker-compose.yml
           cp nginx.conf filesToCopy/nginx.conf
           cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh
           cp Dockerfile filesToCopy/Dockerfile

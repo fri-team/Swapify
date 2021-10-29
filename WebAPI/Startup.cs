@@ -140,10 +140,14 @@ namespace WebAPI
             if (Environment.IsProduction())
             {
                 services.AddSpaStaticFiles(configuration =>
-                {
-                    //configuration.RootPath = "/";
-                    //configuration.RootPath = "WebApp/build";
+                {                    
                     configuration.RootPath = "wwwroot";
+                });
+            } else if (Environment.IsDevelopment())
+            {
+                services.AddSpaStaticFiles(configuration =>
+                {                    
+                    configuration.RootPath = "/app/wwwroot";
                 });
             }
             LoadAndValidateSettings(services);
@@ -183,8 +187,14 @@ namespace WebAPI
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
-                spa.Options.SourcePath = "wwwroot";
-                if (env.IsEnvironment(EnviromentDevVS))
+                if (env.IsProduction())
+                {
+                    spa.Options.SourcePath = "wwwroot";
+                } else if (env.IsDevelopment())
+                {
+                    spa.Options.SourcePath = "/app/wwwroot";
+                }                
+                else if (env.IsEnvironment(EnviromentDevVS))
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }

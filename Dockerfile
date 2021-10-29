@@ -1,4 +1,5 @@
 # https://docs.docker.com/develop/develop-images/multistage-build/
+
 # Build React bundle
 FROM node AS react-build
 WORKDIR /app/WebApp
@@ -29,6 +30,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
 WORKDIR /app
 COPY --from=dotnet-build /app .
 RUN mkdir -p /app/logs
-#EXPOSE 5020
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
-# EXPOSE 300
