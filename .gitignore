@@ -333,5 +333,4 @@ logs/
 
 #Ignore temporary db and logs
 data/
-dockerData/
 logs/
