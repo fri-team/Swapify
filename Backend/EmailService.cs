@@ -104,6 +104,7 @@ namespace FRITeam.Swapify.Backend
         {
             using (SmtpClient client = new SmtpClient())
             {
+                _logger.LogInformation($"Sendind email with settings server:{_emailSettings.SmtpServer} port:{_emailSettings.SmtpPort}");
                 client.Connect(_emailSettings.SmtpServer, (int)_emailSettings.SmtpPort, true);
                 client.Authenticate(_emailSettings.Username, _emailSettings.Password);
                 client.Send(message);
