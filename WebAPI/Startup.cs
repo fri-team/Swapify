@@ -33,14 +33,17 @@ using WebAPI.Models.DatabaseModels;
 namespace WebAPI
 {
     public class Startup
-    {
-        private const string DatabaseName = "SwapifyDB";
-        private const string DatabaseNameDevVS = "Swapify";
+    {                
         private const string EnviromentDevVS = "DevelopmentVS";
+        private const string ErrorHandlingPath = "/Error";   
+
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
         private readonly ILogger<Startup> _logger;
-        private Mongo2Go.MongoDbRunner _runner;                
+        private Mongo2Go.MongoDbRunner _runner;
+        private PathSettings _pathSettings;
+        private SwapifyDatabaseSettings _swapifyDbSettings;
+        private IdentitySettings _identitySettings;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
@@ -53,6 +56,7 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
+            LoadAndValidateSettings(services);            
             if (Environment.IsEnvironment(EnviromentDevVS))
             {
                 _logger.LogInformation("Starting Mongo2Go");
@@ -61,7 +65,7 @@ namespace WebAPI
                 {
                     GuidRepresentation = GuidRepresentation.Standard
                 };
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseNameDevVS));                
+                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));                
             }
             else
             {
@@ -71,7 +75,7 @@ namespace WebAPI
                     Server = new MongoServerAddress("mongodb", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
                 };
-                services.AddSingleton(new MongoClient(settings).GetDatabase(DatabaseName));
+                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
                 services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);                
             }
             if (Environment.IsProduction())
@@ -125,8 +129,7 @@ namespace WebAPI
                     });
                 });
             }            
-            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity(
-                Configuration.GetSection("IdentitySettings").Get<IdentitySettings>()));
+            services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity());
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISchoolScheduleProxy, SchoolScheduleProxy>();
@@ -135,37 +138,35 @@ namespace WebAPI
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();            
-            services.AddControllersWithViews();
-            // In production, the React files will be served from this directory
-            if (Environment.IsProduction())
+            services.AddControllersWithViews();            
+            if (!Environment.IsEnvironment(EnviromentDevVS))
             {
                 services.AddSpaStaticFiles(configuration =>
-                {                    
-                    configuration.RootPath = "wwwroot";
+                {
+                    configuration.RootPath = _pathSettings.WwwRootPath;
                 });
-            } else if (Environment.IsDevelopment())
-            {
-                services.AddSpaStaticFiles(configuration =>
-                {                    
-                    configuration.RootPath = "/app/wwwroot";
-                });
-            }
-            LoadAndValidateSettings(services);
+            }            
             ConfigureAuthorization(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {            
-            if (env.IsProduction())
+        {
+            if (!env.IsEnvironment(EnviromentDevVS))
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler(ErrorHandlingPath);
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseSpaStaticFiles();
-                CreateDbSeedAsyncProduction(app.ApplicationServices);
-            }
+                if (env.IsDevelopment())
+                {
+                    CreateDbSeedAsync(app.ApplicationServices);
+                } else if (env.IsProduction())
+                {
+                    CreateDbSeedAsyncProduction(app.ApplicationServices);
+                }
+            }            
             else
-            {
+            {             
                 app.UseDeveloperExceptionPage();                
                 CreateDbSeedAsync(app.ApplicationServices);
             }
@@ -187,14 +188,8 @@ namespace WebAPI
             app.UseSpa(spa =>
             {
                 //spa.Options.SourcePath = "/";
-                if (env.IsProduction())
-                {
-                    spa.Options.SourcePath = "wwwroot";
-                } else if (env.IsDevelopment())
-                {
-                    spa.Options.SourcePath = "/app/wwwroot";
-                }                
-                else if (env.IsEnvironment(EnviromentDevVS))
+                spa.Options.SourcePath = _pathSettings.WwwRootPath;
+                if (env.IsEnvironment(EnviromentDevVS))
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
@@ -209,11 +204,17 @@ namespace WebAPI
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
-            if (identitySettings.Get<IdentitySettings>() == null)
+            _identitySettings = identitySettings.Get<IdentitySettings>();
+            if (_identitySettings == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(IdentitySettings)} configuration section.");
             var pathSettings = Configuration.GetSection("PathSettings");
-            if (pathSettings.Get<PathSettings>() == null)
+            _pathSettings = pathSettings.Get<PathSettings>();
+            if (_pathSettings == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(PathSettings)} configuration section.");
+            var swapifyDbSettings = Configuration.GetSection(nameof(SwapifyDatabaseSettings));
+            _swapifyDbSettings = swapifyDbSettings.Get<SwapifyDatabaseSettings>();
+            if (_swapifyDbSettings == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(SwapifyDatabaseSettings)} configuration section.");
             var recaptchaSettings = Configuration.GetSection("RecaptchaSettings");
             if (recaptchaSettings.Get<RecaptchaSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(RecaptchaSettings)} configuration section.");
@@ -272,7 +273,7 @@ namespace WebAPI
             });
         }
 
-        private MongoDbIdentityConfiguration ConfigureIdentity(IdentitySettings settings)
+        private MongoDbIdentityConfiguration ConfigureIdentity()
         {
             _logger.LogInformation("Configuring identity");
             MongoDbIdentityConfiguration configuration = new MongoDbIdentityConfiguration();
@@ -280,29 +281,29 @@ namespace WebAPI
             {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = _runner.ConnectionString + DatabaseNameDevVS,
-                    DatabaseName = DatabaseNameDevVS
+                    ConnectionString = _runner.ConnectionString + _swapifyDbSettings.DatabaseName,
+                    DatabaseName = _swapifyDbSettings.DatabaseName
                 };
             }
             else
             {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
-                    ConnectionString = "mongodb://mongodb:27017/" + DatabaseName,
-                    DatabaseName = DatabaseName
+                    ConnectionString = _swapifyDbSettings.ConnectionString + _swapifyDbSettings.DatabaseName,
+                    DatabaseName = _swapifyDbSettings.DatabaseName
                 };
             }
             configuration.IdentityOptionsAction = options =>
             {
-                options.Password.RequireDigit = (bool)settings.RequireDigit;
-                options.Password.RequiredLength = (int)settings.RequiredLength;
-                options.Password.RequireNonAlphanumeric = (bool)settings.RequireNonAlphanumeric;
-                options.Password.RequireUppercase = (bool)settings.RequireUppercase;
-                options.Password.RequireLowercase = (bool)settings.RequireLowercase;
-                options.SignIn.RequireConfirmedEmail = (bool)settings.RequireConfirmedEmail;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)settings.DefaultLockoutTimeSpan);
-                options.Lockout.MaxFailedAccessAttempts = (int)settings.MaxFailedAccessAttempts;
-                options.User.RequireUniqueEmail = (bool)settings.RequireUniqueEmail;
+                options.Password.RequireDigit = (bool)_identitySettings.RequireDigit;
+                options.Password.RequiredLength = (int)_identitySettings.RequiredLength;
+                options.Password.RequireNonAlphanumeric = (bool)_identitySettings.RequireNonAlphanumeric;
+                options.Password.RequireUppercase = (bool)_identitySettings.RequireUppercase;
+                options.Password.RequireLowercase = (bool)_identitySettings.RequireLowercase;
+                options.SignIn.RequireConfirmedEmail = (bool)_identitySettings.RequireConfirmedEmail;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes((int)_identitySettings.DefaultLockoutTimeSpan);
+                options.Lockout.MaxFailedAccessAttempts = (int)_identitySettings.MaxFailedAccessAttempts;
+                options.User.RequireUniqueEmail = (bool)_identitySettings.RequireUniqueEmail;
             };
             return configuration;
         }
