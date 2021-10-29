@@ -167,7 +167,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 case 4:
                     return Day.Friday;
                 default:
-                    throw new Exception("Unknow Day");
+                    throw new KeyNotFoundException("Unknow Day");
             }
         }
 
@@ -182,7 +182,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 case LessonType.Lecture:
                     return BlockType.Lecture;
                 default:
-                    throw new Exception("Unknow LessonType");
+                    throw new KeyNotFoundException("Unknow LessonType");
             }
         }
     }
