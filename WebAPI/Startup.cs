@@ -162,7 +162,7 @@ namespace WebAPI
                     CreateDbSeedAsync(app.ApplicationServices);
                 } else if (env.IsProduction())
                 {
-                    CreateDbSeedAsyncProduction(app.ApplicationServices);
+                    //CreateDbSeedAsyncProduction(app.ApplicationServices);
                 }
             }            
             else
