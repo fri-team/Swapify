@@ -14,7 +14,7 @@ jobs:
     - name: 2. Setup dotnet
       uses: actions/setup-dotnet@v1
       with:
-       dotnet-version: '3.1.100'
+       dotnet-version: '5.0.1'
     
     - name: 3. Build dotnet
       run: dotnet build ./Swapify.sln
