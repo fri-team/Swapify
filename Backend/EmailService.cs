@@ -35,18 +35,18 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<bool> GetCaptchaNotPassed(string captcha)
         {
-            var values = new Dictionary<string, string>();
-            values.Add("secret", _recaptchaSettings.PrivateKey);
-            values.Add("response", captcha);
+            var values = new Dictionary<string, string>
+            {
+                { "secret", _recaptchaSettings.PrivateKey },
+                { "response", captcha }
+            };
 
             var content = new FormUrlEncodedContent(values);
             var response = await _httpClient.PostAsync(_recaptchaSettings.URL, content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             if (responseString[5] != 's')
-            {
                 return true;
-            }
 
             return false;
         }

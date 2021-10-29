@@ -219,15 +219,18 @@ namespace WebAPI.Controllers
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
-                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, token);
-                auth.FirstTimePN = ldapInformations.PersonalNumber;
+                _userService.TryAddStudent(user);
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email))
+                {
+                    FirstTimePN = ldapInformations.PersonalNumber
+                };
                 return Ok(auth);
             }
             else
             {
-                var token = await _userService.Authenticate(ldapInformations.Email, body.Password);
-                return Ok(new AuthenticatedUserModel(user, token));
+                _userService.TryAddStudent(user);
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
+                return Ok(auth);
             }
         }
 
@@ -268,7 +271,11 @@ namespace WebAPI.Controllers
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
                     return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
                 }
-                var authUser = new AuthenticatedUserModel(user, token);
+
+                if (user.Email != "tester@testovaci.com")
+                    _userService.TryAddStudent(user);
+                token = await _userService.Authenticate(body.Email, body.Password);
+                AuthenticatedUserModel authUser = new AuthenticatedUserModel(user, token);
                 return Ok(authUser);
             }
             catch (Exception ex)
