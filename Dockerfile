@@ -1,33 +1,27 @@
-# https://docs.docker.com/develop/develop-images/multistage-build/
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ./WebAPI/WebAPI.csproj .
+#RUN dotnet restore "WebAPI/WebAPI.csproj"
+COPY . .
+WORKDIR "/src/WebAPI"
+RUN dotnet build "WebAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "WebAPI.csproj" -c Release -o /app/publish
 
 # Build React bundle
 FROM node AS react-build
-WORKDIR /app/WebApp
-# Copy the FE source from your machine onto the container.
+WORKDIR /react
 COPY ./WebApp ./
-# Install working npm
 RUN npm install -g npm@6.14.11
-# Install required node modules
 RUN npm install
-# Run clean FE build
 RUN npm run build:CI
 
-# Build .NET Core app
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS dotnet-build
-WORKDIR /src
-# COPY ./ ./
-COPY ./WebAPI/WebAPI.csproj .
-# RUN dotnet restore
-COPY . .
-RUN mkdir -p /src/WebAPI/wwwroot/
-COPY --from=react-build /app/WebApp/dist/ /src/WebAPI/wwwroot/
-WORKDIR /src/WebAPI
-# RUN dotnet build -c Release -o /app
-RUN dotnet publish -c Release -o /app
-
-# Assemble final container
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
+FROM base AS final
 WORKDIR /app
-COPY --from=dotnet-build /app .
-RUN mkdir -p /app/logs
+COPY --from=publish /app/publish .
+COPY --from=react-build /react/dist /app/wwwroot
 ENTRYPOINT ["dotnet", "WebAPI.dll"]

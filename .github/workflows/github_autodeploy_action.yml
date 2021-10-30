@@ -73,8 +73,7 @@ jobs:
      id: docker_build
      uses: docker/build-push-action@v2
      with:
-      context: .
-      file: /Dockerfile
+      context: .      
       push: true
       tags: swapifyapp/swapify-app
    - name: Configure SSH and prepare files to be copied
