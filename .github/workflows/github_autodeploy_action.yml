@@ -2,8 +2,7 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop 
-   - "#509_docker_in_VS"
+   - develop   
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
