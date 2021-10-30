@@ -1,126 +1,121 @@
---- 
-env: 
-  ASPNETCORE_ENVIRONMENT: Production
-jobs: 
-  action_build: 
-    name: actions_build
-    runs-on: ubuntu-latest
-    steps: 
-      - 
-        uses: actions/checkout@v2
-      - 
-        name: "Replace jwt private key"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: "##JWTKEY##"
-          replace: "${{ secrets.JWT_SECRET }}"
-      - 
-        name: "Replace frontend recaptcha key"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: 6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue
-          include: WebApp/**
-          replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
-      - 
-        name: "Replace backend recaptcha key"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: 6LeJhgIaAAAAANEP4LvIQo25l4AReIwyWnfq0VXX
-          include: appsettings.json
-          replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
-      - 
-        name: "Replace SMTP SERVER"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: smtp_server@email.toberemoved.com
-          include: appsettings.json
-          replace: "${{ secrets.SMTP_SERVER }}"
-      - 
-        name: "Replace MAIL USERNAME"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: "##MAIL_USERNAME##"
-          include: appsettings.json
-          replace: "${{ secrets.MAIL_USERNAME }}"
-      - 
-        name: "Replace SENDER EMAIL"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: sender.toberemoved@email.com
-          include: appsettings.json
-          replace: "${{ secrets.SENDER_EMAIL }}"
-      - 
-        name: "Replace MAIL PASSWORD"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: "##MAIL_PASSWORD##"
-          include: appsettings.json
-          replace: "${{ secrets.MAIL_PASSWORD }}"
-      - 
-        name: "Replace FEEDBACK MAIL"
-        uses: jacobtomlinson/gha-find-replace@v2
-        with: 
-          find: "##FEEDBACK_MAIL##"
-          include: appsettings.json
-          replace: "${{ secrets.FEEDBACK_MAIL }}"
-      - 
-        name: "Set up QEMU"
-        uses: docker/setup-qemu-action@v1
-      - 
-        name: "Set up Docker Buildx"
-        uses: docker/setup-buildx-action@v1
-      - 
-        name: "Login to DockerHub"
-        uses: docker/login-action@v1
-        with: 
-          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
-          username: swapifyapp
-      - 
-        id: docker_build
-        name: "Build and push"
-        uses: docker/build-push-action@v2
-        with: 
-          context: "."
-          file: Dockerfile
-          push: true
-          tags: swapifyapp/swapify-app
-      - 
-        env: 
-          SSH_HOST: "${{ secrets.HOST }}"
-          SSH_KEY: "${{ secrets.PRIVATE_KEY}}"
+name: Deploy to AWS ECS
+on:
+ push:
+  branches:
+   - develop 
+   - "#509_docker_in_VS"
+
+env:
+ ASPNETCORE_ENVIRONMENT: Production
+jobs:  
+ action_build:
+  name: actions_build
+  runs-on: ubuntu-latest    
+  steps:
+   - uses: actions/checkout@v2
+   - name: Replace jwt private key #FIND AND REPLACE, by default searches all files
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "##JWTKEY##" #STRING TO FIND
+        replace: "${{ secrets.JWT_SECRET }}" #STRING TO REPLACE WITH
+   - name: Replace frontend recaptcha key
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
+        replace: "${{ secrets.RECAPTCHA_FRONT_END_KEY }}"
+        include: "WebApp/**" #searches only WebApp directory
+   - name: Replace backend recaptcha key
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "6LeJhgIaAAAAANEP4LvIQo25l4AReIwyWnfq0VXX"
+        replace: "${{ secrets.RECAPTCHA_BACK_END_KEY }}"
+        include: "appsettings.json" #finds and replaces only given file
+   - name: Replace SMTP SERVER
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "smtp_server@email.toberemoved.com"
+        replace: "${{ secrets.SMTP_SERVER }}"
+        include: "appsettings.json"  
+   - name: Replace MAIL USERNAME
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "##MAIL_USERNAME##"
+        replace: "${{ secrets.MAIL_USERNAME }}"
+        include: "appsettings.json"
+   - name: Replace SENDER EMAIL
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "sender.toberemoved@email.com"
+        replace: "${{ secrets.SENDER_EMAIL }}"
+        include: "appsettings.json"
+   - name: Replace MAIL PASSWORD
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "##MAIL_PASSWORD##"
+        replace: "${{ secrets.MAIL_PASSWORD }}"
+        include: "appsettings.json"
+   - name: Replace FEEDBACK MAIL
+     uses: jacobtomlinson/gha-find-replace@v2
+     with:
+        find: "##FEEDBACK_MAIL##"
+        replace: "${{ secrets.FEEDBACK_MAIL }}"
+        include: "appsettings.json"
+   - name: Set up QEMU
+     uses: docker/setup-qemu-action@v1
+   - name: Set up Docker Buildx
+     uses: docker/setup-buildx-action@v1
+   - name: Login to DockerHub
+     uses: docker/login-action@v1 
+     with:
+      username: swapifyapp
+      password: ${{ secrets.DOCKERHUB_PASSWORD }}
+   - name: Build and push
+     id: docker_build
+     uses: docker/build-push-action@v2
+     with:
+      context: .
+      file: /Dockerfile
+      push: true
+      tags: swapifyapp/swapify-app
+   - name: Configure SSH and prepare files to be copied
+     run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/aws.key
+          chmod 600 ~/.ssh/aws.key
+          mkdir filesToCopy
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
+          cp docker-compose.production.yml filesToCopy/docker-compose.yml
+          cp nginx.conf filesToCopy/nginx.conf
+          cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh          
+          cat >>~/.ssh/config <<END
+          Host aws
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/aws.key
+            StrictHostKeyChecking no
+          END
+     env:
           SSH_USER: ubuntu
-        name: "Configure SSH and prepare files to be copied"
-        run: |
-            mkdir -p ~/.ssh/
-            echo "$SSH_KEY" > ~/.ssh/aws.key
-            chmod 600 ~/.ssh/aws.key
-            mkdir filesToCopy
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
-            cp docker-compose.production.yml filesToCopy/docker-compose.yml
-            cp nginx.conf filesToCopy/nginx.conf
-            cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh          
-            cat >>~/.ssh/config <<END
-            Host aws
-              HostName $SSH_HOST
-              User $SSH_USER
-              IdentityFile ~/.ssh/aws.key
-              StrictHostKeyChecking no
-            END
-      - 
-        name: "Copy files to AWS"
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          host: "${{ secrets.HOST }}"
-          local: filesToCopy
-          privateKey: "${{ secrets.PRIVATE_KEY}}"
-          remote: /home/ubuntu/Swapify
-          username: ubuntu
-      - 
-        name: Deployment
-        run: "ssh aws 'cd /home/ubuntu/Swapify; sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io; sudo rm /home/ubuntu/Swapify/mypassfile.txt; sudo chmod +x init-letsencrypt.sh; sudo docker-compose down; sudo docker rmi swapify-app -f; sudo docker rmi swapifyapp/swapify-app -f; sudo docker system prune -f; sudo docker pull swapifyapp/swapify-app; sudo docker tag swapifyapp/swapify-app swapify-app; sudo docker-compose up -d; sudo docker logout;'"
-name: "Deploy to AWS ECS"
-true: 
-  push: 
-    branches: 
-      - develop
-      - "#509_docker_in_VS"
+          SSH_KEY: ${{ secrets.PRIVATE_KEY}}
+          SSH_HOST: ${{ secrets.HOST }}   
+   - name: Copy files to AWS #copies all files inside filesToCopy directory
+     uses: garygrossgarten/github-action-scp@release
+     with:
+      local: filesToCopy #what to copy
+      remote: /home/ubuntu/Swapify #destination
+      host: ${{ secrets.HOST }}
+      username: ubuntu
+      privateKey: ${{ secrets.PRIVATE_KEY}}
+   - name: Deployment
+     run: ssh aws 'cd /home/ubuntu/Swapify;        
+        sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
+        sudo rm /home/ubuntu/Swapify/mypassfile.txt;
+        sudo chmod +x init-letsencrypt.sh;
+        sudo docker-compose down;
+        sudo docker rmi swapify-app -f;
+        sudo docker rmi swapifyapp/swapify-app -f;
+        sudo docker system prune -f;
+        sudo docker pull swapifyapp/swapify-app;
+        sudo docker tag swapifyapp/swapify-app swapify-app;
+        sudo docker-compose up -d;
+        sudo docker logout;'         
