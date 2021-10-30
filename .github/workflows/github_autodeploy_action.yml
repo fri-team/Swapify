@@ -33,7 +33,7 @@ jobs:
    - name: Replace SMTP SERVER
      uses: jacobtomlinson/gha-find-replace@v2
      with:
-        find: "smtp_server@email.toberemoved.com"
+        find: "SERVER@TOBEREMOVED.COM"
         replace: "${{ secrets.SMTP_SERVER }}"
         include: "appsettings.json"  
    - name: Replace MAIL USERNAME
@@ -45,7 +45,7 @@ jobs:
    - name: Replace SENDER EMAIL
      uses: jacobtomlinson/gha-find-replace@v2
      with:
-        find: "sender.toberemoved@email.com"
+        find: "SENDER@TOBEREMOVED.COM"
         replace: "${{ secrets.SENDER_EMAIL }}"
         include: "appsettings.json"
    - name: Replace MAIL PASSWORD
