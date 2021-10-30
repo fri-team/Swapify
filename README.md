@@ -28,22 +28,23 @@ Web based application enabling students of [University of Zilina](http://www.uni
 
 ### Using Docker
 1. Clone repository
-2. Open command line, go to repository folder
-3. Run containers with command: docker compose -f docker-compose-local.yml up -d (may not start if port 80 is used)
-4. Use browser to access the app using url "localhost"
-5. Stop containers with command: docker compose -f docker-compose-local.yml down
+2. Open solution using Visual Studio
+3. Run project docker-compose
+4. If you change FE, it docker image needs to be build using command "docker build -t react -f ./WebApp/Dockerfile ."
 
 ### Old approach
 -- Backend --
 1. Clone repository
 2. Open solution using Visual studio (Swapify.sln)
-3. Run project (Backend should launch)
+3. Set startup project to WebAPI
+4. Make sure you use WebAPI debug profile
+5. Run project (Backend should launch)
 -- Frontend --
-4. Open command line (Preferably in Admin mode to make sure everything works right)
-5. Go to the folder where your swapify project is stored
-6. Go to the WebApp folder
-7. write: npm install
-8. write: npm start
+6. Open command line (Preferably in Admin mode to make sure everything works right)
+7. Go to the folder where your swapify project is stored
+8. Go to the WebApp folder
+9. write: npm install
+10. write: npm start
 
 After these steps, the application should launch in your browser.
 
