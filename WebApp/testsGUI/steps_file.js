@@ -65,29 +65,22 @@ module.exports = function () {
             }, locator);
         },
 
-        async addBlock(row, column) {
+        async addBlock(row, column, name, teacher, room, typeOfBlock, lenght) {
             const I = this;
             I.click({ react: 'Block', props: { i: row, j: column }});
-            I.fillField('courseName', 'Informatika');
-            I.wait(1);
+            I.fillField('courseName', name);
             I.pressKey("ArrowDown");
             I.pressKey("Enter");
-            I.fillField('teacher', 'Ján Janech');
-            I.fillField('room', 'RA013');
-            I.click({ react: 'FormControlLabel', props: { value: 'excercise' }});
+            I.wait(1);
+            I.acceptPopup();
+            I.clearField('teacher');
+            I.fillField('teacher', teacher);
+            I.clearField('room')
+            I.fillField('room', room);
+            I.clearField('length');
+            I.fillField('length', lenght);
+            I.click({ react: 'FormControlLabel', props: { value: typeOfBlock }});
             I.click('Uložiť');
-            I.seeElement({ 
-                react: 'TimetableBlock', props: { 
-                    courseName : 'informatika 1',
-                    courseCode: '11M151',
-                    day: 1,
-                    startBlock: 1,
-                    endBlock: 3,
-                    room: 'RA013',
-                    teacher: 'Ján Janech',
-                    type: 'excercise'
-                }
-            });
         },
 
         async deleteBlock(row, column) {
