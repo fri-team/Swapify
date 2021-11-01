@@ -20,12 +20,13 @@ Scenario('[ADD01] Add new block.', async (I) => {
     I.pressKey("Enter");
     I.fillField('teacher', 'Ján Janech');
     I.fillField('room', 'RA013');
+    I.fillField('length', '2');
     I.click({ react: 'FormControlLabel', props: { value: 'excercise' }});
     I.click('Uložiť');
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'informatika 1',
-            courseCode: '11M151',
+            courseShortcut: '5BI137',
             day: 1,
             startBlock: 1,
             endBlock: 3,
@@ -34,6 +35,7 @@ Scenario('[ADD01] Add new block.', async (I) => {
             type: 'excercise'
         }
     });
+    I.deleteBlock(1, 1);
 });
 
 Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
@@ -53,15 +55,15 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'algebra',
-            courseCode: '5BF101',
+            courseShortcut: '5BF101',
             day: 3,
             startBlock: 1,
             endBlock: 4,
-            room: 'RB053',
-            teacher: 'Ida Stankovianska',
             type: 'lecture'
         }
     });
+    I.wait(1);
+    I.deleteBlock(3, 1);
 });
 
 Scenario('[ADD03] Check, if subject is founded without accent', async (I) => {
