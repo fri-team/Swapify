@@ -1,0 +1,6 @@
+version: '3.4'
+
+services:
+  webapi:    
+    labels:      
+      com.microsoft.visualstudio.debuggee.arguments: "--additionalProbingPath /root/.nuget/packages  \"/app/bin/Debug/net5.0/WebAPI.dll\""      
