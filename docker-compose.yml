@@ -38,14 +38,13 @@ services:
     ports:
       - 80:80
   reactApp:
-    image: react
-    container_name: react-app
+    image: react    
     build:
-      context: ./WebApp
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./WebApp/Dockerfile
     environment:
       - NODE_ENV=Development
     volumes:
-      - app-volume:/app/WebApp/dist
+      - app-volume:/react/dist
 volumes:
      app-volume:
