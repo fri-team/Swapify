@@ -199,7 +199,7 @@ namespace WebAPI.Controllers
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
             } catch (Exception e)
             {
-                _logger.LogError($"Exception " + e.ToString());
+                _logger.LogError($"Exception " + e);
             }                    
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
@@ -280,7 +280,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return ErrorResponse("Error HERE: " + ex.ToString());
+                return ErrorResponse("Error HERE: " + ex);
             }
         }
 

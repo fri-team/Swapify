@@ -43,63 +43,73 @@ namespace WebAPI.Controllers
         [HttpGet("getStudentTimetable/{userEmail}")]
         public async Task<IActionResult> GetStudentTimetable(string userEmail)
         {
-            _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
-            User user = await _userService.GetUserByEmailAsync(userEmail);
-            if (user.Student == null)
+            try
             {
-                return Ok(new Timetable());
-            }
-            string studentId = user.Student.Id.ToString();
-            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
-            if (!isValidGUID)
-            {
-                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
-            }
-            var student = await _studentService.FindByIdAsync(guid);
-            if (student == null)
-            {             
-                return ErrorResponse($"Student with id: {studentId} does not exist.");
-            }
-            if (student.Timetable == null)
-            {
-                _logger.Log(LogLevel.Error, $"Timetable for student with id: {studentId} does not exist.");
-                return Ok(new Timetable());
-            }
-            if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
-            {
-                var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
-                if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
-                await _studentService.UpdateStudentTimetableAsync(student,
-                    await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
-                );
-                await _userService.UpdateUserAsync(user);
-                var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
-                foreach (var item in requests)
+                _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
+                User user = await _userService.GetUserByEmailAsync(userEmail);
+                if (user?.Student == null)
                 {
-                    await _blockChangesService.CancelExchangeRequest(item);
+                    _logger.Log(LogLevel.Information, $"Student for user: {userEmail} does not exist.");
+                    return Ok(new Timetable());
                 }
+                string studentId = user.Student.Id.ToString();
+                if (!Guid.TryParse(studentId, out Guid guid))
+                {
+                    _logger.Log(LogLevel.Error, $"Student id: {studentId} is not valid GUID.");
+                    return ErrorResponse($"Student id: {studentId} is not valid GUID.");
+                }
+                var student = await _studentService.FindByIdAsync(guid);
+                if (student == null)
+                {
+                    _logger.Log(LogLevel.Error, $"Student with id: {studentId} does not exist.");
+                    return ErrorResponse($"Student with id: {studentId} does not exist.");
+                }
+                if (student.Timetable == null)
+                {
+                    _logger.Log(LogLevel.Error, $"Timetable for student with id: {studentId} does not exist.");
+                    return Ok(new Timetable());
+                }
+                if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
+                {
+                    var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                    if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
+                    await _studentService.UpdateStudentTimetableAsync(student,
+                        await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
+                    );
+                    await _userService.UpdateUserAsync(user);
+                    var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
+                    foreach (var item in requests)
+                    {
+                        await _blockChangesService.CancelExchangeRequest(item);
+                    }
+                }
+                var timetable = new Timetable();
+                var Blocks = new List<TimetableBlock>();
+                foreach (var block in student.Timetable.AllBlocks)
+                {
+                    TimetableBlock timetableBlock = new TimetableBlock();
+                    Course course = await _courseService.FindByIdAsync(block.CourseId);
+                    timetableBlock.Id = block.BlockId.ToString();
+                    timetableBlock.Day = block.Day.GetHashCode();
+                    timetableBlock.StartBlock = block.StartHour - 6;
+                    timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
+                    timetableBlock.CourseId = course.Id.ToString();
+                    timetableBlock.CourseName = course.CourseName;
+                    timetableBlock.CourseCode = course.CourseCode;
+                    timetableBlock.Room = block.Room;
+                    timetableBlock.Teacher = block.Teacher;
+                    timetableBlock.Type = (TimetableBlockType)block.BlockType;
+                    timetableBlock.BlockColor = block.BlockColor;
+                    Blocks.Add(timetableBlock);
+                }
+                timetable.Blocks = Blocks;
+                return Ok(timetable);
             }
-            var timetable = new Timetable();
-            var Blocks = new List<TimetableBlock>();
-            foreach (var block in student.Timetable.AllBlocks)
+            catch (Exception e)
             {
-                TimetableBlock timetableBlock = new TimetableBlock();
-                Course course = await _courseService.FindByIdAsync(block.CourseId);                
-                timetableBlock.Id = block.BlockId.ToString();
-                timetableBlock.Day = block.Day.GetHashCode();
-                timetableBlock.StartBlock = block.StartHour - 6;
-                timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
-                timetableBlock.CourseId = course.Id.ToString();
-                timetableBlock.CourseName = course.CourseName;
-                timetableBlock.CourseCode = course.CourseCode;
-                timetableBlock.Room = block.Room;
-                timetableBlock.Teacher = block.Teacher;
-                timetableBlock.Type = (TimetableBlockType)block.BlockType;
-                timetableBlock.BlockColor = block.BlockColor;
-                Blocks.Add(timetableBlock);
+                _logger.Log(LogLevel.Error, $"When processing user: {userEmail} exception was invoked: {e}");
+                return ErrorResponse($"Student: {userEmail} produced exception.");
             }
-            timetable.Blocks = Blocks;
-            return Ok(timetable);
         }
 
         [HttpPost("addNewBlock")]

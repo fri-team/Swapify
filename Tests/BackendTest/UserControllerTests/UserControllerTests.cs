@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using WebAPI.Controllers;
 using WebAPI.Models.UserModels;
 using Xunit;
-using MongoDB.Driver;
 
 namespace BackendTest.UserControllerTests
 {
