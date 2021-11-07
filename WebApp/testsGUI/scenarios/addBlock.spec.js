@@ -18,14 +18,18 @@ Scenario('[ADD01] Add new block.', async (I) => {
     I.wait(1);
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
+    I.clearField('teacher');
     I.fillField('teacher', 'Ján Janech');
+    I.clearField('room');
     I.fillField('room', 'RA013');
+    I.clearField('length');
+    I.fillField('length', '2');
     I.click({ react: 'FormControlLabel', props: { value: 'excercise' }});
     I.click('Uložiť');
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'informatika 1',
-            courseCode: '11M151',
+            courseShortcut: '5BI137',
             day: 1,
             startBlock: 1,
             endBlock: 3,
@@ -34,15 +38,18 @@ Scenario('[ADD01] Add new block.', async (I) => {
             type: 'excercise'
         }
     });
+    I.deleteBlock(1, 1);
 });
 
 Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
     I.click({ react: 'Block', props: { i: 2, j: 2 }});
     I.fillField('courseName', 'algebra');
-    I.wait(2);
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
+    I.wait(2);
+    I.clearField('teacher');
     I.fillField('teacher', 'Ida Stankovianska');
+    I.clearField('room');
     I.fillField('room', 'RB053');
     I.click({ react: 'Select', props: { name: 'day' }});
     I.click({ react: 'ButtonBase', props: { 'data-value' : 3 }});
@@ -50,22 +57,23 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
     I.updateField({ react: 'Input', props: { name: 'length' }}, '3');
     I.click({ react: 'FormControlLabel', props: { value: 'lecture' }});
     I.click('Uložiť');
+    I.wait(1);
     I.seeElement({ 
         react: 'TimetableBlock', props: { 
             courseName : 'algebra',
-            courseCode: '5BF101',
+            courseShortcut: '5BF101',
             day: 3,
             startBlock: 1,
             endBlock: 4,
-            room: 'RB053',
-            teacher: 'Ida Stankovianska',
             type: 'lecture'
         }
     });
+    
+    I.deleteBlock(3, 1);
 });
 
 Scenario('[ADD03] Check, if subject is founded without accent', async (I) => {
-    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.click({ react: 'Block', props: { i: 3, j: 4 }});
     I.fillField('courseName', 'architektury informacnych systemov');
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
@@ -73,7 +81,7 @@ Scenario('[ADD03] Check, if subject is founded without accent', async (I) => {
 });
 
 Scenario('[ADD04] Check, if subject is founded with accent', async (I) => {
-    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.click({ react: 'Block', props: { i: 3, j: 4 }});
     I.fillField('courseName', 'číslicové počítače');
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
@@ -81,17 +89,16 @@ Scenario('[ADD04] Check, if subject is founded with accent', async (I) => {
 });
 
 Scenario('[ADD05] Check, if founded subjects is sorted by faculty of student', async (I) => {
-    I.click({ react: 'Block', props: { i: 3, j: 3 }});
+    I.click({ react: 'Block', props: { i: 3, j: 4 }});
     I.fillField('courseName', 'architektury');
     I.pressKey("ArrowDown");
     I.pressKey("Enter");
 
     let first = (await I.grabValueFrom('courseName')).toString().split('(')[1].charAt(0);
 
+    I.wait(2);
     I.clearField('courseName');
     I.fillField('courseName', 'architektury');
-
-    I.wait(1);
 
     I.pressKey("ArrowDown");
     I.pressKey("ArrowDown");
@@ -119,6 +126,7 @@ Scenario('[ADD06] Check, if forms in add block form will pre-fill', async (I) =>
     I.seeElement({ react: 'FormControlLabel', props: { value: 'laboratory' }});
 });
 
+//Test requires summer semester
 Scenario('[ADD07] Add subject for summer semester from sidebar', async (I) => {
     I.click(locate('.MuiIconButton-label'));
     I.click(locate('button').withAttr({ title: 'Pridať predmet' }));

@@ -65,5 +65,29 @@ module.exports = function () {
             }, locator);
         },
 
+        async addBlock(row, column, name, teacher, room, typeOfBlock, lenght) {
+            const I = this;
+            I.click({ react: 'Block', props: { i: row, j: column }});
+            I.fillField('courseName', name);
+            I.pressKey("ArrowDown");
+            I.pressKey("Enter");
+            I.wait(1);
+            I.acceptPopup();
+            I.clearField('teacher');
+            I.fillField('teacher', teacher);
+            I.clearField('room')
+            I.fillField('room', room);
+            I.clearField('length');
+            I.fillField('length', lenght);
+            I.click({ react: 'FormControlLabel', props: { value: typeOfBlock }});
+            I.click('Uložiť');
+        },
+
+        async deleteBlock(row, column) {
+            const I = this;
+            I.click({ react: 'Block', props: { i: row, j: column }});
+            I.click({ react: 'button' , props: { title : 'Vymazať blok'}});
+        }
+
     });
 };
