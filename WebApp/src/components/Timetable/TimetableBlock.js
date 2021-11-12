@@ -7,7 +7,14 @@ import Laboratory from '../svg/Laboratory';
 import './TimetableBlock.scss';
 
 const TimetableBlock = (props) => {
-  const { backgroundColor, color } = toMaterialStyle(props.courseCode, props.blockColor);
+  function setBlockColor(shade) {
+    return {
+      backgroundColor: shade,
+      color: 'rgba(0, 0, 0, 0.87)',
+    };
+  }
+
+  const { backgroundColor, color } = props.blockColor == null ? toMaterialStyle(props.courseCode, props.blockColor) : setBlockColor(props.blockColor);
   const myStyle = {
     ...props.style,
     backgroundColor,
