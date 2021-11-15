@@ -20,6 +20,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         [JsonProperty("r")]
         public string RoomName { get; set; }
         [JsonProperty("s")]
+        //public string CourseName { get; set; }
         public string CourseName { get => _courseName; set => _courseName = ConvertFirstChar(value); }        
         [JsonProperty("k")]
         public string CourseCode { get; set; }
@@ -30,10 +31,11 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         [JsonProperty("d")]
         public string D { get; set; }
         [JsonProperty("dw")]
+        //public int Day { get; set; }
         public int Day { get => _day; set => _day = value - 1; }
         [JsonProperty("b")]
         public int BlockNumber { get; set; }
-        [JsonProperty("tf")]
+        [JsonProperty("tf ")]
         public string Tf { get; set; }
         [JsonProperty("tt")]
         public string Tt { get; set; }

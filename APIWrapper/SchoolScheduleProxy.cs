@@ -2,6 +2,7 @@ using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.Entities;
 using NLog;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,21 +17,29 @@ namespace FRITeam.Swapify.APIWrapper
         private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
         private const string TYPE_PARAM = "m";
         private const string ID_PARAM = "id";
+        private const string YEAR_PARAM = "r";
+        private const string SEMESTER_PARAM = "s";
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly RestClient _client;
+
+        public SchoolScheduleProxy()
+        {
+            _client = new RestClient(URL);            
+            _client.AddHandler("text/html", () => { return new JsonNetSerializer(); });
+        }
 
         public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber)
         {
-            Semester semester = Semester.GetSemester();
-            var client = new RestClient(URL);
-            var request = new RestRequest(SCHEDULE_CONTENT_URL);
-            request.AddHeader("Accept", "application/json");                        
+            Semester semester = Semester.GetSemester();            
+            var request = new RestRequest(SCHEDULE_CONTENT_URL);            
             request.AddParameter(TYPE_PARAM, 5);
-            request.AddParameter(ID_PARAM, Uri.EscapeUriString(personalNumber + FormatSemesterForApi(semester)));
-            request.OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; };
+            request.AddParameter(ID_PARAM, personalNumber);
+            request.AddParameter(YEAR_PARAM, semester.Year);
+            request.AddParameter(SEMESTER_PARAM, (char)semester.SemesterValue);            
             try
             {
-                var response = await client.GetAsync<UnizaScheduleContentResult>(request);
+                var response = await _client.GetAsync<UnizaScheduleContentResult>(request);
                 return new ScheduleTimetableResult()
                 {
                     Semester = semester,
@@ -42,8 +51,6 @@ namespace FRITeam.Swapify.APIWrapper
                 _logger.Info(e.Message);
                 throw;
             }                        
-
-            //return CallScheduleContentApi(5, personalNumber + FormatSemesterForApi(semester), semester);
         }
 
         public ScheduleTimetableResult GetByTeacherName(string teacherNumber)

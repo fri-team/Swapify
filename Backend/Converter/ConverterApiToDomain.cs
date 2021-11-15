@@ -98,7 +98,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 }                
             );
 
-            Timetable mergedTimetable = new Timetable(scheduleTimetable.Semester);
+            Timetable mergedTimetable = new(scheduleTimetable.Semester);
             foreach (var mergedBlock in mergedBlocks)
             {
                 mergedTimetable.AddNewBlock(await mergedBlock);
