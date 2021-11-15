@@ -7,7 +7,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
 {
     public class ScheduleTimetable
     {
-        public IEnumerable<ScheduleHourContent> ScheduleHourContents { get; set; }
+        public IEnumerable<ScheduleContent> ScheduleHourContents { get; set; }
         public Semester Semester { get; set; }
     }
 }

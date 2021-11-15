@@ -1,5 +1,6 @@
 using FRITeam.Swapify.APIWrapper.Objects;
 using NLog;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,33 +16,20 @@ namespace FRITeam.Swapify.APIWrapper
 
         public IEnumerable<CourseContent> GetByCourseName(string courseName)
         {
-            return CallCourseContentApi("q", courseName);
-        }
-
-        private IEnumerable<CourseContent> CallCourseContentApi(string type, string requestContent)
-        {
-            string address = $"{URL}/{SCHEDULE_CONTENT_URL}?{type}={Uri.EscapeUriString(requestContent)}";
-            var myResponse = "";
+            var response = "";            
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(address);
-                request.Method = "Get";
-                request.KeepAlive = true;
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                var response = (HttpWebResponse)request.GetResponse();
-
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    myResponse = sr.ReadToEnd();
-                }
+                var client = new RestClient(URL);
+                var request = new RestRequest(SCHEDULE_CONTENT_URL);
+                request.AddParameter("q", courseName);
+                response = client.Get(request).Content;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.Error(ex);                
                 throw;
-            }
-            return ResponseParser.ParseCourseResponse(myResponse);
-        }
+            }            
+            return ResponseParser.ParseCourseResponse(response);            
+        }  
     }
 }

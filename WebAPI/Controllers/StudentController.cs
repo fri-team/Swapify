@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
                 }
                 if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
                 {
-                    var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                    var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
                     if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
                     await _studentService.UpdateStudentTimetableAsync(student,
                         await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)

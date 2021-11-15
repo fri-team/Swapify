@@ -150,13 +150,13 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindCourseTimetableFromProxy(Course course)
         {                                       
-            List<ScheduleTimetable> schedules = new List<ScheduleTimetable>();
+            List<ScheduleTimetableResult> schedules = new List<ScheduleTimetableResult>();
             int years = course.StudyType.Contains("inž") ? 2 : 3;
             for (int i = 1; i <= years; i++)
             {
                 try
                 {
-                    ScheduleTimetable schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode, i + "", course.StudyType);
+                    ScheduleTimetableResult schedule = _scheduleProxy.GetBySubjectCode(course.CourseCode, i + "", course.StudyType);
                     if (schedule != null)
                     {
                         schedules.Add(schedule);
