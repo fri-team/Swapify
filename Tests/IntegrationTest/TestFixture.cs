@@ -30,7 +30,7 @@ namespace IntegrationTest
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile("appsettings.integrationtest.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
