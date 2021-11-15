@@ -145,6 +145,13 @@ class BlockDetail extends PureComponent {
     return result;
   }
 
+  setBlockColor(shade) {
+    return {
+      backgroundColor: shade,
+      color: 'rgba(0, 0, 0, 0.87)',
+    };
+  }
+
   render() {
     if (!this.props.isVisible) {
       return null;
@@ -152,9 +159,9 @@ class BlockDetail extends PureComponent {
     const { top, left, course, user } = this.props;
     const email = this.convertNameToEmail(course.teacher);
     const room = course.room !== "" ? ", " + course.room : "";
-    const { backgroundColor, color } = toMaterialStyle(
+    const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(
       course.courseCode || '', course.blockColor
-    );
+    ) : this.setBlockColor(course.blockColor);
     const style = { top: `${this.calculateTopPosition(top)}`, left: `${left}px`, bottom: `${this.calculateBottomPosition(top)}`, position: `absolute`, width: `20%` };
     const dialogOpen = this.state.dialogOpen;
     return (
