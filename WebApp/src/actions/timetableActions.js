@@ -215,8 +215,21 @@ export function exchangeConfirm(blockTo) {
         dispatch(action);       
         dispatch(loadExchangeRequests());
       })
-      .catch(() => {
-        window.alert("Pri vytváraní žiadosti nastala chyba.");
+      .catch((error) => {        
+        if (error.response) {
+          window.alert("Pri vytváraní žiadosti nastala chyba.");
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+        } else if (error.request) {
+          window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);          
+          //This error shows undefined history after creating request
+        }        
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
