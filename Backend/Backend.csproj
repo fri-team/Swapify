@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\APIWrapper\APIWrapper.csproj" />
-    <ProjectReference Include="..\Entities\SwapifyBase.csproj" />
+    <ProjectReference Include="..\SwapifyBase\SwapifyBase.csproj" />
   </ItemGroup>
 
 

@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\SwapifyBase.csproj" />
+    <ProjectReference Include="..\SwapifyBase\SwapifyBase.csproj" />
   </ItemGroup>
 
 </Project>
