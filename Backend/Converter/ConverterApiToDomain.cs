@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace FRITeam.Swapify.Backend.Converter
 {

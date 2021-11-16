@@ -1,10 +1,5 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.APIWrapper.Objects
 {
@@ -19,8 +14,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         public string TeacherName { get; set; }
         [JsonProperty("r")]
         public string RoomName { get; set; }
-        [JsonProperty("s")]
-        //public string CourseName { get; set; }
+        [JsonProperty("s")]        
         public string CourseName { get => _courseName; set => _courseName = ConvertFirstChar(value); }        
         [JsonProperty("k")]
         public string CourseCode { get; set; }
@@ -30,8 +24,7 @@ namespace FRITeam.Swapify.APIWrapper.Objects
         public LessonType LessonType { get; set; }
         [JsonProperty("d")]
         public string D { get; set; }
-        [JsonProperty("dw")]
-        //public int Day { get; set; }
+        [JsonProperty("dw")]        
         public int Day { get => _day; set => _day = value - 1; }
         [JsonProperty("b")]
         public int BlockNumber { get; set; }

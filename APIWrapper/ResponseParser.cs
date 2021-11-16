@@ -1,12 +1,10 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FRITeam.Swapify.APIWrapper
 {
@@ -41,10 +39,7 @@ namespace FRITeam.Swapify.APIWrapper
                         string roomName = block["r"].ToString();
                         string subjectCode = block["k"].ToString().Trim();
                         string subjectNameHelper = block["s"].ToString().Trim();                        
-                        string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);
-                        //var hourContent = new ScheduleHourContent(int.Parse(block["dw"].ToString()) - 1, int.Parse(block["b"].ToString()), false,
-                        //                                 lessonType, teacherName, roomName,
-                        //                                 subjectCode, subjectName, SubjectType.None);
+                        string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);                        
                         var content = new ScheduleContent()
                         {
                             BlockNumber = int.Parse(block["dw"].ToString()) - 1,

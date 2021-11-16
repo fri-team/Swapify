@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Notifications;
-using Microsoft.Extensions.Logging;
+using FRITeam.Swapify.SwapifyBase.Entities.Notifications;
 using MongoDB.Driver;
 
 namespace FRITeam.Swapify.Backend

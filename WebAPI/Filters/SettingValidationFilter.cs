@@ -1,5 +1,5 @@
-using FRITeam.Swapify.Backend.Exceptions;
-using FRITeam.Swapify.Backend.Settings;
+using FRITeam.Swapify.SwapifyBase.Exceptions;
+using FRITeam.Swapify.SwapifyBase.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System;

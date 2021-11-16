@@ -20,8 +20,8 @@ services:
       - mongodb
     links:
      - mongodb
-    expose:
-      - 5020
+    ports:
+      - 5020:5020
   mongodb:
     image: mongo
     container_name: mongodb

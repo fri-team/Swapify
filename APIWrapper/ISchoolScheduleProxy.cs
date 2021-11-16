@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper.Objects;
 
@@ -16,19 +15,19 @@ namespace FRITeam.Swapify.APIWrapper
         /// Return schedule for whole week by teacher unique number
         /// </summary>
         /// <param name="teacherNumber">teacher unique number</param>
-        ScheduleTimetableResult GetByTeacherName(string teacherNumber);
+        Task<ScheduleTimetableResult> GetByTeacherName(string teacherNumber);
 
         /// <summary>
         /// Return schedule for whole week by room number
         /// </summary>
         /// <param name="roomNumber">room number</param>
-        ScheduleTimetableResult GetByRoomNumber(string roomNumber);
+        Task<ScheduleTimetableResult> GetByRoomNumber(string roomNumber);
 
         /// <summary>
         /// Return schedule for whole week by subject code
         /// </summary>
         /// <param name="subjectCode">subject code</param>
-        ScheduleTimetableResult GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType);
+        Task<ScheduleTimetableResult> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType);
 
         /// <summary>
         /// Return schedule for whole week from file for test purposes

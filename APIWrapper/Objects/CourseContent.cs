@@ -1,32 +1,16 @@
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FRITeam.Swapify.APIWrapper.Objects
 {
     public class CourseContent
     {
         [JsonProperty("value")]
-        public string Code { get; }
+        public string Code { get; set; }
         [JsonProperty("label")]
-        public string Name { get; }
+        public string Name { get; set; }
         [JsonProperty("desc")]
-        public string Description { get; }
+        public string Description { get; set; }
         [JsonProperty("type")]
-        public int Type { get; }
-
-        public CourseContent(string code, string name, string description, int type)
-        {
-            Code = code;
-            Name = name;
-            Description = description;
-            Type = type;
-        }
-
-        public bool IsSameAs(CourseContent content)
-        {
-            return Code.Equals(content.Code);
-        }
+        public int Type { get; set; } 
     }
 }

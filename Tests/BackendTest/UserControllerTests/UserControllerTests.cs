@@ -1,7 +1,5 @@
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Settings;
-using FRITeam.Swapify.Entities;
 using Identity = Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,6 +10,8 @@ using System.Threading.Tasks;
 using WebAPI.Controllers;
 using WebAPI.Models.UserModels;
 using Xunit;
+using FRITeam.Swapify.SwapifyBase.Settings;
+using FRITeam.Swapify.SwapifyBase.Entities;
 
 namespace BackendTest.UserControllerTests
 {

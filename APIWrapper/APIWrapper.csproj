@@ -6,17 +6,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
 	  <PackageReference Include="NLog.Web.AspNetCore" Version="4.7.0" />
     <PackageReference Include="NLog" Version="4.5.11" />
-    <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.10.0.7896">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -24,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Entities.csproj" />
+    <ProjectReference Include="..\Entities\SwapifyBase.csproj" />
   </ItemGroup>
 
 </Project>

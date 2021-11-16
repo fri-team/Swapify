@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIWrapper", "APIWrapper\AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.csproj", "{24A811E8-10B5-4CDA-BECD-447E84DEE238}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{80D1B9D3-DBC6-42B8-B2E3-EC59A965E955}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwapifyBase", "Entities\SwapifyBase.csproj", "{80D1B9D3-DBC6-42B8-B2E3-EC59A965E955}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2B48E3B6-DE36-4B37-AE0B-3C85912E3942}"
 EndProject

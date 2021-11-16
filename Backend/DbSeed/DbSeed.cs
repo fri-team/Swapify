@@ -1,8 +1,9 @@
 using FRITeam.Swapify.Backend.CourseParser;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Settings;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
+using FRITeam.Swapify.SwapifyBase.Entities.Notifications;
+using FRITeam.Swapify.SwapifyBase.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Entities.Notifications;
 
 namespace FRITeam.Swapify.Backend.DbSeed
 {

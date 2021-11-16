@@ -1,6 +1,6 @@
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using System;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
 
 namespace WebAPI.Models.TimetableModels
 {

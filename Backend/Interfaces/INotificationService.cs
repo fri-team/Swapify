@@ -1,9 +1,8 @@
+using FRITeam.Swapify.SwapifyBase.Entities.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Notifications;
 
 namespace FRITeam.Swapify.Backend.Interfaces
 {

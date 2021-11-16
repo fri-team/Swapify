@@ -16,19 +16,20 @@ using System.Text;
 using AspNetCore.Identity.MongoDbCore.Extensions;
 using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using AspNetCore.Identity.MongoDbCore.Models;
-using FRITeam.Swapify.Backend.Settings;
-using FRITeam.Swapify.Entities;
 using Microsoft.Extensions.Options;
 using System;
 using WebAPI.Filters;
 using FRITeam.Swapify.Backend.DbSeed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
-using FRITeam.Swapify.Backend.Exceptions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using WebAPI.Models.DatabaseModels;
+using FRITeam.Swapify.SwapifyBase.Settings;
+using FRITeam.Swapify.SwapifyBase.Exceptions;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
+using FRITeam.Swapify.SwapifyBase.Entities;
 
 namespace WebAPI
 {
@@ -200,7 +201,7 @@ namespace WebAPI
         {
             _logger.LogInformation("Validating settings");
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
-            var mailSettings = Configuration.GetSection("MailingSettings");
+            var mailSettings = Configuration.GetSection("MailingSettings");            
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
@@ -221,12 +222,16 @@ namespace WebAPI
             var ldapSettings = Configuration.GetSection("LdapSettings");
             if (ldapSettings.Get<LdapSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(LdapSettings)} configuration section.");
+            var proxySettings = Configuration.GetSection(nameof(ProxySettings));            
+            if (proxySettings.Get<ProxySettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(ProxySettings)} configuration section.");
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
             services.Configure<EnvironmentSettings>(Configuration);
             services.Configure<RecaptchaSettings>(recaptchaSettings);
             services.Configure<LdapSettings>(ldapSettings);
+            services.Configure<ProxySettings>(proxySettings);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>

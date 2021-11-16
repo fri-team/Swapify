@@ -1,5 +1,4 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
+using FRITeam.Swapify.SwapifyBase.Entities;
 
 namespace WebAPI.Controllers
 {

@@ -1,11 +1,10 @@
-
 using FRITeam.Swapify.APIWrapper.Objects;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.APIWrapper
 {
     public interface ISchoolCourseProxy
     {
-        IEnumerable<CourseContent> GetByCourseName(string courseName);
+        Task<UnizaCourseContentResult> GetByCourseName(string courseName);
     }
 }

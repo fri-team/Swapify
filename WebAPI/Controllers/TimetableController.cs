@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
             if (timetable == null)
                 return ErrorResponse("Loading of test timetable failed.");
 
-            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
 
             Student student = user.Student;
             if (student == null)
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             }
             var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
             if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
-            FRITeam.Swapify.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
             Student student = user.Student;
             if (student == null)
             {
