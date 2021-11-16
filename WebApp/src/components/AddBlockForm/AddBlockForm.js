@@ -47,7 +47,8 @@ class AddBlockForm extends Component {
     user: this.props.user,
     editing: this.props.editing,
     loading: false,
-    blockColor: toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor,
+    blockColor: this.props.course.blockColor == null ? 
+      toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor : this.setBlockColor(this.props.course.blockColor).backgroundColor,
     yearOfStudy: '',
     studyType: '',
   };
@@ -172,6 +173,13 @@ class AddBlockForm extends Component {
 
   handleChangeComplete = (color) => {
     this.setState({blockColor: color.hex});
+  }
+
+  setBlockColor(shade) {
+    return {
+      backgroundColor: shade,
+      color: 'rgba(0, 0, 0, 0.87)',
+    };
   }
 
   render() {
