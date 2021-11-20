@@ -1,4 +1,4 @@
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

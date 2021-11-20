@@ -1,12 +1,10 @@
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FRITeam.Swapify.APIWrapper
 {
@@ -14,7 +12,7 @@ namespace FRITeam.Swapify.APIWrapper
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public static IEnumerable<ScheduleHourContent> ParseResponse(string myResponse)
+        public static List<ScheduleContent> ParseResponse(string myResponse)
         {
 
             var response = JObject.Parse(myResponse);
@@ -29,7 +27,7 @@ namespace FRITeam.Swapify.APIWrapper
 
             var scheduleContent = (JArray)response["ScheduleContent"];
 
-            var weekTimetable = new List<ScheduleHourContent>();
+            var weekTimetable = new List<ScheduleContent>();
 
             foreach (var block in scheduleContent)
             {
@@ -41,12 +39,17 @@ namespace FRITeam.Swapify.APIWrapper
                         string roomName = block["r"].ToString();
                         string subjectCode = block["k"].ToString().Trim();
                         string subjectNameHelper = block["s"].ToString().Trim();                        
-                        string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);
-                        var hourContent = new ScheduleHourContent(int.Parse(block["dw"].ToString()) - 1, int.Parse(block["b"].ToString()), false,
-                                                         lessonType, teacherName, roomName,
-                                                         subjectCode, subjectName, SubjectType.None);
-
-                        weekTimetable.Add(hourContent);                        
+                        string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);                        
+                        var content = new ScheduleContent()
+                        {
+                            BlockNumber = int.Parse(block["dw"].ToString()) - 1,
+                            LessonType = lessonType,
+                            TeacherName = teacherName,
+                            RoomName = roomName,
+                            CourseCode = subjectCode,
+                            CourseName = subjectName                            
+                        };
+                        weekTimetable.Add(content); 
                     }
                 }
                 catch (Exception ex)
@@ -81,7 +84,6 @@ namespace FRITeam.Swapify.APIWrapper
                     throw;
                 }
             }
-
             return courses;
         }
 

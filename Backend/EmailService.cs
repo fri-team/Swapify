@@ -1,5 +1,6 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Settings;
+using FRITeam.Swapify.SwapifyBase.Settings;
+using FRITeam.Swapify.SwapifyBase.Emails;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -28,7 +30,7 @@ namespace FRITeam.Swapify.Backend
             _emailSettings = emailSettings.Value;
             _environmentSettings = environmentSettings.Value;
             _recaptchaSettings = recaptchaSettings.Value;
-            HttpClientHandler clientHandler = new HttpClientHandler
+            HttpClientHandler clientHandler = new()
             {
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
             };
@@ -79,8 +81,8 @@ namespace FRITeam.Swapify.Backend
         public bool SendConfirmationEmail(string receiver, string confirmationLink, string emailType)
         {
             try
-            {
-                string type = $"{_emailSettings.EmailsNameSpace}.{emailType}";
+            {                
+                string type = $"{_emailSettings.EmailsNameSpace}.{emailType}, {_emailSettings.AssemblyName}";                
                 var email = Activator.CreateInstance(Type.GetType(type), _loggerFactory, _emailSettings.SenderEmail,
                     _emailSettings.SenderDisplayName, receiver, _environmentSettings.BaseUrl, confirmationLink);
                 MimeMessage mailMessage = (MimeMessage)email.GetType().GetMethod("CreateMailMessage")

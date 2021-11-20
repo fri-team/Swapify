@@ -6,15 +6,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>APIWrapper.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 	  <PackageReference Include="NLog.Web.AspNetCore" Version="4.7.0" />
     <PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.10.0.7896">
@@ -24,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Entities.csproj" />
+    <ProjectReference Include="..\SwapifyBase\SwapifyBase.csproj" />
   </ItemGroup>
 
 </Project>

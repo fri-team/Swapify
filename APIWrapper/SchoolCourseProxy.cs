@@ -1,47 +1,40 @@
 using FRITeam.Swapify.APIWrapper.Objects;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
+using Microsoft.Extensions.Options;
 using NLog;
+using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.APIWrapper
 {
     public class SchoolCourseProxy : ISchoolCourseProxy
-    {
-        private const string URL = "https://nic.uniza.sk/webservices";
-        private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleType4.php";
+    {        
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ProxySettings _proxySettings;
+        private readonly RestClient _client;
 
-        public IEnumerable<CourseContent> GetByCourseName(string courseName)
+        public SchoolCourseProxy(IOptions<ProxySettings> proxySettings)
         {
-            return CallCourseContentApi("q", courseName);
+            _proxySettings = proxySettings.Value;
+            _client = new RestClient(_proxySettings.Base_URL);
+            _client.AddHandler("text/html", () => { return new JsonNetSerializer(); });
         }
 
-        private IEnumerable<CourseContent> CallCourseContentApi(string type, string requestContent)
+        public async Task<UnizaCourseContentResult> GetByCourseName(string courseName)
         {
-            string address = $"{URL}/{SCHEDULE_CONTENT_URL}?{type}={Uri.EscapeUriString(requestContent)}";
-            var myResponse = "";
+            var request = new RestRequest(_proxySettings.CourseContentURL);
+            request.AddParameter("q", courseName);
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(address);
-                request.Method = "Get";
-                request.KeepAlive = true;
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                var response = (HttpWebResponse)request.GetResponse();
-
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    myResponse = sr.ReadToEnd();
-                }
+                return await _client.GetAsync<UnizaCourseContentResult>(request);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.Error(ex);                
                 throw;
-            }
-            return ResponseParser.ParseCourseResponse(myResponse);
-        }
+            }                        
+        }  
     }
 }

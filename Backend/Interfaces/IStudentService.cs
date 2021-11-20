@@ -1,5 +1,5 @@
 using FRITeam.Swapify.APIWrapper.Objects;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

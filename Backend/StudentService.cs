@@ -1,5 +1,5 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;

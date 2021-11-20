@@ -1,7 +1,5 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -9,6 +7,10 @@ using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
+using Microsoft.Extensions.Options;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
 
 namespace BackendTest
 {
@@ -31,8 +33,9 @@ namespace BackendTest
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
+            var options = GetProxyOptions();
+            var schoolScheduleProxy = new SchoolScheduleProxy(options);
+            var schoolCourseProxy = new SchoolCourseProxy(options);
             CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy, schoolCourseProxy);
             
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
@@ -91,8 +94,9 @@ namespace BackendTest
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             StudentService studentSrv = new StudentService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
+            var options = GetProxyOptions();
+            var schoolScheduleProxy = new SchoolScheduleProxy(options);
+            var schoolCourseProxy = new SchoolCourseProxy(options);
             CourseService courseService = new CourseService(_loggerMockCourse.Object, database, schoolScheduleProxy, schoolCourseProxy);
 
             Course course = await CreateAndAddCourse("Programovanie", "11111", courseService);
@@ -144,6 +148,17 @@ namespace BackendTest
             course.CourseCode = code;
             await service.AddAsync(course);
             return course;
+        }
+
+        private IOptions<ProxySettings> GetProxyOptions()
+        {
+            var settings = new ProxySettings()
+            {
+                Base_URL = "https://nic.uniza.sk/webservices",
+                CourseContentURL = "getUnizaScheduleType4.php",
+                ScheduleContentURL = "getUnizaScheduleContent.php"
+            };
+            return Options.Create(settings);
         }
     }
 }

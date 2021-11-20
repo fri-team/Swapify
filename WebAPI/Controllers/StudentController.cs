@@ -1,5 +1,4 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
+using FRITeam.Swapify.SwapifyBase.Entities;
 
 namespace WebAPI.Controllers
 {
@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
                 }
                 if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
                 {
-                    var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                    var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
                     if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
                     await _studentService.UpdateStudentTimetableAsync(student,
                         await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
