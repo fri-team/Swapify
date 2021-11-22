@@ -205,7 +205,7 @@ export function exchangeConfirm(blockTo) {
     })
       .then((response) => { 
         var exchangeMade = response.data;
-        if (exchangeMade === false) {
+        if (exchangeMade === "") {
           window.alert("Žiadosť o výmenu bola evidovaná.");          
         } else {          
           window.alert("Výmena bola vykonaná.");  
