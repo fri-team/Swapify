@@ -62,6 +62,7 @@
     "redux-saga": "^0.16.2",
     "redux-thunk": "2.1.0",
     "styled-components": "^4.0.3",
+    "text-transform": "^0.1.2",
     "throttle-debounce": "^2.1.0",
     "validator": "^10.8.0"
   },
