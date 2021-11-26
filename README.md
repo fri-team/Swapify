@@ -49,3 +49,7 @@ Web based application enabling students of [University of Zilina](http://www.uni
 After these steps, the application should launch in your browser.
 
 If you get error that npm start can't launch then try this solution: https://stackoverflow.com/questions/45499656/error-occured-when-executing-command-npm-run-serve
+
+## How to open Swagger documentation
+Swagger UI is located on URL: <webpage>:<port>/swagger for example localhost/swagger or localhost:5020/swagger
+Swagger JSON file is located on URL /swagger/v1/swagger.json
