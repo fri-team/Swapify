@@ -30,6 +30,7 @@ using FRITeam.Swapify.SwapifyBase.Settings;
 using FRITeam.Swapify.SwapifyBase.Exceptions;
 using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using Microsoft.OpenApi.Models;
 
 namespace WebAPI
 {
@@ -139,19 +140,30 @@ namespace WebAPI
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
             services.AddSingleton<INotificationService, NotificationService>();            
-            services.AddControllersWithViews();            
+            services.AddControllersWithViews();
             if (!Environment.IsEnvironment(EnviromentDevVS))
             {
                 services.AddSpaStaticFiles(configuration =>
                 {
                     configuration.RootPath = _pathSettings.WwwRootPath;
                 });
-            }            
+            }
+
+            services.AddMvcCore().AddApiExplorer();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swapify API", Version = "v1" });
+            });
             ConfigureAuthorization(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "v1");
+            });
             if (!env.IsEnvironment(EnviromentDevVS))
             {
                 app.UseExceptionHandler(ErrorHandlingPath);
@@ -168,7 +180,7 @@ namespace WebAPI
             }            
             else
             {             
-                app.UseDeveloperExceptionPage();                
+                app.UseDeveloperExceptionPage();
                 CreateDbSeedAsync(app.ApplicationServices);
             }
             app.UseCors("SwapifyCorsPolicy");

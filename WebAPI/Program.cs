@@ -14,7 +14,7 @@ namespace WebAPI
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             // envinronement was '' (empty) and app was searching for nlog..config -> fix this...
-            if (environment == "" || environment == null)
+            if (string.IsNullOrEmpty(environment))
             {
                 environment = "Production";
             }
