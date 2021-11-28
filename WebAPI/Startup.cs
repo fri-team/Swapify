@@ -138,7 +138,8 @@ namespace WebAPI
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
             services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<INotificationService, NotificationService>();            
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<ICalendarService, CalendarService>();
             services.AddControllersWithViews();            
             if (!Environment.IsEnvironment(EnviromentDevVS))
             {
@@ -225,6 +226,9 @@ namespace WebAPI
             var proxySettings = Configuration.GetSection(nameof(ProxySettings));            
             if (proxySettings.Get<ProxySettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(ProxySettings)} configuration section.");
+            var calendarSettings = Configuration.GetSection("CalendarSettings");
+            if (calendarSettings.Get<CalendarSettings>() == null)
+                throw new SettingException("appsettings.json", $"Unable to load {nameof(CalendarSettings)} configuration section.");
             services.Configure<MailingSettings>(mailSettings);
             services.Configure<IdentitySettings>(identitySettings);
             services.Configure<PathSettings>(pathSettings);
@@ -232,6 +236,7 @@ namespace WebAPI
             services.Configure<RecaptchaSettings>(recaptchaSettings);
             services.Configure<LdapSettings>(ldapSettings);
             services.Configure<ProxySettings>(proxySettings);
+            services.Configure<CalendarSettings>(calendarSettings);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<MailingSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
@@ -244,6 +249,8 @@ namespace WebAPI
                 resolver.GetRequiredService<IOptions<RecaptchaSettings>>().Value);
             services.AddSingleton<IValidatable>(resolver =>
                 resolver.GetRequiredService<IOptions<LdapSettings>>().Value);
+            services.AddSingleton<IValidatable>(resolver =>
+                resolver.GetRequiredService<IOptions<CalendarSettings>>().Value);
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
         }
 

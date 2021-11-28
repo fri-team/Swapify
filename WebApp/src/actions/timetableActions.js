@@ -381,3 +381,19 @@ export function editBlock(body, userEmail) {
     });
   };
 }
+
+export function loadMyTimetableCalendar(user, history) {
+  if (user.personalNumber == null) {
+    history.push(PERSONALNUMBER);
+  }
+  return axios({
+    method: 'get',
+    url: '/api/student/getStudentTimetableCalendar/' + user.email
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(() => {
+      return null;
+    });
+}
