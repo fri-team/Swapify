@@ -83,17 +83,16 @@ namespace WebAPI.Controllers
                     {
                         string message = $"Error when sending confirmation email to user {user1.Email}.";
                         _logger.LogError(message);
-                        return NotFound(message);
                     }
 
                     if (!_emailService.SendConfirmationEmail(user2.Email, callbackUrl2, "ConfirmExchangeEmail"))
                     {
                         string message = $"Error when sending confirmation email to user {user2.Email}.";
                         _logger.LogError(message);
-                        return NotFound(message);
                     }
+                    return Ok(res);
                 }
-                return Ok(res);
+                return Ok(null);
             }
             catch
             {
