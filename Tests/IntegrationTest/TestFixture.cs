@@ -37,7 +37,7 @@ namespace IntegrationTest
             var builder = new WebHostBuilder()
                 .UseContentRoot(basePath)
                 .UseConfiguration(config)
-                .UseEnvironment("Development")
+                .UseEnvironment("DevelopmentVS")
                 .UseStartup<Startup>()
                 .ConfigureTestServices(services =>
                 {

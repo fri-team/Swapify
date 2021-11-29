@@ -118,5 +118,23 @@ namespace IntegrationTest.ExchangeControllerTest
                 CourseId = CourseGuid.ToString()
             },
         };
+
+        public static ExchangeRequestModel ExchangeModel23 = new ExchangeRequestModel()
+        {
+            BlockFrom = new BlockForExchangeModel()
+            {
+                Day = (int)Day.Wednesday,
+                Duration = 2,
+                StartHour = 10,
+                CourseId = CourseGuid.ToString()
+            },
+            BlockTo = new BlockForExchangeModel()
+            {
+                Day = (int)Day.Monday,
+                Duration = 5,
+                StartHour = 19,
+                CourseId = CourseGuid.ToString()
+            },
+        };
     }
 }

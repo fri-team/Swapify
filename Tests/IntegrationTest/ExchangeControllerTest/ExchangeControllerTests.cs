@@ -1,3 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+
 using FRITeam.Swapify.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,6 +15,7 @@ using System.Threading.Tasks;
 using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
 using Xunit;
+
 
 namespace IntegrationTest.ExchangeControllerTest
 {
@@ -36,21 +41,23 @@ namespace IntegrationTest.ExchangeControllerTest
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
             var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
-            HttpClient client2 = TestFixture.CreateClient();
-            var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login3);
+
+            HttpClient client3 = TestFixture.CreateClient();
+            var student3Id = await AuthenticateClient(client3, ExchangeControllerTestsData.Login3);
+
             var waitingExchanges1Before = await GetUserWaitingExchanges(client1, student1Id);
-            var waitingExchanges2Before = await GetUserWaitingExchanges(client2, student2Id);
+            var waitingExchanges3Before = await GetUserWaitingExchanges(client3, student3Id);
 
             // Act
             var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
             var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
             var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1, student1Id);
 
-            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
+            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client3, student3Id);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client3, student3Id);
 
             var waitingExchanges1 = await GetUserWaitingExchanges(client1, student1Id);
-            var waitingExchanges2 = await GetUserWaitingExchanges(client2, student2Id);
+            var waitingExchanges3 = await GetUserWaitingExchanges(client3, student3Id);
 
             // Assert
             Assert.True(response11.StatusCode == System.Net.HttpStatusCode.OK);
@@ -66,7 +73,7 @@ namespace IntegrationTest.ExchangeControllerTest
 
             // Consider comparing state before the Act and after ?
             Assert.True(waitingExchanges1.Count == waitingExchanges1Before.Count + 1);
-            Assert.True(waitingExchanges2.Count == waitingExchanges2Before.Count + 1);
+            Assert.True(waitingExchanges3.Count == waitingExchanges3Before.Count + 1);
             //TODO: Check if host makes exchanges 
         }
 
@@ -93,21 +100,24 @@ namespace IntegrationTest.ExchangeControllerTest
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
             var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+
             HttpClient client2 = TestFixture.CreateClient();
             var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
 
             // Act
             var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
+            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
 
             // Assert
             Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.NotFound);
+            Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK); //NotFound -> change
         }
 
 
         private async Task<string> AuthenticateClient(HttpClient client, LoginModel login)
         {
+            login.Captcha = GetCaptchaToken(login).RawData;
+
             var jsonModel = JsonConvert.SerializeObject(login);
             StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(LoginUri, content);
@@ -121,10 +131,16 @@ namespace IntegrationTest.ExchangeControllerTest
         private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
         {
             exchangeModel.StudentId = studentId;
+            exchangeModel.BlockFrom.BlockId = exchangeModel.BlockFrom.CourseId;
+            exchangeModel.BlockTo.BlockId = exchangeModel.BlockTo.CourseId;
+
             var jsonModel = JsonConvert.SerializeObject(exchangeModel);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(ExchangeUri, content);
 
-            return await client.PostAsync(ExchangeUri, content);
+            string jsonToCheck = await response.Content.ReadAsStringAsync();
+
+            return response;
         }
 
         private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string studentId)
@@ -137,6 +153,19 @@ namespace IntegrationTest.ExchangeControllerTest
             string json = await response.Content.ReadAsStringAsync();
             var list = JsonConvert.DeserializeObject<List<BlockChangeRequest>>(json);
             return list;
+        }
+
+        private JwtSecurityToken GetCaptchaToken(LoginModel login) {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var secret = Encoding.ASCII.GetBytes("6LeJhgIaAAAAANEP4LvIQo25l4AReIwyWnfq0VXX");
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, login.Password) }),
+                Expires = DateTime.UtcNow.AddHours(6),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = (JwtSecurityToken)tokenHandler.CreateToken(tokenDescriptor);
+            return token;
         }
     }
 }
