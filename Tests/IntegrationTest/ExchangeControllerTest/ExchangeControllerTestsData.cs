@@ -8,6 +8,7 @@ namespace IntegrationTest.ExchangeControllerTest
     public static class ExchangeControllerTestsData
     {
         public static readonly Guid StduentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+        public static readonly Guid BlockGuid = Guid.Parse("72338e48-9829-47b5-93b5-ba0a0229c59f");
         public static readonly Guid CourseGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
         public static readonly Guid Course2Guid = Guid.Parse("3F2504E0-4F89-11D3-9A0C-0305E82C3301");
 
@@ -28,6 +29,7 @@ namespace IntegrationTest.ExchangeControllerTest
             Email = "oleg3@swapify.com",
             Password = "Heslo123"
         };
+
 
         public static ExchangeRequestModel ExchangeModel11 = new ExchangeRequestModel()
         {
@@ -115,24 +117,6 @@ namespace IntegrationTest.ExchangeControllerTest
                 Day = (int)Day.Monday,
                 Duration = 2,
                 StartHour = 9,
-                CourseId = CourseGuid.ToString()
-            },
-        };
-
-        public static ExchangeRequestModel ExchangeModel23 = new ExchangeRequestModel()
-        {
-            BlockFrom = new BlockForExchangeModel()
-            {
-                Day = (int)Day.Wednesday,
-                Duration = 2,
-                StartHour = 10,
-                CourseId = CourseGuid.ToString()
-            },
-            BlockTo = new BlockForExchangeModel()
-            {
-                Day = (int)Day.Monday,
-                Duration = 5,
-                StartHour = 19,
                 CourseId = CourseGuid.ToString()
             },
         };

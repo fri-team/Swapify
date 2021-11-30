@@ -68,13 +68,9 @@ namespace IntegrationTest.ExchangeControllerTest
             // UserWaitingExchanges are not processed
             // Host doesn't make exchanges (count increases by every test run)
 
-            //Assert.True(waitingExchanges1.Count == 1); 
-            //Assert.True(waitingExchanges2.Count == 1);
-
             // Consider comparing state before the Act and after ?
             Assert.True(waitingExchanges1.Count == waitingExchanges1Before.Count + 1);
             Assert.True(waitingExchanges3.Count == waitingExchanges3Before.Count + 1);
-            //TODO: Check if host makes exchanges 
         }
 
         [Fact]
@@ -105,12 +101,12 @@ namespace IntegrationTest.ExchangeControllerTest
             var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
 
             // Act
-            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
-            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client2, student2Id);
+            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
+            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
 
             // Assert
             Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK); //NotFound -> change
+            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK); //NotFound
         }
 
 
@@ -138,7 +134,7 @@ namespace IntegrationTest.ExchangeControllerTest
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
             var response = await client.PostAsync(ExchangeUri, content);
 
-            string jsonToCheck = await response.Content.ReadAsStringAsync();
+            string json = await response.Content.ReadAsStringAsync();
 
             return response;
         }
