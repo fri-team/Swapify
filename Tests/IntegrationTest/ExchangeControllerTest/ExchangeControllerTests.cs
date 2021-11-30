@@ -42,35 +42,22 @@ namespace IntegrationTest.ExchangeControllerTest
             HttpClient client1 = TestFixture.CreateClient();
             var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
 
-            HttpClient client3 = TestFixture.CreateClient();
-            var student3Id = await AuthenticateClient(client3, ExchangeControllerTestsData.Login3);
-
             var waitingExchanges1Before = await GetUserWaitingExchanges(client1, student1Id);
-            var waitingExchanges3Before = await GetUserWaitingExchanges(client3, student3Id);
 
             // Act
             var response11 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
             var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client1, student1Id);
             var response13 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel13, client1, student1Id);
 
-            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client3, student3Id);
-            var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client3, student3Id);
-
             var waitingExchanges1 = await GetUserWaitingExchanges(client1, student1Id);
-            var waitingExchanges3 = await GetUserWaitingExchanges(client3, student3Id);
 
-            // Assert
+            // Assert - sendExchangeRequest state
             Assert.True(response11.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response13.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK);
-            // UserWaitingExchanges are not processed
-            // Host doesn't make exchanges (count increases by every test run)
 
-            // Consider comparing state before the Act and after ?
-            Assert.True(waitingExchanges1.Count == waitingExchanges1Before.Count + 1);
-            Assert.True(waitingExchanges3.Count == waitingExchanges3Before.Count + 1);
+            // Assert - Maked exchanges by student
+            Assert.True(waitingExchanges1.Count >= waitingExchanges1Before.Count + 1);
         }
 
         [Fact]
@@ -95,18 +82,18 @@ namespace IntegrationTest.ExchangeControllerTest
         {
             // Arrange
             HttpClient client1 = TestFixture.CreateClient();
-            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login1);
+            var student1Id = await AuthenticateClient(client1, ExchangeControllerTestsData.Login3);
 
             HttpClient client2 = TestFixture.CreateClient();
             var student2Id = await AuthenticateClient(client2, ExchangeControllerTestsData.Login2);
 
-            // Act
-            var response12 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel11, client1, student1Id);
+            // Act - ExchangeController.cs -> ExchangeConfirm()
+            var response21 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel21, client1, student1Id);
             var response22 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel22, client2, student2Id);
 
             // Assert
-            Assert.True(response12.StatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK); //NotFound
+            Assert.True(response21.StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response22.StatusCode == System.Net.HttpStatusCode.OK); 
         }
 
 
@@ -127,8 +114,8 @@ namespace IntegrationTest.ExchangeControllerTest
         private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
         {
             exchangeModel.StudentId = studentId;
-            exchangeModel.BlockFrom.BlockId = exchangeModel.BlockFrom.CourseId;
-            exchangeModel.BlockTo.BlockId = exchangeModel.BlockTo.CourseId;
+            exchangeModel.BlockFrom.BlockId = exchangeModel.BlockTo.CourseId;
+            exchangeModel.BlockTo.BlockId = exchangeModel.BlockFrom.CourseId;
 
             var jsonModel = JsonConvert.SerializeObject(exchangeModel);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
