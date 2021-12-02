@@ -1,0 +1,17 @@
+name: GitHub Actions
+on:
+  push:
+   branches:
+    - master
+    - staging_test
+jobs:  
+ check_branch:
+  name: actions_build
+  runs-on: ubuntu-latest    
+  steps:   
+   - name: Check branch name
+     if: ${{${GITHUB_REF##*/} != 'develop' && ${GITHUB_REF##*/} != 'hotfixes'}}
+     uses: actions/github-script@v3
+     with:
+      script: |
+       core.setFailed('Not allowed')
