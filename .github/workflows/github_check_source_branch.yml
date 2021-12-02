@@ -6,7 +6,7 @@ on:
     - staging_test
 jobs:  
  check_branch:
-  name: actions_build
+  name: check_branch
   runs-on: ubuntu-latest    
   steps:   
    - name: Check branch name
