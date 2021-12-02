@@ -1,0 +1,14 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "fri-team-github",
+    "Name": "fri-team"
+  },
+  "ProjectKey": "Swapify",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AWJsM4328586_vYMdVQp",
+      "ProfileTimestamp": "2019-01-14T10:58:53+01:00"
+    }
+  }
+}

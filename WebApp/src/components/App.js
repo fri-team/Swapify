@@ -1,41 +1,42 @@
-/* eslint-disable import/no-named-as-default */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Switch, NavLink, Route } from 'react-router-dom';
-import HomePage from './HomePage';
-import FuelSavingsPage from './containers/FuelSavingsPage';
-import AboutPage from './AboutPage';
-import NotFoundPage from './NotFoundPage';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { onlyAuth, onlyNotAuth } from '../util/auth';
+import { HOME, LOGIN, REGISTER, CONFIRMEMAIL, TIMETABLE, SETNEWPASSWORD, PERSONALNUMBER, ABOUTUS, PRIVACYPOLICY } from '../util/routes';
 
-// This is a class-based component because the current
-// version of hot reloading won't hot reload a stateless
-// component at the top-level.
+import {
+  HomePage,
+  ConfirmEmailPage,
+  TimetablePage,
+  NotFoundPage,
+  SetNewPasswordPage,
+  PersonalNumber
+} from './';
+import PrivacyPolicyPage from './PrivacyPolicyPage/PrivacyPolicyPage';
+//import WebViewer from './PrivacyPolicyPage/web/viewer';
 
-class App extends React.Component {
+// This is a class-based component because the current version of hot reloading
+// won't hot reload a stateless component at the top-level.
+
+export default class App extends Component {
   render() {
-    const activeStyle = { color: 'blue' };
     return (
-      <div>
-        <div>
-          <NavLink exact to="/" activeStyle={activeStyle}>Home</NavLink>
-          {' | '}
-          <NavLink to="/fuel-savings" activeStyle={activeStyle}>Demo App</NavLink>
-          {' | '}
-          <NavLink to="/about" activeStyle={activeStyle}>About</NavLink>
+      <BrowserRouter>
+        <div className="app-container">
+          <Switch>
+            <Route exact path={HOME} component={onlyNotAuth(HomePage)} />
+            <Route path={LOGIN} component={onlyNotAuth(HomePage)} />
+            <Route path={PERSONALNUMBER} component={onlyAuth(PersonalNumber)} />
+            <Route path={REGISTER} component={onlyNotAuth(HomePage)} />
+            <Route path={ABOUTUS} component={onlyNotAuth(HomePage)} />
+            <Route path={TIMETABLE} component={onlyAuth(TimetablePage)} />
+            <Route path={SETNEWPASSWORD} component={onlyNotAuth(SetNewPasswordPage)} />
+            <Route path={PRIVACYPOLICY} component={onlyNotAuth(PrivacyPolicyPage)} /> 
+            <Route path={CONFIRMEMAIL} component={onlyNotAuth(ConfirmEmailPage)} />
+            <Route component={NotFoundPage} />
+          </Switch>
+          
         </div>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/fuel-savings" component={FuelSavingsPage} />
-          <Route path="/about" component={AboutPage} />
-          <Route component={NotFoundPage} />
-        </Switch>
-      </div>
+      </BrowserRouter>
     );
   }
 }
-
-App.propTypes = {
-  children: PropTypes.element
-};
-
-export default App;

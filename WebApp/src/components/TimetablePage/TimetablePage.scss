@@ -1,0 +1,31 @@
+.app-container {
+    display: flex;
+    height: 100%;
+}
+
+.dialogHelpContent {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.oneGif {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    transition: 0.4s;
+}
+
+.oneGif:hover {
+    background-color: whitesmoke;
+}
+
+.oneGif p {
+    font-style: oblique;
+    font-weight: 600;
+}
+
+.itemOfMailUsForm {
+    background-color: chartreuse;
+}

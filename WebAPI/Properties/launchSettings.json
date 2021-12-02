@@ -8,20 +8,27 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "WebAPI": {
       "commandName": "Project",
-      "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "JwtSecret": "DoNotUseMeInProduction",
+        "BaseUrl": "http://localhost:3000/",
+        "ASPNETCORE_ENVIRONMENT": "DevelopmentVS"
       },
       "applicationUrl": "http://localhost:5000/"
+    },
+    "AWS": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "JwtSecret": "##JWTKEY##",
+        "BaseUrl": "https://swapify.fri.uniza.sk/",
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "publishAllPorts": true
     }
   }
 }

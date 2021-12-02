@@ -1,13 +1,18 @@
-import {createStore, compose, applyMiddleware} from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import thunk from 'redux-thunk';
-import createHistory from 'history/createBrowserHistory';
-// 'routerMiddleware': the new way of storing route changes with redux middleware since rrV4.
-import { routerMiddleware } from 'react-router-redux';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { routerMiddleware } from 'connected-react-router';
+import { persistStore } from 'redux-persist';
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers';
-export const history = createHistory();
+import sagas from '../sagas';
+
+export const history = createBrowserHistory()
+
 function configureStoreProd(initialState) {
   const reactRouterMiddleware = routerMiddleware(history);
+  const sagaMiddleware = createSagaMiddleware();
   const middlewares = [
     // Add other middleware on this line...
 
@@ -15,16 +20,24 @@ function configureStoreProd(initialState) {
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
     thunk,
     reactRouterMiddleware,
+    sagaMiddleware
   ];
 
-  return createStore(rootReducer, initialState, compose(
-    applyMiddleware(...middlewares)
-    )
+  const store = createStore(
+    rootReducer(history),
+    initialState,
+    compose(applyMiddleware(...middlewares))
   );
+
+  const persistor = persistStore(store);
+  sagaMiddleware.run(sagas);
+
+  return { store, persistor };
 }
 
 function configureStoreDev(initialState) {
   const reactRouterMiddleware = routerMiddleware(history);
+  const sagaMiddleware = createSagaMiddleware();
   const middlewares = [
     // Add other middleware on this line...
 
@@ -35,13 +48,20 @@ function configureStoreDev(initialState) {
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
     thunk,
     reactRouterMiddleware,
+    sagaMiddleware
   ];
 
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools
-  const store = createStore(rootReducer, initialState, composeEnhancers(
-    applyMiddleware(...middlewares)
-    )
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools
+
+  const store = createStore(
+    rootReducer(history),
+    initialState,
+    composeEnhancers(applyMiddleware(...middlewares))
   );
+
+  const persistor = persistStore(store);
+  sagaMiddleware.run(sagas);
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
@@ -51,9 +71,10 @@ function configureStoreDev(initialState) {
     });
   }
 
-  return store;
+  return { store, persistor };
 }
 
-const configureStore = process.env.NODE_ENV === 'production' ? configureStoreProd : configureStoreDev;
+const configureStore =
+  process.env.NODE_ENV == 'production' ? configureStoreProd : configureStoreDev;
 
 export default configureStore;

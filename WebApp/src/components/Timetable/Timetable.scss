@@ -1,0 +1,48 @@
+@import '../../styles/globals';
+$border-width: 1px;
+$border: $border-width solid $border-color;
+.timetable {
+    width: 100%;
+    flex: 1;
+    display: grid;
+    border: $border;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: '. .' '. blocks';
+    border: $border;
+}
+
+.border-cell {
+    padding: 1em;
+    border: $border;
+    background-color: $background-color;
+}
+
+.border-cell-dark {
+    padding: 1em;
+    border: $border;
+    background-color: #202020;
+    color: white;
+}
+
+.centered {
+    text-align: center;
+}
+
+.border-cells,
+.blocks {
+    grid-area: blocks;
+}
+
+.border-cells-dark {
+    grid-area: blocks;
+    background-color: #202020;
+    color: white;
+    border-color: white;
+}
+
+.blocks {
+    display: grid;
+    grid-gap: $border-width * 2;
+    border: $border-width solid transparent;
+}

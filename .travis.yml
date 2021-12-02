@@ -1,26 +1,29 @@
-matrix:
-  include:
-    - language: node_js
-      node_js:
-        - node
-      cache:
-        directories:
-          - WebApp/node_modules
-      before_install:
-        - cd WebApp/
-      install:
-       - npm install
-      script:
-        - npm run lint
-        - npm run test:CI
-    - language: csharp
-      mono: none
-      dotnet: 2.1.4
-      install:
-        - dotnet restore
-      script:
-        - echo "Run unit tests..."
+language: csharp
+mono: none
+dotnet: 2.1.502
+services:
+  - docker
 
+script:
+  - docker-compose up ci
+  - chmod +x ./SonarQube/sonar-scanner-msbuild-4.5.0.1761-netcoreapp2.0/sonar-scanner-3.2.0.1227/bin/sonar-scanner
+  - dotnet ./SonarQube/sonar-scanner-msbuild-4.5.0.1761-netcoreapp2.0/SonarScanner.MSBuild.dll begin /k:"Swapify" /d:sonar.organization="fri-team-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$SONAR_TOKEN /d:sonar.branch.name=$TRAVIS_BRANCH /d:sonar.cs.opencover.reportsPaths="Tests/BackendTest/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
+  - dotnet build ./Swapify.sln
+  - dotnet test ./Tests/BackendTest/BackendTest.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  - dotnet ./SonarQube/sonar-scanner-msbuild-4.5.0.1761-netcoreapp2.0/SonarScanner.MSBuild.dll end /d:sonar.login=$SONAR_TOKEN
+  
+deploy:  
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: $REGION
+  app: $APP_NAME
+  env: $DEPLOY_ENV
+  bucket_name: $DEPLOY_BUCKET_NAME
+  skip_cleanup: true
+  on:
+    branch: master
+  
 notifications:
   email: false
   slack:

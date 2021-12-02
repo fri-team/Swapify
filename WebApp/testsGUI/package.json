@@ -1,0 +1,19 @@
+{
+  "name": "testsGUI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "codecept.conf.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "codeceptjs": "^2.6.11",
+    "codeceptjs-assert": "0.0.4",
+    "jquery": "^3.5.0",
+    "jquery-ui-dist": "^1.12.1",
+    "puppeteer": "^2.1.1",
+    "unirest": "^0.6.0"
+  },
+  "prettier": {
+    "printWidth": 180
+  }
+}

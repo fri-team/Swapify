@@ -1,0 +1,214 @@
+{
+  "myTimetable": [
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 7,
+      "endBlock": 9,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RA301",
+      "teacher": "Tomáš Majer",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 2,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RC009",
+      "teacher": "Stanislav Palúch",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 8,
+      "endBlock": 10,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RC009",
+      "teacher": "Matilda Drozdová",
+      "type": "lecture"
+    }
+  ],
+  "courseTimetable": [
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 7,
+      "endBlock": 9,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 9,
+      "endBlock": 11,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 11,
+      "endBlock": 13,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 8,
+      "endBlock": 10,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 10,
+      "endBlock": 12,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RC009",
+      "teacher": "Matilda Drozdová",
+      "type": "lecture"
+    }
+  ],
+  "expected": [
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 7,
+      "endBlock": 9,
+      "isGrey": false,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RA301",
+      "teacher": "Tomáš Majer",
+      "type": "laboratory",
+      "isMine": true
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 2,
+      "startBlock": 6,
+      "endBlock": 8,
+      "isGrey": false,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RC009",
+      "teacher": "Stanislav Palúch",
+      "type": "lecture",
+      "isMine": true
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 8,
+      "endBlock": 10,
+      "isGrey": false,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory",
+      "isMine": true
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 6,
+      "endBlock": 8,
+      "isGrey": false,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RC009",
+      "teacher": "Matilda Drozdová",
+      "type": "lecture",
+      "isMine": true
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 7,
+      "endBlock": 9,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 9,
+      "endBlock": 11,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 11,
+      "endBlock": 13,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 10,
+      "endBlock": 12,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    }
+  ]
+}

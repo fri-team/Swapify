@@ -1,0 +1,59 @@
+.block-detail {
+  position: fixed;
+  z-index: 1000;
+  border-radius: .25em;
+  box-shadow: .5em .5em 1em .1em rgba(0, 0, 0, .2);
+  background-color: #fff;
+  .header {
+    border-top-left-radius: .25em;
+    border-top-right-radius: .25em;
+    padding: 4px;
+    .buttons {
+      text-align: right;
+    }
+    .name {
+      padding: .5em 1.5em 1em 1.5em;
+      font-size: 20px;
+      line-height: 26px;
+      color: #fff;
+    }
+  }
+  .footer {
+    padding: 1.5em;
+    .room,
+    .teacher {
+      font-size: 14px;
+    }
+    .num {
+      font-size: .7em;
+      font-weight: bold;
+      display: inline-block;
+      text-align: center;
+      padding: 3px;
+      border: 2px solid #000;
+      border-radius: 50%;
+      height: 1.5em;
+      width: 1.5em;
+      line-height: 1.5em;
+      position: relative;
+    }
+    .line {
+      display: flex;
+      padding: 4px;
+      .icon {
+        margin: auto 0;
+        padding-right: 8px;
+      }
+      .text {
+        flex-grow: 1;
+        padding-right: calc(1.5em + 4px);
+      }
+      .medium {
+        font-size: 14px;
+      }
+      .small {
+        font-size: 12px;
+      }
+    }
+  }
+}

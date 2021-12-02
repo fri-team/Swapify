@@ -1,0 +1,377 @@
+{
+  "timetable": [
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 1,
+      "startBlock": 7,
+      "endBlock": 9,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RA301",
+      "teacher": "Tomáš Majer",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 2,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Teória informácie",
+      "courseShortcut": "TI",
+      "room": "RC009",
+      "teacher": "Stanislav Palúch",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 3,
+      "startBlock": 8,
+      "endBlock": 10,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RB003",
+      "teacher": "Matilda Drozdová",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 1,
+      "endBlock": 3,
+      "courseName": "Databázy a získavanie znalostí",
+      "courseShortcut": "II05",
+      "room": "RC009",
+      "teacher": "Vitaly Levashenko",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Architektúry informačných systémov",
+      "courseShortcut": "AIS",
+      "room": "RC009",
+      "teacher": "Matilda Drozdová",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 9,
+      "endBlock": 11,
+      "courseName": "Teória spoľahlivosti",
+      "courseShortcut": "TSP",
+      "room": "RA201",
+      "teacher": "Elena Zaitseva",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 4,
+      "startBlock": 11,
+      "endBlock": 13,
+      "courseName": "Diskrétna simulácia",
+      "courseShortcut": "DISS",
+      "room": "AF3A6",
+      "teacher": "Norbert Adamko",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 5,
+      "startBlock": 2,
+      "endBlock": 4,
+      "courseName": "Teória spoľahlivosti",
+      "courseShortcut": "TSP",
+      "room": "RA201",
+      "teacher": "Elena Zaitseva",
+      "type": "lecture"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 5,
+      "startBlock": 4,
+      "endBlock": 6,
+      "courseName": "Diskrétna simulácia",
+      "courseShortcut": "DISS",
+      "room": "RB054",
+      "teacher": "Boris Bučko",
+      "type": "laboratory"
+    },
+    {
+      "courseId": "00000000-0000-0000-0000-000000000000",
+      "day": 5,
+      "startBlock": 6,
+      "endBlock": 8,
+      "courseName": "Databázy a získavanie znalostí",
+      "courseShortcut": "II05",
+      "room": "RB052",
+      "teacher": "Vitaly Levashenko",
+      "type": "laboratory"
+    }
+  ],
+  "courses": {
+    "Architektúry informačných systémov": [
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 9,
+        "endBlock": 11,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 11,
+        "endBlock": 13,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 3,
+        "startBlock": 8,
+        "endBlock": 10,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 3,
+        "startBlock": 10,
+        "endBlock": 12,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RB003",
+        "teacher": "Matilda Drozdová",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 4,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Architektúry informačných systémov",
+        "courseShortcut": "AIS",
+        "room": "RC009",
+        "teacher": "Matilda Drozdová",
+        "type": "lecture"
+      }
+    ],
+    "Databázy a získavanie znalostí": [
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RB052",
+        "teacher": "Vitaly Levashenko",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 2,
+        "startBlock": 10,
+        "endBlock": 12,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RB052",
+        "teacher": "Vitaly Levashenko",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 3,
+        "startBlock": 4,
+        "endBlock": 6,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RB052",
+        "teacher": "Vitaly Levashenko",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 4,
+        "startBlock": 1,
+        "endBlock": 3,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RC009",
+        "teacher": "Vitaly Levashenko",
+        "type": "lecture"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 5,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Databázy a získavanie znalostí",
+        "courseShortcut": "II05",
+        "room": "RB052",
+        "teacher": "Vitaly Levashenko",
+        "type": "laboratory"
+      }
+    ],
+    "Diskrétna simulácia": [
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 1,
+        "endBlock": 3,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Peter Jankovič",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 4,
+        "endBlock": 6,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Peter Jankovič",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Peter Jankovič",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 3,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Boris Bučko",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 4,
+        "startBlock": 4,
+        "endBlock": 6,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Boris Bučko",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 4,
+        "startBlock": 11,
+        "endBlock": 13,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "AF3A6",
+        "teacher": "Norbert Adamko",
+        "type": "lecture"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 5,
+        "startBlock": 4,
+        "endBlock": 6,
+        "courseName": "Diskrétna simulácia",
+        "courseShortcut": "DISS",
+        "room": "RB054",
+        "teacher": "Boris Bučko",
+        "type": "laboratory"
+      }
+    ],
+    "Teória informácie": [
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 5,
+        "endBlock": 7,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 7,
+        "endBlock": 9,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 1,
+        "startBlock": 9,
+        "endBlock": 11,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 2,
+        "startBlock": 6,
+        "endBlock": 8,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RC009",
+        "teacher": "Stanislav Palúch",
+        "type": "lecture"
+      },
+      {
+        "courseId": "00000000-0000-0000-0000-000000000000",
+        "day": 4,
+        "startBlock": 3,
+        "endBlock": 5,
+        "courseName": "Teória informácie",
+        "courseShortcut": "TI",
+        "room": "RA301",
+        "teacher": "Tomáš Majer",
+        "type": "laboratory"
+      }
+    ]
+  }
+}

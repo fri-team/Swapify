@@ -318,5 +318,20 @@ ASALocalRun/
 # MSBuild Binary and Structured Log
 *.binlog
 
+# Ignore environment files
+.env*
+
 # Ignore Docker volumes
+logs/
+
+# Ignore archives
+*.zip
+
+# Include SonarScanner files
+!SonarQube/**
+
+
+#Ignore temporary db and logs
+data/
+dockerData/
 logs/

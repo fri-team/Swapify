@@ -1,0 +1,29 @@
+.register-form {
+  text-align: left;
+  width: 270px;
+}
+
+.register-form-spacer {
+  margin: 1.5em 0;
+}
+
+.server-error {
+    font-size: small;
+    color:#a94442;
+    background: #f2dede;
+    border-color: #ebccd1;
+    border: 1px solid;
+    border-radius: 2px;
+    padding: 10px;
+    margin-top: 15px;
+}
+
+#captchaLabel {
+  display: none;
+  color: red;
+}
+
+#catpchaText {
+  color: black;
+  margin-top: 10px;
+}
