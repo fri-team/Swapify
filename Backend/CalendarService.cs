@@ -12,27 +12,11 @@ namespace FRITeam.Swapify.Backend
 {
     public class CalendarService : ICalendarService
     {
-        private readonly int dayOfWeek = 0;
         private readonly CalendarSettings _calendarSettings;
-        private readonly DateTime startDateTime;
-        private readonly DateTime endDateTime;
 
         public CalendarService(IOptions<CalendarSettings> calendarSettings)
         {
             _calendarSettings = calendarSettings.Value;
-
-            DateTime dateNow = DateTime.Now;
-            if (dateNow.CompareTo(_calendarSettings.StartWinter) == 1 && dateNow.CompareTo(_calendarSettings.EndWinter) == -1)
-            {
-                startDateTime = _calendarSettings.StartWinter;
-                endDateTime = _calendarSettings.EndWinter;
-            }
-            else
-            {
-                startDateTime = _calendarSettings.StartSummer;
-                endDateTime = _calendarSettings.EndSummer;
-            }
-            dayOfWeek = dateNow.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)dateNow.DayOfWeek;
         }
 
         public StringBuilder StartCalendar()
@@ -52,21 +36,44 @@ namespace FRITeam.Swapify.Backend
         }
         public StringBuilder CreateEvent(StringBuilder stringBuilder, Block block, Course course)
         {
-            DateTime now = DateTime.Now;
-            DateTime start = now.AddDays(-dayOfWeek + block.Day.GetHashCode())
-                .AddHours(-now.Hour + block.StartHour)
-                .AddMinutes(-now.Minute);
+            DateTime now = DateTime.Today;
+
+            DateTime start;
+
+            if (((int)now.DayOfWeek) > ((int)block.Day))
+            {
+                start = now.AddDays(7).AddDays(-(((int)now.DayOfWeek) - ((int)block.Day)))
+                    .AddHours(block.StartHour);
+            } else
+            {
+                start = now.AddDays(((int)block.Day) - ((int)now.DayOfWeek))
+                    .AddHours(block.StartHour);
+            }
+            
 
             //with time zone specified
             return stringBuilder
                 .AppendLine("BEGIN:VEVENT")
                 .AppendLine("DTSTART;TZID=Europe/Amsterdam:" + start.ToString("yyyyMMddTHHmm00"))
                 .AppendLine("DTEND;TZID=Europe/Amsterdam:" + start.AddHours(block.Duration).ToString("yyyyMMddTHHmm00"))
-                .AppendLine("RRULE:FREQ=WEEKLY;UNTIL=" + endDateTime.ToString("yyyyMMddT000000"))
+                .AppendLine("RRULE:FREQ=WEEKLY;UNTIL=" + EndOfSemester().ToString("yyyyMMddT000000"))
                 .AppendLine("SUMMARY:" + course.CourseName)
                 .AppendLine("DESCRIPTION:" + block.Room + ", " + block.Teacher)
                 .AppendLine("PRIORITY:3")
                 .AppendLine("END:VEVENT");
+        }
+
+        public DateTime EndOfSemester()
+        {
+            DateTime dateNow = DateTime.Now;
+            if (dateNow.CompareTo(_calendarSettings.StartWinter) == 1 && dateNow.CompareTo(_calendarSettings.EndWinter) == -1)
+            {
+                return _calendarSettings.EndWinter;
+            }
+            else
+            {
+                return _calendarSettings.EndSummer;
+            }
         }
 
         public StringBuilder EndCalendar(StringBuilder stringBuilder)
