@@ -1,16 +1,16 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Backend.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WebAPI.Models.Exchanges;
+using FRITeam.Swapify.SwapifyBase.Settings;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace WebAPI.Controllers
 {
@@ -83,17 +83,16 @@ namespace WebAPI.Controllers
                     {
                         string message = $"Error when sending confirmation email to user {user1.Email}.";
                         _logger.LogError(message);
-                        return NotFound(message);
                     }
 
                     if (!_emailService.SendConfirmationEmail(user2.Email, callbackUrl2, "ConfirmExchangeEmail"))
                     {
                         string message = $"Error when sending confirmation email to user {user2.Email}.";
                         _logger.LogError(message);
-                        return NotFound(message);
                     }
+                    return Ok(res);
                 }
-                return Ok(res);
+                return Ok(null);
             }
             catch
             {

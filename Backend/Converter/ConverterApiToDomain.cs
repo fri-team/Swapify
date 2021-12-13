@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace FRITeam.Swapify.Backend.Converter
 {
@@ -49,9 +49,9 @@ namespace FRITeam.Swapify.Backend.Converter
             return mergedTimetable;
         }
         
-        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetable scheduleTimetable, ICourseService courseService, bool isTimetableForCourse)
+        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetableResult scheduleTimetable, ICourseService courseService, bool isTimetableForCourse)
         {                        
-            var sortedBlocks = scheduleTimetable.ScheduleHourContents
+            var sortedBlocks = scheduleTimetable.Result.ScheduleContents
                 .OrderBy(b => b.Day)
                 .ThenBy(b => b.CourseName)                                
                 .ThenBy(b => b.TeacherName)
@@ -63,7 +63,7 @@ namespace FRITeam.Swapify.Backend.Converter
             IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
                 {
-                    ScheduleHourContent b1 = group.First();
+                    ScheduleContent b1 = group.First();
                     return b1.Day == b2.Day
                         && b1.CourseName == b2.CourseName
                         && b1.TeacherName == b2.TeacherName
@@ -74,7 +74,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 },
                 async (group) =>
                 {
-                    ScheduleHourContent firstInGroup = group.First();
+                    ScheduleContent firstInGroup = group.First();
                     var block = new Block()
                     {
                         BlockType = ConvertToBlockType(firstInGroup.LessonType),
@@ -98,7 +98,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 }                
             );
 
-            Timetable mergedTimetable = new Timetable(scheduleTimetable.Semester);
+            Timetable mergedTimetable = new(scheduleTimetable.Semester);
             foreach (var mergedBlock in mergedBlocks)
             {
                 mergedTimetable.AddNewBlock(await mergedBlock);
@@ -142,12 +142,12 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
         }
 
-        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetable timetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
         {
             return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false);
         }
         
-        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleTimetable timetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
         {
             return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, true);            
         }

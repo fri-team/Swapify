@@ -1,4 +1,4 @@
-using FRITeam.Swapify.Backend.Exceptions;
+using FRITeam.Swapify.SwapifyBase.Exceptions;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -14,7 +14,7 @@ namespace WebAPI
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             // envinronement was '' (empty) and app was searching for nlog..config -> fix this...
-            if (environment == "" || environment == null)
+            if (string.IsNullOrEmpty(environment))
             {
                 environment = "Production";
             }

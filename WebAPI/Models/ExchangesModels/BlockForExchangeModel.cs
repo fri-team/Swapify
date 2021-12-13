@@ -1,10 +1,7 @@
-using FRITeam.Swapify.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FRITeam.Swapify.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace WebAPI.Models.Exchanges
 {

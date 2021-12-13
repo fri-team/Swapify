@@ -205,7 +205,7 @@ export function exchangeConfirm(blockTo) {
     })
       .then((response) => { 
         var exchangeMade = response.data;
-        if (exchangeMade === false) {
+        if (exchangeMade === "") {
           window.alert("Žiadosť o výmenu bola evidovaná.");          
         } else {          
           window.alert("Výmena bola vykonaná.");  
@@ -215,8 +215,21 @@ export function exchangeConfirm(blockTo) {
         dispatch(action);       
         dispatch(loadExchangeRequests());
       })
-      .catch(() => {
-        window.alert("Pri vytváraní žiadosti nastala chyba.");
+      .catch((error) => {        
+        if (error.response) {
+          window.alert("Pri vytváraní žiadosti nastala chyba.");
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+        } else if (error.request) {
+          window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);          
+          //This error shows undefined history after creating request
+        }        
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
@@ -380,4 +393,20 @@ export function editBlock(body, userEmail) {
       });
     });
   };
+}
+
+export function loadMyTimetableCalendar(user, history) {
+  if (user.personalNumber == null) {
+    history.push(PERSONALNUMBER);
+  }
+  return axios({
+    method: 'get',
+    url: '/api/student/getStudentTimetableCalendar/' + user.email
+  })
+    .then(res => {
+      return res.data;
+    })
+    .catch(() => {
+      return null;
+    });
 }

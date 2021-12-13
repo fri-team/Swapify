@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
 using FRITeam.Swapify.Entities;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

@@ -1,5 +1,5 @@
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using System;
-using FRITeam.Swapify.Entities.Enums;
 using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
 

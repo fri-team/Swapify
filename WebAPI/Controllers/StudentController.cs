@@ -1,5 +1,4 @@
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +9,8 @@ using WebAPI.Models.TimetableModels;
 using Timetable = WebAPI.Models.TimetableModels.Timetable;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using System.Text;
 
 namespace WebAPI.Controllers
 {
@@ -23,13 +24,15 @@ namespace WebAPI.Controllers
         private readonly ICourseService _courseService;
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
         private readonly IBlockChangesService _blockChangesService;
+        private readonly ICalendarService _calendarService;
 
         public StudentController(ILogger<TimetableController> logger,
             IStudentService studentService,
             IUserService userService,
             ICourseService courseService,
             ISchoolScheduleProxy schoolScheduleProxy,
-            IBlockChangesService blockChangesService)
+            IBlockChangesService blockChangesService,
+            ICalendarService calendarService)
         {
             _logger = logger;
             _studentService = studentService;
@@ -37,6 +40,7 @@ namespace WebAPI.Controllers
             _courseService = courseService;
             _schoolScheduleProxy = schoolScheduleProxy;
             _blockChangesService = blockChangesService;
+            _calendarService = calendarService;
         }
 
 
@@ -71,7 +75,7 @@ namespace WebAPI.Controllers
                 }
                 if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
                 {
-                    var scheduleTimetable = _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                    var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
                     if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
                     await _studentService.UpdateStudentTimetableAsync(student,
                         await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
@@ -113,7 +117,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("addNewBlock")]
-        public async Task<IActionResult> AddNewBlock([FromBody]AddNewBlockModel newBlockModel)
+        public async Task<IActionResult> AddNewBlock([FromBody] AddNewBlockModel newBlockModel)
         {
             var _user = await _userService.GetUserByEmailAsync(newBlockModel.User.Email);
             var student = await _studentService.FindByIdAsync(_user.Student.Id);
@@ -223,6 +227,42 @@ namespace WebAPI.Controllers
             }
 
             return Ok(newBlock);
+        }
+
+        [HttpGet("getStudentTimetableCalendar/{userEmail}")]
+        public async Task<IActionResult> GetStudentTimetableCalendar(string userEmail)
+        {
+            _logger.LogInformation($"[API getStudentTimetable] Getting timetable calendar for test student");
+            User user = await _userService.GetUserByEmailAsync(userEmail);
+            string studentId = user.Student.Id.ToString();
+            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
+            if (!isValidGUID)
+            {
+                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
+            }
+
+            var student = await _studentService.FindByIdAsync(guid);
+            if (student == null)
+            {
+                return ErrorResponse($"Student with id: {studentId} does not exist.");
+            }
+
+            if (student.Timetable == null)
+            {
+                return ErrorResponse($"Timetable for student with id: {studentId} does not exist.");
+            }
+
+            StringBuilder sb = _calendarService.StartCalendar();
+
+            foreach (var block in student.Timetable.AllBlocks)
+            {
+                Course course = await _courseService.FindByIdAsync(block.CourseId);
+                sb = _calendarService.CreateEvent(sb, block, course);
+            }
+
+            sb = _calendarService.EndCalendar(sb);
+
+            return Ok(sb.ToString());
         }
     }
 }

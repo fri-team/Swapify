@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

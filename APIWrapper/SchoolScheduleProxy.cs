@@ -1,36 +1,50 @@
 using FRITeam.Swapify.APIWrapper.Objects;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
+using Microsoft.Extensions.Options;
 using NLog;
+using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.APIWrapper
 {
     public class SchoolScheduleProxy : ISchoolScheduleProxy
-    {
-        private const string URL = "https://nic.uniza.sk/webservices";
-        private const string SCHEDULE_CONTENT_URL = "getUnizaScheduleContent.php";
+    {        
+        private const string TYPE_PARAM = "m";
+        private const string ID_PARAM = "id";
+        private const string YEAR_PARAM = "r";
+        private const string SEMESTER_PARAM = "s";
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly RestClient _client;
+        private readonly ProxySettings _proxySettings;
 
-        public ScheduleTimetable GetByPersonalNumber(string personalNumber)
+        public SchoolScheduleProxy(IOptions<ProxySettings> proxySettings)
         {
-            Semester semester = Semester.GetSemester();
-            return CallScheduleContentApi(5, personalNumber + FormatSemesterForApi(semester), semester);
+            _proxySettings = proxySettings.Value;
+            _client = new RestClient(_proxySettings.Base_URL);
+            _client.AddHandler("text/html", () => { return new JsonNetSerializer(); });            
         }
 
-        public ScheduleTimetable GetByTeacherName(string teacherNumber)
-        {
-            return CallScheduleContentApi(1, teacherNumber, Semester.GetSemester());
+        public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber)
+        {            
+            return await CallScheduleContentApi(5, personalNumber, Semester.GetSemester());
         }
 
-        public ScheduleTimetable GetByRoomNumber(string roomNumber)
+        public async Task<ScheduleTimetableResult> GetByTeacherName(string teacherNumber)
         {
-            return CallScheduleContentApi(3, roomNumber, Semester.GetSemester());
+            return await CallScheduleContentApi(1, teacherNumber, Semester.GetSemester());
         }
 
-        public ScheduleTimetable GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
+        public async Task<ScheduleTimetableResult> GetByRoomNumber(string roomNumber)
+        {
+            return await CallScheduleContentApi(3, roomNumber, Semester.GetSemester());
+        }
+
+        public async Task<ScheduleTimetableResult> GetBySubjectCode(string subjectCode, string yearOfStudy, string studyType)
         {
             char numStudyType;
             if (studyType.Contains("Celoživotné vzdelávanie"))
@@ -49,62 +63,50 @@ namespace FRITeam.Swapify.APIWrapper
             } else
             {
                 numStudyType = ' ';
-            }             
-            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy + FormatSemesterForApi(Semester.GetSemester());
-            return CallScheduleContentApi(4, subjectCode + addition, Semester.GetSemester());
+            }            
+            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy;           
+            return await CallScheduleContentApi(4, subjectCode + addition, Semester.GetSemester());
         }
 
-        public ScheduleTimetable GetFromJsonFile(string fileName)
+        public ScheduleTimetableResult GetFromJsonFile(string fileName)
         {
             var myJson = "";
             using (StreamReader file = File.OpenText($@"..\Tests\{fileName}"))
             {
                 myJson = file.ReadToEnd();
             }
-            return new ScheduleTimetable()
+            return new ScheduleTimetableResult()
             {
-                ScheduleHourContents = ResponseParser.ParseResponse(myJson),
+                Result = new UnizaScheduleContentResult()
+                {
+                    ScheduleContents = ResponseParser.ParseResponse(myJson)
+                },
                 Semester = Semester.GetSemester()
             };
         }
 
-        private ScheduleTimetable CallScheduleContentApi(int type, string requestContent, Semester semester)
-        {
-            string address =  $"{URL}/{SCHEDULE_CONTENT_URL}?m={type}&id={Uri.EscapeUriString(requestContent)}";
-            var myResponse = "";
+        private async Task<ScheduleTimetableResult> CallScheduleContentApi(int type, object id, Semester semester)
+        {            
+            var request = new RestRequest(_proxySettings.ScheduleContentURL);
+            request.AddParameter(TYPE_PARAM, type);
+            request.AddParameter(ID_PARAM, id);
+            request.AddParameter(YEAR_PARAM, semester.Year);
+            request.AddParameter(SEMESTER_PARAM, (char)semester.SemesterValue);
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(address);
-                request.Method = "Get";
-                request.KeepAlive = true;
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                var response = (HttpWebResponse)request.GetResponse();
-
-                using (var sr = new StreamReader(response.GetResponseStream()))
+                var response = await _client.GetAsync<UnizaScheduleContentResult>(request);
+                return new ScheduleTimetableResult()
                 {
-                    myResponse = sr.ReadToEnd();
-                }
+                    Semester = semester,
+                    Result = response
+                };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.Error(ex);
+                _logger.Error(e.Message);
                 throw;
             }
-            return new ScheduleTimetable()
-            {
-                ScheduleHourContents = ResponseParser.ParseResponse(myResponse),
-                Semester = semester
-            };
-        }        
-        private string FormatSemesterForApi(Semester semester)
-        {
-            if (semester == null)
-            {
-                return string.Empty;
-            }
-            return $"&r={semester.Year}&s={(char)semester.SemesterValue}";
-        }
+        }                
     }
 
 }

@@ -1,5 +1,3 @@
-
-using FRITeam.Swapify.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI.Models.UserModels

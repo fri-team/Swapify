@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { textTransform } from 'text-transform';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 import _, { padStart, parseInt, replace } from 'lodash';
@@ -22,6 +23,11 @@ class BlockDetail extends PureComponent {
     dialogOpen: false,
     course: { ...this.props.course }
   };
+
+  textTrans = (text) => {
+    let a = textTransform(text, 'title');
+    return a;
+  }
 
   calculateBottomPosition = (pTop) => {
     if (pTop > window.innerHeight * 0.7)
@@ -184,8 +190,8 @@ class BlockDetail extends PureComponent {
               <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
-          <div className="name" style={{ color }}>
-            {course.courseName}
+          <div className="name" style={{ color }} >
+            {this.textTrans(course.courseName)}
           </div>
         </div>
         <div className="footer">

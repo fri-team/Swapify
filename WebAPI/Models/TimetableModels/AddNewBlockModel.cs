@@ -1,4 +1,4 @@
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
 using System.ComponentModel.DataAnnotations;
 using WebAPI.Models.TimetableModels;
 

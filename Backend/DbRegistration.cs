@@ -1,6 +1,6 @@
 using System.Linq;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Notifications;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Notifications;
 using MongoDB.Bson.Serialization;
 
 namespace Backend

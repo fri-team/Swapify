@@ -1,7 +1,5 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +9,10 @@ using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
 using FRITeam.Swapify.Backend.Converter;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using Microsoft.Extensions.Options;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace BackendTest
 {
@@ -34,13 +36,13 @@ namespace BackendTest
         [Fact]
         public async Task AssingTimetableToStudent()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
-            SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
+            var options = GetProxyOptions();
+            var schoolScheduleProxy = new SchoolScheduleProxy(options);
+            var schoolCourseProxy = new SchoolCourseProxy(options);
+            CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
 
-            var timetable = serviceSchedule.GetByPersonalNumber("559841");
-            Student student = new Student
+            var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
+            Student student = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -62,20 +64,20 @@ namespace BackendTest
         [Fact]
         public async Task AddStudentTest()
         {
-            var schoolScheduleProxy = new SchoolScheduleProxy();
-            var schoolCourseProxy = new SchoolCourseProxy();
-            CourseService serviceCourse = new CourseService(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);
-            SchoolScheduleProxy serviceSchedule = new SchoolScheduleProxy();
-            StudentService stSer = new StudentService(_database);
+            var options = GetProxyOptions();
+            var schoolScheduleProxy = new SchoolScheduleProxy(options);
+            var schoolCourseProxy = new SchoolCourseProxy(options);
+            CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
+            StudentService stSer = new(_database);
 
-            var timetable = serviceSchedule.GetByPersonalNumber("559841");
-            Student st = new Student
+            var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
+            Student st = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
             };
-            Course cr = new Course() { CourseName = "DISS", Id = Guid.NewGuid() };
-            Block bl = new Block
+            Course cr = new() { CourseName = "DISS", Id = Guid.NewGuid() };
+            Block bl = new()
             {
                 BlockType = BlockType.Lecture,
                 CourseId = cr.Id,
@@ -101,12 +103,12 @@ namespace BackendTest
         public async Task UpdateStudentTest()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stSer = new StudentService(database);
-            Student st = new Student();
+            StudentService stSer = new(database);
+            Student st = new();
 
-            Block bl1 = new Block { Room = "room1" };
-            Block bl2 = new Block { Room = "room2" };
-            Block bl3 = new Block { Room = "room3" };
+            Block bl1 = new() { Room = "room1" };
+            Block bl2 = new() { Room = "room2" };
+            Block bl3 = new() { Room = "room3" };
 
             st.Timetable = new Timetable(Semester.GetSemester());
             st.Timetable.AddNewBlock(bl1);
@@ -124,6 +126,17 @@ namespace BackendTest
             st.Timetable.AllBlocks.Count().Should().Be(2);
             st.Timetable.AllBlocks.Any(x => x.Room == "room3").Should().Be(true);
             st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+        }
+
+        private IOptions<ProxySettings> GetProxyOptions()
+        {
+            var settings = new ProxySettings()
+            {
+                Base_URL = "https://nic.uniza.sk/webservices",
+                CourseContentURL = "getUnizaScheduleType4.php",
+                ScheduleContentURL = "getUnizaScheduleContent.php"
+            };
+            return Options.Create(settings);
         }
     }
 }

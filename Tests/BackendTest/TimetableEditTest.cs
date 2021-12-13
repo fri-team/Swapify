@@ -1,7 +1,7 @@
 using FluentAssertions;
 using FRITeam.Swapify.Backend;
-using FRITeam.Swapify.Entities;
-using FRITeam.Swapify.Entities.Enums;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using MongoDB.Driver;
 using System;
 using System.Linq;

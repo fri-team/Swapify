@@ -112,27 +112,73 @@ class AddBlockForm extends Component {
   handleChange = evt => {
     const { name, value } = evt.target;
     if (name == "length") {
-      if (value > 20 - this.state.startBlock.substring(0, 2)) {
-        this.setState({ [name]: (20 - this.state.startBlock.substring(0, 2)) });
-      } else if (value < 1) {
-        this.setState({ [name]: 1 });
+      if (this.state.startBlock.endsWith("PM")) {
+        let maxLength = 8 - this.state.startBlock.substring(0, 2);
+        if (value > maxLength) {
+          this.setState({ [name]: maxLength });
+        } else if (value < 1) {
+          this.setState({ [name]: 1 });
+        } else {
+          this.setState({ [name]: value });
+        }
       } else {
-        this.setState({ [name]: value });
+        let maxLength = 20 - this.state.startBlock.substring(0, 2);
+        if (value > maxLength) {
+          this.setState({ [name]: maxLength });
+        } else if (value < 1) {
+          this.setState({ [name]: 1 });
+        } else {
+          this.setState({ [name]: value });
+        }
       }
     } else if (name == "startBlock") {
-      if (value.substring(0,2) < "07") {
-        this.setState({ [name]: "07:00" });
-      } else if (value.substring(0,2) > "19") {
-        let val = "19";
-        if (this.state.length > (20 - val)) {
-          this.setState({ length: (20 - val) });
+      if (this.state.startBlock.endsWith("AM")) {
+        if (value.substring(0,2) < "07") {
+          this.setState({ [name]: "07:00 AM" });
+        } else if (value.substring(0,2) > "11") {
+          this.setState({ [name]: "11:00 AM" });
+          if (this.state.length > 9) {
+            this.setState({ length: 9 });
+          }
+        } else {
+          let maxLength = 20 - value.substring(0,2);
+          if (this.state.length > maxLength) {
+            this.setState({ length: maxLength });
+          }
+          this.setState({ [name]: value });
         }
-        this.setState({ [name]: "19:00" });
+      } else if (this.state.startBlock.endsWith("PM")) {
+        if (value.substring(0,2) < "01") {
+          this.setState({ [name]: "01:00 PM" });
+        } else if (value.substring(0,2) == "12") {
+          this.setState({ [name]: "12:00 PM" });
+          if (this.state.length > 8) {
+            this.setState({ length: 8 });
+          }
+        } else if (value.substring(0,2) > "07") {
+          this.setState({ [name]: "07:00 PM", length: 1 });
+        } else {
+          let maxLength = 8 - value.substring(0,2);
+          if (this.state.length > maxLength) {
+            this.setState({ length: maxLength });
+          }
+          this.setState({ [name]: value });
+        }
       } else {
-        if (this.state.length > (20 - value.substring(0,2))) {
-          this.setState({ length: (20 - value.substring(0,2)) });
+        if (value.substring(0,2) < "07") {
+          this.setState({ [name]: "07:00" });
+        } else if (value.substring(0,2) > "19") {
+          let val = "19";
+          if (this.state.length > (20 - val)) {
+            this.setState({ length: (20 - val) });
+          }
+          this.setState({ [name]: "19:00" });
+        } else {
+          if (this.state.length > (20 - value.substring(0,2))) {
+            this.setState({ length: (20 - value.substring(0,2)) });
+          }
+          this.setState({ [name]: value.substring(0,3) + "00" });
         }
-        this.setState({ [name]: value.substring(0,3) + "00" });
       }
     } else if (name == "colorOfBlock") {
       this.setState({blockColor: value})

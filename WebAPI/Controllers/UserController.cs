@@ -1,7 +1,7 @@
 using FRITeam.Swapify.Backend;
 using FRITeam.Swapify.Backend.Interfaces;
-using FRITeam.Swapify.Backend.Settings;
-using FRITeam.Swapify.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

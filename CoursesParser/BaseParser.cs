@@ -14,7 +14,7 @@ namespace CoursesParser
     {
         private const string Url = "https://vzdelavanie.uniza.sk/vzdelavanie5/plany.php";
         private readonly HtmlDocument _document;
-        private HtmlNode _selectFaculties;
+        private readonly HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
         private HtmlNode _selectStudyType;
         private HtmlNode _selectStudyYear;
@@ -27,8 +27,8 @@ namespace CoursesParser
         private HtmlNode _studyYearAct;
         private HtmlNode _fieldOfStudyAct;
         private HtmlNode _fieldOfStudyDetailedAct;
-        private List<CourseItem> _allCourses;
-        private Encoding _encoding;
+        private readonly List<CourseItem> _allCourses;
+        private readonly Encoding _encoding;
 
         public BaseParser()
         {

@@ -1,5 +1,5 @@
+using FRITeam.Swapify.SwapifyBase.Entities;
 using System.ComponentModel.DataAnnotations;
-using FRITeam.Swapify.Entities;
 
 namespace WebAPI.Models.TimetableModels
 {
