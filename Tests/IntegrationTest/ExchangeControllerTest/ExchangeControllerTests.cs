@@ -17,6 +17,8 @@ using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
 using Xunit;
 
+using namespace Entities;
+using namespace BlockChangeRequest;
 
 namespace IntegrationTest.ExchangeControllerTest
 {
