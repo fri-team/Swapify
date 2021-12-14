@@ -227,7 +227,7 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          window.alert('Error', error.message);          
+          console.log('Error', error.message);        
           //This error shows undefined history after creating request
         }        
         dispatch(hideCourseTimetable(bl.id));
