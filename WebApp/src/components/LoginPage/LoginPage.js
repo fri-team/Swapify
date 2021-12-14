@@ -19,7 +19,7 @@ class LoginPage extends PureComponent {
       emailNotConfirmed: false,
       sendConfirmEmailAgainResult: "",
       resetingPassword: false,
-      loginWithLDAP: false,
+      loginWithLDAP: true,
       wrongCredentials: false,
       captchaValue: null,
     };
@@ -204,11 +204,12 @@ class LoginPage extends PureComponent {
             {this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label="Školské meno"
+                  label={"Školské meno".toUpperCase()}
+                  helperText="Prihlásenie ako do vzdelávania, napr. mrkva4"
                   type="text"
                   required
                   name="name"
-                  className="FormField__Label"
+                  className="FormField__LabelLogin"
                   error={this.state.wrongCredentials}
                   value={this.state.name}
                   onChange={this.handleChange}
@@ -253,23 +254,23 @@ class LoginPage extends PureComponent {
               <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
             </div>
 
-            <div>
-              <a onClick={this.changeFormToResetPassword} className="FormField__Link">
-                {!this.state.resetingPassword
-                  ? "Ak si zabudol heslo, klikni na tento link"
-                  : "Späť na login"}
-              </a>
-            </div>
-
             {!this.state.resetingPassword && (
               <div>
                 <a onClick={this.changeFormToLDAPLogin} className="FormField__Link">
                   {!this.state.loginWithLDAP
-                    ? "Ak sa chceš prihlásiť cez FRI login, klikni na tento link"
-                    : "Späť na Swapify login"}
+                    ? "Prihlásiť sa cez FRI login"
+                    : "Prihlásiť sa cez e-mail"}
                 </a>
               </div>
             )}
+
+            <div>
+              <a onClick={this.changeFormToResetPassword} className="FormField__Link">
+                {!this.state.resetingPassword
+                  ? "Zabudol som heslo"
+                  : "Späť na login"}
+              </a>
+            </div>
             
             <div className="FormField">
               <button className="FormField__Button">
