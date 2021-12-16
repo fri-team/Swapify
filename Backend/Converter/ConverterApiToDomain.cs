@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper.Enums;
 using FRITeam.Swapify.APIWrapper.Objects;
@@ -41,7 +42,7 @@ namespace FRITeam.Swapify.Backend.Converter
                     return block;
                 }
             );            
-            Timetable mergedTimetable = new Timetable(Semester.GetSemester());
+            Timetable mergedTimetable = new(Semester.GetSemester());
             foreach (var mergedBlock in mergedBlocks)
             {
                 mergedTimetable.AddNewBlock(mergedBlock);
@@ -65,8 +66,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 {
                     ScheduleContent b1 = group.First();
                     return b1.Day == b2.Day
-                        && b1.CourseName == b2.CourseName
-                        && b1.TeacherName == b2.TeacherName
+                        && b1.CourseName == b2.CourseName                        
                         && b1.RoomName == b2.RoomName
                         && b1.LessonType == b2.LessonType
                         && (b1.BlockNumber == b2.BlockNumber - 1
@@ -75,11 +75,22 @@ namespace FRITeam.Swapify.Backend.Converter
                 async (group) =>
                 {
                     ScheduleContent firstInGroup = group.First();
+                    var teacherBuilder = new StringBuilder();                    
+                    foreach (var item in group.Select(x => x.TeacherName).Distinct())
+                    {                        
+                        if (string.IsNullOrEmpty(teacherBuilder.ToString()))
+                        {
+                            teacherBuilder.Append(item);
+                        } else
+                        {
+                            teacherBuilder.Append($", {item}");
+                        }                                                
+                    }
                     var block = new Block()
                     {
                         BlockType = ConvertToBlockType(firstInGroup.LessonType),
                         Day = ConvertToDay(firstInGroup.Day),
-                        Teacher = firstInGroup.TeacherName,
+                        Teacher = teacherBuilder.ToString(),
                         Room = firstInGroup.RoomName,
                         StartHour = (byte)(firstInGroup.BlockNumber + 6), // block number start 1 but starting hour in school is 7:00
                         Duration = (byte)(group.Last().BlockNumber - firstInGroup.BlockNumber + 1)
