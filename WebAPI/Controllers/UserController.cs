@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Novell.Directory.Ldap;
 using WebAPI.Extensions;
 using WebAPI.Models.UserModels;
 
@@ -197,10 +198,10 @@ namespace WebAPI.Controllers
             try
             {
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
-            } catch (Exception e)
+            } catch (LdapException e)
             {
                 _logger.LogError($"Exception while logging into ldap: {e}");
-                return ErrorResponse($"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím.");
+                return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
             }                    
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
