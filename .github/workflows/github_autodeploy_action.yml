@@ -3,7 +3,6 @@ on:
  push:
   branches:
    - develop
-   - '#551_nlogConfig'
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
