@@ -190,7 +190,7 @@ namespace WebAPI.Controllers
 
             if (body.Email.Contains('@'))
             {
-                return ErrorResponse($"Meno nie je správne, použite len študentské meno.");
+                return ErrorResponse($"Meno nie je správne, použite študentské meno, nie email.");
             }
             _logger.LogInformation($"Request init from ldap.");
             UserInformations ldapInformations = null;
@@ -199,7 +199,8 @@ namespace WebAPI.Controllers
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
             } catch (Exception e)
             {
-                _logger.LogError($"Exception " + e);
+                _logger.LogError($"Exception while logging into ldap: {e}");
+                return ErrorResponse($"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím.");
             }                    
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
@@ -207,7 +208,7 @@ namespace WebAPI.Controllers
             if (ldapInformations == null)
             {
                 _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Meno a heslo nie sú správne.");
+                return ErrorResponse($"Meno alebo heslo nie je správne, skúste znova prosím.");
             }
             ldapInformations.Email = ldapInformations.Email.ToLower();
             User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);            
@@ -216,7 +217,7 @@ namespace WebAPI.Controllers
                 if (!_userService.AddLdapUser(ldapInformations).Result)
                 {
                     _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
-                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už použitý.");
+                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný.");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
                 _userService.TryAddStudent(user);
