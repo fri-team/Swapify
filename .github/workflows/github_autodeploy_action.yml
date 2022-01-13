@@ -2,7 +2,8 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop   
+   - develop
+   - '#551_nlogConfig'
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
