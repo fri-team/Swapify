@@ -19,6 +19,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SideBarForm from './SideBarForm';
 
 import './Sidebar.scss';
+import { Undo } from '@material-ui/icons';
 
 
 const StyledTab= withStyles({
@@ -27,7 +28,7 @@ const StyledTab= withStyles({
   }
 })(Tab);
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, sideBarFormOpen, onCloseForm, darkMode}) => (
+const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, undoClickHandle, sideBarFormOpen, onCloseForm, darkMode}) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
       <Tabs value={value} onChange={handleChange}>
@@ -40,6 +41,9 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
         <List>
           <Tooltip title="Pridať predmet" placement="top" style={{ color: darkMode ? "white" : "black" }}>
             <IconButton onClick={addClickHandle}><AddIcon/></IconButton>
+          </Tooltip>
+          <Tooltip title="Vrátiť vymazaný blok" placement="top" style={{ color: darkMode ? "white" : "black" }}>
+            <IconButton onClick={undoClickHandle}><Undo/></IconButton>
           </Tooltip>
           {courses.map(({ courseId, courseName, checked }) => (
             <ListItem button key={courseId}>

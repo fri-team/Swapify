@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   showCourseTimetable,
-  hideCourseTimetable
+  hideCourseTimetable,
+  undoBlockFunction
 } from '../../actions/timetableActions';
 
 import {
@@ -42,9 +43,13 @@ class SidebarContainer extends PureComponent {
     }
   };
 
+  handleUndoClick = () => {
+    undoBlockFunction();
+  };
+
   handleClickOutsideSideBarForm = () => {
     this.setState({sideBarFormOpen: false});
-  }
+  };
 
   render() {
     const { open, onClose, myCourseNames, displayedCourses, exchangeRequests } = this.props;
@@ -65,6 +70,7 @@ class SidebarContainer extends PureComponent {
         value={value}
         exchangeRequests={exchangeRequests} 
         addClickHandle={this.handleAddClick}
+        undoClickHandle={this.handleUndoClick}
         sideBarFormOpen={sideBarFormOpen}
         onCloseForm={this.handleClickOutsideSideBarForm}     
         darkMode={this.props.darkMode}

@@ -27,6 +27,9 @@ import { loadExchangeRequests } from './exchangeActions';
 import { blockNumberToHour } from '../util/convertFunctions';
 import { PERSONALNUMBER } from '../util/routes';
 
+var undoBlock = null;
+var undoEmail = null;
+
 export function loadMyTimetable(user, history) {
   return dispatch => {
     dispatch({
@@ -225,7 +228,19 @@ export function exchangeConfirm(blockTo) {
   };
 }
 
+export function undoBlockFunction() {
+  if (undoBlock == null || undoEmail == null) {
+    return 0;
+  }
+  var result = this.addBlock(undoBlock, undoEmail);
+  undoBlock = null;
+  undoEmail = null;
+  return result;
+}
+
 export function removeBlock(body, userEmail) {
+  undoBlock = body;
+  undoEmail = userEmail;
   return dispatch => {
     dispatch({
       type: REMOVE_BLOCK
