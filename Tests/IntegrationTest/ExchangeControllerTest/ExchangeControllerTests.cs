@@ -1,9 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-
-using FRITeam.Swapify.Entities;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,6 +13,7 @@ using System.Threading.Tasks;
 using WebAPI.Models.Exchanges;
 using WebAPI.Models.UserModels;
 using Xunit;
+using FRITeam.Swapify.SwapifyBase.Entities;
 
 namespace IntegrationTest.ExchangeControllerTest
 {
