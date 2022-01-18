@@ -15,37 +15,29 @@ namespace FRITeam.Swapify.Backend
         public UserInformations Authenticate(string username, string password, ILogger logger)
         {
             UserInformations userInformations = null;
-            try
+            logger.LogDebug("LDAP: Trying connection to LDAP");
+            var connection = new LdapConnection { SecureSocketLayer = _options.SecureSocketLayer };
+            string[] attributes = new[] { "samaccountname", "displayname", "uidnumber", "mail" };
+            connection.Connect(_options.HostName, _options.Port);
+            connection.Bind(username, password);
+            if (connection.Bound)
             {
-                logger.LogDebug("LDAP: Trying connection to LDAP");
-                var connection = new LdapConnection { SecureSocketLayer = _options.SecureSocketLayer };
-                string[] attributes = new[] { "samaccountname", "displayname", "uidnumber", "mail" };
-                connection.Connect(_options.HostName, _options.Port);
-                connection.Bind(username, password);
-                if (connection.Bound)
-                {
-                    logger.LogDebug("LDAP: Connected to LDAP with username " + username);
-                    var results = connection.Search(_options.BaseDN, LdapConnection.ScopeSub,
+                logger.LogDebug("LDAP: Connected to LDAP with username " + username);
+                var results = connection.Search(_options.BaseDN, LdapConnection.ScopeSub,
                     $"samaccountname={username.Split("@")[0]}", attributes, false);
 
-                    if (results.HasMore())
+                if (results.HasMore())
+                {
+                    var attributeSet = results.Next().GetAttributeSet();
+                    logger.LogDebug("LDAP: LDAP has data for user " + username);
+                    userInformations = new UserInformations
                     {
-                        var attributeSet = results.Next().GetAttributeSet();
-                        logger.LogDebug("LDAP: LDAP has data for user " + username);
-                        userInformations = new UserInformations
-                        {
-                            Name = attributeSet.GetAttribute("displayname")?.StringValue,
-                            Login = attributeSet.GetAttribute("samaccountname")?.StringValue,
-                            PersonalNumber = attributeSet.GetAttribute("uidnumber")?.StringValue,
-                            Email = attributeSet.GetAttribute("mail")?.StringValue,
-                        };
-                    }
+                        Name = attributeSet.GetAttribute("displayname")?.StringValue,
+                        Login = attributeSet.GetAttribute("samaccountname")?.StringValue,
+                        PersonalNumber = attributeSet.GetAttribute("uidnumber")?.StringValue,
+                        Email = attributeSet.GetAttribute("mail")?.StringValue,
+                    };
                 }
-            }
-            catch(LdapException e)
-            {
-                logger.LogError("LDAP: Error when authenticating to LDAP: " + e.ToString());
-                return null;
             }
             return userInformations;
         }
