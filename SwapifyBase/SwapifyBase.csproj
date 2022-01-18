@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SwapifyBase.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SwapifyBase.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
