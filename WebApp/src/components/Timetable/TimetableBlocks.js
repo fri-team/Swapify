@@ -31,8 +31,8 @@ const TimetableBlocks = props => {
   }
   const rowHeight = lcm(_.map(groupedBlocks, _.size));
   const blocks = [];
-  let lastDay = 0;
-  let lastEndBlock = 0;
+  // let lastDay = 0;
+  // let lastEndBlock = 0;
   let marginTop = 0;
   _.each(groupedBlocks, group => {
     const groupSize = _.size(group);
@@ -40,23 +40,23 @@ const TimetableBlocks = props => {
     _.each(group, (block, i) => {
       const startLine = (block.day - 1) * rowHeight + i * blockHeight + 1;
       const classes = [];
-      if (lastDay != block.day) {
-        lastDay = block.day;
-        lastEndBlock = 0;
-        marginTop = 0;
-      } else if (
-        block.startBlock < lastEndBlock &&
-        lastEndBlock < block.endBlock
-      ) {
-        marginTop += 5;
-      } else {
-        marginTop = 0;
-      }
-      lastEndBlock = block.endBlock;
-      if (groupSize > 3) {
+      // if (lastDay != block.day) {
+      //   lastDay = block.day;
+      //   lastEndBlock = 0;
+      //   marginTop = 0;
+      // } else if (
+      //   block.startBlock < lastEndBlock &&
+      //   lastEndBlock < block.endBlock
+      // ) {
+      //   marginTop += 5;
+      // } else {
+      //   marginTop = 0;
+      // }
+      // lastEndBlock = block.endBlock;
+      if (groupSize > 2) {
+        classes.push('extrasmall');
+      } else if (groupSize > 1) {
         classes.push('small');
-      } else if (groupSize > 2) {
-        classes.push('medium');
       }
       blocks.push(
         <TimetableBlockContainer
