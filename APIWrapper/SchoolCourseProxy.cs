@@ -18,8 +18,7 @@ namespace FRITeam.Swapify.APIWrapper
         public SchoolCourseProxy(IOptions<ProxySettings> proxySettings)
         {
             _proxySettings = proxySettings.Value;
-            _client = new RestClient(_proxySettings.Base_URL);
-            _client.AddHandler("text/html", () => { return new JsonNetSerializer(); });
+            _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();            
         }
 
         public async Task<UnizaCourseContentResult> GetByCourseName(string courseName)

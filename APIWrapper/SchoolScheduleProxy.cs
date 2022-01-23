@@ -25,8 +25,7 @@ namespace FRITeam.Swapify.APIWrapper
         public SchoolScheduleProxy(IOptions<ProxySettings> proxySettings)
         {
             _proxySettings = proxySettings.Value;
-            _client = new RestClient(_proxySettings.Base_URL);
-            _client.AddHandler("text/html", () => { return new JsonNetSerializer(); });            
+            _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();            
         }
 
         public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber)
@@ -85,7 +84,7 @@ namespace FRITeam.Swapify.APIWrapper
             };
         }
 
-        private async Task<ScheduleTimetableResult> CallScheduleContentApi(int type, object id, Semester semester)
+        private async Task<ScheduleTimetableResult> CallScheduleContentApi(int type, string id, Semester semester)
         {            
             var request = new RestRequest(_proxySettings.ScheduleContentURL);
             request.AddParameter(TYPE_PARAM, type);
