@@ -19,9 +19,9 @@ services:
    - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
   depends_on:
-   - mongodb-stg
+   - mongodb
   links:
-   - mongodb-stg
+   - mongodb
  mongodb:
   image: mongo-stg
   container_name: mongodb-stg
