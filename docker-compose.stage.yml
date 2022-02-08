@@ -5,7 +5,7 @@ services:
    context: .
    dockerfile: Dockerfile
   image: swapify-app-stage
-  container_name: swapify
+  container_name: swapify-stage
   volumes:   
    - ./logs_stg:/app/logs
    - ./FixedDB/courses_2020_1_29.json:/app/courses_2020_1_29.json
@@ -19,18 +19,18 @@ services:
    - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
   depends_on:
-   - mongodb
+   - mongodb-stage
   links:
-   - mongodb
+   - mongodb-stage
  mongodb:
   image: mongo
-  container_name: mongodb
+  container_name: mongodb-stage
   volumes:
    - ./data_stg:/data/db
  nginx:
   restart: unless-stopped
   image: nginx
-  container_name: nginx
+  container_name: nginx-stage
   volumes:
    - ./nginx.conf:/etc/nginx/conf.d/default.conf
    - ./certbot/conf:/etc/letsencrypt
