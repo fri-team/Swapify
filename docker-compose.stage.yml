@@ -23,13 +23,13 @@ services:
   links:
    - mongodb-stage
  mongodb:
-  image: mongo
+  image: mongo-stg
   container_name: mongodb-stage
   volumes:
    - ./data_stg:/data/db
  nginx:
   restart: unless-stopped
-  image: nginx
+  image: nginx-stg
   container_name: nginx-stage
   volumes:
    - ./nginx.conf:/etc/nginx/conf.d/default.conf
