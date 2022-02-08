@@ -2,7 +2,6 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - staging
    - testing-staging
 
 env:
