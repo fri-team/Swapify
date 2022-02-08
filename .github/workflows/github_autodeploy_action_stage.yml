@@ -7,10 +7,10 @@ on:
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
-jobs:
+jobs:  
  action_build:
   name: actions_build
-  runs-on: ubuntu-latest
+  runs-on: ubuntu-latest    
   steps:
    - uses: actions/checkout@v2
    - name: Replace jwt private key #FIND AND REPLACE, by default searches all files
@@ -60,7 +60,7 @@ jobs:
         find: "##FEEDBACK_MAIL##"
         replace: "${{ secrets.FEEDBACK_MAIL }}"
         include: "**appsettings.json"
-   - name: Set up QEMU    
+   - name: Set up QEMU
      uses: docker/setup-qemu-action@v1
    - name: Set up Docker Buildx
      uses: docker/setup-buildx-action@v1
@@ -74,7 +74,7 @@ jobs:
      uses: docker/build-push-action@v2
      with:
       context: .      
-      push: true   
+      push: true
       tags: swapifyapp/swapify-app:Stage
   - name: Configure SSH and prepare files to be copied
      run: | 
