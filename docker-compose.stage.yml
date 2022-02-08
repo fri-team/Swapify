@@ -19,18 +19,18 @@ services:
    - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
   depends_on:
-   - mongodb-stage
+   - mongodb-stg
   links:
-   - mongodb-stage
+   - mongodb-stg
  mongodb:
   image: mongo-stg
-  container_name: mongodb-stage
+  container_name: mongodb-stg
   volumes:
    - ./data_stg:/data/db
  nginx:
   restart: unless-stopped
   image: nginx-stg
-  container_name: nginx-stage
+  container_name: nginx-stg
   volumes:
    - ./nginx.conf:/etc/nginx/conf.d/default.conf
    - ./certbot/conf:/etc/letsencrypt
