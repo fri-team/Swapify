@@ -204,7 +204,7 @@ class LoginPage extends PureComponent {
             {this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label={"Školské meno".toUpperCase()}
+                  label={"Školské mieno".toUpperCase()}
                   helperText="Prihlásenie ako do vzdelávania, napr. mrkva4"
                   type="text"
                   required
