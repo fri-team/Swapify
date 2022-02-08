@@ -2,8 +2,9 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop    
-   
+   - staing
+   - testing-staging 
+
 env:
  ASPNETCORE_ENVIRONMENT: Production
 jobs:  
