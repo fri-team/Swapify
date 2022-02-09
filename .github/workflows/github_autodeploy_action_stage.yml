@@ -105,7 +105,7 @@ jobs:
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
-     run: ssh aws 'cd /home/ubuntu/Swapify;        
+     run: ssh aws 'cd /home/ubuntu/Swapify_stg;        
         sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
         sudo rm /home/ubuntu/Swapify/mypassfile.txt;
         sudo chmod +x init-letsencrypt.sh;
