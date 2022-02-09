@@ -51,7 +51,7 @@ class LoginPage extends PureComponent {
   }
 
   changeFormToResetPassword = () => {
-    if (this.state.resetingPassword) {
+    if (this.state.resetingPassword) {      
       this.setState({ resetingPassword: false });
     } else {
       this.setState({ resetingPassword: true });
@@ -180,14 +180,7 @@ class LoginPage extends PureComponent {
     return (
 
 
-      <div className="FormCenter">
-        <hr
-          style={{
-            color: color,
-            backgroundColor: color,
-            height: 5
-          }}
-        />
+      <div className="FormCenter">       
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
           errors={this.state.serverErrors}
@@ -197,7 +190,7 @@ class LoginPage extends PureComponent {
             {!this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label="E-Mailová adresa"
+                  label="E-Mailová adresaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                   type="email"
                   required
                   name="email"

@@ -100,14 +100,14 @@ jobs:
      uses: garygrossgarten/github-action-scp@release
      with:
       local: filesToCopy #what to copy
-      remote: /home/ubuntu/Swapify #destination
+      remote: /home/ubuntu/Swapify_stg #destination
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
      run: ssh aws 'cd /home/ubuntu/Swapify_stg;        
-        sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
-        sudo rm /home/ubuntu/Swapify/mypassfile.txt;
+        sudo cat /home/ubuntu/Swapify_stg/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
+        sudo rm /home/ubuntu/Swapify_stg/mypassfile.txt;
         sudo chmod +x init-letsencrypt.sh;
         sudo docker-compose -f docker-compose.stage.yml down;
         sudo docker rmi swapify-app-stage -f;
