@@ -1,11 +1,11 @@
 version: '3.4'
 services:
- swapify:
+ swapify-stg:
   build:
    context: .
    dockerfile: Dockerfile
   image: swapify-app-stage
-  container_name: swapify-stage
+  container_name: swapify-stg
   volumes:   
    - ./logs_stg:/app/logs
    - ./FixedDB/courses_2020_1_29.json:/app/courses_2020_1_29.json
@@ -19,15 +19,15 @@ services:
    - JwtSecret=##JWTKEY##
    - NODE_ENV=production  
   depends_on:
-   - mongodb
+   - mongodb-stg
   links:
-   - mongodb
- mongodb:
+   - mongodb-stg
+ mongodb-stg:
   image: mongo
   container_name: mongodb-stg
   volumes:
    - ./data_stg:/data/db
- nginx:
+ nginx-stg:
   restart: unless-stopped
   image: nginx
   container_name: nginx-stg
@@ -39,7 +39,7 @@ services:
    - 81:80
    - 444:443
   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
- certbot:
+ certbot-stg:
   image: certbot/certbot
   volumes:
    - ./certbot/conf:/etc/letsencrypt
