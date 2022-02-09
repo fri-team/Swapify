@@ -178,7 +178,16 @@ class LoginPage extends PureComponent {
   render() {
     const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
+
+
       <div className="FormCenter">
+        <hr
+          style={{
+            color: color,
+            backgroundColor: color,
+            height: 5
+          }}
+        />
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
           errors={this.state.serverErrors}
@@ -204,8 +213,8 @@ class LoginPage extends PureComponent {
             {this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label={"Školské mieno".toUpperCase()}
-                  helperText="Prihlásenie ako do vzdelávania, napr. mrkva4"
+                  label={"Školské mienooooo".toUpperCase()}
+                  helperText="Prihlásenie ako doooooooooooooo vzdelávania, napr. mrkvaooooooooooooo4"
                   type="text"
                   required
                   name="name"
@@ -275,7 +284,7 @@ class LoginPage extends PureComponent {
             <div className="FormField">
               <button className="FormField__Button">
                 {!this.state.resetingPassword
-                  ? "Prihlásiť sa"
+                  ? "Prihlásiť saaaaaaaaaaaaaaaaaaa"
                   : "Resetovať heslo"}
               </button>
             </div>
