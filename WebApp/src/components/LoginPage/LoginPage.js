@@ -54,6 +54,7 @@ class LoginPage extends PureComponent {
     if (this.state.resetingPassword) {      
       this.setState({ resetingPassword: false });
     } else {
+      this.setState({ loginWithLDAP: true });
       this.setState({ resetingPassword: true });
     }
     this.setState({
@@ -190,7 +191,7 @@ class LoginPage extends PureComponent {
             {!this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label="E-Mailová adresaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  label="E-Mailová adresa"
                   type="email"
                   required
                   name="email"
@@ -206,8 +207,8 @@ class LoginPage extends PureComponent {
             {this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label={"Školské mienooooo".toUpperCase()}
-                  helperText="Prihlásenie ako doooooooooooooo vzdelávania, napr. mrkvaooooooooooooo4"
+                  label={"Školské mieno".toUpperCase()}
+                  helperText="Prihlásenie ako do vzdelávania, napr. mrkva4"
                   type="text"
                   required
                   name="name"
@@ -277,8 +278,8 @@ class LoginPage extends PureComponent {
             <div className="FormField">
               <button className="FormField__Button">
                 {!this.state.resetingPassword
-                  ? "Prihlásiť saaaaaaaaaaaaaaaaaaa"
-                  : "Resetovať heslo"}
+                  ? "Prihlásiť sa staging"
+                  : "Resetovať hieslo"}
               </button>
             </div>
           </form>
