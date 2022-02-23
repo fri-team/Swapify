@@ -114,6 +114,6 @@ jobs:
         sudo docker rmi swapifyapp/swapify-app:stage -f;
         sudo docker system prune -f;
         sudo docker pull swapifyapp/swapify-app:stage;
-        sudo docker tag swapifyapp/swapify-app swapify-app-stage;
+        sudo docker tag swapifyapp/swapify-app:stage swapify-app-stage;
         sudo docker-compose -f docker-compose.stage.yml up -d;
         sudo docker logout;'
