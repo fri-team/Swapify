@@ -2,8 +2,8 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop    
-   
+   - develop
+
 env:
  ASPNETCORE_ENVIRONMENT: Production
 jobs:  
@@ -59,7 +59,7 @@ jobs:
         find: "##FEEDBACK_MAIL##"
         replace: "${{ secrets.FEEDBACK_MAIL }}"
         include: "**appsettings.json"
-   - name: Set up QEMU    
+   - name: Set up QEMU
      uses: docker/setup-qemu-action@v1
    - name: Set up Docker Buildx
      uses: docker/setup-buildx-action@v1
@@ -73,26 +73,26 @@ jobs:
      uses: docker/build-push-action@v2
      with:
       context: .      
-      push: true   
-      tags: swapifyapp/swapify-app:Stage      
-  - name: Configure SSH and prepare files to be copied
-     run: |   
-          mkdir -p ~/.ssh/ 
+      push: true
+      tags: swapifyapp/swapify-app:stage
+   - name: Configure SSH and prepare files to be copied
+     run: |
+          mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/aws.key
           chmod 600 ~/.ssh/aws.key
           mkdir filesToCopy
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt   
-          cp docker-compose.stage.yml filesToCopy/docker-compose.stage.yml          
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
+          cp docker-compose.stage.yml filesToCopy/docker-compose.stage.yml
           cp nginx_stg.conf filesToCopy/nginx_stg.conf
           cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh          
-          cat >>~/.ssh/config <<END     
+          cat >>~/.ssh/config <<END
           Host aws
-            HostName $SSH_HOST  
+            HostName $SSH_HOST
             User $SSH_USER
             IdentityFile ~/.ssh/aws.key
             StrictHostKeyChecking no
-          END 
-     env: 
+          END
+     env:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.PRIVATE_KEY}}
           SSH_HOST: ${{ secrets.HOST }}   
@@ -100,20 +100,20 @@ jobs:
      uses: garygrossgarten/github-action-scp@release
      with:
       local: filesToCopy #what to copy
-      remote: /home/ubuntu/Swapify #destination
+      remote: /home/ubuntu/Swapify_stg #destination
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
-     run: ssh aws 'cd /home/ubuntu/Swapify;        
-        sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
-        sudo rm /home/ubuntu/Swapify/mypassfile.txt;
+     run: ssh aws 'cd /home/ubuntu/Swapify_stg;        
+        sudo cat /home/ubuntu/Swapify_stg/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
+        sudo rm /home/ubuntu/Swapify_stg/mypassfile.txt;
         sudo chmod +x init-letsencrypt.sh;
-        sudo docker-compose -f docker-compose.stage.yml down; 
-        sudo docker rmi swapify-app-stage -f;   
-        sudo docker rmi swapifyapp/swapify-app:Stage -f; 
+        sudo docker-compose -f docker-compose.stage.yml down;
+        sudo docker rmi swapify-app-stage -f;
+        sudo docker rmi swapifyapp/swapify-app:stage -f;
         sudo docker system prune -f;
-        sudo docker pull swapifyapp/swapify-app:Stage;   
-        sudo docker tag swapifyapp/swapify-app swapify-app-stage;    
-        sudo docker-compose -f docker-compose.stage.yml up -d ;    
-        sudo docker logout;'         
+        sudo docker pull swapifyapp/swapify-app:stage;
+        sudo docker tag swapifyapp/swapify-app:stage swapify-app-stage;
+        sudo docker-compose -f docker-compose.stage.yml up -d;
+        sudo docker logout;'
