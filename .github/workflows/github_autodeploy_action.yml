@@ -2,7 +2,7 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - develop
+   - master
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
@@ -114,6 +114,6 @@ jobs:
         sudo docker rmi swapifyapp/swapify-app:production -f;
         sudo docker system prune -f;
         sudo docker pull swapifyapp/swapify-app:production;
-        sudo docker tag swapifyapp/swapify-app swapify-app;
+        sudo docker tag swapifyapp/swapify-app:production swapify-app;
         sudo docker-compose up -d;
         sudo docker logout;'
