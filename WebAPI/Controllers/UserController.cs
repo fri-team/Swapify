@@ -202,7 +202,11 @@ namespace WebAPI.Controllers
             {
                 _logger.LogError($"Exception while logging into ldap: {e}");
                 return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
-            }                    
+            }  
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception while logging into ldap: {e}");                
+            }                   
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
 
