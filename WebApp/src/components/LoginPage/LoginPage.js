@@ -279,7 +279,7 @@ class LoginPage extends PureComponent {
               <button className="FormField__Button">
                 {!this.state.resetingPassword
                   ? "Prihlásiť sa"
-                  : "Resetovať hieslo"}
+                  : "Resetovať heslo"}
               </button>
             </div>
           </form>
