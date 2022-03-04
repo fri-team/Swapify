@@ -2,7 +2,7 @@ name: Deploy to AWS ECS
 on:
  push:
   branches:
-   - master
+   - develop
 
 env:
  ASPNETCORE_ENVIRONMENT: Production
@@ -74,7 +74,7 @@ jobs:
      with:
       context: .      
       push: true
-      tags: swapifyapp/swapify-app:production
+      tags: swapifyapp/swapify-app:stage
    - name: Configure SSH and prepare files to be copied
      run: |
           mkdir -p ~/.ssh/
@@ -82,8 +82,8 @@ jobs:
           chmod 600 ~/.ssh/aws.key
           mkdir filesToCopy
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" > filesToCopy/mypassfile.txt
-          cp docker-compose.production.yml filesToCopy/docker-compose.yml
-          cp nginx.conf filesToCopy/nginx.conf
+          cp docker-compose.stage.yml filesToCopy/docker-compose.stage.yml
+          cp nginx_stg.conf filesToCopy/nginx_stg.conf
           cp init-letsencrypt.sh filesToCopy/init-letsencrypt.sh          
           cat >>~/.ssh/config <<END
           Host aws
@@ -100,20 +100,20 @@ jobs:
      uses: garygrossgarten/github-action-scp@release
      with:
       local: filesToCopy #what to copy
-      remote: /home/ubuntu/Swapify #destination
+      remote: /home/ubuntu/Swapify_stg #destination
       host: ${{ secrets.HOST }}
       username: ubuntu
       privateKey: ${{ secrets.PRIVATE_KEY}}
    - name: Deployment
-     run: ssh aws 'cd /home/ubuntu/Swapify;        
-        sudo cat /home/ubuntu/Swapify/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
-        sudo rm /home/ubuntu/Swapify/mypassfile.txt;
+     run: ssh aws 'cd /home/ubuntu/Swapify_stg;        
+        sudo cat /home/ubuntu/Swapify_stg/mypassfile.txt | sudo docker login --username swapifyapp --password-stdin docker.io;        
+        sudo rm /home/ubuntu/Swapify_stg/mypassfile.txt;
         sudo chmod +x init-letsencrypt.sh;
-        sudo docker-compose down;
-        sudo docker rmi swapify-app -f;
-        sudo docker rmi swapifyapp/swapify-app:production -f;
+        sudo docker-compose -f docker-compose.stage.yml down;
+        sudo docker rmi swapify-app-stage -f;
+        sudo docker rmi swapifyapp/swapify-app:stage -f;
         sudo docker system prune -f;
-        sudo docker pull swapifyapp/swapify-app:production;
-        sudo docker tag swapifyapp/swapify-app:production swapify-app;
-        sudo docker-compose up -d;
+        sudo docker pull swapifyapp/swapify-app:stage;
+        sudo docker tag swapifyapp/swapify-app:stage swapify-app-stage;
+        sudo docker-compose -f docker-compose.stage.yml up -d;
         sudo docker logout;'
