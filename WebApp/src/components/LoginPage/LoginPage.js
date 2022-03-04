@@ -179,8 +179,6 @@ class LoginPage extends PureComponent {
   render() {
     const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
-
-
       <div className="FormCenter">       
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
