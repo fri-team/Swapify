@@ -18,33 +18,15 @@ namespace IntegrationTest
 {
     public class TestFixture : IDisposable
     {
+        private const string EnviromentType = "Development";
+        private const string AppsettingsFile = "appsettings.integrationtest.json";
+
         public Uri BaseUrl { get => new Uri("http://localhost:5000/api/"); }
         private readonly TestServer Server;
 
         public TestFixture()
         {
-            var basePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())
-                                                                     .Parent.Parent.Parent.Parent
-                                                                     .FullName, "WebAPI");
-            LoadLaunchSettings(basePath);
-
-            var config = new ConfigurationBuilder()
-                .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var builder = new WebHostBuilder()
-                .UseContentRoot(basePath)
-                .UseConfiguration(config)
-                .UseEnvironment("Development")
-                .UseStartup<Startup>()
-                .ConfigureTestServices(services =>
-                {
-                    MockServices(services);
-                });
-
-            Server = new TestServer(builder);
+            Server = new TestServer(this.settupEnviroment());
         }
 
         public void Dispose()
@@ -61,6 +43,29 @@ namespace IntegrationTest
         protected virtual void Dispose(bool disposing)
         {
             Server.Dispose();
+        }
+
+        private IWebHostBuilder settupEnviroment() {
+            var basePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())
+                                                         .Parent.Parent.Parent.Parent
+                                                         .FullName, "WebAPI");
+            LoadLaunchSettings(basePath);
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(basePath)
+                .AddJsonFile(AppsettingsFile, optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            return new WebHostBuilder()
+                .UseContentRoot(basePath)
+                .UseConfiguration(config)
+                .UseEnvironment(EnviromentType)
+                .UseStartup<Startup>()
+                .ConfigureTestServices(services =>
+                {
+                    MockServices(services);
+                });
         }
 
         private void LoadLaunchSettings(string basePath)
