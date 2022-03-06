@@ -11,13 +11,13 @@ namespace Backend
         public static void Init() {
             if (!_isInicialized)
             {
+                _isInicialized = true;
                 BsonClassMap.RegisterClassMap<Timetable>(map =>
                 {
                     map.AutoMap();
                     map.MapField("_blocks").SetElementName("AllBlocks");
                     
                 });
-                _isInicialized = true;
 
                 BsonClassMap.RegisterClassMap<Notification>(classMap =>
                 {

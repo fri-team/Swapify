@@ -18,7 +18,7 @@ namespace IntegrationTest
 {
     public class TestFixture : IDisposable
     {
-        private const string EnviromentType = "Development";
+        private const string EnviromentType = "DevelopmentVS";
         private const string AppsettingsFile = "appsettings.integrationtest.json";
 
         public Uri BaseUrl { get => new Uri("http://localhost:5000/api/"); }
