@@ -5,6 +5,9 @@ $size: 1em;
   position: relative;
   padding: $size;
   border-radius: $border-radius;
+  border-style: solid;
+  border-color: black;
+  border-width: .08em;
   cursor: pointer;
   .name {
     display: inline-block;
@@ -22,7 +25,15 @@ $size: 1em;
   }
   &.small {
     padding: .7em;
-    .room,
+    .teacher {
+      display: none;
+    }
+  }
+  &.extrasmall {
+    padding: .35em;
+    .room {
+      display: none;
+    }
     .teacher {
       display: none;
     }

@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SwapifyBase.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SwapifyBase.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
@@ -18,7 +18,7 @@
     <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="2.1.1" />
     <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="Mustache" Version="1.0.1" />
-    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.13.0" />
+    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="107.1.1" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.10.0.7896">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

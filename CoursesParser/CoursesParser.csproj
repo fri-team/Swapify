@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>..\Entities\Entities\Entities.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\SwapifyBase\SwapifyBase.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
