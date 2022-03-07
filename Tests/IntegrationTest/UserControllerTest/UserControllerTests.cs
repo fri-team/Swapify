@@ -24,7 +24,6 @@ namespace IntegrationTest.UserControllerTest
             // User already exists in DB -> results in: HttpStatusCode.BadRequest (400)
             //Assert.True(response.StatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest); // indicates err in registration of user that already exists
-            //TODO: Testing user has to be deleted after this test Task is completed
         }
 
         [Theory]
@@ -49,7 +48,6 @@ namespace IntegrationTest.UserControllerTest
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest); // indicates err in registration of user that already exists
             HttpResponseMessage response2 = await client.PostAsync(uri, registerViewModel);
             Assert.True(response2.StatusCode == System.Net.HttpStatusCode.BadRequest);
-            //TODO: Testing user has to be deleted after this test Task is completed
         }
     }
 }
