@@ -127,7 +127,7 @@ namespace FRITeam.Swapify.Backend
 
         public UserInformations GetUserFromLDAP(string login, string password, ILogger logger)
         {
-            login += "@fri.uniza.sk";
+            login += "@stud.uniza.sk";
 
             OptionsLdap options = new OptionsLdap
             {
