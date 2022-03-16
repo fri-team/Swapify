@@ -31,6 +31,9 @@ using FRITeam.Swapify.SwapifyBase.Exceptions;
 using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
 using FRITeam.Swapify.SwapifyBase.Entities;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace WebAPI
 {
@@ -151,9 +154,13 @@ namespace WebAPI
             }
 
             services.AddMvcCore().AddApiExplorer();
+
+            //Swagger
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swapify API", Version = "v1" });
+                c.IncludeXmlComments(XmlCommentsFilePath);
             });
             ConfigureAuthorization(services);
         }
@@ -376,6 +383,16 @@ namespace WebAPI
             catch (Exception e)
             {
                 _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+            }
+        }
+
+        static string XmlCommentsFilePath
+        {
+            get
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                return Path.Combine(basePath, fileName);
             }
         }
     }
