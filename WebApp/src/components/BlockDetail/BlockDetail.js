@@ -46,7 +46,23 @@ class BlockDetail extends PureComponent {
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
 
   handleClickDelete = () => {
-    this.props.onClickDelete(this.props.course);
+    const body = {
+      user: this.props.user,
+      timetableBlock: {
+        id: this.props.course.id,
+        day: this.props.course.day,
+        courseCode: this.props.course.courseCode,
+        startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
+        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 + 
+                  parseInt(this.props.course.endBlock - this.props.course.startBlock),
+        courseName: this.props.course.courseName,
+        courseShortcut: this.props.course.courseShortcut,
+        room: this.props.course.room,
+        teacher: this.props.course.teacher,
+        type: this.props.course.type
+      }
+    }
+    this.props.onClickDelete(body);
     this.setState({ dialogOpen: false })
   }
 

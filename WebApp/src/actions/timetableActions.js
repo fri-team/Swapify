@@ -232,7 +232,12 @@ export function undoBlockFunction() {
   if (undoBlock == null || undoEmail == null) {
     return 0;
   }
-  var result = this.addBlock(undoBlock, undoEmail);
+  console.log(undoBlock); 
+  //var result = addBlock(undoBlock, undoEmail);
+  var result = {
+    undoEmail: undoEmail,
+    undoBlock: undoBlock
+  }
   undoBlock = null;
   undoEmail = null;
   return result;
@@ -247,7 +252,7 @@ export function removeBlock(body, userEmail) {
     });
     axios({
       method: 'delete',
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`
+      url: `/api/student/removeBlock/${userEmail}/${body.timetableBlock.id}`
     })
     .then(() =>{
       dispatch({
@@ -276,6 +281,8 @@ export function removeBlock(body, userEmail) {
 }
 
 export function addBlock(body, userEmail) {
+  console.log("Start add block")
+  console.log(body);
   return dispatch => {
     dispatch({
       type: ADD_BLOCK
@@ -285,7 +292,8 @@ export function addBlock(body, userEmail) {
       url: `/api/student/addNewBlock`,
       data: body
     })
-    .then(() =>{
+    .then(res =>{
+      console.log(res)
       dispatch({
         type: ADD_BLOCK_DONE
       });

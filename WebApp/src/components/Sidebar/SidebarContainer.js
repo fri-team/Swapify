@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import {
   showCourseTimetable,
   hideCourseTimetable,
-  undoBlockFunction
+  undoBlockFunction,
+  addBlock
 } from '../../actions/timetableActions';
 
 import {
@@ -44,7 +45,8 @@ class SidebarContainer extends PureComponent {
   };
 
   handleUndoClick = () => {
-    undoBlockFunction();
+    var undoData = undoBlockFunction();
+    addBlock(undoData.undoBlock, undoData.undoEmail)
   };
 
   handleClickOutsideSideBarForm = () => {
