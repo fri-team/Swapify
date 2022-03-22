@@ -233,11 +233,7 @@ export function undoBlockFunction() {
     return 0;
   }
   console.log(undoBlock); 
-  //var result = addBlock(undoBlock, undoEmail);
-  var result = {
-    undoEmail: undoEmail,
-    undoBlock: undoBlock
-  }
+  var result = addBlock(undoBlock, undoEmail);  
   undoBlock = null;
   undoEmail = null;
   return result;

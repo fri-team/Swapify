@@ -45,8 +45,7 @@ class SidebarContainer extends PureComponent {
   };
 
   handleUndoClick = () => {
-    var undoData = undoBlockFunction();
-    addBlock(undoData.undoBlock, undoData.undoEmail)
+    var undoData = undoBlockFunction();    
   };
 
   handleClickOutsideSideBarForm = () => {
