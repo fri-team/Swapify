@@ -32,8 +32,8 @@ namespace FRITeam.Swapify.Backend
                     logger.LogDebug("LDAP: LDAP has data for user " + username);
                     userInformations = new UserInformations
                     {
-                        Name = attributeSet.GetAttribute("displayname")?.StringValue,
-                        Login = attributeSet.GetAttribute("samaccountname")?.StringValue,
+                    Name = attributeSet.GetAttribute("displayname")?.StringValue.Split(" - ")[1],
+                    Login = attributeSet.GetAttribute("samaccountname")?.StringValue,
                         PersonalNumber = attributeSet.GetAttribute("employeeNumber")?.StringValue,
                         Email = attributeSet.GetAttribute("mail")?.StringValue,
                     };
