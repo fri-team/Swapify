@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import {
   showCourseTimetable,
   hideCourseTimetable,
-  undoBlockFunction,
-  addBlock
+  undoBlockFunction
 } from '../../actions/timetableActions';
 
 import {
@@ -45,7 +44,7 @@ class SidebarContainer extends PureComponent {
   };
 
   handleUndoClick = () => {
-    var undoData = undoBlockFunction();    
+    this.props.undoBlockFunction();    
   };
 
   handleClickOutsideSideBarForm = () => {
@@ -85,7 +84,8 @@ const mapDispatchToProps = dispatch => {
   return {
     loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()), 
     showCourseTimetable: (courseId, courseName) => dispatch(showCourseTimetable(courseId, courseName)),
-    hideCourseTimetable: (courseId) => dispatch(hideCourseTimetable(courseId))
+    hideCourseTimetable: (courseId) => dispatch(hideCourseTimetable(courseId)),
+    undoBlockFunction: () => dispatch(undoBlockFunction()),
   }
 }
 
