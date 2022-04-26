@@ -13,9 +13,9 @@ import TimetableContainer from "../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDetailContainer";
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
-import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import { messageChanged, sendFeedback} from "../../actions/toolbarActions";
 import axios from "axios";
-
+import {  undoBlockFunction} from '../../actions/timetableActions';
 import GifAddCourse from "../../images/swapify-addCourse.gif";
 import GifShowCourseTimetable from "../../images/swapify-showCourseTimetable.gif";
 import GifAskForExchange from "../../images/swapify-askForExchange.gif";
@@ -128,6 +128,10 @@ class TimetablePage extends PureComponent {
               helpModalWindowOpen: !prevState.helpModalWindowOpen,
             }))
           }
+          undoClickHandle = {() =>
+            this.props.undoBlockFunction()
+          }
+
           toggleMailUsModalWindow={() =>
             this.setState((prevState) => ({
               mailUsModalWindowOpen: !prevState.mailUsModalWindowOpen,

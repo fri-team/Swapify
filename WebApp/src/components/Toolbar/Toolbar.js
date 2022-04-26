@@ -21,6 +21,7 @@ import Zoom from '@material-ui/core/Zoom';
 import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
 import logo from '../../images/logowhite.png';
+import { Undo } from '@material-ui/icons';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -85,12 +86,13 @@ class AppToolbar extends PureComponent {
         </Button>
       );
     }
-    const { user, toggleSidebar, toggleHelpModalWindow, toggleMailUsModalWindow, changeDarkMode } = this.props;
+    const { user, toggleSidebar, toggleHelpModalWindow, undoClickHandle, toggleMailUsModalWindow, changeDarkMode } = this.props;
     const url = this.checkUrl();
     return (
       <ToolbarWrapper>
         <AppBar position="static" color={ this.props.darkMode ? "secondary" : "primary" }>
           <Toolbar>
+          
             { !url && (
             <IconButton
               color="inherit"
@@ -158,6 +160,9 @@ class AppToolbar extends PureComponent {
                 <NotificationPanel darkMode={this.props.darkMode}/>
               </IconButton>
             </Tooltip>
+            <Tooltip title="Vrátiť vymazaný blok" placement="top" >
+            <IconButton onClick={undoClickHandle}><Undo/></IconButton>
+          </Tooltip>
           </Toolbar>
         </AppBar>
       </ToolbarWrapper>

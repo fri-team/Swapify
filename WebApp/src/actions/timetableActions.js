@@ -1,3 +1,4 @@
+import { useState } from "react";
 import axios from 'axios';
 import _ from 'lodash';
 import {
@@ -29,6 +30,24 @@ import { PERSONALNUMBER } from '../util/routes';
 
 var undoBlock = null;
 var undoEmail = null;
+
+
+
+
+function setupState(){
+  const [myArray, setMyArray] = useState([]);
+  /*const [userEmail, setUserEmail] = useState("");
+  const [blocks, setBlocks] = useState({
+    undoBlocks: 
+    [
+        {
+          body: ""
+        }
+    ]
+  });
+  */
+}
+
 
 export function loadMyTimetable(user, history) {
   return dispatch => {
@@ -230,55 +249,28 @@ export function exchangeConfirm(blockTo) {
 
 export function undoBlockFunction() {
   if (undoBlock == null || undoEmail == null) {
-    return 0;
+    return null;
   }
   console.log(undoBlock); 
+
   var body = undoBlock;
   var userEmail = undoEmail;
-  return dispatch => {
-    dispatch({
-      type: ADD_BLOCK
-    });
-    axios({
-      method: 'post',
-      url: `/api/student/addNewBlock`,
-      data: body
-    })
-    .then(res =>{
-      console.log(res)
-      dispatch({
-        type: ADD_BLOCK_DONE
-      });
-      axios({
-        method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
-      })
-        .then(res => {
-          dispatch({
-            type: LOAD_MY_TIMETABLE_DONE,
-            payload: {
-              timetable: res.data.blocks
-            }
-          });
-        })
-    })
-    .catch(() => {
-      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
-      dispatch({
-        type: ADD_BLOCK_FAIL
-      });
-    });
-  };
-
-
-  //var result = addBlock(undoBlock, undoEmail);  
-  //undoBlock = null;
-  //undoEmail = null;
+  undoBlock = null;
+  undoEmail = null;
+    return addBlock(body, userEmail);  
   //return result;
-  return true;
+
 }
 
 export function removeBlock(body, userEmail) {
+  setupState();
+  console.log("Start remove block")
+  console.log("UndoList pred vymazanim")
+  console.log(myArray);   
+
+  setMyArray([...myArray, ...body]);
+
+  console.log(myArray);
   undoBlock = body;
   undoEmail = userEmail;
   return dispatch => {
