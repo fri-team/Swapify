@@ -1,23 +1,24 @@
 .AnnouncementDiv {
     position: relative;
     display: block;
-    left: 5px;
-    width: 90px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
     margin-top: 30px;
     padding: 30px;
-    background-color: #9E9E9E;
-    border: 2px solid $grey;
+    background-color: $darkblue;
+    border: 2px solid $darkblue;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
   }
   
   .InsideDiv {
     display: block;
-    height: 58px;
-    width: 82px;
+    height: auto;
+    width: auto;
     background-color: $white;
     border: solid $white;
     border-width: 0 10px;
-    color: $grey;
+    color: $darkblue;
     font-size: 18px;
     margin: -37px 0px -25px -37px;
     padding: 15px;
@@ -25,5 +26,5 @@
   }
   
   .AnnouncementText{
-    color: $black;
+    font: $textFont;
   }

@@ -28,7 +28,7 @@ export default class AnnouncementBlock extends PureComponent {
         if(text.isArray()){
             var components = "";
 
-            for(var i=0; i < text.size(); i++){
+            for(var i=0; i < text.length; i++){
                 components += this.textToElement(text[i]);
             }
 
