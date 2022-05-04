@@ -1,0 +1,29 @@
+.AnnouncementDiv {
+    position: relative;
+    display: block;
+    left: 5px;
+    width: 90px;
+    margin-top: 30px;
+    padding: 30px;
+    background-color: #9E9E9E;
+    border: 2px solid $grey;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
+  }
+  
+  .InsideDiv {
+    display: block;
+    height: 58px;
+    width: 82px;
+    background-color: $white;
+    border: solid $white;
+    border-width: 0 10px;
+    color: $grey;
+    font-size: 18px;
+    margin: -37px 0px -25px -37px;
+    padding: 15px;
+    padding-left: 10px;
+  }
+  
+  .AnnouncementTex{
+    color: $black;
+  }
