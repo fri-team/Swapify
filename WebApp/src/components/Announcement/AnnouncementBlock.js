@@ -30,6 +30,6 @@ export default class AnnouncementBlock extends PureComponent {
                 </div>
             );
         else
-            return ;
+            return;
     }
 }
