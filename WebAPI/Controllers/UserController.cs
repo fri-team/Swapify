@@ -208,7 +208,7 @@ namespace WebAPI.Controllers
                     if (!result.Succeeded)
                     {
                         _logger.LogError($"Cannot change fri email to uniza for user {body.Email}.");
-                    }.
+                    }
                     else {
                         _logger.LogError($"We succesfuly change email for user {body.Email}.");
                     }
