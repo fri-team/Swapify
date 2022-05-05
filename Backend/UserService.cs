@@ -79,6 +79,11 @@ namespace FRITeam.Swapify.Backend
             return Uri.EscapeDataString(token);
         }
 
+        public async Task<IdentityResult> ChangeUserEmail(User user ,string newEmail)
+        {
+            return await _userManager.ChangeEmailAsync(user, newEmail, await _userManager.GenerateChangeEmailTokenAsync(user,newEmail));
+        }
+
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
         {
             token = Uri.UnescapeDataString(token);
