@@ -12,7 +12,7 @@ namespace CoursesParser
 {
     public class BaseParser
     {
-        private const string Url = "https://vzdelavanie.uniza.sk/vzdelavanie5/plany.php";
+        private const string Url = "https://vzdelavanie.uniza.sk/vzdelavanie/plany.php";
         private readonly HtmlDocument _document;
         private readonly HtmlNode _selectFaculties;
         private HtmlNode _selectTown;
