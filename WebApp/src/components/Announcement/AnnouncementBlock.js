@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import 'AnnouncementBlock.scss';
+import './AnnouncementBlock.scss';
 import '../../styles/styles.scss';
 
 export default class AnnouncementBlock extends PureComponent {
