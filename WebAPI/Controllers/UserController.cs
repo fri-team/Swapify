@@ -200,11 +200,11 @@ namespace WebAPI.Controllers
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
             } catch (LdapException e)
             {
-                var old_mail_format = ldapInformations.Email.Split('@')[0] + "@fri.uniza.sk";
+                var old_mail_format = body.Email + "@fri.uniza.sk";
                 User old_user = await _userService.GetUserByEmailAsync(old_mail_format);
                 if (old_user != null) {
                     _logger.LogError($"User {body.Email} try to use FRI LDAP login.");
-                    var result = await _userService.ChangeUserEmail(old_user, body.Email);
+                    var result = await _userService.ChangeUserEmail(old_user, body.Email + "@stud.uniza.sk");
                     if (!result.Succeeded)
                     {
                         _logger.LogError($"Cannot change fri email to uniza for user {body.Email}.");
