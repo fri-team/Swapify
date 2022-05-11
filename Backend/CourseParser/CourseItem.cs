@@ -9,6 +9,6 @@ namespace FRITeam.Swapify.Backend.CourseParser
         public string StudyType { get; set; }
         public string YearOfStudy { get; set; }
         public string DetailedStudyOfField { get; set; }
-        public string Short { get; set; }
+        public string CourseShortcut { get; set; }
     }
 }

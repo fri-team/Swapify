@@ -220,6 +220,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 {
                     Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
+                    CourseShortcut = crs.CourseShortcu,
                     CourseName = crs.CourseName,
                     LastUpdateOfTimetable = null,
                     YearOfStudy = crs.YearOfStudy,

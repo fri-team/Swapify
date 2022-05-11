@@ -97,7 +97,7 @@ namespace FRITeam.Swapify.Backend
         /// If course with exists, function returns ID. If course doesnt exist function
         /// saves this course and returns id of saved course.
         /// </summary>
-        public async Task<Course> GetOrAddNotExistsCourse(string courseCode, string courseName)
+        public async Task<Course> GetOrAddNotExistsCourse(string courseCode, string courseName, string courseShortcut)
         {
             var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
@@ -107,6 +107,7 @@ namespace FRITeam.Swapify.Backend
                     Timetable = new Timetable(Semester.GetSemester()),
                     LastUpdateOfTimetable = null,
                     CourseName = courseName,
+                    CourseShortcut = courseShortcut,
                     StudyType = GetCourseStudyType(courseCode)
                 };                
                 if (string.IsNullOrEmpty(courseCode))

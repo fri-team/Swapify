@@ -187,7 +187,7 @@ namespace CoursesParser
                     int spaceIdx = course.InnerText.IndexOf(" ");
                     crs.CourseCode = course.InnerText.Substring(0, spaceIdx);
                     crs.CourseName = course.InnerText.Substring(spaceIdx + 1, course.InnerText.Length - spaceIdx - 1);
-                    crs.Short = x.ChildNodes[1].InnerText;
+                    crs.CourseShortcut = x.ChildNodes[1].InnerText;
                     _allCourses.Add(crs);
                 }
             }
