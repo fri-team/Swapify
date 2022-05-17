@@ -26,7 +26,7 @@ class HomePage extends Component {
             </Route>
             <Route path="/register" component={RegisterPage}>
             </Route>
-            <Route path="/Announcement" component={AnnouncementBlock}>
+            <Route component={AnnouncementBlock}>
             </Route>
             <Route path="/aboutus" component={AboutUsPage}>
             </Route>
