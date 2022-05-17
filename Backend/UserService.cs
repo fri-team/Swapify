@@ -132,7 +132,7 @@ namespace FRITeam.Swapify.Backend
 
         public UserInformations GetUserFromLDAP(string login, string password, ILogger logger)
         {
-            login += "@stud.uniza.sk";
+            login += _ldapSettings.MailPrefix;
 
             OptionsLdap options = new OptionsLdap
             {
@@ -175,6 +175,16 @@ namespace FRITeam.Swapify.Backend
         public string GetDefaultLdapPassword()
         {
             return "Heslo123";
+        }
+
+        public string GetMailPrefix()
+        {
+            return _ldapSettings.MailPrefix;
+        }
+
+        public string GetAlternativeMailPrefix()
+        {
+            return _ldapSettings.AlternativMailPrefix;
         }
     }
 }
