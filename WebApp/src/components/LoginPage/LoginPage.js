@@ -53,8 +53,8 @@ class LoginPage extends PureComponent {
   changeFormToResetPassword = () => {
     if (this.state.resetingPassword) {      
       this.setState({ resetingPassword: false });
-    } else {
-	    this.setState({ loginWithLDAP: false });
+    } else {      
+      this.setState({ loginWithLDAP: false });
       this.setState({ resetingPassword: true });
     }
     this.setState({
