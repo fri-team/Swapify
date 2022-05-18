@@ -320,6 +320,7 @@ namespace WebAPI.Controllers
 
             string token = await _userService.GeneratePasswordResetTokenAsync(user);
             string callbackUrl = new Uri(_baseUrl, $@"set-new-password/{user.Id}/{token}").ToString();
+
             if (!_emailService.SendConfirmationEmail(body.Email, callbackUrl, "RestorePasswordEmail"))
             {
                 _logger.LogError($"Error when sending password reset email to user {body.Email}.");
