@@ -3,6 +3,10 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 
 export default {
+  GOOGLE: {
+    GA_TRACKING_CODE: "G-GP5REYBDWL"
+  },
+
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json']
   },

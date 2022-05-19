@@ -12,6 +12,10 @@ const GLOBALS = {
 };
 
 export default {
+  GOOGLE: {
+    GA_TRACKING_CODE: "G-3SR87E9PR3"
+  },
+
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json']
   },
