@@ -1,16 +1,16 @@
+using FRITeam.Swapify.APIWrapper;
+using FRITeam.Swapify.APIWrapper.Objects;
+using FRITeam.Swapify.Backend.Converter;
+using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FRITeam.Swapify.Backend.Interfaces;
-using MongoDB.Driver;
-using FRITeam.Swapify.APIWrapper;
-using Microsoft.Extensions.Logging;
-using FRITeam.Swapify.Backend.Converter;
-using FRITeam.Swapify.APIWrapper.Objects;
 using System.Globalization;
+using System.Linq;
 using System.Text;
-using FRITeam.Swapify.SwapifyBase.Entities;
+using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.Backend
 {
@@ -49,7 +49,8 @@ namespace FRITeam.Swapify.Backend
 
         public async Task<Course> FindByNameAsync(string name)
         {
-            return await _courseCollection.Find(x => x.CourseName.Equals(name.ToLower())).FirstOrDefaultAsync();
+
+            return await _courseCollection.Find(x => x.CourseName.Equals(name)).FirstOrDefaultAsync();
         }
 
         private string RemoveDiacritics(string text)
@@ -87,7 +88,8 @@ namespace FRITeam.Swapify.Backend
 
                 return founded.OrderByDescending(course => course.CourseCode.First() == personalNumber.First())
                     .ThenBy(course => course.CourseName).ToList();
-            } else
+            }
+            else
             {
                 return new List<Course>();
             }
@@ -102,40 +104,41 @@ namespace FRITeam.Swapify.Backend
             var course = await (string.IsNullOrEmpty(courseCode) ? FindByNameAsync(courseName) : FindByCodeAsync(courseCode));
             if (course == null)
             {
-                course = new Course() {
+                course = new Course()
+                {
                     CourseCode = courseCode,
                     Timetable = new Timetable(Semester.GetSemester()),
                     LastUpdateOfTimetable = null,
                     CourseName = courseName,
                     CourseShortcut = courseShortcut,
                     StudyType = GetCourseStudyType(courseCode)
-                };                
+                };
                 if (string.IsNullOrEmpty(courseCode))
-                {                   
-                    course.CourseCode = await FindCourseCodeFromProxy(course);                
+                {
+                    course.CourseCode = await FindCourseCodeFromProxy(course);
                 }
-                await FindCourseTimetableFromProxy(course);                
+                await FindCourseTimetableFromProxy(course);
                 await AddAsync(course);
             }
             else if (IsCourseOutOfDate(course))
-            {                                             
-                if (string.IsNullOrEmpty(courseCode))                    
-                {                    
+            {
+                if (string.IsNullOrEmpty(courseCode))
+                {
                     course.CourseCode = await FindCourseCodeFromProxy(course);
                 }
-                await FindCourseTimetableFromProxy(course);                
-                await UpdateAsync(course);                
+                await FindCourseTimetableFromProxy(course);
+                await UpdateAsync(course);
             }
             return course;
         }
         public async Task<string> FindCourseCodeFromProxy(Course course)
         {
             var response = await _courseProxy.GetByCourseName(course.CourseName);
-            KeyValuePair<int, CourseContent>? c = response.CourseContentList.OrderBy(x => x.Key).FirstOrDefault(x => x.Value.Code.Contains(','));            
+            KeyValuePair<int, CourseContent>? c = response.CourseContentList.OrderBy(x => x.Key).FirstOrDefault(x => x.Value.Code.Contains(','));
             if (c != null && ((KeyValuePair<int, CourseContent>)c).Value != null)
             {
                 course.CourseCode = c.Value.Value.Code.Substring(0, c.Value.Value.Code.IndexOf(','));
-            }            
+            }
             return course.CourseCode;
         }
 
@@ -147,11 +150,11 @@ namespace FRITeam.Swapify.Backend
                 _logger.LogError($"Course with id {guid.ToString()} not exist");
                 return null;
             }
-            return await FindCourseTimetableFromProxy(course);            
+            return await FindCourseTimetableFromProxy(course);
         }
 
         public async Task<Course> FindCourseTimetableFromProxy(Course course)
-        {                                       
+        {
             List<ScheduleTimetableResult> schedules = new();
             int years = course.StudyType.Contains("inž") ? 2 : 3;
             for (int i = 1; i <= years; i++)
@@ -163,7 +166,8 @@ namespace FRITeam.Swapify.Backend
                     {
                         schedules.Add(schedule);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     _logger.LogWarning($"Error while searching timetable of course {course.CourseName}({course.CourseCode}): {ex.Message}");
                 }
@@ -174,7 +178,8 @@ namespace FRITeam.Swapify.Backend
                 }
             }
             course.Timetable = new Timetable(Semester.GetSemester());
-            schedules.ForEach(async (schedule) => {
+            schedules.ForEach(async (schedule) =>
+            {
                 Timetable t = await ConverterApiToDomain.ConvertTimetableForCourseAsync(schedule, this);
                 if (t != null)
                 {
@@ -201,7 +206,7 @@ namespace FRITeam.Swapify.Backend
         {
             if (course.Timetable == null || course.LastUpdateOfTimetable == null || course.Timetable.Semester == null) return true;
             TimeSpan difference = (DateTime)course.LastUpdateOfTimetable - DateTime.Now;
-            if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) return true;                                 
+            if (Math.Abs(difference.TotalHours) > TIME_PERIOD_IN_HOURS) return true;
             return course.Timetable.IsOutDated();
         }
 
@@ -210,10 +215,12 @@ namespace FRITeam.Swapify.Backend
             if (subjectCode[3] == '1')
             {
                 return "Denné inžinierske štúdium";
-            } else if (subjectCode[3] == '2')
+            }
+            else if (subjectCode[3] == '2')
             {
                 return "Denné bakalárske štúdium";
-            } else
+            }
+            else
             {
                 return "Denné doktorandské štúdium";
             }
