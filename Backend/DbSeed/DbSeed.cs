@@ -226,7 +226,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     YearOfStudy = crs.YearOfStudy,
                     StudyType = crs.StudyType.Trim()
                 };
-                Course c = await courseCollection.Find(x => x.CourseShortcut == null && x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType.Trim()).FirstOrDefaultAsync();
+                Course c = await courseCollection.Find(x => x.CourseShortcut == crs.CourseShortcut && x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType.Trim()).FirstOrDefaultAsync();
                 if (c == null)
                     await courseCollection.InsertOneAsync(course);
             }
