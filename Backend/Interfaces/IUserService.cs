@@ -18,13 +18,10 @@ namespace FRITeam.Swapify.Backend.Interfaces
         Task<User> GetUserByIdAsync(string userId);
         Task<IdentityResult> DeleteUserAsyc(User user);
         Task<IdentityResult> UpdateUserAsync(User userToUpdate);
-        Task<IdentityResult> ChangeUserEmail(User user, string newEmail);
         JwtSecurityToken Renew(string jwtToken);
         UserInformations GetUserFromLDAP(string login, string password, ILogger logger);
         Task<bool> AddLdapUser(UserInformations informations);
         string GetDefaultLdapPassword();
-        string GetMailPrefix();
-        string GetAlternativeMailPrefix();
         JwtSecurityToken GenerateJwtToken(string login);
         public void TryAddStudent(User user);
     }
