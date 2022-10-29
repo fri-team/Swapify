@@ -201,8 +201,24 @@ namespace WebAPI.Controllers
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
             } catch (LdapException e)
             {
-                _logger.LogError($"Exception while logging into ldap: {e}");
-                return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
+                var old_mail_format = body.Email + _userService.GetAlternativeMailPrefix();
+                User old_user = await _userService.GetUserByEmailAsync(old_mail_format);
+                if (old_user != null) {
+                    _logger.LogError($"User {body.Email} try to use FRI LDAP login.");
+                    var result = await _userService.ChangeUserEmail(old_user, body.Email + _userService.GetMailPrefix());
+                    if (!result.Succeeded)
+                    {
+                        _logger.LogError($"Cannot change fri email to uniza for user {body.Email}.");
+                    }
+                    else {
+                        _logger.LogError($"We succesfuly change email for user {body.Email}.");
+                    }
+                    return ErrorResponse($"Použite heslo rovnake ako do vzdelávania.");
+                }
+                else {
+                    _logger.LogError($"Exception while logging into ldap: {e}");
+                    return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
+                }
             }                    
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();

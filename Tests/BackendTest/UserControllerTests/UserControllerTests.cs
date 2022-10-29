@@ -28,7 +28,7 @@ namespace BackendTest.UserControllerTests
             EnvironmentSettings envSettings = new EnvironmentSettings() { BaseUrl = "http://localhost:3000/", JwtSecret = "DoNotUseMeInProduction", Environment = "Development" };
             _envSettingsMock = new Mock<IOptions<EnvironmentSettings>>();
             _envSettingsMock.Setup(x => x.Value).Returns(envSettings);
-            LdapSettings ldapSettings = new LdapSettings() { BaseDN = "5", HostName = "4", Port = "123", SecureSocketLayer = "false" };
+            LdapSettings ldapSettings = new LdapSettings() { BaseDN = "5", HostName = "4", Port = "123", SecureSocketLayer = "false", MailPrefix = "", AlternativMailPrefix="" };
             _ldapSettings = new Mock<IOptions<LdapSettings>>();
             _ldapSettings.Setup(x => x.Value).Returns(ldapSettings);
         }

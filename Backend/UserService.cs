@@ -79,6 +79,11 @@ namespace FRITeam.Swapify.Backend
             return Uri.EscapeDataString(token);
         }
 
+        public async Task<IdentityResult> ChangeUserEmail(User user ,string newEmail)
+        {
+            return await _userManager.ChangeEmailAsync(user, newEmail, await _userManager.GenerateChangeEmailTokenAsync(user,newEmail));
+        }
+
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
         {
             token = Uri.UnescapeDataString(token);
@@ -127,7 +132,7 @@ namespace FRITeam.Swapify.Backend
 
         public UserInformations GetUserFromLDAP(string login, string password, ILogger logger)
         {
-            login += "@fri.uniza.sk";
+            login += _ldapSettings.MailPrefix;
 
             OptionsLdap options = new OptionsLdap
             {
@@ -170,6 +175,16 @@ namespace FRITeam.Swapify.Backend
         public string GetDefaultLdapPassword()
         {
             return "Heslo123";
+        }
+
+        public string GetMailPrefix()
+        {
+            return _ldapSettings.MailPrefix;
+        }
+
+        public string GetAlternativeMailPrefix()
+        {
+            return _ldapSettings.AlternativMailPrefix;
         }
     }
 }
