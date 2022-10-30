@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
+import AnnouncementBlock from '../Announcement/AnnouncementBlock';
 import './HomePage.scss';
 import AboutUsPage from '../AboutUsPage/AboutUsPage';
 
@@ -24,6 +25,8 @@ class HomePage extends Component {
             <Route exact path="/" component={LoginPage}>
             </Route>
             <Route path="/register" component={RegisterPage}>
+            </Route>
+            <Route component={AnnouncementBlock}>
             </Route>
             <Route path="/aboutus" component={AboutUsPage}>
             </Route>

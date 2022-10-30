@@ -391,7 +391,7 @@ namespace BackendTest.UserControllerTests
 
             dynamic badRequestObject = (BadRequestObjectResult)result;
             string error = badRequestObject.Value.Error;
-            Assert.Equal("E-mailová adresa a heslo nie sú správne.", error);
+            Assert.Equal("Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.", error);
 
         }
 

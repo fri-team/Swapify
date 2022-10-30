@@ -259,7 +259,7 @@ class LoginPage extends PureComponent {
               <div>
                 <a onClick={this.changeFormToLDAPLogin} className="FormField__Link">
                   {!this.state.loginWithLDAP
-                    ? "Prihlásiť sa cez FRI login"
+                    ? "Prihlásiť sa pomocou UNIZA účtu"
                     : "Prihlásiť sa cez e-mail"}
                 </a>
               </div>
