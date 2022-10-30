@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Novell.Directory.Ldap;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Novell.Directory.Ldap;
 using WebAPI.Extensions;
 using WebAPI.Models.UserModels;
 
@@ -199,11 +199,18 @@ namespace WebAPI.Controllers
             try
             {
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
-            } catch (LdapException e)
+            }
+            catch (LdapException e)
             {
                 _logger.LogError($"Exception while logging into ldap: {e}");
                 return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
-            }                    
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception while logging into ldap: {e}");
+                return ErrorResponse("Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím.");
+            }
+
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
 
@@ -213,7 +220,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
             }
             ldapInformations.Email = ldapInformations.Email.ToLower();
-            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);            
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
             if (user == null)
             {
                 if (!_userService.AddLdapUser(ldapInformations).Result)
@@ -243,7 +250,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
             try
-            {                
+            {
                 if (await _emailService.GetCaptchaNotPassed(body.Captcha))
                 {
                     return ErrorResponse($"Určite nie ste robot? Overenie Re-Captcha zlyhalo, skúste sa prihlásiť znova.");
@@ -251,7 +258,7 @@ namespace WebAPI.Controllers
                 if (!body.Email.Contains('@'))
                 {
                     return ErrorResponse($"E-mail zadaní v zlom tvare. Prosím overte, že ste zadali e-mail.");
-                }                
+                }
                 body.Email = body.Email.ToLower();
                 User user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
@@ -268,7 +275,7 @@ namespace WebAPI.Controllers
                 if (!user.EmailConfirmed)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} didn't confirm email address.");
-                    return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu."); 
+                    return StatusCode((int)HttpStatusCode.Forbidden, "Pre prihlásenie prosím potvrď svoju emailovú adresu.");
                 }
                 var token = await _userService.Authenticate(body.Email, body.Password);
                 if (token == null)
