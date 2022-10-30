@@ -1,4 +1,4 @@
-namespace WebAPI.Models.DatabaseModels
+ namespace WebAPI.Models.DatabaseModels
 {
     public class SwapifyDatabaseSettings : ISwapifyDatabaseSettings
     {

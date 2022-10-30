@@ -38,6 +38,7 @@ namespace FRITeam.Swapify.APIWrapper
                         string teacherName = block["u"].ToString();
                         string roomName = block["r"].ToString();
                         string subjectCode = block["k"].ToString().Trim();
+                        string subjectShortcut = block["p"].ToString().Trim();
                         string subjectNameHelper = block["s"].ToString().Trim();                        
                         string subjectName = subjectNameHelper.First().ToString().ToUpper() + subjectNameHelper.Substring(1);                        
                         var content = new ScheduleContent()
@@ -47,6 +48,7 @@ namespace FRITeam.Swapify.APIWrapper
                             TeacherName = teacherName,
                             RoomName = roomName,
                             CourseCode = subjectCode,
+                            CourseShortcut = subjectShortcut,
                             CourseName = subjectName                            
                         };
                         weekTimetable.Add(content); 
