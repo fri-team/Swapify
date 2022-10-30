@@ -34,7 +34,7 @@ namespace FRITeam.Swapify.Backend
         public async Task<JwtSecurityToken> Authenticate(string login, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(login, password, false, false);
-            
+
             if (result.Succeeded)
                 return GenerateJwtToken(login);
             return null;
@@ -136,7 +136,7 @@ namespace FRITeam.Swapify.Backend
                 HostName = _ldapSettings.HostName,
                 Port = int.Parse(_ldapSettings.Port),
             };
-
+            logger.LogInformation($"Connecting to ldap, SSL: {_ldapSettings.SecureSocketLayer}, HostName ");
             AuthenticatorLdap authenticatorLdap = new AuthenticatorLdap(options);
             UserInformations informations = authenticatorLdap.Authenticate(login, password, logger);
             return informations;

@@ -36,6 +36,11 @@ const IconTray = styled.div`
 class AppToolbar extends PureComponent {
   state = { showMenu: false, changeGroup: false };
 
+  reloadTimetable = () =>{
+
+    
+  }
+
   handleLogout = () => this.props.userActions.logout();
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
@@ -123,6 +128,7 @@ class AppToolbar extends PureComponent {
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                   changeDarkMode={changeDarkMode}
+                  ressetTimetable={this.reloadTimetable}
                 />
               )}
             </IconTray>
