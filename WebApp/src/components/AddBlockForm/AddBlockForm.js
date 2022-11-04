@@ -27,6 +27,9 @@ import { SliderPicker } from "react-color";
 import toMaterialStyle from "material-color-hash";
 import { Tabs, Tab } from "@mui/material";
 
+// Components
+import CustomEventForm from "./CustomEventForm";
+
 const FlexBox = styled.div`
   min-width: 400px;
   display: flex;
@@ -224,14 +227,6 @@ class AddBlockForm extends Component {
       this.setState({ blockColor: value });
     } else {
       this.setState({ [name]: value });
-    }
-
-    if (name == "eventName") {
-      this.setState({ eventName: value });
-    }
-
-    if (name == "eventPlace") {
-      this.setState({ eventPlace: value });
     }
   };
 
@@ -436,78 +431,7 @@ class AddBlockForm extends Component {
                   />{" "}
                 </React.Fragment>
               ) : (
-                <React.Fragment>
-                  <TextField
-                    placeholder="Zadajte názov udalosti *"
-                    name="eventName"
-                    value={this.state.eventName}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    label="Miesto"
-                    placeholder="Miesto"
-                    name="eventPlace"
-                    value={this.state.eventPlace}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    fullWidth
-                  />
-                  <FormControl fullWidth required>
-                    <InputLabel>Deň</InputLabel>
-                    <Select name="day" value={day} onChange={this.handleChange}>
-                      <MenuItem value={1}>Pondelok</MenuItem>
-                      <MenuItem value={2}>Utorok</MenuItem>
-                      <MenuItem value={3}>Streda</MenuItem>
-                      <MenuItem value={4}>Štvrtok</MenuItem>
-                      <MenuItem value={5}>Piatok</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <TextField
-                    label="Začiatok"
-                    type="time"
-                    inputProps={{ step: 3600 }}
-                    name="startBlock"
-                    value={startBlock}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    label="Dĺžka"
-                    type="number"
-                    InputProps={{
-                      inputProps: {
-                        min: 1,
-                        max: 20 - this.state.startBlock.substring(0, 2),
-                      },
-                    }}
-                    name="length"
-                    value={length}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    label="Farba bloku"
-                    type="text"
-                    inputProps={{ step: 3600 }}
-                    name="colorOfBlock"
-                    value={this.state.blockColor}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    fullWidth
-                    required
-                  />
-                  <SliderPicker
-                    color={this.state.blockColor}
-                    onChangeComplete={this.handleChangeComplete}
-                  />{" "}
-                </React.Fragment>
+                <CustomEventForm course={this.props.course} />
               )}
             </FlexBox>
           </DialogContent>
