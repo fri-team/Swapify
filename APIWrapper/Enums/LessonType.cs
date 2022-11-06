@@ -14,6 +14,8 @@ namespace FRITeam.Swapify.APIWrapper.Enums
         [EnumMember(Value = "C")]
         Excercise = 2,
         [EnumMember(Value = "P")]
-        Lecture = 3
+        Lecture = 3,
+        [EnumMember(Value = "E")]
+        Event = 4
     }
 }

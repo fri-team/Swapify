@@ -4,6 +4,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities.Enums
     {
         Lecture = 1,
         Laboratory = 2,
-        Excercise = 3
+        Excercise = 3,
+        Event = 4
     }
 }
