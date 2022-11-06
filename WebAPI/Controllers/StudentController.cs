@@ -100,6 +100,7 @@ namespace WebAPI.Controllers
                     timetableBlock.CourseId = course.Id.ToString();
                     timetableBlock.CourseName = course.CourseName;
                     timetableBlock.CourseCode = course.CourseCode;
+                    timetableBlock.CourseShortcut = course.CourseShortcut;
                     timetableBlock.Room = block.Room;
                     timetableBlock.Teacher = block.Teacher;
                     timetableBlock.Type = (TimetableBlockType)block.BlockType;
@@ -133,8 +134,9 @@ namespace WebAPI.Controllers
             }
 
             TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
+
             Course course = await _courseService.GetOrAddNotExistsCourse(timetableBlock.CourseCode,
-                timetableBlock.CourseName);
+                timetableBlock.CourseName, timetableBlock.CourseShortcut);
 
             if (course == null)
             {

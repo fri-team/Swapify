@@ -98,7 +98,7 @@ namespace FRITeam.Swapify.Backend.Converter
                     if (!isTimetableForCourse)
                     {
                         Course course = await courseService.GetOrAddNotExistsCourse(firstInGroup.CourseCode,
-                            firstInGroup.CourseName);                                              
+                            firstInGroup.CourseName, firstInGroup.CourseShortcut);                                              
                         Block courseBlock = course.Timetable?.GetBlock(block);
                         if (courseBlock != null)
                             block.BlockId = courseBlock.BlockId;
@@ -192,6 +192,8 @@ namespace FRITeam.Swapify.Backend.Converter
                     return BlockType.Laboratory;
                 case LessonType.Lecture:
                     return BlockType.Lecture;
+                case LessonType.Event:
+                    return BlockType.Event;
                 default:
                     throw new KeyNotFoundException("Unknow LessonType");
             }

@@ -25,11 +25,11 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
         private static readonly Guid OlegStudent3Guid = Guid.NewGuid();
         private static readonly Guid NikitaStudentGuid = Guid.NewGuid();
-        
+
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<User>("users");            
+            var usersCollection = dbService.GetCollection<User>("users");
             string email = "oleg@swapify.com";
             User oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             if (oleg == null)
@@ -125,16 +125,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 user.PasswordHash = hashed;
                 await usersCollection.InsertOneAsync(user);
             }
-        }       
+        }
         public static async Task CreateTestingExchangesAsync(IServiceProvider serviceProvider)
         {
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();            
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var blockExchangeCollection = dbService.GetCollection<BlockChangeRequest>(nameof(BlockChangeRequest));
             var usersCollection = dbService.GetCollection<User>("users");
             string email = "oleg@swapify.com";
             var oleg = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
             var courseService = serviceProvider.GetRequiredService<ICourseService>();
-            var course2 = await courseService.FindByNameAsync("multimediálne informačné systémy");
+            var course2 = await courseService.FindByNameAsync("technické prostriedky PC");
 
             if (oleg != null)
             {
@@ -157,10 +157,10 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     }
                 });
             }
-        }        
+        }
         public static async Task CreateTestingNotifications(IServiceProvider serviceProvider)
-        {            
-            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();            
+        {
+            var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
             var notificationsCollection = dbService.GetCollection<Notification>(nameof(Notification));
             // insert testing notification only if notifications collection is empty
             if (notificationsCollection.CountDocuments(notification => true) > 0)
@@ -205,13 +205,13 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 }
             };
             await notificationsCollection.InsertManyAsync(notifications);
-        }        
+        }
 
         public static async Task LoadTestingCoursesAsync(IServiceProvider serviceProvider)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var courseCollection = dbService.GetCollection<Course>(nameof(Course));            
-            var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();            
+            var courseCollection = dbService.GetCollection<Course>(nameof(Course));
+            var path = serviceProvider.GetRequiredService<IOptions<PathSettings>>();
             var json = await File.ReadAllTextAsync(path.Value.CoursesJsonPath);
             var courses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CourseItem>>(json);
             foreach (var crs in courses)
@@ -220,15 +220,16 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 {
                     Id = Guid.NewGuid(),
                     CourseCode = crs.CourseCode,
+                    CourseShortcut = crs.CourseShortcut,
                     CourseName = crs.CourseName,
                     LastUpdateOfTimetable = null,
                     YearOfStudy = crs.YearOfStudy,
-                    StudyType = crs.StudyType
+                    StudyType = crs.StudyType.Trim()
                 };
-                Course c = await courseCollection.Find(x => x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType).SingleOrDefaultAsync();
-                if (c != null) continue;                
-                await courseCollection.InsertOneAsync(course);                
-            }            
+                Course c = await courseCollection.Find(x => x.CourseShortcut == crs.CourseShortcut && x.CourseCode == crs.CourseCode && x.YearOfStudy == crs.YearOfStudy && x.StudyType == crs.StudyType.Trim()).FirstOrDefaultAsync();
+                if (c == null)
+                    await courseCollection.InsertOneAsync(course);
+            }
         }
 
         //public static void ImportTestDb(Mongo2Go.MongoDbRunner paRunner, String paPath)
