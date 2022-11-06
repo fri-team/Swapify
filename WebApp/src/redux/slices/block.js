@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // utils
 import axios from "axios";
 //
-//import { dispatch } from "../store";
+import { dispatch } from "../store";
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: "product",
+  name: "block",
   initialState,
   reducers: {
     // START LOADING
@@ -29,12 +29,14 @@ const slice = createSlice({
     hasError(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+      window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
     },
 
-    // GET PRODUCTS
-    getProductsSuccess(state, action) {
+    // CREATE BLOCK
+    createBlockSuccess(state, action) {
+      const newBlock = action.payload;
       state.isLoading = false;
-      state.products = action.payload;
+      console.log(newBlock);
     },
   },
 });
@@ -44,34 +46,15 @@ export default slice.reducer;
 
 // ----------------------------------------------------------------------
 
-export function getCustomBlock() {
-  return async (dispatch) => {
+export function createBlock(newBlock) {
+  return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/api/products");
-      dispatch(slice.actions.getProductsSuccess(response.data.products));
+      console.log(newBlock);
+      const response = await axios.post("/api/student/addNewBlock", newBlock);
+      dispatch(slice.actions.createBlockSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
   };
 }
-
-// ----------------------------------------------------------------------
-
-/*fetchCustomBlock = (eventName) => {
-  this.setState({ eventPlace: eventName });
-
-  const startBlock = parseInt(this.state.startBlock.split(":")[0]);
-  axios
-    .get(`/api/timetable/getCustomBlock/${startBlock}/${this.state.day}`)
-    .then(({ data }) => {
-      this.setState({ eventPlace: data.eventPlace });
-      this.setState({ length: data.endBlock - data.startBlock });
-    })
-    .catch(function (error) {
-      if (error.response.status == "404") {
-        alert("Upozornenie: Problém pri načítaní vlastnej udalosti");
-      }
-    });
-};
-*/

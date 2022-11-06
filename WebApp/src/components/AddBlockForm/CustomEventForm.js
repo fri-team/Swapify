@@ -1,22 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { padStart } from "lodash";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-
 import { SliderPicker } from "react-color";
+import { ClipLoader } from "react-spinners";
+// Redux
+import { useSelector, useDispatch } from "react-redux";
+import { createBlock } from "../../redux/slices/block";
 
 const CustomEventForm = ({ course }) => {
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.block);
+
+  const [isDisabled, setIsDisabled] = useState(true);
   const [customEvent, setCustomEvent] = useState({
     eventName: "",
     eventPlace: "",
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
-    length: course.length,
+    length: null,
     colorOfBlock: "#3F51B5",
   });
 
+  useEffect(() => {
+    if (customEvent.eventName !== "" && customEvent.length != null) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [customEvent.eventName, customEvent.length]);
+
   const handleChange = (e) => {
-    console.log((e.target.name, e.target.value));
     setCustomEvent((customEvent) => ({
       ...customEvent,
       [e.target.name]: e.target.value,
@@ -29,6 +43,11 @@ const CustomEventForm = ({ course }) => {
       ...customEvent,
       colorOfBlock: color.hex,
     }));
+  };
+
+  const onSubmitHandler = async () => {
+    console.log(customEvent);
+    dispatch(createBlock(customEvent));
   };
 
   return (
@@ -112,7 +131,20 @@ const CustomEventForm = ({ course }) => {
       <SliderPicker
         color={customEvent.colorOfBlock}
         onChangeComplete={handleChangeComplete}
-      />{" "}
+      />
+      {isLoading == false ? (
+        <Button
+          disabled={isDisabled}
+          onClick={onSubmitHandler}
+          color="primary"
+          variant="contained"
+          sx={{ alignSelf: "flex-end", marginTop: "10px" }}
+        >
+          Uložiť
+        </Button>
+      ) : (
+        <ClipLoader size={35} color={"#2196f3"} loading={isLoading} />
+      )}
     </React.Fragment>
   );
 };

@@ -13,8 +13,8 @@ const rootPersistConfig = {
   whitelist: [],
 };
 
-const rootReducer = combineReducers({
+const rootReducerSec = combineReducers({
   block: blockReducer,
 });
 
-export { rootPersistConfig, rootReducer };
+export { rootPersistConfig, rootReducerSec };
