@@ -134,6 +134,7 @@ namespace WebAPI.Controllers
             }
 
             TimetableBlock timetableBlock = newBlockModel.TimetableBlock;
+
             Course course = await _courseService.GetOrAddNotExistsCourse(timetableBlock.CourseCode,
                 timetableBlock.CourseName, timetableBlock.CourseShortcut);
 

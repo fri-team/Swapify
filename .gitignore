@@ -335,3 +335,7 @@ logs/
 data/
 dockerData/
 logs/
+/WebAPI/package-lock.json
+/WebAPI/package.json
+/WebAPI/.vscode/launch.json
+/WebAPI/.vscode/tasks.json
