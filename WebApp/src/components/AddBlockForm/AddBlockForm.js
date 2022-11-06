@@ -6,6 +6,7 @@ import { map, padStart, parseInt, replace } from "lodash";
 import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 import axios from "axios";
+import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -15,6 +16,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -23,7 +25,7 @@ import * as timetableActions from "../../actions/timetableActions";
 import { ClipLoader } from "react-spinners";
 import { SliderPicker } from "react-color";
 import toMaterialStyle from "material-color-hash";
-import { Tabs, Tab, Button } from "@mui/material";
+import { Tabs, Tab } from "@mui/material";
 
 // Components
 import CustomEventForm from "./CustomEventForm";
@@ -428,30 +430,31 @@ class AddBlockForm extends Component {
                     color={this.state.blockColor}
                     onChangeComplete={this.handleChangeComplete}
                   />{" "}
-                  {!this.state.loading && (
-                    <Button
-                      disabled={!this.canSubmit()}
-                      onClick={this.submit}
-                      color="primary"
-                      variant="contained"
-                      sx={{ alignSelf: "flex-end", marginTop: "10px" }}
-                    >
-                      Uložiť
-                    </Button>
-                  )}
-                  {this.state.loading && (
-                    <ClipLoader
-                      size={35}
-                      color={"#2196f3"}
-                      loading={this.state.loading}
-                    />
-                  )}
                 </React.Fragment>
               ) : (
                 <CustomEventForm course={this.props.course} />
               )}
             </FlexBox>
           </DialogContent>
+          <DialogActions>
+            {!this.state.loading && (
+              <Button
+                disabled={!this.canSubmit()}
+                onClick={this.submit}
+                color="primary"
+                variant="contained"
+              >
+                Uložiť
+              </Button>
+            )}
+            {this.state.loading && (
+              <ClipLoader
+                size={35}
+                color={"#2196f3"}
+                loading={this.state.loading}
+              />
+            )}
+          </DialogActions>
         </Dialog>
       </form>
     );

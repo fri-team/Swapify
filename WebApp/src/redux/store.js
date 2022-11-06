@@ -4,12 +4,12 @@ import {
   useSelector as useAppSelector,
 } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
-import { rootPersistConfig, rootReducerSec } from "./rootReducer";
+import { rootPersistConfig, rootReducer } from "./rootReducer";
 
 // ----------------------------------------------------------------------
 
-const storeRedux = configureStore({
-  reducer: persistReducer(rootPersistConfig, rootReducerSec),
+const store = configureStore({
+  reducer: persistReducer(rootPersistConfig, rootReducer),
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
@@ -17,12 +17,12 @@ const storeRedux = configureStore({
     }),
 });
 
-const persistor = persistStore(storeRedux);
+const persistor = persistStore(store);
 
-const { dispatch } = storeRedux;
+const { dispatch } = store;
 
 const useSelector = useAppSelector;
 
 const useDispatch = () => useAppDispatch();
 
-export { storeRedux, persistor, dispatch, useSelector, useDispatch };
+export { store, persistor, dispatch, useSelector, useDispatch };

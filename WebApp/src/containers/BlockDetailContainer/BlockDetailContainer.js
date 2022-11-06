@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as actions from "../../actions/blockDetailActions";
-import BlockDetail from "../../components/BlockDetail/BlockDetail";
-import * as timetableActions from "../../actions/timetableActions";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/blockDetailActions';
+import BlockDetail from '../../components/BlockDetail/BlockDetail';
+import * as timetableActions from '../../actions/timetableActions';
 
 class BlockDetailContainer extends Component {
   state = {
@@ -13,30 +13,28 @@ class BlockDetailContainer extends Component {
 
   onOutsideClick = () => {
     this.props.actions.hideDetail();
-  };
-
-  exchangeRequest = (course) => {
+  }
+  
+  exchangeRequest = (course) =>
+  {
     this.props.timetableActions.showExchangeModeTimetable(course);
     this.props.timetableActions.chooseExchangeFromBlock(course);
-    this.props.actions.hideDetail();
-  };
+    this.props.actions.hideDetail();    
+  }
 
   onClickDelete = (block) => {
     this.props.timetableActions.removeBlock(block, this.state.user.email);
     this.props.actions.hideDetail();
-  };
+  }
 
   onClickEdit = () => {
     this.props.actions.hideDetail();
-  };
+  }
 
   onClickAdd = (block) => {
-    this.props.timetableActions.addBlockAndHideOthersWithSameCourseId(
-      block,
-      this.state.user.email
-    );
+    this.props.timetableActions.addBlockAndHideOthersWithSameCourseId(block, this.state.user.email);
     this.props.actions.hideDetail();
-  };
+  }
 
   render() {
     const { isVisible, top, left, course } = this.props;
@@ -80,7 +78,4 @@ const mapDispatchToProps = (dispatch) => ({
   timetableActions: bindActionCreators(timetableActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BlockDetailContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BlockDetailContainer);
