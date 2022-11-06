@@ -6,7 +6,7 @@ import { AppContainer } from "react-hot-loader";
 
 // redux
 import { Provider as ReduxProvider } from "react-redux";
-import { storeRedux, persistor as persistorNew } from "./redux/store";
+import { store as storeNew, persistor as persistorNew } from "./redux/store";
 import { PersistGate } from "redux-persist/lib/integration/react";
 
 import configureStore, { history } from "./store/configureStore";
@@ -18,7 +18,7 @@ const { store, persistor } = configureStore();
 
 render(
   <AppContainer>
-    <ReduxProvider store={storeRedux}>
+    <ReduxProvider store={storeNew}>
       <PersistGate loading={null} persistor={persistorNew}>
         <Root store={store} persistor={persistor} history={history} />
       </PersistGate>
@@ -32,7 +32,7 @@ if (module.hot) {
     const NewRoot = require("./components/Root").default;
     render(
       <AppContainer>
-        <ReduxProvider store={storeRedux}>
+        <ReduxProvider store={storeNew}>
           <PersistGate loading={null} persistor={persistorNew}>
             <NewRoot store={store} persistor={persistor} history={history} />
           </PersistGate>
