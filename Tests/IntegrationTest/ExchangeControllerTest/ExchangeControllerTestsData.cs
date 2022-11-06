@@ -11,22 +11,39 @@ namespace IntegrationTest.ExchangeControllerTest
         public static readonly Guid CourseGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
         public static readonly Guid Course2Guid = Guid.Parse("3F2504E0-4F89-11D3-9A0C-0305E82C3301");
 
+        //Exist
         public static LoginModel Login1 = new LoginModel()
         {
             Email = "oleg@swapify.com",
             Password = "Heslo123"
         };
 
+        //Exist
         public static LoginModel Login2 = new LoginModel()
         {
             Email = "oleg2@swapify.com",
             Password = "Heslo123"
         };
 
+        //Exist
         public static LoginModel Login3 = new LoginModel()
         {
             Email = "oleg3@swapify.com",
             Password = "Heslo123"
+        };
+
+        //Doesnt exist in database
+        public static LoginModel Login4 = new LoginModel()
+        {
+            Email = "oleg4@swapify.com",
+            Password = "Heslo123"
+        };
+
+        //Bad Password
+        public static LoginModel Login5 = new LoginModel()
+        {
+            Email = "oleg3@swapify.com",
+            Password = "321olseH"
         };
 
         public static ExchangeRequestModel ExchangeModel11 = new ExchangeRequestModel()

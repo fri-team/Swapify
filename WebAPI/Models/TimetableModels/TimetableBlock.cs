@@ -12,7 +12,8 @@ namespace WebAPI.Models.TimetableModels
         public int EndBlock { get; set; }
         public string CourseId { get; set; }
         public string CourseName { get; set; }
-        public string CourseCode { get; set; }        
+        public string CourseCode { get; set; }
+        public string CourseShortcut { get; set; }
         public string Room { get; set; }
         public string Teacher { get; set; }
         public TimetableBlockType Type { get; set; }

@@ -20,14 +20,12 @@ class HomePage extends Component {
               <NavLink exact to="/" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Prihlásenie</NavLink>
               <NavLink to="/register" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Registrácia</NavLink>
             </div>
-
             <Route exact path="/" component={LoginPage}>
             </Route>
             <Route path="/register" component={RegisterPage}>
-            </Route>
+            </Route>            
             <Route path="/aboutus" component={AboutUsPage}>
             </Route>
-
             <div className="HomeFooter">
               <NavLink to="/aboutus" className="FormField__Link">O nás</NavLink>
             </div>
