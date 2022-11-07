@@ -8,7 +8,7 @@ services:
   container_name: swapify-stg
   volumes:   
    - ./logs_stg:/app/logs
-   - ./../Swapify/FixedDB/courses_2022_9_15.json:/app/courses_2022_9_15.json
+   - ./../Swapify/FixedDB/courses_2022_11_1.json:/app/courses_2022_11_1.json
   restart: unless-stopped
   expose:
    - 5020   
