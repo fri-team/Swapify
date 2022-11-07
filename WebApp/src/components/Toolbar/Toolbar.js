@@ -22,6 +22,7 @@ import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
 import logo from '../../images/logowhite.png';
 import CalendarIcon from '@material-ui/icons/CalendarToday'
+import axios from 'axios';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -36,9 +37,20 @@ const IconTray = styled.div`
 class AppToolbar extends PureComponent {
   state = { showMenu: false, changeGroup: false };
 
-  reloadTimetable = () =>{
-
-    
+  reloadTimetable = (user) =>{
+    const body = {
+      personalNumber: user.personalNumber,
+      email: user.email
+    }
+    axios({
+      method: 'post',
+      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      data: body
+    })
+    .then(() => {
+      this.props.history.push(TIMETABLE);
+      window.location.reload(false);
+    })
   }
 
   handleLogout = () => this.props.userActions.logout();
@@ -128,7 +140,7 @@ class AppToolbar extends PureComponent {
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                   changeDarkMode={changeDarkMode}
-                  ressetTimetable={this.reloadTimetable}
+                  ressetTimetable={this.reloadTimetable(user)}
                 />
               )}
             </IconTray>
