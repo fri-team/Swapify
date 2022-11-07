@@ -136,7 +136,7 @@ namespace FRITeam.Swapify.Backend
                 HostName = _ldapSettings.HostName,
                 Port = int.Parse(_ldapSettings.Port),
             };
-            logger.LogInformation($"Connecting to ldap, SSL: {_ldapSettings.SecureSocketLayer}, HostName ");
+            logger.LogInformation($"Connecting to ldap, SSL: {_ldapSettings.SecureSocketLayer}, HostName: {_ldapSettings.HostName} ");
             AuthenticatorLdap authenticatorLdap = new AuthenticatorLdap(options);
             UserInformations informations = authenticatorLdap.Authenticate(login, password, logger);
             return informations;

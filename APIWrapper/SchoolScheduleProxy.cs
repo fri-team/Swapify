@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace FRITeam.Swapify.APIWrapper
 {
     public class SchoolScheduleProxy : ISchoolScheduleProxy
-    {        
+    {
         private const string TYPE_PARAM = "m";
         private const string ID_PARAM = "id";
         private const string YEAR_PARAM = "r";
@@ -25,11 +25,11 @@ namespace FRITeam.Swapify.APIWrapper
         public SchoolScheduleProxy(IOptions<ProxySettings> proxySettings)
         {
             _proxySettings = proxySettings.Value;
-            _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();            
+            _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();
         }
 
         public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber)
-        {            
+        {
             return await CallScheduleContentApi(5, personalNumber, Semester.GetSemester());
         }
 
@@ -53,18 +53,50 @@ namespace FRITeam.Swapify.APIWrapper
             else if (studyType.Contains("bak"))
             {
                 numStudyType = '2';
-            } else if (studyType.Contains("inž"))
+            }
+            else if (studyType.Contains("inž"))
             {
                 numStudyType = '1';
-            } else if (studyType.Contains("dokt"))
+            }
+            else if (studyType.Contains("dokt"))
             {
                 numStudyType = '3';
-            } else
+            }
+            else
             {
                 numStudyType = ' ';
-            }            
-            string addition = "," + subjectCode[0] + "," + numStudyType + "," + yearOfStudy;           
+            }
+            string addition = "," + getFacultyCode(subjectCode) + "," + numStudyType + "," + yearOfStudy;
             return await CallScheduleContentApi(4, subjectCode + addition, Semester.GetSemester());
+        }
+
+        //First number in subject code is identifier for corresponding faculty so everyone know to which faculty selected subject belongs
+        //Every FRI subject starts with number 6. Before new acreditation every subject on FRI was starting with number 5 (2021/2022)
+        //Starting numbers have changed for few faculties but API call parameters to get subject time table was kept same as before
+        // that is why we have to specify which number to use for which faculty
+        public char getFacultyCode(string subjectCode)
+        {
+            switch (subjectCode[0])
+            {
+                case '1':   //FPEDAS = 1
+                    return '1';
+                case '2':   //Strojnicka = 2
+                    return '2';
+                case '3':   //FEIT = 3
+                    return '3';
+                case '4':   //Stavebna = 4
+                    return '4';
+                case '5':   //FBI = 9
+                    return '9';
+                case '6':   //FRI = 5
+                    return '5';
+                case '7':   //Humanitna = 8
+                    return '8';
+                case '8':   //Ustav vysokohorskej biologie = 6
+                    return '6';
+                default:
+                    return ' ';
+            }
         }
 
         public ScheduleTimetableResult GetFromJsonFile(string fileName)
@@ -85,7 +117,7 @@ namespace FRITeam.Swapify.APIWrapper
         }
 
         private async Task<ScheduleTimetableResult> CallScheduleContentApi(int type, string id, Semester semester)
-        {            
+        {
             var request = new RestRequest(_proxySettings.ScheduleContentURL);
             request.AddParameter(TYPE_PARAM, type);
             request.AddParameter(ID_PARAM, id);
@@ -105,7 +137,7 @@ namespace FRITeam.Swapify.APIWrapper
                 _logger.Error(e.Message);
                 throw;
             }
-        }                
+        }
     }
 
 }
