@@ -21,10 +21,12 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static readonly Guid Oleg2Guid = Guid.NewGuid();
         private static readonly Guid Oleg3Guid = Guid.NewGuid();
         private static readonly Guid NikitaGuid = Guid.NewGuid();
+        private static readonly Guid TeacherGuid = Guid.NewGuid();
         private static readonly Guid OlegStudentGuid = Guid.NewGuid();
         private static readonly Guid OlegStudent2Guid = Guid.NewGuid();
         private static readonly Guid OlegStudent3Guid = Guid.NewGuid();
         private static readonly Guid NikitaStudentGuid = Guid.NewGuid();
+        private static readonly Guid TeacherBaseUserGuid = Guid.NewGuid();
 
         public static async Task CreateTestingUserAsync(IServiceProvider serviceProvider)
         {
@@ -45,7 +47,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = OlegGuid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudentGuid, OlegGuid)
+                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudentGuid, OlegGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -69,7 +71,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg2Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
+                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -93,7 +95,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg3Guid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
+                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -117,7 +119,31 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = false,
                     SecurityStamp = NikitaGuid.ToString("D"),
-                    Student = await CreateStudentAsync(serviceProvider, NikitaStudentGuid, NikitaGuid)
+                    BaseUser = await CreateBaseUserAsync(serviceProvider, NikitaStudentGuid, NikitaGuid)
+                };
+
+                var password = new PasswordHasher<User>();
+                var hashed = password.HashPassword(user, "Heslo123");
+                user.PasswordHash = hashed;
+                await usersCollection.InsertOneAsync(user);
+            }
+
+            email = "teacher@swapify.com";
+            User teacher = await usersCollection.Find(x => x.Email == email).SingleOrDefaultAsync();
+            if (teacher == null)
+            {
+                User user = new User
+                {
+                    Id = TeacherGuid,
+                    Name = "Ucitel",
+                    Surname = "Test",
+                    Email = email,
+                    NormalizedEmail = email.ToUpper(),
+                    UserName = email,
+                    NormalizedUserName = email.ToUpper(),
+                    EmailConfirmed = true,
+                    SecurityStamp = TeacherGuid.ToString("D"),
+                    BaseUser = await CreateBaseUserAsync(serviceProvider, TeacherBaseUserGuid, TeacherGuid, "99195")
                 };
 
                 var password = new PasswordHasher<User>();
@@ -140,7 +166,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 blockExchangeCollection.InsertOne(new BlockChangeRequest
                 {
-                    StudentId = oleg.Student.Id,
+                    StudentId = oleg.BaseUser.Id,
                     Status = ExchangeStatus.WaitingForExchange,
                     DateOfCreation = DateTime.Now,
                     BlockFrom = new Block
@@ -240,19 +266,19 @@ namespace FRITeam.Swapify.Backend.DbSeed
         //    paRunner.Import("Swapify", "Student", paPath + Path.DirectorySeparatorChar + "Student.json", true);
         //    paRunner.Import("Swapify", "users", paPath + Path.DirectorySeparatorChar + "users.json", true);
         //}      
-        private static async Task<Student> CreateStudentAsync(IServiceProvider serviceProvider, Guid studentId = default(Guid), Guid userId = default(Guid))
+        private static async Task<BaseUser> CreateBaseUserAsync(IServiceProvider serviceProvider, Guid baseUserId = default(Guid), Guid userId = default(Guid), string personalNumber = null)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var studentCollection = dbService.GetCollection<Student>(nameof(Student));
-            Student student = new Student
+            var usersCollection = dbService.GetCollection<BaseUser>("Student");
+            BaseUser user = new BaseUser
             {
-                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Id = (baseUserId == default(Guid) ? Guid.NewGuid() : baseUserId),
                 Timetable = new Timetable(Semester.GetSemester()),
-                PersonalNumber = null,
+                PersonalNumber = personalNumber,
                 UserId = userId
             };
-            await studentCollection.InsertOneAsync(student);
-            return student;
+            await usersCollection.InsertOneAsync(user);
+            return user;
         }
     }
 }

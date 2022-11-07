@@ -25,8 +25,8 @@ namespace BackendTest
         public async Task EditBlockStudentTimetablePassed()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stserv = new StudentService(database);
-            Student student = new Student();
+            BaseUserService stserv = new BaseUserService(database);
+            BaseUser student = new BaseUser();
             student.Timetable = FakeTimetable.GetFakeTimetable();
             await stserv.AddAsync(student);
 
@@ -39,7 +39,7 @@ namespace BackendTest
             //save new block
             await stserv.UpdateStudentAsync(loadedStudent);
             //load from db
-            Student updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            BaseUser updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
             updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);

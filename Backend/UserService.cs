@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using FRITeam.Swapify.SwapifyBase.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -19,10 +20,10 @@ namespace FRITeam.Swapify.Backend
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly LdapSettings _ldapSettings;
-        private readonly IStudentService _studentService;
+        private readonly IBaseUserService _studentService;
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
-            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, IStudentService studentService)
+            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, IBaseUserService studentService)
         {
             _environmentSettings = environmentSettings.Value;
             _userManager = userManager;
@@ -156,13 +157,13 @@ namespace FRITeam.Swapify.Backend
 
         public async void TryAddStudent(User user)
         {
-            if (user.Student == null)
+            if (user.BaseUser == null)
             {
-                user.Student = new Student
+                user.BaseUser = new BaseUser
                 {
                     UserId = user.Id
                 };
-                await _studentService.AddAsync(user.Student);
+                await _studentService.AddAsync(user.BaseUser);
                 await UpdateUserAsync(user);
             }
         }
@@ -170,6 +171,13 @@ namespace FRITeam.Swapify.Backend
         public string GetDefaultLdapPassword()
         {
             return "Heslo123";
+        }
+
+        public UserType GetUserType(string personalNumber)
+        {
+            if (personalNumber.Length == 6) return UserType.Student;
+            else if (personalNumber.Length == 5) return UserType.Teacher;
+            else throw new ArgumentException("Users personal number has wrong format");
         }
     }
 }

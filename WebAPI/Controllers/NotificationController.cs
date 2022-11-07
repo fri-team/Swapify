@@ -35,12 +35,12 @@ namespace WebAPI.Controllers
         {
             User user = await _userService.GetUserByEmailAsync(email);
 
-            if (user.Student == null)
+            if (user.BaseUser == null)
             {
                 return Ok(new List<Notification>());
             }
 
-            var notifications = await _notificationService.GetStudentNotifications(user.Student.Id);
+            var notifications = await _notificationService.GetStudentNotifications(user.BaseUser.Id);
             return Ok(notifications);
         }
     }

@@ -22,11 +22,11 @@ namespace WebAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
-        private readonly IStudentService _studentService;
+        private readonly IBaseUserService _studentService;
         private readonly Uri _baseUrl;
 
         public ExchangeController(ILogger<UserController> logger, IBlockChangesService blockChangeService, IEmailService emailService,
-            IUserService userService, IStudentService studentService, IOptions<EnvironmentSettings> environmentSettings) : base()
+            IUserService userService, IBaseUserService studentService, IOptions<EnvironmentSettings> environmentSettings) : base()
         {
             _logger = logger;
             _blockChangesService = blockChangeService;

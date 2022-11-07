@@ -31,7 +31,7 @@ namespace BackendTest
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService studentSrv = new StudentService(database);
+            BaseUserService studentSrv = new BaseUserService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
             var options = GetProxyOptions();
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
@@ -47,9 +47,9 @@ namespace BackendTest
             Block block3 = CreateBlock(BlockType.Laboratory, Day.Tuesday, 2, 15, course.Id);
             Block block4 = CreateBlock(BlockType.Laboratory, Day.Friday, 2, 18, course2.Id);
 
-            Student student1 = new Student();
-            Student student2 = new Student();
-            Student student3 = new Student();
+            BaseUser student1 = new BaseUser();
+            BaseUser student2 = new BaseUser();
+            BaseUser student3 = new BaseUser();
             await studentSrv.AddAsync(student1);
             await studentSrv.AddAsync(student2);
             await studentSrv.AddAsync(student3);
@@ -92,7 +92,7 @@ namespace BackendTest
         public async Task CancelExchangeTest()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService studentSrv = new StudentService(database);
+            BaseUserService studentSrv = new BaseUserService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
             var options = GetProxyOptions();
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
@@ -105,7 +105,7 @@ namespace BackendTest
             Block block2 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 10, course.Id);
             Block block3 = CreateBlock(BlockType.Laboratory, Day.Wednesday, 2, 8, course.Id);
             
-            Student student = new Student();
+            BaseUser student = new BaseUser();
             await studentSrv.AddAsync(student);
 
             BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student.Id);

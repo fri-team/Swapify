@@ -24,8 +24,8 @@ namespace WebAPI.Models.UserModels
                 Email = user.Email;
                 Name = user.Name;
                 Surname = user.Surname;
-                StudentId = user.Student?.Id.ToString();
-                PersonalNumber = user.Student?.PersonalNumber;
+                StudentId = user.BaseUser?.Id.ToString();
+                PersonalNumber = user.BaseUser?.PersonalNumber;
             }
             FirstTimePN = "";
             Token = token.RawData;

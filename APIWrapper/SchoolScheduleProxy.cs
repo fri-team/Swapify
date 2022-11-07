@@ -1,5 +1,6 @@
 using FRITeam.Swapify.APIWrapper.Objects;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
 using Microsoft.Extensions.Options;
 using NLog;
@@ -7,6 +8,7 @@ using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using System;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 
 namespace FRITeam.Swapify.APIWrapper
@@ -28,9 +30,16 @@ namespace FRITeam.Swapify.APIWrapper
             _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();            
         }
 
-        public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber)
-        {            
-            return await CallScheduleContentApi(5, personalNumber, Semester.GetSemester());
+        public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, UserType userType = UserType.Student)
+        {
+            if (userType == UserType.Student)
+            {
+                return await CallScheduleContentApi(5, personalNumber, Semester.GetSemester());
+            }
+            else if (userType == UserType.Teacher)
+                return await CallScheduleContentApi(1, personalNumber, Semester.GetSemester());
+            else
+                throw new ArgumentException($"Unknown user type: {userType}");
         }
 
         public async Task<ScheduleTimetableResult> GetByTeacherName(string teacherNumber)

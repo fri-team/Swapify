@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
     public class StudentController : BaseController
     {
         private readonly ILogger<TimetableController> _logger;
-        private readonly IStudentService _studentService;
+        private readonly IBaseUserService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         private readonly ICalendarService _calendarService;
 
         public StudentController(ILogger<TimetableController> logger,
-            IStudentService studentService,
+            IBaseUserService studentService,
             IUserService userService,
             ICourseService courseService,
             ISchoolScheduleProxy schoolScheduleProxy,
@@ -51,12 +51,12 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
                 User user = await _userService.GetUserByEmailAsync(userEmail);
-                if (user?.Student == null)
+                if (user?.BaseUser == null)
                 {
                     _logger.Log(LogLevel.Information, $"Student for user: {userEmail} does not exist.");
                     return Ok(new Timetable());
                 }
-                string studentId = user.Student.Id.ToString();
+                string studentId = user.BaseUser.Id.ToString();
                 if (!Guid.TryParse(studentId, out Guid guid))
                 {
                     _logger.Log(LogLevel.Error, $"Student id: {studentId} is not valid GUID.");
@@ -75,7 +75,7 @@ namespace WebAPI.Controllers
                 }
                 if (student.Timetable.IsOutDated() && !string.IsNullOrEmpty(student.PersonalNumber))
                 {
-                    var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber);
+                    var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber, student.GetUserType());
                     if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
                     await _studentService.UpdateStudentTimetableAsync(student,
                         await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
@@ -93,19 +93,22 @@ namespace WebAPI.Controllers
                 {
                     TimetableBlock timetableBlock = new TimetableBlock();
                     Course course = await _courseService.FindByIdAsync(block.CourseId);
-                    timetableBlock.Id = block.BlockId.ToString();
-                    timetableBlock.Day = block.Day.GetHashCode();
-                    timetableBlock.StartBlock = block.StartHour - 6;
-                    timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
-                    timetableBlock.CourseId = course.Id.ToString();
-                    timetableBlock.CourseName = course.CourseName;
-                    timetableBlock.CourseCode = course.CourseCode;
-                    timetableBlock.CourseShortcut = course.CourseShortcut;
-                    timetableBlock.Room = block.Room;
-                    timetableBlock.Teacher = block.Teacher;
-                    timetableBlock.Type = (TimetableBlockType)block.BlockType;
-                    timetableBlock.BlockColor = block.BlockColor;
-                    Blocks.Add(timetableBlock);
+                    if (course != null)
+                    {
+                        timetableBlock.Id = block.BlockId.ToString();
+                        timetableBlock.Day = block.Day.GetHashCode();
+                        timetableBlock.StartBlock = block.StartHour - 6;
+                        timetableBlock.EndBlock = timetableBlock.StartBlock + block.Duration;
+                        timetableBlock.CourseId = course.Id.ToString();
+                        timetableBlock.CourseName = course.CourseName;
+                        timetableBlock.CourseCode = course.CourseCode;
+                        timetableBlock.CourseShortcut = course.CourseShortcut;
+                        timetableBlock.Room = block.Room;
+                        timetableBlock.Teacher = block.Teacher;
+                        timetableBlock.Type = (TimetableBlockType)block.BlockType;
+                        timetableBlock.BlockColor = block.BlockColor;
+                        Blocks.Add(timetableBlock);
+                    }
                 }
                 timetable.Blocks = Blocks;
                 return Ok(timetable);
@@ -121,11 +124,11 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AddNewBlock([FromBody] AddNewBlockModel newBlockModel)
         {
             var _user = await _userService.GetUserByEmailAsync(newBlockModel.User.Email);
-            var student = await _studentService.FindByIdAsync(_user.Student.Id);
+            var student = await _studentService.FindByIdAsync(_user.BaseUser.Id);
 
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {_user.Student.Id} does not exist.");
+                return ErrorResponse($"Student with id: {_user.BaseUser.Id} does not exist.");
             }
 
             if (student.Timetable == null)
@@ -160,16 +163,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> RemoveBlock(string userEmail, string blockId)
         {
             var _user = await _userService.GetUserByEmailAsync(userEmail);
-            bool isValidGUID = Guid.TryParse(_user.Student.Id.ToString(), out Guid guid);
+            bool isValidGUID = Guid.TryParse(_user.BaseUser.Id.ToString(), out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"Student id: {_user.Student.Id.ToString()} is not valid GUID.");
+                return ErrorResponse($"Student id: {_user.BaseUser.Id.ToString()} is not valid GUID.");
             }
 
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {_user.Student.Id.ToString()} does not exist.");
+                return ErrorResponse($"Student with id: {_user.BaseUser.Id.ToString()} does not exist.");
             }
             if (student.Timetable == null)
             {
@@ -192,16 +195,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> EditBlock([FromBody] UpdateBlockModel updateBlockModel)
         {
             var _user = await _userService.GetUserByEmailAsync(updateBlockModel.User.Email);
-            bool isValidGUID = Guid.TryParse(_user.Student.Id.ToString(), out Guid guid);
+            bool isValidGUID = Guid.TryParse(_user.BaseUser.Id.ToString(), out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"Student id: {_user.Student.Id.ToString()} is not valid GUID.");
+                return ErrorResponse($"Student id: {_user.BaseUser.Id.ToString()} is not valid GUID.");
             }
 
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {updateBlockModel.User.Student.Id} does not exist.");
+                return ErrorResponse($"Student with id: {updateBlockModel.User.BaseUser.Id} does not exist.");
             }
 
             if (student.Timetable == null)
@@ -235,7 +238,7 @@ namespace WebAPI.Controllers
         {
             _logger.LogInformation($"[API getStudentTimetable] Getting timetable calendar for test student");
             User user = await _userService.GetUserByEmailAsync(userEmail);
-            string studentId = user.Student.Id.ToString();
+            string studentId = user.BaseUser.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {

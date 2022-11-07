@@ -42,7 +42,7 @@ namespace BackendTest
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            Student student = new()
+            BaseUser student = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -68,10 +68,10 @@ namespace BackendTest
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
             var schoolCourseProxy = new SchoolCourseProxy(options);
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
-            StudentService stSer = new(_database);
+            BaseUserService stSer = new(_database);
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            Student st = new()
+            BaseUser st = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -103,8 +103,8 @@ namespace BackendTest
         public async Task UpdateStudentTest()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stSer = new(database);
-            Student st = new();
+            BaseUserService stSer = new(database);
+            BaseUser st = new();
 
             Block bl1 = new() { Room = "room1" };
             Block bl2 = new() { Room = "room2" };

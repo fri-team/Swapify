@@ -18,13 +18,13 @@ namespace WebAPI.Controllers
     {
         private readonly ILogger<TimetableController> _logger;
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
-        private readonly IStudentService _studentService;
+        private readonly IBaseUserService _studentService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
         private readonly IBlockChangesService _blockChangesService;
         public TimetableController(ILogger<TimetableController> logger,
             ISchoolScheduleProxy schoolScheduleProxy,
-            IStudentService studentService,
+            IBaseUserService studentService,
             IUserService userService,
             ICourseService courseService,
             IBlockChangesService blockChangesService
@@ -54,17 +54,17 @@ namespace WebAPI.Controllers
 
             FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
 
-            Student student = user.Student;
+            BaseUser student = user.BaseUser;
             if (student == null)
             {
-                student = new Student
+                student = new BaseUser
                 {
                     PersonalNumber = "000000",
                     UserId = user.Id
                 };
                 await _studentService.AddAsync(student);
 
-                user.Student = student;
+                user.BaseUser = student;
 
                 await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);
@@ -93,20 +93,20 @@ namespace WebAPI.Controllers
                 _logger.LogError($"User with email: {body.Email} does not exist.");
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
-            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber);
+            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, _userService.GetUserType(body.PersonalNumber));
             if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
             FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
-            Student student = user.Student;
+            BaseUser student = user.BaseUser;
             if (student == null)
             {
-                student = new Student
+                student = new BaseUser
                 {
                     PersonalNumber = body.PersonalNumber,
                     UserId = user.Id
                 };
                 await _studentService.AddAsync(student);
 
-                user.Student = student;
+                user.BaseUser = student;
 
                 await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);

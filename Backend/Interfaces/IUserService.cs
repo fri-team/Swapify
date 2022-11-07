@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -24,5 +25,6 @@ namespace FRITeam.Swapify.Backend.Interfaces
         string GetDefaultLdapPassword();
         JwtSecurityToken GenerateJwtToken(string login);
         public void TryAddStudent(User user);
+        public UserType GetUserType(string personalNumber);
     }
 }
