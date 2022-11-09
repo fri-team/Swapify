@@ -60,16 +60,6 @@ namespace FRITeam.Swapify.Backend.Converter
                 .ThenBy(b => b.LessonType)
                 .ThenBy(b => b.BlockNumber)
                 .ToList();
-            // TODO - implement block type for LessonType = None (Blokovane in teachers timetable)
-            // - Find a way to set LessonType to Blocked lessons and correctly set values
-            foreach (var item in sortedBlocks)
-            {
-                if (item.LessonType == LessonType.Blocked)
-                {
-                    item.CourseCode = "Blokované";
-                }
-            }
-            //sortedBlocks.RemoveAll(b => b.LessonType == LessonType.None);
 
             IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
