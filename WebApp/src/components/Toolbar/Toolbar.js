@@ -37,6 +37,15 @@ const IconTray = styled.div`
 class AppToolbar extends PureComponent {
   state = { showMenu: false, changeGroup: false };
 
+  ressetTimetableStudent = (user) =>{
+    if(user.isLdapUser){
+      this.reloadTimetable(user)
+    }else{
+      this.changePersonalNumber
+    }
+
+  }
+
   reloadTimetable = (user) =>{
     const body = {
       personalNumber: user.personalNumber,
