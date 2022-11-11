@@ -1,43 +1,43 @@
+using AspNetCore.Identity.MongoDbCore.Extensions;
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
+using AspNetCore.Identity.MongoDbCore.Models;
 using Backend;
 using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend;
+using FRITeam.Swapify.Backend.DbSeed;
 using FRITeam.Swapify.Backend.Interfaces;
+using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Exceptions;
+using FRITeam.Swapify.SwapifyBase.Settings;
+using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using MongoDB.Driver;
-using System.Text;
-using AspNetCore.Identity.MongoDbCore.Extensions;
-using AspNetCore.Identity.MongoDbCore.Infrastructure;
-using AspNetCore.Identity.MongoDbCore.Models;
-using Microsoft.Extensions.Options;
-using System;
-using WebAPI.Filters;
-using FRITeam.Swapify.Backend.DbSeed;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using WebAPI.Models.DatabaseModels;
-using FRITeam.Swapify.SwapifyBase.Settings;
-using FRITeam.Swapify.SwapifyBase.Exceptions;
-using FRITeam.Swapify.SwapifyBase.Settings.ProxySettings;
-using FRITeam.Swapify.SwapifyBase.Entities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+using WebAPI.Filters;
+using WebAPI.Models.DatabaseModels;
 
 namespace WebAPI
 {
     public class Startup
-    {                
+    {
         private const string EnviromentDevVS = "DevelopmentVS";
-        private const string ErrorHandlingPath = "/Error";   
+        private const string ErrorHandlingPath = "/Error";
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
@@ -50,7 +50,7 @@ namespace WebAPI
         public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
-            Environment = environment;            
+            Environment = environment;
             DbRegistration.Init();
             _logger = loggerFactory.CreateLogger<Startup>();
         }
@@ -58,7 +58,7 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation("Configuring services");
-            LoadAndValidateSettings(services);            
+            LoadAndValidateSettings(services);
             if (Environment.IsEnvironment(EnviromentDevVS))
             {
                 _logger.LogInformation("Starting Mongo2Go");
@@ -67,18 +67,35 @@ namespace WebAPI
                 {
                     GuidRepresentation = GuidRepresentation.Standard
                 };
-                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));                
+                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
             }
             else
             {
-                services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
-                var settings = new MongoClientSettings
+                try
                 {
-                    Server = new MongoServerAddress("mongodb", 27017),
-                    GuidRepresentation = GuidRepresentation.Standard
-                };
-                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
-                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);                
+                    services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
+                    _logger.LogInformation($"XXXX DATABASE NAME: {_swapifyDbSettings.DatabaseName} ");
+                    var settings = new MongoClientSettings
+                    {
+                        Server = new MongoServerAddress("mongodb", 27017),
+                        //Server = new MongoServerAddress("mongo", 389),
+                        GuidRepresentation = GuidRepresentation.Standard
+                    };
+                    // just for test
+                    IMongoDatabase client = new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName);
+                    var table = client.GetCollection<Course>(nameof(Course));
+                    var data = table.Find<Course>(x => x.CourseCode.Equals("1B0E254")).ToList();
+                    _logger.LogInformation($"XXXX Pocet dat {data.Count} DATABASE NAME: {_swapifyDbSettings.DatabaseName} ");
+                    // just for test end
+                    services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
+                    services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation($"XXXX Catched ERROR:  {e}");
+                    throw;
+                }
+
             }
             if (Environment.IsProduction())
             {
@@ -105,7 +122,8 @@ namespace WebAPI
                                .AllowCredentials();
                     });
                 });
-            } else
+            }
+            else
             {
                 services.AddCors(options =>
                 {
@@ -130,7 +148,7 @@ namespace WebAPI
                                .AllowCredentials();
                     });
                 });
-            }            
+            }
             services.ConfigureMongoDbIdentity<User, MongoIdentityRole, Guid>(ConfigureIdentity());
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<ICourseService, CourseService>();
@@ -174,22 +192,23 @@ namespace WebAPI
                 if (env.IsDevelopment())
                 {
                     CreateDbSeedAsync(app.ApplicationServices);
-                } else if (env.IsProduction())
+                }
+                else if (env.IsProduction())
                 {
                     CreateDbSeedAsyncProduction(app.ApplicationServices);
                 }
-            }            
+            }
             else
-            {             
+            {
                 app.UseDeveloperExceptionPage();
                 CreateDbSeedAsync(app.ApplicationServices);
             }
             app.UseCors("SwapifyCorsPolicy");
             app.UseCors("AllowCredentials");
             // Serve index.html and static resources from wwwroot/
-            app.UseDefaultFiles();            
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseRouting();            
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
@@ -214,7 +233,7 @@ namespace WebAPI
         {
             _logger.LogInformation("Validating settings");
             services.AddTransient<IStartupFilter, SettingValidationFilter>();
-            var mailSettings = Configuration.GetSection("MailingSettings");            
+            var mailSettings = Configuration.GetSection("MailingSettings");
             if (mailSettings.Get<MailingSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(MailingSettings)} configuration section.");
             var identitySettings = Configuration.GetSection("IdentitySettings");
@@ -235,7 +254,7 @@ namespace WebAPI
             var ldapSettings = Configuration.GetSection("LdapSettings");
             if (ldapSettings.Get<LdapSettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(LdapSettings)} configuration section.");
-            var proxySettings = Configuration.GetSection(nameof(ProxySettings));            
+            var proxySettings = Configuration.GetSection(nameof(ProxySettings));
             if (proxySettings.Get<ProxySettings>() == null)
                 throw new SettingException("appsettings.json", $"Unable to load {nameof(ProxySettings)} configuration section.");
             var calendarSettings = Configuration.GetSection("CalendarSettings");
@@ -344,13 +363,13 @@ namespace WebAPI
         {
             _logger.LogInformation("Creating DB seed");
             try
-            {                
+            {
                 _logger.LogInformation("Creating users");
                 await DbSeed.CreateTestingUserAsync(serviceProvider);
                 _logger.LogInformation("Users created");
                 _logger.LogInformation("Creating courses");
-                await DbSeed.LoadTestingCoursesAsync(serviceProvider);                                
-                _logger.LogInformation("Courses created");                
+                await DbSeed.LoadTestingCoursesAsync(serviceProvider);
+                _logger.LogInformation("Courses created");
                 _logger.LogInformation("Creating exchanges");
                 await DbSeed.CreateTestingExchangesAsync(serviceProvider);
                 _logger.LogInformation("Exchanges created.");
