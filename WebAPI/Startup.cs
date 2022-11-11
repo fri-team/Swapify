@@ -77,7 +77,7 @@ namespace WebAPI
                     _logger.LogInformation($"XXXX DATABASE NAME: {_swapifyDbSettings.DatabaseName} ");
                     var settings = new MongoClientSettings
                     {
-                        Server = new MongoServerAddress("mongodb", 27017),
+                        Server = new MongoServerAddress("mongodb-stg", 27017),
                         //Server = new MongoServerAddress("mongo", 389),
                         GuidRepresentation = GuidRepresentation.Standard
                     };
