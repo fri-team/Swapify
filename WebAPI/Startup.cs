@@ -73,7 +73,7 @@ namespace WebAPI
             {
                 try
                 {
-                    Server = new MongoServerAddress("mongodb", 27017),
+                    Server = new MongoServerAddress("mongodb-stg", 27017),
                     GuidRepresentation = GuidRepresentation.Standard
                 };
                 services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
