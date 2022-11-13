@@ -47,7 +47,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = OlegGuid.ToString("D"),
-                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudentGuid, OlegGuid)
+                    UserData = await CreateBaseUserAsync(serviceProvider, OlegStudentGuid, OlegGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -71,7 +71,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg2Guid.ToString("D"),
-                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
+                    UserData = await CreateBaseUserAsync(serviceProvider, OlegStudent2Guid, Oleg2Guid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -95,7 +95,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = Oleg3Guid.ToString("D"),
-                    BaseUser = await CreateBaseUserAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
+                    UserData = await CreateBaseUserAsync(serviceProvider, OlegStudent3Guid, Oleg3Guid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -119,7 +119,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = false,
                     SecurityStamp = NikitaGuid.ToString("D"),
-                    BaseUser = await CreateBaseUserAsync(serviceProvider, NikitaStudentGuid, NikitaGuid)
+                    UserData = await CreateBaseUserAsync(serviceProvider, NikitaStudentGuid, NikitaGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -143,7 +143,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = TeacherGuid.ToString("D"),
-                    BaseUser = await CreateBaseUserAsync(serviceProvider, TeacherBaseUserGuid, TeacherGuid, "99195")
+                    UserData = await CreateBaseUserAsync(serviceProvider, TeacherBaseUserGuid, TeacherGuid, "99195")
                 };
 
                 var password = new PasswordHasher<User>();
@@ -166,7 +166,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 blockExchangeCollection.InsertOne(new BlockChangeRequest
                 {
-                    StudentId = oleg.BaseUser.Id,
+                    StudentId = oleg.UserData.Id,
                     Status = ExchangeStatus.WaitingForExchange,
                     DateOfCreation = DateTime.Now,
                     BlockFrom = new Block
@@ -266,11 +266,11 @@ namespace FRITeam.Swapify.Backend.DbSeed
         //    paRunner.Import("Swapify", "Student", paPath + Path.DirectorySeparatorChar + "Student.json", true);
         //    paRunner.Import("Swapify", "users", paPath + Path.DirectorySeparatorChar + "users.json", true);
         //}      
-        private static async Task<BaseUser> CreateBaseUserAsync(IServiceProvider serviceProvider, Guid baseUserId = default(Guid), Guid userId = default(Guid), string personalNumber = null)
+        private static async Task<UserData> CreateBaseUserAsync(IServiceProvider serviceProvider, Guid baseUserId = default(Guid), Guid userId = default(Guid), string personalNumber = null)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<BaseUser>("Student");
-            BaseUser user = new BaseUser
+            var usersCollection = dbService.GetCollection<UserData>("Student");
+            UserData user = new UserData
             {
                 Id = (baseUserId == default(Guid) ? Guid.NewGuid() : baseUserId),
                 Timetable = new Timetable(Semester.GetSemester()),

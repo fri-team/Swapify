@@ -168,7 +168,7 @@ namespace BackendTest
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = TestUserGuid.ToString("D"),
-                    BaseUser = await CreateStudentAsync(database, TestStudentGuid)
+                    UserData = await CreateStudentAsync(database, TestStudentGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -178,11 +178,11 @@ namespace BackendTest
             }
         }
 
-        private async Task<BaseUser> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid))
+        private async Task<UserData> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid))
         {            
-            var studentCollection = database.GetCollection<BaseUser>(nameof(BaseUser));
+            var studentCollection = database.GetCollection<UserData>(nameof(UserData));
 
-            BaseUser student = new BaseUser
+            UserData student = new UserData
             {
                 Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
                 Timetable = null,

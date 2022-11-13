@@ -50,7 +50,7 @@ namespace FRITeam.Swapify.Backend.Converter
             return mergedTimetable;
         }
         
-        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetableResult scheduleTimetable, ICourseService courseService, bool isTimetableForCourse)
+        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetableResult scheduleTimetable, ICourseService courseService,bool showBlockedhours, bool isTimetableForCourse)
         {                        
             var sortedBlocks = scheduleTimetable.Result.ScheduleContents
                 .OrderBy(b => b.Day)
@@ -59,7 +59,9 @@ namespace FRITeam.Swapify.Backend.Converter
                 .ThenBy(b => b.RoomName)
                 .ThenBy(b => b.LessonType)
                 .ThenBy(b => b.BlockNumber)
+                .Where(x => x.LessonType != LessonType.Blocked || showBlockedhours)
                 .ToList();
+
 
             IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
@@ -90,7 +92,7 @@ namespace FRITeam.Swapify.Backend.Converter
                     {
                         BlockType = ConvertToBlockType(firstInGroup.LessonType),
                         Day = ConvertToDay(firstInGroup.Day),
-                        //Teacher = teacherBuilder.ToString(),
+                        Teacher = teacherBuilder.ToString(),
                         Room = firstInGroup.RoomName,
                         StartHour = (byte)(firstInGroup.BlockNumber + 6), // block number start 1 but starting hour in school is 7:00
                         Duration = (byte)(group.Last().BlockNumber - firstInGroup.BlockNumber + 1)
@@ -153,14 +155,14 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
         }
 
-        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
+        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetableResult timetable, ICourseService courseServ, bool showBlockedHours = false)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false);
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, showBlockedHours, false);
         }
         
         public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, true);            
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false, true);            
         }
         
         private static Day ConvertToDay(int idxDay)

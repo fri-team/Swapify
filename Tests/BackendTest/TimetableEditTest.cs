@@ -26,7 +26,7 @@ namespace BackendTest
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             BaseUserService stserv = new BaseUserService(database);
-            BaseUser student = new BaseUser();
+            UserData student = new UserData();
             student.Timetable = FakeTimetable.GetFakeTimetable();
             await stserv.AddAsync(student);
 
@@ -39,7 +39,7 @@ namespace BackendTest
             //save new block
             await stserv.UpdateStudentAsync(loadedStudent);
             //load from db
-            BaseUser updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            UserData updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
             updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);

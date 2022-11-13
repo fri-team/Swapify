@@ -42,7 +42,7 @@ namespace BackendTest
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            BaseUser student = new()
+            UserData student = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -71,7 +71,7 @@ namespace BackendTest
             BaseUserService stSer = new(_database);
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            BaseUser st = new()
+            UserData st = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -104,7 +104,7 @@ namespace BackendTest
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
             BaseUserService stSer = new(database);
-            BaseUser st = new();
+            UserData st = new();
 
             Block bl1 = new() { Room = "room1" };
             Block bl2 = new() { Room = "room2" };

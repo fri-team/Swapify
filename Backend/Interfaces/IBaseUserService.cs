@@ -8,9 +8,9 @@ namespace FRITeam.Swapify.Backend.Interfaces
 {
     public interface IBaseUserService
     {
-        Task AddAsync(BaseUser entityToAdd);
-        Task<BaseUser> FindByIdAsync(Guid guid);
-        Task UpdateStudentAsync(BaseUser userToUpdate);
-        Task UpdateStudentTimetableAsync(BaseUser userToUpdate, Timetable userTimetable);
+        Task AddAsync(UserData entityToAdd);
+        Task<UserData> FindByIdAsync(Guid guid);
+        Task UpdateStudentAsync(UserData userToUpdate);
+        Task UpdateStudentTimetableAsync(UserData userToUpdate, Timetable userTimetable);
     }
 }

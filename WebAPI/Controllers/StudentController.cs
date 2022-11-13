@@ -51,12 +51,12 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test student");
                 User user = await _userService.GetUserByEmailAsync(userEmail);
-                if (user?.BaseUser == null)
+                if (user?.UserData == null)
                 {
                     _logger.Log(LogLevel.Information, $"Student for user: {userEmail} does not exist.");
                     return Ok(new Timetable());
                 }
-                string studentId = user.BaseUser.Id.ToString();
+                string studentId = user.UserData.Id.ToString();
                 if (!Guid.TryParse(studentId, out Guid guid))
                 {
                     _logger.Log(LogLevel.Error, $"Student id: {studentId} is not valid GUID.");
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
                     var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(student.PersonalNumber, student.GetUserType());
                     if (scheduleTimetable == null) return ErrorResponse($"Student with number: {student.PersonalNumber} does not exist.");
                     await _studentService.UpdateStudentTimetableAsync(student,
-                        await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
+                        await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService, user.ShowBlockedHours)
                     );
                     await _userService.UpdateUserAsync(user);
                     var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
@@ -124,11 +124,11 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AddNewBlock([FromBody] AddNewBlockModel newBlockModel)
         {
             var _user = await _userService.GetUserByEmailAsync(newBlockModel.User.Email);
-            var student = await _studentService.FindByIdAsync(_user.BaseUser.Id);
+            var student = await _studentService.FindByIdAsync(_user.UserData.Id);
 
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {_user.BaseUser.Id} does not exist.");
+                return ErrorResponse($"Student with id: {_user.UserData.Id} does not exist.");
             }
 
             if (student.Timetable == null)
@@ -163,16 +163,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> RemoveBlock(string userEmail, string blockId)
         {
             var _user = await _userService.GetUserByEmailAsync(userEmail);
-            bool isValidGUID = Guid.TryParse(_user.BaseUser.Id.ToString(), out Guid guid);
+            bool isValidGUID = Guid.TryParse(_user.UserData.Id.ToString(), out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"Student id: {_user.BaseUser.Id.ToString()} is not valid GUID.");
+                return ErrorResponse($"Student id: {_user.UserData.Id.ToString()} is not valid GUID.");
             }
 
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {_user.BaseUser.Id.ToString()} does not exist.");
+                return ErrorResponse($"Student with id: {_user.UserData.Id.ToString()} does not exist.");
             }
             if (student.Timetable == null)
             {
@@ -195,16 +195,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> EditBlock([FromBody] UpdateBlockModel updateBlockModel)
         {
             var _user = await _userService.GetUserByEmailAsync(updateBlockModel.User.Email);
-            bool isValidGUID = Guid.TryParse(_user.BaseUser.Id.ToString(), out Guid guid);
+            bool isValidGUID = Guid.TryParse(_user.UserData.Id.ToString(), out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"Student id: {_user.BaseUser.Id.ToString()} is not valid GUID.");
+                return ErrorResponse($"Student id: {_user.UserData.Id.ToString()} is not valid GUID.");
             }
 
             var student = await _studentService.FindByIdAsync(guid);
             if (student == null)
             {
-                return ErrorResponse($"Student with id: {updateBlockModel.User.BaseUser.Id} does not exist.");
+                return ErrorResponse($"Student with id: {updateBlockModel.User.UserData.Id} does not exist.");
             }
 
             if (student.Timetable == null)
@@ -238,7 +238,7 @@ namespace WebAPI.Controllers
         {
             _logger.LogInformation($"[API getStudentTimetable] Getting timetable calendar for test student");
             User user = await _userService.GetUserByEmailAsync(userEmail);
-            string studentId = user.BaseUser.Id.ToString();
+            string studentId = user.UserData.Id.ToString();
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {

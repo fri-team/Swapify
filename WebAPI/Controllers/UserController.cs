@@ -413,5 +413,38 @@ namespace WebAPI.Controllers
             }
             return Ok(user.DarkMode);
         }
+
+        [AllowAnonymous]
+        [HttpPost("setBlockeHoursVisibility")]
+        public async Task<IActionResult> ChangeBlockeHoursVisibility([FromBody] BlockedHoursVisibilityModel body)
+        {
+            body.Email = body.Email.ToLower();
+
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid visibility of blocked hours change. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+
+            user.ShowBlockedHours = body.BlockedHoursVisibility.Equals("true");
+            await _userService.UpdateUserAsync(user);
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("getBlockeHoursVisibility")]
+        public async Task<IActionResult> GetBlockeHoursVisibility([FromBody] BlockedHoursVisibilityModel body)
+        {
+            body.Email = body.Email.ToLower();
+
+            var user = await _userService.GetUserByEmailAsync(body.Email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid visibility of blocked hours change. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
+            }
+            return Ok(user.ShowBlockedHours);
+        }
     }
 }

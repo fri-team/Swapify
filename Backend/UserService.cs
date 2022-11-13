@@ -157,13 +157,13 @@ namespace FRITeam.Swapify.Backend
 
         public async void TryAddStudent(User user)
         {
-            if (user.BaseUser == null)
+            if (user.UserData == null)
             {
-                user.BaseUser = new BaseUser
+                user.UserData = new UserData
                 {
                     UserId = user.Id
                 };
-                await _studentService.AddAsync(user.BaseUser);
+                await _studentService.AddAsync(user.UserData);
                 await UpdateUserAsync(user);
             }
         }

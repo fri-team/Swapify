@@ -52,19 +52,19 @@ namespace WebAPI.Controllers
             if (timetable == null)
                 return ErrorResponse("Loading of test timetable failed.");
 
-            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, user.ShowBlockedHours);
 
-            BaseUser student = user.BaseUser;
+            UserData student = user.UserData;
             if (student == null)
             {
-                student = new BaseUser
+                student = new UserData
                 {
                     PersonalNumber = "000000",
                     UserId = user.Id
                 };
                 await _studentService.AddAsync(student);
 
-                user.BaseUser = student;
+                user.UserData = student;
 
                 await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);
@@ -95,18 +95,18 @@ namespace WebAPI.Controllers
             }
             var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, _userService.GetUserType(body.PersonalNumber));
             if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
-            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);            
-            BaseUser student = user.BaseUser;
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, user.ShowBlockedHours);            
+            UserData student = user.UserData;
             if (student == null)
             {
-                student = new BaseUser
+                student = new UserData
                 {
                     PersonalNumber = body.PersonalNumber,
                     UserId = user.Id
                 };
                 await _studentService.AddAsync(student);
 
-                user.BaseUser = student;
+                user.UserData = student;
 
                 await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
                 await _userService.UpdateUserAsync(user);

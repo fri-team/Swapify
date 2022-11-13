@@ -4,7 +4,7 @@ using System;
 
 namespace FRITeam.Swapify.SwapifyBase.Entities
 {
-    public class BaseUser : BaseEntity
+    public class UserData : BaseEntity
     {
         public Timetable Timetable { get; set; }
         public string PersonalNumber { get; set; }
