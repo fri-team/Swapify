@@ -37,6 +37,7 @@ class AddBlockForm extends Component {
     id: this.props.course.id,
     courseName: this.props.course.courseName,
     courseCode: this.props.course.courseCode,
+    courseShortcut: this.props.course.courseShortcut,
     teacher: this.props.course.teacher,
     room: this.props.course.room,
     day: this.props.course.day,

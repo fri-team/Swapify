@@ -169,6 +169,7 @@ namespace WebAPI.Controllers
                     CourseId = _course.Id.ToString(),
                     CourseName = _course.CourseName,
                     CourseCode = _course.CourseCode ?? "",
+                    CourseShortcut = _course.CourseShortcut ?? "",
                     Room = block.Room,
                     Teacher = block.Teacher,
                     Type = (TimetableBlockType)block.BlockType
@@ -208,6 +209,7 @@ namespace WebAPI.Controllers
                         CourseId = _course.Id.ToString(),
                         CourseName = _course.CourseName,
                         CourseCode = _course.CourseCode ?? "",
+                        CourseShortcut = _course.CourseShortcut ?? "",
                         Room = block.Room,
                         Teacher = block.Teacher,
                         Type = (TimetableBlockType)block.BlockType

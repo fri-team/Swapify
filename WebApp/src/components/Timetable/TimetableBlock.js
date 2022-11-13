@@ -31,7 +31,7 @@ const TimetableBlock = (props) => {
       }}
     >
       <div>
-        <div className="name">{props.courseCode}</div>
+        <div className="name">{props.courseShortcut}</div>
         {icon}
       </div>
       <div className="room">{props.room}</div>

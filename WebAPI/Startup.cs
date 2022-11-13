@@ -73,29 +73,11 @@ namespace WebAPI
             {
                 try
                 {
-                    services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
-                    _logger.LogInformation($"XXXX DATABASE NAME: {_swapifyDbSettings.DatabaseName} ");
-                    var settings = new MongoClientSettings
-                    {
-                        Server = new MongoServerAddress("mongodb-stg", 27017),
-                        //Server = new MongoServerAddress("mongo", 389),
-                        GuidRepresentation = GuidRepresentation.Standard
-                    };
-                    // just for test
-                    IMongoDatabase client = new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName);
-                    var table = client.GetCollection<Course>(nameof(Course));
-                    var data = table.Find<Course>(x => x.CourseCode.Equals("1B0E254")).ToList();
-                    _logger.LogInformation($"XXXX Pocet dat {data.Count} DATABASE NAME: {_swapifyDbSettings.DatabaseName} ");
-                    // just for test end
-                    services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
-                    services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogInformation($"XXXX Catched ERROR:  {e}");
-                    throw;
-                }
-
+                    Server = new MongoServerAddress("mongodb", 27017),
+                    GuidRepresentation = GuidRepresentation.Standard
+                };
+                services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
+                services.AddSingleton<ISwapifyDatabaseSettings>(sp => sp.GetRequiredService<IOptions<SwapifyDatabaseSettings>>().Value);
             }
             if (Environment.IsProduction())
             {
@@ -332,9 +314,12 @@ namespace WebAPI
             {
                 configuration.MongoDbSettings = new MongoDbSettings
                 {
+
                     ConnectionString = _swapifyDbSettings.ConnectionString + _swapifyDbSettings.DatabaseName,
                     DatabaseName = _swapifyDbSettings.DatabaseName
                 };
+                _logger.LogInformation($"Database connection string: {configuration.MongoDbSettings.ConnectionString} ");
+                _logger.LogInformation($"Database name: {configuration.MongoDbSettings.DatabaseName} ");
             }
             configuration.IdentityOptionsAction = options =>
             {
