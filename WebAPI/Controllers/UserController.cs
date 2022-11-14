@@ -184,7 +184,6 @@ namespace WebAPI.Controllers
         [HttpPost("loginLdap")]
         public async Task<IActionResult> LoginLdap([FromBody] LoginModel body)
         {
-
             if (await _emailService.GetCaptchaNotPassed(body.Captcha))
             {
                 return ErrorResponse($"Určite nie ste robot? Overenie Re-Captcha zlyhalo, skúste sa prihlásiť znova.");
@@ -215,47 +214,35 @@ namespace WebAPI.Controllers
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
 
-            try
+            if (ldapInformations == null)
             {
-                //THIS IS NOT SUPPOSED TO BE IN TRY Catch
-                //TESTING ONLY
-                if (ldapInformations == null)
-                {
-                    _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
-                    return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
-                }
-                ldapInformations.Email = ldapInformations.Email.ToLower();
-                User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                if (user == null)
-                {
-                    if (!_userService.AddLdapUser(ldapInformations).Result)
-                    {
-                        _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
-                        return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný. " +
-                                              "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
-                    }
-                    user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                    _userService.TryAddStudent(user);
-                    AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email))
-                    {
-                        FirstTimePN = ldapInformations.PersonalNumber
-                    };
-                    return Ok(auth);
-                }
-                else
-                {
-                    _userService.TryAddStudent(user);
-                    AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
-                    return Ok(auth);
-                }
+                _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
             }
-            catch (Exception e)
+            ldapInformations.Email = ldapInformations.Email.ToLower();
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+            if (user == null)
             {
-                _logger.LogInformation($"ERROR CATCHED HERE: {e} ");
-                _logger.LogInformation($"ERROR CATCHED MESSAGE: {e.Message} ");
-                return ErrorResponse($"ERROR OCCURED!");
+                if (!_userService.AddLdapUser(ldapInformations).Result)
+                {
+                    _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
+                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný. " +
+                                            "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
+                }
+                user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
+                _userService.TryAddStudent(user);
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email))
+                {
+                    FirstTimePN = ldapInformations.PersonalNumber
+                };
+                return Ok(auth);
             }
-
+            else
+            {
+                _userService.TryAddStudent(user);
+                AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
+                return Ok(auth);
+            }      
         }
 
         [AllowAnonymous]
