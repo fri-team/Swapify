@@ -74,7 +74,7 @@ namespace WebAPI
                 services.Configure<SwapifyDatabaseSettings>(Configuration.GetSection(nameof(SwapifyDatabaseSettings)));
                 var settings = new MongoClientSettings
                 {
-                    Server = new MongoServerAddress("mongodb", 27017),
+                    Server = new MongoServerAddress(_swapifyDbSettings.HostName, int.Parse(_swapifyDbSettings.Port)),
                     GuidRepresentation = GuidRepresentation.Standard
                 };
                 services.AddSingleton(new MongoClient(settings).GetDatabase(_swapifyDbSettings.DatabaseName));
@@ -365,7 +365,7 @@ namespace WebAPI
             }
             catch (Exception e)
             {
-                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed :\n{e}");
             }
         }
 
@@ -380,7 +380,7 @@ namespace WebAPI
             }
             catch (Exception e)
             {
-                _logger.LogError($"Exception during creating DB seed :\n{e.Message}");
+                _logger.LogError($"Exception during creating DB seed :\n{e}");
             }
         }
     }
