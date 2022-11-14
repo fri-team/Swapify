@@ -310,8 +310,6 @@ namespace WebAPI
                     ConnectionString = _runner.ConnectionString + _swapifyDbSettings.DatabaseName,
                     DatabaseName = _swapifyDbSettings.DatabaseName
                 };
-                _logger.LogInformation($"Database connection string: {configuration.MongoDbSettings.ConnectionString} ");
-                _logger.LogInformation($"Database name: {configuration.MongoDbSettings.DatabaseName} ");
             }
             else
             {
