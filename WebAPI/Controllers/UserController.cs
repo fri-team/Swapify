@@ -227,7 +227,7 @@ namespace WebAPI.Controllers
                 {
                     _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
                     return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný. " +
-                                            "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
+                                          "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
                 _userService.TryAddStudent(user);
