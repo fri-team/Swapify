@@ -5,7 +5,7 @@ on:
    - test-stagging-error
 
 env:
- ASPNETCORE_ENVIRONMENT: Production
+ ASPNETCORE_ENVIRONMENT: Staging
 jobs:  
  action_build:
   name: actions_build
