@@ -30,16 +30,16 @@ namespace FRITeam.Swapify.APIWrapper
             _client = new RestClient(_proxySettings.Base_URL).UseNewtonsoftJson();
         }
 
-        public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, UserType userType = UserType.Student)
+        public async Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, TimetableType timetableType = TimetableType.StudentTimetable)
         {
-            if (userType == UserType.Student)
+            if (timetableType == TimetableType.StudentTimetable)
             {
                 return await CallScheduleContentApi(5, personalNumber, Semester.GetSemester());
             }
-            else if (userType == UserType.Teacher)
+            else if (timetableType == TimetableType.TeacherTimetable)
                 return await CallScheduleContentApi(1, personalNumber, Semester.GetSemester());
             else
-                throw new ArgumentException($"Unknown user type: {userType}");
+                throw new ArgumentException($"Unknown user type: {timetableType}");
         }
 
         public async Task<ScheduleTimetableResult> GetByTeacherName(string teacherNumber)

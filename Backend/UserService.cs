@@ -20,10 +20,10 @@ namespace FRITeam.Swapify.Backend
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly LdapSettings _ldapSettings;
-        private readonly IBaseUserService _studentService;
+        private readonly ITimetableDataService _studentService;
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
-            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, IBaseUserService studentService)
+            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, ITimetableDataService studentService)
         {
             _environmentSettings = environmentSettings.Value;
             _userManager = userManager;
@@ -157,13 +157,13 @@ namespace FRITeam.Swapify.Backend
 
         public async void TryAddStudent(User user)
         {
-            if (user.UserData == null)
+            if (user.TimetableData == null)
             {
-                user.UserData = new UserData
+                user.TimetableData = new TimetableData
                 {
                     UserId = user.Id
                 };
-                await _studentService.AddAsync(user.UserData);
+                await _studentService.AddAsync(user.TimetableData);
                 await UpdateUserAsync(user);
             }
         }
@@ -171,13 +171,6 @@ namespace FRITeam.Swapify.Backend
         public string GetDefaultLdapPassword()
         {
             return "Heslo123";
-        }
-
-        public UserType GetUserType(string personalNumber)
-        {
-            if (personalNumber.Length == 6) return UserType.Student;
-            else if (personalNumber.Length == 5) return UserType.Teacher;
-            else throw new ArgumentException("Users personal number has wrong format");
         }
     }
 }

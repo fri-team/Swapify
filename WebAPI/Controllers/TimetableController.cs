@@ -18,13 +18,13 @@ namespace WebAPI.Controllers
     {
         private readonly ILogger<TimetableController> _logger;
         private readonly ISchoolScheduleProxy _schoolScheduleProxy;
-        private readonly IBaseUserService _studentService;
+        private readonly ITimetableDataService _timetableDataService;
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
         private readonly IBlockChangesService _blockChangesService;
         public TimetableController(ILogger<TimetableController> logger,
             ISchoolScheduleProxy schoolScheduleProxy,
-            IBaseUserService studentService,
+            ITimetableDataService timetableDataService,
             IUserService userService,
             ICourseService courseService,
             IBlockChangesService blockChangesService
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         {
             _logger = logger;
             _schoolScheduleProxy = schoolScheduleProxy;
-            _studentService = studentService;
+            _timetableDataService = timetableDataService;
             _userService = userService;
             _courseService = courseService;
             _blockChangesService = blockChangesService;
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpPost("initializeTimetableForTestUsers")]
         public async Task<IActionResult> InitializeTimetableForTestUsers([FromBody] StudentModel body)
         {
-            _logger.LogInformation($"[TEST] Setting test timetable for test student: {body.Email}.");
+            _logger.LogInformation($"[TEST] Setting test timetable for test timetableData: {body.Email}.");
             User user = await _userService.GetUserByEmailAsync(body.Email);
             if (user == null)
             {
@@ -52,82 +52,86 @@ namespace WebAPI.Controllers
             if (timetable == null)
                 return ErrorResponse("Loading of test timetable failed.");
 
-            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, user.ShowBlockedHours);
-
-            UserData student = user.UserData;
-            if (student == null)
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
+            TimetableData timetableData = user.TimetableData;
+            if (timetableData == null)
             {
-                student = new UserData
+                timetableData = new TimetableData
                 {
                     PersonalNumber = "000000",
-                    UserId = user.Id
+                    UserId = user.Id,
+                    ShowBlockedHours = false
                 };
-                await _studentService.AddAsync(student);
+                await _timetableDataService.AddAsync(timetableData);
 
-                user.UserData = student;
+                user.TimetableData = timetableData;
+                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
 
-                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+                await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
-                return Ok(student.Timetable);
+                return Ok(timetableData.Timetable);
             }
-            if (student.PersonalNumber != null && student.PersonalNumber.Equals("000000"))
+            if (timetableData.PersonalNumber != null && timetableData.PersonalNumber.Equals("000000"))
             {
-                return Ok(student.Timetable);
+                return Ok(timetableData.Timetable);
             }
             else
             {
-                student.PersonalNumber = "000000";
-                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+                timetableData.PersonalNumber = "000000";
+                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
+                await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
-                return Ok(student.Timetable);
+                return Ok(timetableData.Timetable);
             }
         }
 
         [HttpPost("setStudentTimetableFromPersonalNumber")]
         public async Task<IActionResult> SetStudentTimetableFromPersonalNumber([FromBody] StudentModel body)
         {
-            _logger.LogInformation($"Setting timetable for student: {body.Email}.");
+            _logger.LogInformation($"Setting timetable for timetableData: {body.Email}.");
             User user = await _userService.GetUserByEmailAsync(body.Email);
             if (user == null)
             {
                 _logger.LogError($"User with email: {body.Email} does not exist.");
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
-            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, _userService.GetUserType(body.PersonalNumber));
-            if (timetable == null) return ErrorResponse($"Student with number: {body.PersonalNumber} does not exist.");
-            FRITeam.Swapify.SwapifyBase.Entities.Timetable studentTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, user.ShowBlockedHours);            
-            UserData student = user.UserData;
-            if (student == null)
+            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, user.TimetableData.TimetableType);
+            if (timetable == null) return ErrorResponse($"StudentTimetable with number: {body.PersonalNumber} does not exist.");
+            FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
+            TimetableData timetableData = user.TimetableData;
+            if (timetableData == null)
             {
-                student = new UserData
+                timetableData = new TimetableData
                 {
                     PersonalNumber = body.PersonalNumber,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    ShowBlockedHours = false
                 };
-                await _studentService.AddAsync(student);
+                await _timetableDataService.AddAsync(timetableData);
+                user.TimetableData = timetableData;
+                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
 
-                user.UserData = student;
-
-                await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
+                await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
-                return Ok(student.Timetable);
+                return Ok(timetableData.Timetable);
             }
-            student.PersonalNumber = body.PersonalNumber;            
-            await _studentService.UpdateStudentTimetableAsync(student, studentTimetable);
-            var requests = await _blockChangesService.FindWaitingStudentRequests(student.Id);
+            timetableData.PersonalNumber = body.PersonalNumber;
+            userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
+            await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
+            var requests = await _blockChangesService.FindWaitingStudentRequests(timetableData.Id);
             foreach (var item in requests)
             {
                 await _blockChangesService.CancelExchangeRequest(item);
             }
             await _userService.UpdateUserAsync(user);
-            return Ok(student.Timetable);
+            return Ok(timetableData.Timetable);
         }
 
         [HttpGet("course/getCoursesAutoComplete/{courseName}/{studentId}")]
         public async Task<IActionResult> GetCoursesAutoComplete(string courseName, string studentId)
         {
             Guid.TryParse(studentId, out Guid studentGuid);
-            var _student = await _studentService.FindByIdAsync(studentGuid);
+            var _student = await _timetableDataService.FindByIdAsync(studentGuid);
             return Ok(_courseService.FindByStartName(courseName, _student != null ? _student.PersonalNumber : "5"));
         }
 
@@ -141,15 +145,15 @@ namespace WebAPI.Controllers
             }            
 
             bool isValidStudentGUID = Guid.TryParse(studentId, out Guid studentGuid);
-            var _student = await _studentService.FindByIdAsync(studentGuid);
+            var _student = await _timetableDataService.FindByIdAsync(studentGuid);
 
             if (!isValidStudentGUID)
             {
-                return ErrorResponse($"Student id: {studentGuid} is not valid GUID.");
+                return ErrorResponse($"StudentTimetable id: {studentGuid} is not valid GUID.");
             }
             if (_student == null)
             {
-                return ErrorResponse($"Student with id: {studentId} does not exist.");
+                return ErrorResponse($"StudentTimetable with id: {studentId} does not exist.");
             }
             var _course = await _courseService.FindCourseTimetableFromProxy(courseGuid);
             if (_course == null)

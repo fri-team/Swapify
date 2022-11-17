@@ -10,7 +10,7 @@ namespace FRITeam.Swapify.APIWrapper
         /// Return schedule for whole week by student number
         /// </summary>
         /// <param name="personalNumber">student number</param>
-        Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, UserType userType = UserType.Student);
+        Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, TimetableType userType = TimetableType.StudentTimetable);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number

@@ -42,7 +42,7 @@ namespace BackendTest
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            UserData student = new()
+            TimetableData student = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -68,10 +68,10 @@ namespace BackendTest
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
             var schoolCourseProxy = new SchoolCourseProxy(options);
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
-            BaseUserService stSer = new(_database);
+            TimetableDataService stSer = new(_database);
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            UserData st = new()
+            TimetableData st = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -103,8 +103,8 @@ namespace BackendTest
         public async Task UpdateStudentTest()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            BaseUserService stSer = new(database);
-            UserData st = new();
+            TimetableDataService stSer = new(database);
+            TimetableData st = new();
 
             Block bl1 = new() { Room = "room1" };
             Block bl2 = new() { Room = "room2" };
@@ -122,7 +122,7 @@ namespace BackendTest
             st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
             st.Timetable.AddNewBlock(bl3);
 
-            await stSer.UpdateStudentAsync(st);
+            await stSer.UpdateTimetableDataAsync(st);
             st.Timetable.AllBlocks.Count().Should().Be(2);
             st.Timetable.AllBlocks.Any(x => x.Room == "room3").Should().Be(true);
             st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);

@@ -138,7 +138,7 @@ namespace WebAPI
             services.AddSingleton<ISchoolCourseProxy, SchoolCourseProxy>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IBlockChangesService, BlockChangesService>();
-            services.AddSingleton<IBaseUserService, BaseUserService>();
+            services.AddSingleton<ITimetableDataService, TimetableDataService>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<ICalendarService, CalendarService>();
             services.AddControllersWithViews();

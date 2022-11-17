@@ -427,7 +427,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            user.ShowBlockedHours = body.BlockedHoursVisibility.Equals("true");
+            user.TimetableData.ShowBlockedHours = body.BlockedHoursVisibility.Equals("true");
             await _userService.UpdateUserAsync(user);
             return Ok();
         }
@@ -444,7 +444,7 @@ namespace WebAPI.Controllers
                 _logger.LogInformation($"Invalid visibility of blocked hours change. User {body.Email} doesn't exist.");
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
-            return Ok(user.ShowBlockedHours);
+            return Ok(user.TimetableData.ShowBlockedHours);
         }
     }
 }

@@ -25,6 +25,5 @@ namespace FRITeam.Swapify.Backend.Interfaces
         string GetDefaultLdapPassword();
         JwtSecurityToken GenerateJwtToken(string login);
         public void TryAddStudent(User user);
-        public UserType GetUserType(string personalNumber);
     }
 }

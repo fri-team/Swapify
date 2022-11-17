@@ -25,8 +25,8 @@ namespace BackendTest
         public async Task EditBlockStudentTimetablePassed()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            BaseUserService stserv = new BaseUserService(database);
-            UserData student = new UserData();
+            TimetableDataService stserv = new TimetableDataService(database);
+            TimetableData student = new TimetableData();
             student.Timetable = FakeTimetable.GetFakeTimetable();
             await stserv.AddAsync(student);
 
@@ -37,9 +37,9 @@ namespace BackendTest
             //add new block
             loadedStudent.Timetable.AddNewBlock(blckToAdd);
             //save new block
-            await stserv.UpdateStudentAsync(loadedStudent);
+            await stserv.UpdateTimetableDataAsync(loadedStudent);
             //load from db
-            UserData updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            TimetableData updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
             updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
             updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
@@ -48,7 +48,7 @@ namespace BackendTest
             // update blckToAdd to updtBlock
             updatedStudent.Timetable.UpdateBlock(updtBlock);
             //save updated block
-            await stserv.UpdateStudentAsync(updatedStudent);
+            await stserv.UpdateTimetableDataAsync(updatedStudent);
             //load from db
             updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
@@ -57,7 +57,7 @@ namespace BackendTest
             //delete added block
             updatedStudent.Timetable.RemoveBlock(updtBlock.BlockId);
             //save deleted
-            await stserv.UpdateStudentAsync(updatedStudent);
+            await stserv.UpdateTimetableDataAsync(updatedStudent);
             //load from db
             updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
             //test
