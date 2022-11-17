@@ -448,7 +448,10 @@ class AddBlockForm extends Component {
                   )}
                 </React.Fragment>
               ) : (
-                <CustomEventForm course={this.props.course} />
+                <CustomEventForm
+                  course={this.props.course}
+                  user={this.props.user}
+                />
               )}
             </FlexBox>
           </DialogContent>

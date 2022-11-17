@@ -8,27 +8,36 @@ import { ClipLoader } from "react-spinners";
 import { useSelector, useDispatch } from "react-redux";
 import { createBlock } from "../../redux/slices/block";
 
-const CustomEventForm = ({ course }) => {
+const CustomEventForm = ({ course, user }) => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.block);
 
   const [isDisabled, setIsDisabled] = useState(true);
   const [customEvent, setCustomEvent] = useState({
-    eventName: "",
-    eventPlace: "",
+    id: null,
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
+    endBlock: "",
+    courseName:
+      "Management of computer systems projects, Universidad Politécnica de Valencia, ESP",
+    eventPlace: "",
+    type: "Event",
+
+    courseId: "string",
+    courseCode: "5899",
+    courseShortcut: "",
+
     length: null,
     colorOfBlock: "#3F51B5",
   });
 
   useEffect(() => {
-    if (customEvent.eventName !== "" && customEvent.length != null) {
+    if (customEvent.courseName !== "" && customEvent.length != null) {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
     }
-  }, [customEvent.eventName, customEvent.length]);
+  }, [customEvent.courseName, customEvent.length]);
 
   const handleChange = (e) => {
     setCustomEvent((customEvent) => ({
@@ -47,15 +56,30 @@ const CustomEventForm = ({ course }) => {
 
   const onSubmitHandler = async () => {
     console.log(customEvent);
-    dispatch(createBlock(customEvent));
+    dispatch(
+      createBlock({
+        timetableBlock: {
+          ...customEvent,
+          endBlock: padStart(
+            `${
+              parseInt(customEvent.startBlock) + parseInt(customEvent.length) ||
+              "07"
+            }:00`,
+            5,
+            "0"
+          ),
+        },
+        user: user,
+      })
+    );
   };
 
   return (
     <React.Fragment>
       <TextField
         placeholder="Zadajte názov udalosti *"
-        name="eventName"
-        value={customEvent.eventName}
+        name="courseName"
+        value={customEvent.courseName}
         onChange={handleChange}
         margin="normal"
         fullWidth
