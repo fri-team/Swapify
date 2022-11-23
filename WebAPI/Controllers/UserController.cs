@@ -242,7 +242,7 @@ namespace WebAPI.Controllers
                 _userService.TryAddStudent(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
                 return Ok(auth);
-            }
+            }      
         }
 
         [AllowAnonymous]
