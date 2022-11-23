@@ -157,6 +157,50 @@ namespace WebAPI.Controllers
             return Ok(newBlockModel.TimetableBlock);
         }
 
+        [HttpPost("addNewEvent")]
+        public async Task<IActionResult> AddNewEvent([FromBody] AddNewEventBlockModel newEventBlockModel)
+        {
+            var _user = await _userService.GetUserByEmailAsync(newEventBlockModel.User.Email);
+            var student = await _studentService.FindByIdAsync(_user.Student.Id);
+
+            if (student == null)
+            {
+                return ErrorResponse($"Student with id: {_user.Student.Id} does not exist.");
+            }
+
+            if (student.Timetable == null)
+            {
+                return ErrorResponse($"Timetable for student with id: {student.Id} does not exist.");
+            }
+
+            TimetableEvent timetableEvent = newEventBlockModel.TimetableEvent;
+
+            Course course = await _courseService.GetOrAddNotExistsCourse(timetableEvent.CourseCode,
+                timetableEvent.CourseName, timetableEvent.CourseShortcut);
+
+            if (course == null)
+            {
+                return ErrorResponse($"Course: {timetableEvent.CourseName} does not exist.");
+            }
+
+            Block block = TimetableEvent.ConvertToBlock(timetableEvent, course.Id);
+
+            if (student.Timetable.IsSubjectPresentInTimetable(block))
+            {
+                return ErrorResponse($"Course: {timetableEvent.CourseName} is already present.");
+            }
+
+            student.Timetable.AddNewBlock(block);
+            student.Timetable.UpdateColorOfBlocksWithSameCourseId(block);
+            await _studentService.UpdateStudentAsync(student);
+            //return block with new id 
+            return Ok(newEventBlockModel.TimetableEvent);
+        }
+
+
+
+
+
         [HttpDelete("removeBlock/{userEmail}/{blockId}")]
         public async Task<IActionResult> RemoveBlock(string userEmail, string blockId)
         {

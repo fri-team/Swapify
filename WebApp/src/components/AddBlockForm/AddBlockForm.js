@@ -230,14 +230,8 @@ class AddBlockForm extends Component {
   };
 
   canSubmit = () => {
-    const {
-      courseName,
-      startBlock,
-      length,
-      type,
-      eventName,
-      eventPlace,
-    } = this.state;
+    const { courseName, startBlock, length, type, eventName, eventPlace } =
+      this.state;
     return (
       length &&
       ((courseName && startBlock && type) || (eventName && eventPlace))

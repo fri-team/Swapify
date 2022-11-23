@@ -21,7 +21,7 @@ namespace WebAPI.Filters
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
-        {
+       {
             if (!context.ModelState.IsValid)
             {
                 context.Result = new ValidationErrorResponse(context.ModelState).ToResult();

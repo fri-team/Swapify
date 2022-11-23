@@ -14,6 +14,7 @@ const initialState = {
   startBlock: null,
   endBlock: null,
   blockColor: "",
+  type: 4,
 };
 
 const slice = createSlice({
@@ -29,6 +30,8 @@ const slice = createSlice({
     hasError(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+      console.log(state.error);
+
       window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
     },
 
@@ -51,7 +54,7 @@ export function createBlock(newBlock) {
     dispatch(slice.actions.startLoading());
     try {
       console.log(newBlock);
-      const response = await axios.post("/api/student/addNewBlock", newBlock);
+      const response = await axios.post("/api/student/addNewEvent", newBlock);
       dispatch(slice.actions.createBlockSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
