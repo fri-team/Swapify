@@ -60,6 +60,9 @@ namespace FRITeam.Swapify.Backend
         private async Task AddAsync(BlockChangeRequest entityToAdd)
         {
             entityToAdd.Id = Guid.NewGuid();
+            var request = await _blockChangesCollection.FindAsync(x => x.StudentId == entityToAdd.StudentId && x.BlockFrom == entityToAdd.BlockFrom && x.BlockTo == entityToAdd.BlockTo);
+            if (request != null)
+                throw new ArgumentException("O tuto vymenu ste uz poziadali");
             await _blockChangesCollection.InsertOneAsync(entityToAdd);
         }
 
