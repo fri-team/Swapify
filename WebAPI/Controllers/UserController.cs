@@ -415,7 +415,7 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("setBlockeHoursVisibility")]
+        [HttpPost("setBlockedHoursVisibility")]
         public async Task<IActionResult> ChangeBlockeHoursVisibility([FromBody] BlockedHoursVisibilityModel body)
         {
             body.Email = body.Email.ToLower();
@@ -433,7 +433,7 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("getBlockeHoursVisibility")]
+        [HttpPost("getBlockedHoursVisibility")]
         public async Task<IActionResult> GetBlockeHoursVisibility([FromBody] BlockedHoursVisibilityModel body)
         {
             body.Email = body.Email.ToLower();

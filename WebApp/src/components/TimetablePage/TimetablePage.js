@@ -46,11 +46,16 @@ class TimetablePage extends PureComponent {
       user: props.user,
       message: "",
       subject: "",
-      darkMode: true
+      darkMode: true,
+      showBlockedHours: false,
+      timetableType: this.props.timetableType
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
+    this.getBlockedHoursVisibility();
+    this.getTimetableType();
+
   }
 
   handleChange(e) {
@@ -111,6 +116,47 @@ class TimetablePage extends PureComponent {
     }).then();
   }
 
+  getBlockedHoursVisibility() {
+    const body = {
+      email: this.state.user.email,
+      blockedHoursVisibility: "true"
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/getBlockedHoursVisibility",
+      data: body
+    }).then(response => {
+      this.setState({ showBlockedHours: response.data });
+    });
+  }
+
+  changeBlockedHourVisibility() {
+    var visibility = !this.state.showBlockedHours;
+    this.setState({ showBlockedHours: visibility });
+
+    const body = {
+      email: this.state.user.email,
+      blockedHoursVisibility: visibility
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/setDarkMode",
+      data: body
+    }).then();
+  }
+
+  getTimetableType(){
+    axios.get(`/api/timetable/getTimetableType/${this.state.user.email}`).then(({ response }) => {
+      this.setState({ timetableType: response});
+    }).catch(function (error) {
+      if (error.response.status == '404') {
+        alert('Upozornenie: nepodarilo sa ziskat typ rozvrhu');
+      }
+    });
+  }
+
   render() {
     return (
       <div className="app-container">
@@ -124,7 +170,7 @@ class TimetablePage extends PureComponent {
               sidebarOpen: !prevState.sidebarOpen,
             }))
           }
-          exportCalendar={() => 
+          exportCalendar={() =>
             {
               // not exactly sure how to work with these actions so I imported it like this
               actions.loadMyTimetableCalendar(this.props.user, this.props.history).then(res => {
@@ -171,7 +217,7 @@ class TimetablePage extends PureComponent {
           <Slide
             media={<img src={GifAddCourse} alt="pridanie bloku" />}
             title="Pridaj si blok predmetu"
-            subtitle='Klikni na miesto v rozvrhu, kde má začínať blok. Napíš jeho názov, meno profesora, miestnosť. 
+            subtitle='Klikni na miesto v rozvrhu, kde má začínať blok. Napíš jeho názov, meno profesora, miestnosť.
             Zvoľ či sa jedná o prednášku, cvičenie alebo laboratórium, poprípade zmeň jeho dĺžku a klikni na "ULOŽIŤ".'
             mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : red[400] }}
             style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : red[600] }}
@@ -184,7 +230,7 @@ class TimetablePage extends PureComponent {
               />
             }
             title="Zobraz si rozvrh predmetu"
-            subtitle="Pozri sa ako vyzerá rozvrh predmetu v porovnaní s Tvojím vlastným. V bočnom menu si zvoľ predmety, 
+            subtitle="Pozri sa ako vyzerá rozvrh predmetu v porovnaní s Tvojím vlastným. V bočnom menu si zvoľ predmety,
             ktorých rozvrhy chceš vidieť v tom svojom."
             mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : green[400] }}
             style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : green[600] }}
@@ -194,8 +240,8 @@ class TimetablePage extends PureComponent {
               <img src={GifAskForExchange} alt="poziadanie o vymenu cvicenia" />
             }
             title="Požiadaj o výmenu cvičenia"
-            subtitle='Vyber si cvičenie, ktoré si chceš vymeniť, klikni naň a zvoľ "Požiadať o výmenu". Následne si vyber 
-            zo zobrazených cvičení to, ktoré ti najviac vyhovuje. Potom už len čakaj kým, si niekto bude chcieť vymeniť 
+            subtitle='Vyber si cvičenie, ktoré si chceš vymeniť, klikni naň a zvoľ "Požiadať o výmenu". Následne si vyber
+            zo zobrazených cvičení to, ktoré ti najviac vyhovuje. Potom už len čakaj kým, si niekto bude chcieť vymeniť
             dané cvičenie tiež.'
             mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : blue[400] }}
             style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : blue[600] }}
@@ -214,7 +260,7 @@ class TimetablePage extends PureComponent {
         >
           <DialogTitle id="max-width-dialog-title"
           style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>Napíšte nám</DialogTitle>
-          <DialogContent className="dialogMailUsContent" 
+          <DialogContent className="dialogMailUsContent"
           style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>
             <FormControl fullWidth>
               <TextField

@@ -222,5 +222,18 @@ namespace WebAPI.Controllers
             }
             return NotFound("Course not found");
         }
+
+        [HttpGet("getTimetableType/{email}")]
+        public async Task<IActionResult> GetTimetableType(string email)
+        {
+            email = email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogInformation($"Invalid request for timetable type. User with email: {email} doesn't exist.");
+                return ErrorResponse($"Používateľ {email} neexistuje.");
+            }
+            return Ok(user.TimetableData.TimetableType);
+        }
     }
 }
