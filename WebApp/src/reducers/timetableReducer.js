@@ -1,4 +1,5 @@
 import _ from 'lodash';
+//import { any } from 'prop-types';
 import {
   LOAD_MY_TIMETABLE,
   LOAD_MY_TIMETABLE_DONE,
@@ -150,6 +151,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
         blockFromExchange: null
       }
     case HIDE_COURSE_TIMETABLE:
+
       var displayedCourses;
       // if course id set to null hide all courses
       if (payload.courseId == null)
@@ -158,10 +160,11 @@ export default function timetableReducer(state = initState, { type, payload }) {
       } else {
         displayedCourses = _.without(state.displayedCourses, payload.courseId);
       }
-
+      
       return {
         ...state,
         isAddBlockMode: false,
+
         displayedCourses: displayedCourses,
         displayedTimetable: mergeTimetables(
           state.myTimetable,
@@ -170,6 +173,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
             displayedCourses
           ),
           state.displayedCourses.length - 1
+
         )
       };
     case REMOVE_BLOCK:
