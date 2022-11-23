@@ -59,11 +59,23 @@ namespace FRITeam.Swapify.Backend
 
         private async Task AddAsync(BlockChangeRequest entityToAdd)
         {
-            entityToAdd.Id = Guid.NewGuid();
-            var request = await _blockChangesCollection.FindAsync(x => x.StudentId == entityToAdd.StudentId && x.BlockFrom == entityToAdd.BlockFrom && x.BlockTo == entityToAdd.BlockTo);
-            if (request != null)
-                throw new ArgumentException("O tuto vymenu ste uz poziadali");
-            await _blockChangesCollection.InsertOneAsync(entityToAdd);
+            var request = await _blockChangesCollection.Find(x =>
+            (x.BlockTo.CourseId == entityToAdd.BlockTo.CourseId &&
+                      x.BlockTo.Day == entityToAdd.BlockTo.Day &&
+                      x.BlockTo.Duration == entityToAdd.BlockTo.Duration &&
+                      x.BlockTo.StartHour == entityToAdd.BlockTo.StartHour &&
+                      x.BlockTo.Room == entityToAdd.BlockTo.Room &&
+                      x.BlockFrom.CourseId == entityToAdd.BlockFrom.CourseId &&
+                      x.BlockFrom.Room == entityToAdd.BlockFrom.Room &&
+                      x.BlockFrom.Day == entityToAdd.BlockFrom.Day &&
+                      x.BlockFrom.Duration == entityToAdd.BlockFrom.Duration &&
+                      x.BlockFrom.StartHour == entityToAdd.BlockFrom.StartHour)
+                ).FirstOrDefaultAsync();
+            if (request == null)
+            {
+                entityToAdd.Id = Guid.NewGuid();
+                await _blockChangesCollection.InsertOneAsync(entityToAdd);
+            }
         }
 
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
