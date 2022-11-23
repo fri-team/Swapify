@@ -25,8 +25,8 @@ namespace FRITeam.Swapify.Backend
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
         public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            await AddAsync(blockChangeRequest);
-            return await MakeExchangeAndDeleteRequests(blockChangeRequest);
+            var changeRequest = await AddAsync(blockChangeRequest);
+            return await MakeExchangeAndDeleteRequests(changeRequest);
         }
 
         public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
@@ -57,10 +57,11 @@ namespace FRITeam.Swapify.Backend
             return (a != null);
         }
 
-        private async Task AddAsync(BlockChangeRequest entityToAdd)
+        private async Task<BlockChangeRequest> AddAsync(BlockChangeRequest entityToAdd)
         {
             var request = await _blockChangesCollection.Find(x =>
-            (x.BlockTo.CourseId == entityToAdd.BlockTo.CourseId &&
+            (x.StudentId == entityToAdd.StudentId &&
+                      x.BlockTo.CourseId == entityToAdd.BlockTo.CourseId &&
                       x.BlockTo.Day == entityToAdd.BlockTo.Day &&
                       x.BlockTo.Duration == entityToAdd.BlockTo.Duration &&
                       x.BlockTo.StartHour == entityToAdd.BlockTo.StartHour &&
@@ -75,7 +76,12 @@ namespace FRITeam.Swapify.Backend
             {
                 entityToAdd.Id = Guid.NewGuid();
                 await _blockChangesCollection.InsertOneAsync(entityToAdd);
+                // if there is no same request, returning inserted request
+                return entityToAdd;
             }
+            // if there is same request, returning request that is already in database 
+            else
+                return request;
         }
 
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
