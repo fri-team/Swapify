@@ -48,7 +48,7 @@ class TimetablePage extends PureComponent {
       subject: "",
       darkMode: true,
       showBlockedHours: false,
-      timetableType: this.props.timetableType
+      timetableType: null
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -198,6 +198,7 @@ class TimetablePage extends PureComponent {
           }
         />
         <SidebarContainer
+          timetableType = {this.state.timetableType}
           darkMode = { this.state.darkMode }
           open={this.state.sidebarOpen}
           onClose={() => this.setState({ sidebarOpen: false })}

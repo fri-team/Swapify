@@ -19,7 +19,7 @@ class SidebarContainer extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.loadWaitingExchangeRequests();  
+    this.props.loadWaitingExchangeRequests();
   }
 
   handleChange = (event, value) => {
@@ -56,17 +56,18 @@ class SidebarContainer extends PureComponent {
       checked: _.includes(displayedCourses, course.courseId)
     }));
     return (
-      <Sidebar 
+      <Sidebar
+        timetableType={this.props.timetableType}
         open={open}
         onClose={onClose}
         courses={courses}
         onCourseToggle={this.handleCourseToggle}
         handleChange={this.handleChange}
         value={value}
-        exchangeRequests={exchangeRequests} 
+        exchangeRequests={exchangeRequests}
         addClickHandle={this.handleAddClick}
         sideBarFormOpen={sideBarFormOpen}
-        onCloseForm={this.handleClickOutsideSideBarForm}     
+        onCloseForm={this.handleClickOutsideSideBarForm}
         darkMode={this.props.darkMode}
       />
     );
@@ -76,7 +77,7 @@ class SidebarContainer extends PureComponent {
 const mapStateToProps = state => ({ ...state.timetable, ...state.exchangeRequests });
 const mapDispatchToProps = dispatch => {
   return {
-    loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()), 
+    loadWaitingExchangeRequests: () => dispatch(loadExchangeRequests()),
     showCourseTimetable: (courseId, courseName) => dispatch(showCourseTimetable(courseId, courseName)),
     hideCourseTimetable: (courseId) => dispatch(hideCourseTimetable(courseId))
   }

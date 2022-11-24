@@ -27,16 +27,16 @@ const StyledTab= withStyles({
   }
 })(Tab);
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, sideBarFormOpen, onCloseForm, darkMode}) => (
+const Sidebar = ({timetableType, open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, sideBarFormOpen, onCloseForm, darkMode}) => (
   <Drawer open={open} onClose={onClose}>
     <AppBar position="static" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
       <Tabs value={value} onChange={handleChange}>
         <StyledTab label="Predmety" />
-        <StyledTab label="Výmeny" />
+        {timetableType == 1 && <StyledTab label="Výmeny" />}
       </Tabs>
     </AppBar>
     <div className="drawerWrapper" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
-    {value === 0 &&                
+    {value === 0 &&
         <List>
           <Tooltip title="Pridať predmet" placement="top" style={{ color: darkMode ? "white" : "black" }}>
             <IconButton onClick={addClickHandle}><AddIcon/></IconButton>
@@ -57,11 +57,11 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
             </ListItem>
 
           ))}
-          {sideBarFormOpen && 
+          {sideBarFormOpen &&
             <SideBarForm
-              onClose={onCloseForm}           
+              onClose={onCloseForm}
             />
-          }        
+          }
         </List>
       }
       {value === 1 &&
@@ -90,7 +90,7 @@ const createExchangeRequestListItem = (exchangeRequest, courses) => {
   }
   return (
     <Card>
-      <CardHeader        
+      <CardHeader
         title={course.courseName}
         subheader={dayHourToString(exchangeRequest.blockFrom.day, exchangeRequest.blockFrom.startHour)
           + " -> " + dayHourToString(exchangeRequest.blockTo.day, exchangeRequest.blockTo.startHour)}

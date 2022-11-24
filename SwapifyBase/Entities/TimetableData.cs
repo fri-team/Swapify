@@ -13,9 +13,12 @@ namespace FRITeam.Swapify.SwapifyBase.Entities
         public TimetableType TimetableType {
             get
             {
-                if (PersonalNumber.Length == 6) return TimetableType.StudentTimetable;
-                else if (PersonalNumber.Length == 5) return TimetableType.TeacherTimetable;
-                else return TimetableType.Unknown;
+                if(!string.IsNullOrEmpty(PersonalNumber))
+                {
+                    if (PersonalNumber.Length == 6) return TimetableType.StudentTimetable;
+                    else if (PersonalNumber.Length == 5) return TimetableType.TeacherTimetable;
+                }
+                return TimetableType.Unknown;
             }}
     }
 }
