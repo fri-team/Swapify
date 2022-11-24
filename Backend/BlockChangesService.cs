@@ -25,7 +25,7 @@ namespace FRITeam.Swapify.Backend
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
         public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            var changeRequest = await AddAsync(blockChangeRequest);
+            var changeRequest = await FindOrAddAsync(blockChangeRequest);
             return await MakeExchangeAndDeleteRequests(changeRequest);
         }
 
@@ -57,27 +57,27 @@ namespace FRITeam.Swapify.Backend
             return (a != null);
         }
 
-        private async Task<BlockChangeRequest> AddAsync(BlockChangeRequest entityToAdd)
+        private async Task<BlockChangeRequest> FindOrAddAsync(BlockChangeRequest entityToFindOrAdd)
         {
             var request = await _blockChangesCollection.Find(x =>
-            (x.StudentId == entityToAdd.StudentId &&
-                      x.BlockTo.CourseId == entityToAdd.BlockTo.CourseId &&
-                      x.BlockTo.Day == entityToAdd.BlockTo.Day &&
-                      x.BlockTo.Duration == entityToAdd.BlockTo.Duration &&
-                      x.BlockTo.StartHour == entityToAdd.BlockTo.StartHour &&
-                      x.BlockTo.Room == entityToAdd.BlockTo.Room &&
-                      x.BlockFrom.CourseId == entityToAdd.BlockFrom.CourseId &&
-                      x.BlockFrom.Room == entityToAdd.BlockFrom.Room &&
-                      x.BlockFrom.Day == entityToAdd.BlockFrom.Day &&
-                      x.BlockFrom.Duration == entityToAdd.BlockFrom.Duration &&
-                      x.BlockFrom.StartHour == entityToAdd.BlockFrom.StartHour)
+            (x.StudentId == entityToFindOrAdd.StudentId &&
+                      x.BlockTo.CourseId == entityToFindOrAdd.BlockTo.CourseId &&
+                      x.BlockTo.Day == entityToFindOrAdd.BlockTo.Day &&
+                      x.BlockTo.Duration == entityToFindOrAdd.BlockTo.Duration &&
+                      x.BlockTo.StartHour == entityToFindOrAdd.BlockTo.StartHour &&
+                      x.BlockTo.Room == entityToFindOrAdd.BlockTo.Room &&
+                      x.BlockFrom.CourseId == entityToFindOrAdd.BlockFrom.CourseId &&
+                      x.BlockFrom.Room == entityToFindOrAdd.BlockFrom.Room &&
+                      x.BlockFrom.Day == entityToFindOrAdd.BlockFrom.Day &&
+                      x.BlockFrom.Duration == entityToFindOrAdd.BlockFrom.Duration &&
+                      x.BlockFrom.StartHour == entityToFindOrAdd.BlockFrom.StartHour)
                 ).FirstOrDefaultAsync();
             if (request == null)
             {
-                entityToAdd.Id = Guid.NewGuid();
-                await _blockChangesCollection.InsertOneAsync(entityToAdd);
+                entityToFindOrAdd.Id = Guid.NewGuid();
+                await _blockChangesCollection.InsertOneAsync(entityToFindOrAdd);
                 // if there is no same request, returning inserted request
-                return entityToAdd;
+                return entityToFindOrAdd;
             }
             // if there is same request, returning request that is already in database 
             else
