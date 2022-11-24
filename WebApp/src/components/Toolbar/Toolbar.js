@@ -49,9 +49,9 @@ class AppToolbar extends PureComponent {
       return false;
     }
   }
-  
+
   render() {
-    
+
     let buttonExchangeMode;
     if (this.props.timetable.isExchangeMode) {
       buttonExchangeMode = (
@@ -71,7 +71,10 @@ class AppToolbar extends PureComponent {
     }
 
     let buttonAddMode;
-    if (this.props.timetable.isAddBlockMode && !this.props.timetable.isExchangeMode) {
+    if (
+      this.props.timetable.displayedCourses.length > 0 &&
+      !this.props.timetable.isExchangeMode
+    ) {
       buttonAddMode = (
         <Button
           variant="contained"
@@ -101,9 +104,9 @@ class AppToolbar extends PureComponent {
               <MenuIcon />
             </IconButton>
             )}
-           
+
             <IconTray>
-            
+
             <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
               {buttonExchangeMode}
@@ -115,7 +118,7 @@ class AppToolbar extends PureComponent {
               />
               {this.state.showMenu && (
                 <Menu
-                  darkMode={this.props.darkMode} 
+                  darkMode={this.props.darkMode}
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
@@ -148,7 +151,7 @@ class AppToolbar extends PureComponent {
                 <HelpIcon />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Napíšte nám" placement="top" TransitionComponent={Zoom}>
               <IconButton
                 color="inherit"
@@ -158,7 +161,7 @@ class AppToolbar extends PureComponent {
                 <MailIcon />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Notifikácie" placement="top" TransitionComponent={Zoom}>
               <IconButton
                 color="inherit"
