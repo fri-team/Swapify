@@ -1,16 +1,18 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap");
 
 .App {
   height: 100vh;
   display: flex;
   color: white;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .App__Aside {
-  width: 60%;
-  background-color: white;
+  width: 50%;
+  background-color: #5ebed7;
   overflow: auto;
+  margin: 5%;
+  border-radius: 5%;
 }
 
 .App__Form {
@@ -18,7 +20,7 @@
   flex: 1;
   flex-direction: column;
   width: 40%;
-  background-color: #5EBED7;
+  background-color: white;
   padding: 25px 40px;
   overflow: auto;
 }
@@ -31,12 +33,12 @@
   text-align: justify;
 }
 
-.AboutUsContainer h1{
+.AboutUsContainer h1 {
   font-weight: 300;
   text-transform: uppercase;
 }
 
-.AboutUsContainer p{
+.AboutUsContainer p {
   line-height: 1.4;
   margin-top: 2em;
 }
@@ -47,7 +49,7 @@
   margin: 3em;
 }
 
-.AboutUsLogos img{
+.AboutUsLogos img {
   width: auto;
   height: 115px;
 }
@@ -65,7 +67,7 @@
   color: white;
   padding: 10px 25px;
   cursor: pointer;
-  font-size: .9em;
+  font-size: 0.9em;
   border: none;
   outline: none;
   display: inline-block;
@@ -114,16 +116,16 @@
 
 .FormField__Label {
   display: block;
-  margin: .9em;
+  margin: 0.9em;
   text-transform: uppercase;
-  font-size: .9em;
+  font-size: 0.9em;
   color: white;
 }
 
 .FormField__LabelLogin {
   display: block;
-  margin: .9em;
-  font-size: .9em;
+  margin: 0.9em;
+  font-size: 0.9em;
   color: white;
 }
 
@@ -150,7 +152,7 @@
   border: none;
   outline: none;
   padding: 10px 50px;
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: 500;
   float: right;
   cursor: pointer;
@@ -194,20 +196,36 @@
   align-self: flex-end;
 }
 
+.App__Aside__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
 .logo {
-  background: url('../../images/logo.png') center no-repeat;
+  background: url("../../images/logowhite.png") center no-repeat;
   background-size: 30%;
   height: 30%;
 }
 
-
 .home-image {
-  background: url('../../images/home-background.png') center no-repeat;
-  background-size: 70%;
-  height: 70%;
+  background: url("../../images/home-background.png") center no-repeat;
+  background-size: 60%;
+  height: 60%;
   width: auto;
 }
 
+.slider {
+  height: 50%;
+}
+
+.slider_image {
+  margin: auto;
+}
+.slider_text {
+  margin: 0px 10%;
+  font-size: 20px;
+}
 @media only screen and (max-width: 1300px) {
   .AboutUsContainer h1 {
     text-align: center;
@@ -220,7 +238,7 @@
     margin: 0;
   }
 
-  .AboutUsLogos img{
+  .AboutUsLogos img {
     width: 100%;
     height: auto;
   }
@@ -279,7 +297,7 @@
     margin: 0;
   }
 
-  .AboutUsLogos img{
+  .AboutUsLogos img {
     width: 100%;
     height: auto;
   }

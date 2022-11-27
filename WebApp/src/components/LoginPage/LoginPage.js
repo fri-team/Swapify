@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { login } from "../../actions/userActions";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import './LoginPage.scss';
+import "./LoginPage.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 class LoginPage extends PureComponent {
   constructor() {
@@ -37,29 +37,29 @@ class LoginPage extends PureComponent {
     this.setState({
       [name]: value,
       serverErrors: "",
-      wrongCredentials: false
+      wrongCredentials: false,
     });
   }
 
   onChangeCaptcha(value) {
     if (value) {
-      document.getElementById('captchaLabel').style.display = 'none';
+      document.getElementById("captchaLabel").style.display = "none";
       this.setState({
-        captchaValue : value
+        captchaValue: value,
       });
     }
   }
 
   changeFormToResetPassword = () => {
-    if (this.state.resetingPassword) {      
+    if (this.state.resetingPassword) {
       this.setState({ resetingPassword: false });
-    } else {      
+    } else {
       this.setState({ loginWithLDAP: false });
       this.setState({ resetingPassword: true });
     }
     this.setState({
       serverErrors: "",
-      wrongCredentials: false
+      wrongCredentials: false,
     });
   };
 
@@ -71,7 +71,7 @@ class LoginPage extends PureComponent {
     }
     this.setState({
       serverErrors: "",
-      wrongCredentials: false
+      wrongCredentials: false,
     });
   };
 
@@ -92,12 +92,12 @@ class LoginPage extends PureComponent {
     axios({
       method: "post",
       url: "/api/user/" + endUrl,
-      data: body
+      data: body,
     })
-    .then(({ data }) => { 
-      dispatch(login(data));
+      .then(({ data }) => {
+        dispatch(login(data));
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response.status === 403) {
           this.setState({ serverErrors: error.response.data });
           this.setState({ emailNotConfirmed: true });
@@ -114,22 +114,22 @@ class LoginPage extends PureComponent {
     e.preventDefault();
 
     if (this.state.captchaValue == null) {
-      if (this.state.email.toLowerCase() == 'oleg@swapify.com') {
+      if (this.state.email.toLowerCase() == "oleg@swapify.com") {
         const { dispatch } = this.props;
         const body = {
           ldap: false,
           email: this.state.email,
           password: this.state.password,
-          captcha: 'test-user'
+          captcha: "test-user",
         };
-        
+
         this.loginUser(body, dispatch, "login");
       } else {
-        document.getElementById('captchaLabel').style.display = 'block';
-      }   
+        document.getElementById("captchaLabel").style.display = "block";
+      }
       return;
     } else {
-      document.getElementById('captchaLabel').style.display = 'none';
+      document.getElementById("captchaLabel").style.display = "none";
     }
 
     if (!this.state.resetingPassword && !this.state.loginWithLDAP) {
@@ -139,37 +139,35 @@ class LoginPage extends PureComponent {
       const body = {
         email: this.state.email,
         password: this.state.password,
-        captcha: this.state.captchaValue
+        captcha: this.state.captchaValue,
       };
 
       this.loginUser(body, dispatch, "login");
-    } 
-    else if (this.state.resetingPassword) {
+    } else if (this.state.resetingPassword) {
       const body = {
         email: this.state.email,
-        captcha: this.state.captchaValue
+        captcha: this.state.captchaValue,
       };
 
       axios({
         method: "post",
         url: "/api/user/resetPassword",
-        data: body
+        data: body,
       })
         .then(() => {
           this.setState({ success: true });
         })
-        .catch(error => {
+        .catch((error) => {
           this.setState({ serverErrors: error.response.data.error });
         });
-    } 
-    else {
+    } else {
       const { dispatch } = this.props;
       this.setState({ emailNotConfirmed: false });
 
       const body = {
         email: this.state.name,
         password: this.state.password,
-        captcha: this.state.captchaValue
+        captcha: this.state.captchaValue,
       };
 
       this.loginUser(body, dispatch, "loginLdap");
@@ -179,7 +177,7 @@ class LoginPage extends PureComponent {
   render() {
     const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
-      <div className="FormCenter">       
+      <div className="FormCenter">
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
           errors={this.state.serverErrors}
@@ -201,12 +199,11 @@ class LoginPage extends PureComponent {
                 />
               </div>
             )}
-            
+
             {this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
-                  label={"Školské meno".toUpperCase()}
-                  helperText="Prihlásenie ako do vzdelávania, napr. mrkva4"
+                  label={"Osobné číslo"}
                   type="text"
                   required
                   name="name"
@@ -249,15 +246,26 @@ class LoginPage extends PureComponent {
               />
               <p id="catpchaText">
                 Táto stránka je chránená pomocou služby ReCAPTCHA a Google
-                <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
-                <a href="https://policies.google.com/terms"> Podmienkami služieb</a>, ktoré sú uplatnené.
+                <a href="https://policies.google.com/privacy">
+                  {" "}
+                  Zásadou ochrany osobných údajov
+                </a>{" "}
+                a
+                <a href="https://policies.google.com/terms">
+                  {" "}
+                  Podmienkami služieb
+                </a>
+                , ktoré sú uplatnené.
               </p>
-              <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
+              <label id="captchaLabel">Prosím vyplňte že nie ste robot !</label>
             </div>
 
             {!this.state.resetingPassword && (
               <div>
-                <a onClick={this.changeFormToLDAPLogin} className="FormField__Link">
+                <a
+                  onClick={this.changeFormToLDAPLogin}
+                  className="FormField__Link"
+                >
                   {!this.state.loginWithLDAP
                     ? "Prihlásiť sa cez FRI login"
                     : "Prihlásiť sa cez e-mail"}
@@ -266,13 +274,16 @@ class LoginPage extends PureComponent {
             )}
 
             <div>
-              <a onClick={this.changeFormToResetPassword} className="FormField__Link">
+              <a
+                onClick={this.changeFormToResetPassword}
+                className="FormField__Link"
+              >
                 {!this.state.resetingPassword
                   ? "Zabudol som heslo"
                   : "Späť na login"}
               </a>
             </div>
-            
+
             <div className="FormField">
               <button className="FormField__Button">
                 {!this.state.resetingPassword
