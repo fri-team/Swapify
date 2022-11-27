@@ -25,8 +25,8 @@ namespace FRITeam.Swapify.Backend
         /// <returns>bool value if corresponding second BlockChangeRequest was found and the found BlockChangeRequest</returns>
         public async Task<(BlockChangeRequest, BlockChangeRequest)> AddAndFindMatch(BlockChangeRequest blockChangeRequest)
         {
-            await AddAsync(blockChangeRequest);
-            return await MakeExchangeAndDeleteRequests(blockChangeRequest);
+            var changeRequest = await FindOrAddAsync(blockChangeRequest);
+            return await MakeExchangeAndDeleteRequests(changeRequest);
         }
 
         public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
@@ -57,10 +57,31 @@ namespace FRITeam.Swapify.Backend
             return (a != null);
         }
 
-        private async Task AddAsync(BlockChangeRequest entityToAdd)
+        private async Task<BlockChangeRequest> FindOrAddAsync(BlockChangeRequest entityToFindOrAdd)
         {
-            entityToAdd.Id = Guid.NewGuid();
-            await _blockChangesCollection.InsertOneAsync(entityToAdd);
+            var request = await _blockChangesCollection.Find(x =>
+            (x.StudentId == entityToFindOrAdd.StudentId &&
+                      x.BlockTo.CourseId == entityToFindOrAdd.BlockTo.CourseId &&
+                      x.BlockTo.Day == entityToFindOrAdd.BlockTo.Day &&
+                      x.BlockTo.Duration == entityToFindOrAdd.BlockTo.Duration &&
+                      x.BlockTo.StartHour == entityToFindOrAdd.BlockTo.StartHour &&
+                      x.BlockTo.Room == entityToFindOrAdd.BlockTo.Room &&
+                      x.BlockFrom.CourseId == entityToFindOrAdd.BlockFrom.CourseId &&
+                      x.BlockFrom.Room == entityToFindOrAdd.BlockFrom.Room &&
+                      x.BlockFrom.Day == entityToFindOrAdd.BlockFrom.Day &&
+                      x.BlockFrom.Duration == entityToFindOrAdd.BlockFrom.Duration &&
+                      x.BlockFrom.StartHour == entityToFindOrAdd.BlockFrom.StartHour)
+                ).FirstOrDefaultAsync();
+            if (request == null)
+            {
+                entityToFindOrAdd.Id = Guid.NewGuid();
+                await _blockChangesCollection.InsertOneAsync(entityToFindOrAdd);
+                // if there is no same request, returning inserted request
+                return entityToFindOrAdd;
+            }
+            // if there is same request, returning request that is already in database 
+            else
+                return request;
         }
 
         private async Task<BlockChangeRequest> FindExchange(BlockChangeRequest blockRequest)
