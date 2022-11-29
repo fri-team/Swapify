@@ -85,9 +85,10 @@ export default class Menu extends PureComponent {
   };
 
   render() {
-    const { username, email, onLogout, selectPersonalNumber, changeDarkMode } = this.props;
+    const { username, email, onLogout, selectPersonalNumber, changeDarkMode , timetableType, updateBlockedHoursVisibility} = this.props;
     const { x, y } = this.state;
-    const width = 400;
+    const width = timetableType == 'TeacherTimetable' ? 550:400;
+    console.log("Timetable type in menu is: " + timetableType);
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>
@@ -99,8 +100,8 @@ export default class Menu extends PureComponent {
                   <div>
                     <div className="username">{username}</div>
                     <div className="email">{email}</div>
-                      <DeleteAccountModal 
-                      email={email} onLogout={onLogout}/> 
+                      <DeleteAccountModal
+                      email={email} onLogout={onLogout}/>
                   </div>
                 </FlexBox>
               </PadBox>
@@ -120,6 +121,9 @@ export default class Menu extends PureComponent {
                   <MenuButton variant="contained" onClick={onLogout}>
                     Odhlásiť
                   </MenuButton>
+                  {timetableType == 'TeacherTimetable' && <MenuButton variant="contained" onClick={updateBlockedHoursVisibility}>
+                    Blokované
+                  </MenuButton>}
                 </FlexBox>
               </PadBox>
             </Content>

@@ -47,13 +47,14 @@ class TimetablePage extends PureComponent {
       message: "",
       subject: "",
       darkMode: true,
-      showBlockedHours: false,
+      // showBlockedHours: false,
+      updateBlockedHoursVisibility: false,
       timetableType: 3 // 3 = unknown
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
-    this.getBlockedHoursVisibility();
+    // this.getBlockedHoursVisibility();
     this.getTimetableType();
 
   }
@@ -116,33 +117,34 @@ class TimetablePage extends PureComponent {
     }).then();
   }
 
-  getBlockedHoursVisibility() {
-    const body = {
-      email: this.state.user.email,
-      blockedHoursVisibility: "true"
-    };
+  // getBlockedHoursVisibility() {
+  //   const body = {
+  //     email: this.state.user.email,
+  //     blockedHoursVisibility: "true"
+  //   };
 
-    axios({
-      method: "post",
-      url: "/api/user/getBlockedHoursVisibility",
-      data: body
-    }).then(response => {
-      this.setState({ showBlockedHours: response.data });
-    });
-  }
+  //   axios({
+  //     method: "post",
+  //     url: "/api/user/getBlockedHoursVisibility",
+  //     data: body
+  //   }).then(response => {
+  //     this.setState({ showBlockedHours: response.data });
+  //   });
+  // }
 
   changeBlockedHourVisibility() {
-    var visibility = !this.state.showBlockedHours;
-    this.setState({ showBlockedHours: visibility });
+    console.log("Changing block hours visibility")
+    //var visibility = !this.state.showBlockedHours;
+    //this.setState({ showBlockedHours: visibility });
 
     const body = {
       email: this.state.user.email,
-      blockedHoursVisibility: visibility
+      //blockedHoursVisibility: visibility
     };
 
     axios({
       method: "post",
-      url: "/api/user/setDarkMode",
+      url: "/api/user/setBlockedHoursVisibility",
       data: body
     }).then();
   }
@@ -162,13 +164,17 @@ class TimetablePage extends PureComponent {
   }
 
   render() {
-    console.log("Rendering page, Timetable type is: " + this.state.timetableType);
     return (
       <div className="app-container">
         <Toolbar
+          timetableType = {this.state.timetableType}
           darkMode = { this.state.darkMode }
           changeDarkMode={() =>
             this.swapDarkMode()
+          }
+          //showBlockedHours = { this.state.showBlockedHours}
+          updateBlockedHoursVisibility={() =>
+            this.changeBlockedHourVisibility()
           }
           toggleSidebar={() =>
             this.setState((prevState) => ({
