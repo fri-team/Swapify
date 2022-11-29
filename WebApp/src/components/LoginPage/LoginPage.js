@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { login } from "../../actions/userActions";
-import TextField from "@material-ui/core/TextField";
+import { TextField, Paper } from "@material-ui/core";
 import axios from "axios";
 import "./LoginPage.scss";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -202,17 +202,18 @@ class LoginPage extends PureComponent {
 
             {this.state.loginWithLDAP && (
               <div className="FormField">
-                <TextField
-                  label={"Osobné číslo"}
-                  type="text"
-                  required
-                  name="name"
-                  className="FormField__LabelLogin"
-                  error={this.state.wrongCredentials}
-                  value={this.state.name}
-                  onChange={this.handleChange}
-                  fullWidth
-                />
+                <Paper>
+                  <TextField
+                    label={"Osobné číslo"}
+                    type="text"
+                    required
+                    name="name"
+                    className="FormField__Label"
+                    error={this.state.wrongCredentials}
+                    value={this.state.name}
+                    onChange={this.handleChange}
+                  />
+                </Paper>
               </div>
             )}
 
@@ -233,7 +234,6 @@ class LoginPage extends PureComponent {
                   error={this.state.wrongCredentials}
                   value={this.state.password}
                   onChange={this.handleChange}
-                  fullWidth
                 />
               </div>
             )}
@@ -244,20 +244,6 @@ class LoginPage extends PureComponent {
                 onChange={this.onChangeCaptcha}
                 hl="sk"
               />
-              <p id="catpchaText">
-                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
-                <a href="https://policies.google.com/privacy">
-                  {" "}
-                  Zásadou ochrany osobných údajov
-                </a>{" "}
-                a
-                <a href="https://policies.google.com/terms">
-                  {" "}
-                  Podmienkami služieb
-                </a>
-                , ktoré sú uplatnené.
-              </p>
-              <label id="captchaLabel">Prosím vyplňte že nie ste robot !</label>
             </div>
 
             {!this.state.resetingPassword && (
