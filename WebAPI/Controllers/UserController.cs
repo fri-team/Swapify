@@ -427,24 +427,10 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
 
-            user.TimetableData.ShowBlockedHours = !user.TimetableData.ShowBlockedHours;// body.BlockedHoursVisibility.Equals("true");
+            user.TimetableData.ShowBlockedHours = !user.TimetableData.ShowBlockedHours;
             await _userService.UpdateUserAsync(user);
+            // load timetable again, now with/without blocked hours, and refresh page
             return Ok();
         }
-
-        //[AllowAnonymous]
-        //[HttpPost("getBlockedHoursVisibility")]
-        //public async Task<IActionResult> GetBlockeHoursVisibility([FromBody] BlockedHoursVisibilityModel body)
-        //{
-        //    body.Email = body.Email.ToLower();
-
-        //    var user = await _userService.GetUserByEmailAsync(body.Email);
-        //    if (user == null)
-        //    {
-        //        _logger.LogInformation($"Invalid visibility of blocked hours change. User {body.Email} doesn't exist.");
-        //        return ErrorResponse($"Používateľ {body.Email} neexistuje.");
-        //    }
-        //    return Ok(user.TimetableData.ShowBlockedHours);
-        //}
     }
 }
