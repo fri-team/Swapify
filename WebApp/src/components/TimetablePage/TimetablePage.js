@@ -48,7 +48,7 @@ class TimetablePage extends PureComponent {
       subject: "",
       darkMode: true,
       showBlockedHours: false,
-      timetableType: null
+      timetableType: 3 // 3 = unknown
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -147,17 +147,22 @@ class TimetablePage extends PureComponent {
     }).then();
   }
 
-  getTimetableType(){
-    axios.get(`/api/timetable/getTimetableType/${this.state.user.email}`).then(({ response }) => {
-      this.setState({ timetableType: response});
-    }).catch(function (error) {
-      if (error.response.status == '404') {
-        alert('Upozornenie: nepodarilo sa ziskat typ rozvrhu');
-      }
+  getTimetableType() {
+    const body = {
+      email: this.state.user.email
+    };
+
+    axios({
+      method: "post",
+      url: "/api/timetable/getTimetableType",
+      data: body
+    }).then(response => {
+      this.setState({ timetableType: response.data });
     });
   }
 
   render() {
+    console.log("Rendering page, Timetable type is: " + this.state.timetableType);
     return (
       <div className="app-container">
         <Toolbar

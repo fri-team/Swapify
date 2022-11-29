@@ -5,6 +5,7 @@ using FRITeam.Swapify.APIWrapper;
 using FRITeam.Swapify.Backend.Converter;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models.TimetableModels;
@@ -223,15 +224,16 @@ namespace WebAPI.Controllers
             return NotFound("Course not found");
         }
 
-        [HttpGet("getTimetableType/{email}")]
-        public async Task<IActionResult> GetTimetableType(string email)
+        [AllowAnonymous]
+        [HttpPost("getTimetableType")]
+        public async Task<IActionResult> GetTimetableType([FromBody] TimetableTypeModel body)
         {
-            email = email.ToLower();
-            var user = await _userService.GetUserByEmailAsync(email);
+            body.Email = body.Email.ToLower();
+            var user = await _userService.GetUserByEmailAsync(body.Email);
             if (user == null)
             {
-                _logger.LogInformation($"Invalid request for timetable type. User with email: {email} doesn't exist.");
-                return ErrorResponse($"Používateľ {email} neexistuje.");
+                _logger.LogInformation($"Invalid visibility of blocked hours change. User {body.Email} doesn't exist.");
+                return ErrorResponse($"Používateľ {body.Email} neexistuje.");
             }
             return Ok(user.TimetableData.TimetableType);
         }

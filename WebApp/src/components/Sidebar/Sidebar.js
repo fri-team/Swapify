@@ -32,7 +32,7 @@ const Sidebar = ({timetableType, open, onClose, courses, onCourseToggle, handleC
     <AppBar position="static" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
       <Tabs value={value} onChange={handleChange}>
         <StyledTab label="Predmety" />
-        {timetableType == 1 && <StyledTab label="Výmeny" />}
+        {timetableType != 'TeacherTimetable' && <StyledTab label="Výmeny" />}
       </Tabs>
     </AppBar>
     <div className="drawerWrapper" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
