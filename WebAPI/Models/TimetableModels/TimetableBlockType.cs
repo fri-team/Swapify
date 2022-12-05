@@ -9,6 +9,6 @@ namespace WebAPI.Models.TimetableModels
         Lecture = 1,
         Laboratory = 2,
         Excercise = 3,
-        Event = 4
+        Event = 8
     }
 }

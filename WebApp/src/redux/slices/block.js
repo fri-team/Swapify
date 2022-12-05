@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 // utils
 import axios from "axios";
+//import { userInfo } from "os";
 //
 import { dispatch } from "../store";
 
@@ -53,8 +54,9 @@ export function createBlock(newBlock) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      console.log(newBlock);
-      const response = await axios.post("/api/student/addNewEvent", newBlock);
+      console.log("Na BE endpoint ide tento block: " + newBlock);
+      const response = await axios.post("/api/student/addNewBlock", newBlock);
+      console.log(response);
       dispatch(slice.actions.createBlockSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));

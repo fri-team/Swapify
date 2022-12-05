@@ -17,7 +17,8 @@ const CustomEventForm = ({ course, user }) => {
     id: null,
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
-    endBlock: "",
+
+    //endBlock: "",
     courseName:
       "Management of computer systems projects, Universidad Politécnica de Valencia, ESP",
     eventPlace: "",
@@ -28,9 +29,8 @@ const CustomEventForm = ({ course, user }) => {
     courseShortcut: "",
 
     length: null,
-    colorOfBlock: "#3F51B5",
+    BlockColor: "#3F51B5",
   });
-
   useEffect(() => {
     if (customEvent.courseName !== "" && customEvent.length != null) {
       setIsDisabled(false);
@@ -50,24 +50,28 @@ const CustomEventForm = ({ course, user }) => {
     console.log(color);
     setCustomEvent((customEvent) => ({
       ...customEvent,
-      colorOfBlock: color.hex,
+      BlockColor: color.hex,
     }));
   };
 
   const onSubmitHandler = async () => {
     console.log(customEvent);
+    console.log(user);
     dispatch(
       createBlock({
         timetableBlock: {
           ...customEvent,
-          endBlock: padStart(
-            `${
-              parseInt(customEvent.startBlock) + parseInt(customEvent.length) ||
-              "07"
-            }:00`,
-            5,
-            "0"
+          endBlock: parseInt(
+            padStart(
+              `${
+                parseInt(customEvent.startBlock) +
+                  parseInt(customEvent.length) || "07"
+              }:00`,
+              5,
+              "0"
+            )
           ),
+          //preparsovat endblock na int
         },
         user: user,
       })
@@ -89,8 +93,8 @@ const CustomEventForm = ({ course, user }) => {
       <TextField
         label="Miesto"
         placeholder="Miesto"
-        name="eventPlace"
-        value={customEvent.eventPlace}
+        name="room"
+        value={customEvent.room}
         onChange={handleChange}
         margin="normal"
         variant="standard"
@@ -144,8 +148,8 @@ const CustomEventForm = ({ course, user }) => {
         label="Farba bloku"
         type="text"
         inputProps={{ step: 3600 }}
-        name="colorOfBlock"
-        value={customEvent.colorOfBlock}
+        name="BlockColor"
+        value={customEvent.BlockColor}
         onChange={handleChange}
         margin="normal"
         fullWidth
@@ -153,7 +157,7 @@ const CustomEventForm = ({ course, user }) => {
         required
       />
       <SliderPicker
-        color={customEvent.colorOfBlock}
+        color={customEvent.BlockColor}
         onChangeComplete={handleChangeComplete}
       />
       {isLoading == false ? (
@@ -172,5 +176,5 @@ const CustomEventForm = ({ course, user }) => {
     </React.Fragment>
   );
 };
-
+console.log(CustomEventForm);
 export default CustomEventForm;

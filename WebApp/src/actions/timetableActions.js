@@ -302,6 +302,7 @@ export function addBlock(body, userEmail) {
         })
     })
     .catch(() => {
+      console.log("Method addBlock" );
       window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
       dispatch({
         type: ADD_BLOCK_FAIL
@@ -352,6 +353,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
         })
     })
     .catch(() => {
+      console.log("Method:addBlockAndHideOthersWithSameCourseId" );
       window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
       dispatch({
         type: ADD_BLOCK_FAIL

@@ -222,7 +222,7 @@ class AddBlockForm extends Component {
           this.setState({ [name]: value.substring(0, 3) + "00" });
         }
       }
-    } else if (name == "colorOfBlock") {
+    } else if (name == "BlockColor") {
       this.setState({ blockColor: value });
     } else {
       this.setState({ [name]: value });
@@ -411,7 +411,7 @@ class AddBlockForm extends Component {
                     label="Farba bloku"
                     type="text"
                     inputProps={{ step: 3600 }}
-                    name="colorOfBlock"
+                    name="BlockColor"
                     value={this.state.blockColor}
                     onChange={this.handleChange}
                     margin="normal"
@@ -446,6 +446,7 @@ class AddBlockForm extends Component {
                   course={this.props.course}
                   user={this.props.user}
                 />
+
               )}
             </FlexBox>
           </DialogContent>
