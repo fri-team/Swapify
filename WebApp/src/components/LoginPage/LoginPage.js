@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { login } from "../../actions/userActions";
-import { TextField, Paper } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import axios from "axios";
 import "./LoginPage.scss";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -178,6 +178,12 @@ class LoginPage extends PureComponent {
     const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
       <div className="FormCenter">
+        <div className="FormField">
+          <div className="LoginPage_maintext">Prihlásenie (LDAP)</div>
+          <div className="LoginPage_secondarytext">
+            Vitajte späť. Zadajte svoje údaje.
+          </div>
+        </div>
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
           errors={this.state.serverErrors}
@@ -187,6 +193,7 @@ class LoginPage extends PureComponent {
             {!this.state.loginWithLDAP && (
               <div className="FormField">
                 <TextField
+                  variant="outlined"
                   label="E-Mailová adresa"
                   type="email"
                   required
@@ -202,18 +209,17 @@ class LoginPage extends PureComponent {
 
             {this.state.loginWithLDAP && (
               <div className="FormField">
-                <Paper>
-                  <TextField
-                    label={"Osobné číslo"}
-                    type="text"
-                    required
-                    name="name"
-                    className="FormField__Label"
-                    error={this.state.wrongCredentials}
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                  />
-                </Paper>
+                <TextField
+                  variant="outlined"
+                  label={"Osobné číslo"}
+                  type="text"
+                  required
+                  name="name"
+                  className="FormField__Label"
+                  error={this.state.wrongCredentials}
+                  value={this.state.name}
+                  onChange={this.handleChange}
+                />
               </div>
             )}
 

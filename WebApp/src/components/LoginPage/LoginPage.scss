@@ -1,19 +1,29 @@
 .wrongCredentials {
-    color: red;
+  color: red;
 }
 
 #captchaLabel {
-    display: none;
-    color: red;
-  }
+  display: none;
+  color: red;
+}
 
 #catpchaText {
-    color: black;
-    margin-top: 10px;
-    font-size: 12px;
+  color: black;
+  margin-top: 10px;
+  font-size: 12px;
 }
 
 .FormField > .FormField__Link {
-    margin-top: 0;
-    margin-bottom: 20;
+  margin-top: 0;
+  margin-bottom: 20;
+}
+
+.LoginPage_maintext {
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+}
+
+.LoginPage_secondarytext {
+  color: black;
 }

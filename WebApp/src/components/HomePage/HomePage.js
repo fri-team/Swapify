@@ -71,6 +71,9 @@ class HomePage extends Component {
             </div>
           </div>
           <div className="App__Form">
+            <Route exact path="/" component={LoginPage}></Route>
+            <Route path="/register" component={RegisterPage}></Route>
+            <Route path="/aboutus" component={AboutUsPage}></Route>
             <div className="PageSwitcher">
               <NavLink
                 exact
@@ -88,9 +91,6 @@ class HomePage extends Component {
                 Registrácia
               </NavLink>
             </div>
-            <Route exact path="/" component={LoginPage}></Route>
-            <Route path="/register" component={RegisterPage}></Route>
-            <Route path="/aboutus" component={AboutUsPage}></Route>
           </div>
         </div>
       </Router>

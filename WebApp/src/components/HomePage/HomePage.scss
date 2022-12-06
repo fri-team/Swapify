@@ -113,6 +113,7 @@
 .FormField {
   align-items: center;
   margin-bottom: 40px;
+  width: 100%;
 }
 
 .FormField__Label {
@@ -128,10 +129,11 @@
   margin: 0.9em;
   font-size: 0.9em;
   color: white;
+  width: 80%;
 }
 
 .FormField__Input {
-  width: 85%;
+  width: 80%;
   background-color: transparent;
   border: none;
   color: white;
