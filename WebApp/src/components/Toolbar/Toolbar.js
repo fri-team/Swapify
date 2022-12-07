@@ -49,31 +49,23 @@ class AppToolbar extends PureComponent {
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
   ressetTimetableStudent = (user) =>{
-    if(user.isLdapUser){
-      this.reloadTimetable(user);
-    }else{
-      this.reloadTimetable(user);
-    }
+    this.reloadTimetable(user);
   }
 
   reloadTimetable = (user) =>{
-    if(this.state.axiosActivate){
-      const body = {
-        personalNumber: user.personalNumber,
-        email: user.email
-      }
-      axios({
-        method: 'post',
-        url: '/api/timetable/setStudentTimetableFromPersonalNumber',
-        data: body
-      })
-      .then(() => {
-        this.props.history.push(TIMETABLE);
-        window.location.reload(false);
-      })
-    }else{
-      this.setState({axiosActivate: true })
+    const body = {
+      personalNumber: user.personalNumber,
+      email: user.email
     }
+    axios({
+      method: 'post',
+      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      data: body
+    })
+    .then(() => {
+      this.props.history.push(TIMETABLE);
+      window.location.reload(false);
+    })
   }
 
 
@@ -159,7 +151,7 @@ class AppToolbar extends PureComponent {
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                   changeDarkMode={changeDarkMode}
-                  ressetTimetable={this.reloadTimetable(user)}
+                  ressetTimetable={() => this.reloadTimetable(user)}
                 />
               )}
             </IconTray>
