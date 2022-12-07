@@ -22,6 +22,7 @@ import './Toolbar.scss';
 import MailIcon from '@material-ui/icons/Mail';
 import logo from '../../images/logowhite.png';
 import CalendarIcon from '@material-ui/icons/CalendarToday'
+import axios from 'axios';
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -34,11 +35,39 @@ const IconTray = styled.div`
 `;
 
 class AppToolbar extends PureComponent {
-  state = { showMenu: false, changeGroup: false };
+  constructor(props){
+    super(props)
+    this.state = {
+      axiosActivate: false,
+      showMenu: false,
+      hangeGroup: false
+    }
+  }
 
   handleLogout = () => this.props.userActions.logout();
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
+
+  ressetTimetableStudent = (user) =>{
+    this.reloadTimetable(user);
+  }
+
+  reloadTimetable = (user) =>{
+    const body = {
+      personalNumber: user.personalNumber,
+      email: user.email
+    }
+    axios({
+      method: 'post',
+      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      data: body
+    })
+    .then(() => {
+      this.props.history.push(TIMETABLE);
+      window.location.reload(false);
+    })
+  }
+
 
   timetable = () => this.props.history.push(TIMETABLE);
 
@@ -51,7 +80,6 @@ class AppToolbar extends PureComponent {
   }
   
   render() {
-    
     let buttonExchangeMode;
     if (this.props.timetable.isExchangeMode) {
       buttonExchangeMode = (
@@ -111,7 +139,7 @@ class AppToolbar extends PureComponent {
               <UserAvatar
                 ref={ref => (this.anchor = ref)}
                 username={user.name}
-                onClick={() => this.setState({ showMenu: true })}
+                onClick={() => this.setState({ showMenu: true})}
               />
               {this.state.showMenu && (
                 <Menu
@@ -123,6 +151,7 @@ class AppToolbar extends PureComponent {
                   onLogout={this.handleLogout}
                   onClose={() => this.setState({ showMenu: false })}
                   changeDarkMode={changeDarkMode}
+                  ressetTimetable={() => this.reloadTimetable(user)}
                 />
               )}
             </IconTray>
