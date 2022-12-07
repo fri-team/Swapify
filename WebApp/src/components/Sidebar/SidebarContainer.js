@@ -53,6 +53,7 @@ class SidebarContainer extends PureComponent {
     const courses = _.map(myCourseNames, course => ({
       courseName: course.courseName,
       courseId: course.courseId,
+      blockType: course.courseType,
       checked: _.includes(displayedCourses, course.courseId)
     }));
     return (

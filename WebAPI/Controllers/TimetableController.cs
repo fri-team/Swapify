@@ -54,6 +54,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse("Loading of test timetable failed.");
 
             FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
+            userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
             TimetableData timetableData = user.TimetableData;
             if (timetableData == null)
             {
@@ -66,7 +67,6 @@ namespace WebAPI.Controllers
                 await _timetableDataService.AddAsync(timetableData);
 
                 user.TimetableData = timetableData;
-                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
 
                 await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
@@ -79,7 +79,6 @@ namespace WebAPI.Controllers
             else
             {
                 timetableData.PersonalNumber = "000000";
-                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
                 await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
                 return Ok(timetableData.Timetable);
@@ -99,6 +98,7 @@ namespace WebAPI.Controllers
             var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, user.TimetableData.TimetableType);
             if (timetable == null) return ErrorResponse($"StudentTimetable with number: {body.PersonalNumber} does not exist.");
             FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
+            userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
             TimetableData timetableData = user.TimetableData;
             if (timetableData == null)
             {
@@ -110,14 +110,12 @@ namespace WebAPI.Controllers
                 };
                 await _timetableDataService.AddAsync(timetableData);
                 user.TimetableData = timetableData;
-                userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
 
                 await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
                 await _userService.UpdateUserAsync(user);
                 return Ok(timetableData.Timetable);
             }
             timetableData.PersonalNumber = body.PersonalNumber;
-            userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService, timetableData.ShowBlockedHours);
             await _timetableDataService.UpdateTimetableAsync(timetableData, userTimetable);
             var requests = await _blockChangesService.FindWaitingStudentRequests(timetableData.Id);
             foreach (var item in requests)

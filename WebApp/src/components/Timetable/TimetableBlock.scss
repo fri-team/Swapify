@@ -8,6 +8,8 @@ $size: 1em;
   border-style: solid;
   border-color: black;
   border-width: .08em;
+  transition: 0.3s;
+  opacity: 0;
   cursor: pointer;
   .name {
     display: inline-block;
@@ -19,6 +21,7 @@ $size: 1em;
     height: $size;
     margin-left: .25em;
   }
+
   .room,
   .teacher {
     font-size: .8em;
@@ -43,6 +46,10 @@ $size: 1em;
       display: none;
     }
   }
+}
+
+.block.show{
+  opacity:1;
 }
 
 .opacity {

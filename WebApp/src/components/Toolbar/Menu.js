@@ -88,7 +88,6 @@ export default class Menu extends PureComponent {
     const { username, email, onLogout, selectPersonalNumber, changeDarkMode , timetableType, updateBlockedHoursVisibility} = this.props;
     const { x, y } = this.state;
     const width = timetableType == 'TeacherTimetable' ? 550:400;
-    console.log("Timetable type in menu is: " + timetableType);
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>

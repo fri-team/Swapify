@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
                     var scheduleTimetable = await _schoolScheduleProxy.GetByPersonalNumber(timetableData.PersonalNumber, timetableData.TimetableType);
                     if (scheduleTimetable == null) return ErrorResponse($"Timetable data with number: {timetableData.PersonalNumber} does not exist.");
                     await _timetableDataService.UpdateTimetableAsync(timetableData,
-                        await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService, user.TimetableData.ShowBlockedHours)
+                        await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(scheduleTimetable, _courseService)
                     );
                     await _userService.UpdateUserAsync(user);
                     var requests = await _blockChangesService.FindWaitingStudentRequests(timetableData.Id);

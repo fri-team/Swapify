@@ -13,7 +13,7 @@ import TimetableContainer from "../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDetailContainer";
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
-import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import { messageChanged, sendFeedback, setBlockedHours } from "../../actions/toolbarActions";
 import axios from "axios";
 import * as actions from '../../actions/timetableActions';
 
@@ -47,14 +47,13 @@ class TimetablePage extends PureComponent {
       message: "",
       subject: "",
       darkMode: true,
-      // showBlockedHours: false,
       updateBlockedHoursVisibility: false,
       timetableType: 3 // 3 = unknown
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
-    // this.getBlockedHoursVisibility();
+    this.getBlockedHoursVisibility();
     this.getTimetableType();
 
   }
@@ -91,7 +90,6 @@ class TimetablePage extends PureComponent {
       email: this.state.user.email,
       darkMode: "true"
     };
-
     axios({
       method: "post",
       url: "/api/user/getDarkMode",
@@ -117,36 +115,33 @@ class TimetablePage extends PureComponent {
     }).then();
   }
 
-  // getBlockedHoursVisibility() {
-  //   const body = {
-  //     email: this.state.user.email,
-  //     blockedHoursVisibility: "true"
-  //   };
-
-  //   axios({
-  //     method: "post",
-  //     url: "/api/user/getBlockedHoursVisibility",
-  //     data: body
-  //   }).then(response => {
-  //     this.setState({ showBlockedHours: response.data });
-  //   });
-  // }
-
-  changeBlockedHourVisibility() {
-    console.log("Changing block hours visibility")
-    //var visibility = !this.state.showBlockedHours;
-    //this.setState({ showBlockedHours: visibility });
-
+  getBlockedHoursVisibility() {
     const body = {
       email: this.state.user.email,
-      //blockedHoursVisibility: visibility
+      blockedHours: false
     };
 
     axios({
       method: "post",
+      url: "/api/user/getBlockedHoursVisibility",
+      data: body
+    }).then(response => {
+      this.props.setBlockedHours(response.data);
+    });
+  }
+
+  changeBlockedHourVisibility() {
+    const body = {
+      email: this.state.user.email,
+      blockedHours: !this.props.showBlockedHours
+    };
+    axios({
+      method: "post",
       url: "/api/user/setBlockedHoursVisibility",
       data: body
-    }).then();
+    }).then(response => {
+      this.props.setBlockedHours(response.data);
+    });
   }
 
   getTimetableType() {
@@ -167,12 +162,11 @@ class TimetablePage extends PureComponent {
     return (
       <div className="app-container">
         <Toolbar
-          timetableType = {this.state.timetableType}
-          darkMode = { this.state.darkMode }
+          timetableType={this.state.timetableType}
+          darkMode={this.state.darkMode}
           changeDarkMode={() =>
             this.swapDarkMode()
           }
-          //showBlockedHours = { this.state.showBlockedHours}
           updateBlockedHoursVisibility={() =>
             this.changeBlockedHourVisibility()
           }
@@ -181,21 +175,20 @@ class TimetablePage extends PureComponent {
               sidebarOpen: !prevState.sidebarOpen,
             }))
           }
-          exportCalendar={() =>
-            {
-              // not exactly sure how to work with these actions so I imported it like this
-              actions.loadMyTimetableCalendar(this.props.user, this.props.history).then(res => {
-                var uri = "data:text/calendar;charset=utf8," + res;
+          exportCalendar={() => {
+            // not exactly sure how to work with these actions so I imported it like this
+            actions.loadMyTimetableCalendar(this.props.user, this.props.history).then(res => {
+              var uri = "data:text/calendar;charset=utf8," + res;
 
-                var downloadLink = document.createElement("a");
-                downloadLink.href = uri;
-                downloadLink.download = "timetable.ics";
+              var downloadLink = document.createElement("a");
+              downloadLink.href = uri;
+              downloadLink.download = "timetable.ics";
 
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-              })
-            }
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              document.body.removeChild(downloadLink);
+            })
+          }
           }
           toggleHelpModalWindow={() =>
             this.setState((prevState) => ({
@@ -209,13 +202,13 @@ class TimetablePage extends PureComponent {
           }
         />
         <SidebarContainer
-          timetableType = {this.state.timetableType}
-          darkMode = { this.state.darkMode }
+          timetableType={this.state.timetableType}
+          darkMode={this.state.darkMode}
           open={this.state.sidebarOpen}
           onClose={() => this.setState({ sidebarOpen: false })}
         />
         <TimetableContainer
-          darkMode = { this.state.darkMode }
+          darkMode={this.state.darkMode}
           history={this.props.history}
         />
 
@@ -271,9 +264,9 @@ class TimetablePage extends PureComponent {
           aria-labelledby="max-width-dialog-title"
         >
           <DialogTitle id="max-width-dialog-title"
-          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>Napíšte nám</DialogTitle>
+            style={{ backgroundColor: this.state.darkMode ? "#808080" : "white" }}>Napíšte nám</DialogTitle>
           <DialogContent className="dialogMailUsContent"
-          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>
+            style={{ backgroundColor: this.state.darkMode ? "#808080" : "white" }}>
             <FormControl fullWidth>
               <TextField
                 id="outlined-basic"
@@ -310,8 +303,9 @@ class TimetablePage extends PureComponent {
 const mapStateToProps = (state) => ({
   user: state.user,
   message: state.message,
+  showBlockedHours: state.toolbar.showBlockedHours
 });
 
-export default connect(mapStateToProps, { messageChanged, sendFeedback })(
+export default connect(mapStateToProps, { messageChanged, sendFeedback, setBlockedHours })(
   TimetablePage
 );

@@ -6,5 +6,8 @@ namespace WebAPI.Models.UserModels
     {
         [Required(ErrorMessage = "Email je zlý.")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Je potrebné zadať ci sa zobrazuju blokovane hodiny.")]
+        public string BlockedHours { get; set; }
     }
 }

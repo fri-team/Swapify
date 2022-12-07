@@ -50,7 +50,7 @@ namespace FRITeam.Swapify.Backend.Converter
             return mergedTimetable;
         }
         
-        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetableResult scheduleTimetable, ICourseService courseService,bool showBlockedhours, bool isTimetableForCourse)
+        public static async Task<Timetable> ConvertAndMergeSameConsecutiveBlocks(ScheduleTimetableResult scheduleTimetable, ICourseService courseService, bool isTimetableForCourse)
         {                        
             var sortedBlocks = scheduleTimetable.Result.ScheduleContents
                 .OrderBy(b => b.Day)
@@ -59,7 +59,6 @@ namespace FRITeam.Swapify.Backend.Converter
                 .ThenBy(b => b.RoomName)
                 .ThenBy(b => b.LessonType)
                 .ThenBy(b => b.BlockNumber)
-                .Where(x => x.LessonType != LessonType.Blocked || showBlockedhours)
                 .ToList();
 
 
@@ -155,14 +154,14 @@ namespace FRITeam.Swapify.Backend.Converter
             }            
         }
 
-        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetableResult timetable, ICourseService courseServ, bool showBlockedHours = false)
+        public static async Task<Timetable> ConvertTimetableForPersonalNumberAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, showBlockedHours, false);
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false);
         }
         
         public static async Task<Timetable> ConvertTimetableForCourseAsync(ScheduleTimetableResult timetable, ICourseService courseServ)
         {
-            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, false, true);            
+            return await ConvertAndMergeSameConsecutiveBlocks(timetable, courseServ, true);            
         }
         
         private static Day ConvertToDay(int idxDay)

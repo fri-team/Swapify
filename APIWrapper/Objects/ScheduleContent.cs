@@ -26,11 +26,11 @@ namespace FRITeam.Swapify.APIWrapper.Objects
             set
             {
                 _lessonType = value;
-                // TODO - change other atributes too, to determinate that this is blocked timetable block
                 if (_lessonType == LessonType.Blocked)
                 {
                     CourseCode = "Blokované";
-                    CourseShortcut = "Blok";
+                    CourseName = "Blokované";
+                    CourseShortcut = "Blokované";
                 }
             } }
         [JsonProperty("d")]
