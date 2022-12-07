@@ -85,12 +85,9 @@ export default class Menu extends PureComponent {
   };
 
   render() {
-    // const { username, email, onLogout, selectPersonalNumber, changeDarkMode , timetableType, updateBlockedHoursVisibility} = this.props;
-    // const { x, y } = this.state;
-    // const width = timetableType == 'TeacherTimetable' ? 550:400;
     const { username, email, onLogout, selectPersonalNumber, changeDarkMode, ressetTimetable, timetableType, updateBlockedHoursVisibility} = this.props;
     const { x, y } = this.state;
-    const width = 600;
+    const width = timetableType == 'TeacherTimetable' ? 700:600;
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>
