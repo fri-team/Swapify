@@ -36,7 +36,7 @@ export function loadMyTimetable(user, history) {
       history.push(PERSONALNUMBER);
       if (user.firstTimePN != null) {
         user.personalNumber = user.firstTimePN;
-      }     
+      }
     }
     axios({
       method: 'get',
@@ -163,7 +163,7 @@ export function chooseExchangeFromBlock(course) {
     payload: {
       course
     }
-  }  
+  }
 }
 
 export function exchangeConfirm(blockTo) {
@@ -196,26 +196,26 @@ export function exchangeConfirm(blockTo) {
         teacher: blockTo.teacher
       },
       StudentId: user.studentId
-    }    
+    }
 
     axios({
       method: 'post',
       url: `/api/exchange/exchangeConfirm`,
       data: body
     })
-      .then((response) => { 
+      .then((response) => {
         var exchangeMade = response.data;
         if (exchangeMade === "") {
-          window.alert("Žiadosť o výmenu bola evidovaná.");          
-        } else {          
-          window.alert("Výmena bola vykonaná.");  
+          window.alert("Žiadosť o výmenu bola evidovaná.");
+        } else {
+          window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
         }
         dispatch(hideCourseTimetable(bl.id));
-        dispatch(action);       
+        dispatch(action);
         dispatch(loadExchangeRequests());
       })
-      .catch((error) => {        
+      .catch((error) => {
         if (error.response) {
           window.alert("Pri vytváraní žiadosti nastala chyba.");
           // The request was made and the server responded with a status code
@@ -227,13 +227,13 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);        
+          console.log('Error', error.message);
           //This error shows undefined history after creating request
-        }        
+        }
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
           type: CANCEL_EXCHANGE_MODE
-        });        
+        });
       });
   };
 }

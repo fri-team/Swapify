@@ -48,11 +48,12 @@ class AppToolbar extends PureComponent {
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
-  ressetTimetableStudent = (user) =>{
-    this.reloadTimetable(user);
-  }
+  // ressetTimetableStudent = (user) =>{
+  //   this.reloadTimetable(user);
+  // }
 
   reloadTimetable = (user) =>{
+    console.log("Personal number sending: ", user.personalNumber);
     const body = {
       personalNumber: user.personalNumber,
       email: user.email

@@ -1,5 +1,6 @@
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -37,6 +38,16 @@ namespace FRITeam.Swapify.Backend
         {
             timeTableDataToUpdate.Timetable = newTimetable.Clone();
             await UpdateTimetableDataAsync(timeTableDataToUpdate);
-        }      
+        }
+
+        public TimetableType GetTimetableTypeByPersonalNumber(string personalNumber)
+        {
+            if (!string.IsNullOrEmpty(personalNumber))
+            {
+                if (personalNumber.Length == 6) return TimetableType.StudentTimetable;
+                else if (personalNumber.Length == 5) return TimetableType.TeacherTimetable;
+            }
+            return TimetableType.Unknown;
+        }
     }
 }

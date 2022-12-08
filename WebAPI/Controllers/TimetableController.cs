@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
                 _logger.LogError($"User with email: {body.Email} does not exist.");
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
-            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, user.TimetableData.TimetableType);
+            var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, _timetableDataService.GetTimetableTypeByPersonalNumber(body.PersonalNumber));
             if (timetable == null) return ErrorResponse($"StudentTimetable with number: {body.PersonalNumber} does not exist.");
             FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
             userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
