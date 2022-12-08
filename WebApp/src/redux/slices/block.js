@@ -54,7 +54,7 @@ export function createBlock(newBlock) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      console.log("Na BE endpoint ide tento block: " + newBlock);
+      console.log(newBlock);
       const response = await axios.post("/api/student/addNewBlock", newBlock);
       console.log(response);
       dispatch(slice.actions.createBlockSuccess(response.data));

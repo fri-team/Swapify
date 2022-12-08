@@ -14,7 +14,9 @@ namespace WebAPI.Models.ErrorResponseModels
             Errors = modelState.ToDictionary(
                 x => x.Key,
                 x => x.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-            );
+                
+            ) ;
+            
         }
 
         public ValidationErrorResponse(IDictionary<string, string[]> errors)

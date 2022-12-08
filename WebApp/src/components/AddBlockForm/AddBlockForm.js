@@ -242,6 +242,7 @@ class AddBlockForm extends Component {
     this.setState({ loading: true });
     const { onClose } = this.props;
     const { startBlock, length, ...restState } = this.state;
+
     const start = parseInt(replace(startBlock, /[^0-9]/, "")) / 100;
     const body = {
       user: this.props.user,
@@ -251,6 +252,7 @@ class AddBlockForm extends Component {
         endBlock: start + parseInt(length),
       },
     };
+    console.log(body.timetableBlock);
     this.handleSubmitClick();
 
     if (this.state.editing) {
@@ -376,7 +378,8 @@ class AddBlockForm extends Component {
                     InputProps={{
                       inputProps: {
                         min: 1,
-                        max: 20 - this.state.startBlock.substring(0, 2),
+                        max:
+                          20 - parseInt(this.state.startBlock.substring(0, 2)),
                       },
                     }}
                     name="length"
@@ -446,7 +449,6 @@ class AddBlockForm extends Component {
                   course={this.props.course}
                   user={this.props.user}
                 />
-
               )}
             </FlexBox>
           </DialogContent>
