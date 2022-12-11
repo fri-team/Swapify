@@ -269,7 +269,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
         private static async Task<TimetableData> CreateBaseUserAsync(IServiceProvider serviceProvider, Guid baseUserId = default(Guid), Guid userId = default(Guid), string personalNumber = null, bool showBlockedHours = false)
         {
             var dbService = serviceProvider.GetRequiredService<IMongoDatabase>();
-            var usersCollection = dbService.GetCollection<TimetableData>(nameof(TimetableData));
+            var tiemetableDataCollection = dbService.GetCollection<TimetableData>(nameof(TimetableData));
             TimetableData timeTableData = new TimetableData
             {
                 Id = (baseUserId == default(Guid) ? Guid.NewGuid() : baseUserId),
@@ -278,7 +278,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
                 UserId = userId,
                 ShowBlockedHours = showBlockedHours
             };
-            await usersCollection.InsertOneAsync(timeTableData);
+            await tiemetableDataCollection.InsertOneAsync(timeTableData);
             return timeTableData;
         }
     }

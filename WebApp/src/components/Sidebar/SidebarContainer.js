@@ -19,7 +19,10 @@ class SidebarContainer extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.loadWaitingExchangeRequests();
+    if (this.props.timetableType == 'StudentTimetable')
+    {
+      this.props.loadWaitingExchangeRequests();
+    }
   }
 
   handleChange = (event, value) => {

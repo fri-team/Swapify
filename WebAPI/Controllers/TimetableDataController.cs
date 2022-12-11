@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class StudentController : BaseController
+    public class TimetableDataController : BaseController
     {
         private readonly ILogger<TimetableController> _logger;
         private readonly ITimetableDataService _timetableDataService;
@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         private readonly IBlockChangesService _blockChangesService;
         private readonly ICalendarService _calendarService;
 
-        public StudentController(ILogger<TimetableController> logger,
+        public TimetableDataController(ILogger<TimetableController> logger,
             ITimetableDataService timetableDataService,
             IUserService userService,
             ICourseService courseService,
@@ -44,12 +44,12 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpGet("getStudentTimetable/{userEmail}")]
+        [HttpGet("getUserTimetable/{userEmail}")]
         public async Task<IActionResult> GetUserTimetable(string userEmail)
         {
             try
             {
-                _logger.LogInformation($"[API getStudentTimetable] Setting timetable for test timetableData");
+                _logger.LogInformation($"[API getUserTimetable] Setting timetable for test timetableData");
                 User user = await _userService.GetUserByEmailAsync(userEmail);
                 if (user?.TimetableData == null)
                 {
@@ -116,7 +116,7 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Error, $"When processing user: {userEmail} exception was invoked: {e}");
-                return ErrorResponse($"StudentTimetable: {userEmail} produced exception.");
+                return ErrorResponse($"UserTimetable: {userEmail} produced exception.");
             }
         }
 
@@ -155,7 +155,7 @@ namespace WebAPI.Controllers
             timetableData.Timetable.AddNewBlock(block);
             timetableData.Timetable.UpdateColorOfBlocksWithSameCourseId(block);
             await _timetableDataService.UpdateTimetableDataAsync(timetableData);
-            //return block with new id 
+            //return block with new id
             return Ok(newBlockModel.TimetableBlock);
         }
 
@@ -233,10 +233,10 @@ namespace WebAPI.Controllers
             return Ok(newBlock);
         }
 
-        [HttpGet("getStudentTimetableCalendar/{userEmail}")]
+        [HttpGet("getUserTimetableCalendar/{userEmail}")]
         public async Task<IActionResult> GetUserTimetableCalendar(string userEmail)
         {
-            _logger.LogInformation($"[API getStudentTimetable] Getting timetable calendar for test timetableData");
+            _logger.LogInformation($"[API getUserTimetable] Getting timetable calendar for test timetableData");
             User user = await _userService.GetUserByEmailAsync(userEmail);
             string timetableDataId = user.TimetableData.Id.ToString();
             bool isValidGUID = Guid.TryParse(timetableDataId, out Guid guid);

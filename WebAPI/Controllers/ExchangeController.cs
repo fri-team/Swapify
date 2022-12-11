@@ -76,8 +76,8 @@ namespace WebAPI.Controllers
                         return NotFound(message);
                     }
 
-                    string callbackUrl1 = new Uri(_baseUrl, $@"getStudentTimetable/{user1.Email}").ToString();
-                    string callbackUrl2 = new Uri(_baseUrl, $@"getStudentTimetable/{user2.Email}").ToString();
+                    string callbackUrl1 = new Uri(_baseUrl, $@"getUserTimetable/{user1.Email}").ToString();
+                    string callbackUrl2 = new Uri(_baseUrl, $@"getUserTimetable/{user2.Email}").ToString();
 
                     if (!_emailService.SendConfirmationEmail(user1.Email, callbackUrl1, "ConfirmExchangeEmail"))
                     {

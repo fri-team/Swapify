@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("initializeTimetableForTestUsers")]
-        public async Task<IActionResult> InitializeTimetableForTestUsers([FromBody] StudentModel body)
+        public async Task<IActionResult> InitializeTimetableForTestUsers([FromBody] UserModel body)
         {
             _logger.LogInformation($"[TEST] Setting test timetable for test timetableData: {body.Email}.");
             User user = await _userService.GetUserByEmailAsync(body.Email);
@@ -85,8 +85,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("setStudentTimetableFromPersonalNumber")]
-        public async Task<IActionResult> SetStudentTimetableFromPersonalNumber([FromBody] StudentModel body)
+        [HttpPost("setUserTimetableFromPersonalNumber")]
+        public async Task<IActionResult> SetUserTimetableFromPersonalNumber([FromBody] UserModel body)
         {
             _logger.LogInformation($"Setting timetable for timetableData: {body.Email}.");
             User user = await _userService.GetUserByEmailAsync(body.Email);
@@ -96,7 +96,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"User with email: {body.Email} does not exist.");
             }
             var timetable = await _schoolScheduleProxy.GetByPersonalNumber(body.PersonalNumber, _timetableDataService.GetTimetableTypeByPersonalNumber(body.PersonalNumber));
-            if (timetable == null) return ErrorResponse($"StudentTimetable with number: {body.PersonalNumber} does not exist.");
+            if (timetable == null) return ErrorResponse($"UserTimetable with number: {body.PersonalNumber} does not exist.");
             FRITeam.Swapify.SwapifyBase.Entities.Timetable userTimetable;
             userTimetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, _courseService);
             TimetableData timetableData = user.TimetableData;
@@ -137,20 +137,20 @@ namespace WebAPI.Controllers
         [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
         public async Task<IActionResult> GetCourseTimetable(string courseId, string studentId)
         {
-            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);            
+            bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
             if (!isValidCourseGUID)
             {
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
-            }            
+            }
 
             bool isValidStudentGUID = Guid.TryParse(studentId, out Guid studentGuid);
-            var _student = await _timetableDataService.FindByIdAsync(studentGuid);
+            var _timetableData = await _timetableDataService.FindByIdAsync(studentGuid);
 
             if (!isValidStudentGUID)
             {
                 return ErrorResponse($"StudentTimetable id: {studentGuid} is not valid GUID.");
             }
-            if (_student == null)
+            if (_timetableData == null)
             {
                 return ErrorResponse($"StudentTimetable with id: {studentId} does not exist.");
             }
@@ -158,7 +158,7 @@ namespace WebAPI.Controllers
             if (_course == null)
             {
                 return ErrorResponse($"Course with id: {courseId} does not exist.");
-            }            
+            }
             var timetable = new Timetable();
             var Blocks = new List<TimetableBlock>();
             foreach (var block in _course.Timetable.AllBlocks)
@@ -177,7 +177,7 @@ namespace WebAPI.Controllers
                     Teacher = block.Teacher,
                     Type = (TimetableBlockType)block.BlockType
                 };
-                if (!_student.Timetable.ContainsBlock(block))
+                if (!_timetableData.Timetable.ContainsBlock(block))
                     Blocks.Add(timetableBlock);
             }
             timetable.Blocks = Blocks;
@@ -217,7 +217,7 @@ namespace WebAPI.Controllers
                         Teacher = block.Teacher,
                         Type = (TimetableBlockType)block.BlockType
                     });
-                }                       
+                }
             }
             return NotFound("Course not found");
         }

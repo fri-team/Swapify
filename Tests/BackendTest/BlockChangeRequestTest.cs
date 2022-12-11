@@ -31,7 +31,7 @@ namespace BackendTest
         public async Task ExchangeRequests_ExchangingRequests_ExchangedRequests()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            TimetableDataService studentSrv = new TimetableDataService(database);
+            TimetableDataService timetableDataService = new TimetableDataService(database);
             BlockChangesService blockChangeService = new BlockChangesService(database);
             var options = GetProxyOptions();
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
@@ -47,19 +47,19 @@ namespace BackendTest
             Block block3 = CreateBlock(BlockType.Laboratory, Day.Tuesday, 2, 15, course.Id);
             Block block4 = CreateBlock(BlockType.Laboratory, Day.Friday, 2, 18, course2.Id);
 
-            TimetableData student1 = new TimetableData();
-            TimetableData student2 = new TimetableData();
-            TimetableData student3 = new TimetableData();
-            await studentSrv.AddAsync(student1);
-            await studentSrv.AddAsync(student2);
-            await studentSrv.AddAsync(student3);
+            TimetableData ttData1 = new TimetableData();
+            TimetableData ttData2 = new TimetableData();
+            TimetableData ttData3 = new TimetableData();
+            await timetableDataService.AddAsync(ttData1);
+            await timetableDataService.AddAsync(ttData2);
+            await timetableDataService.AddAsync(ttData3);
 
-            BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block1, block2, student1.Id);
-            BlockChangeRequest blockToChange2 = CreateBlockChangeRequest(block1, block3, student1.Id);
-            BlockChangeRequest blockToChange3 = CreateBlockChangeRequest(block1, block2, student2.Id);
-            BlockChangeRequest blockToChange4 = CreateBlockChangeRequest(block1, block3, student2.Id);
-            BlockChangeRequest blockToChange5 = CreateBlockChangeRequest(block4, block2, student3.Id);
-            BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, student3.Id);
+            BlockChangeRequest blockToChange1 = CreateBlockChangeRequest(block1, block2, ttData1.Id);
+            BlockChangeRequest blockToChange2 = CreateBlockChangeRequest(block1, block3, ttData1.Id);
+            BlockChangeRequest blockToChange3 = CreateBlockChangeRequest(block1, block2, ttData2.Id);
+            BlockChangeRequest blockToChange4 = CreateBlockChangeRequest(block1, block3, ttData2.Id);
+            BlockChangeRequest blockToChange5 = CreateBlockChangeRequest(block4, block2, ttData3.Id);
+            BlockChangeRequest blockToChange = CreateBlockChangeRequest(block2, block1, ttData3.Id);
             ValueTuple<BlockChangeRequest, BlockChangeRequest> result = new ValueTuple<BlockChangeRequest, BlockChangeRequest>();
 
             result = (null, null);
@@ -72,19 +72,19 @@ namespace BackendTest
             result = (blockToChange, blockToChange1);
             (await blockChangeService.AddAndFindMatch(blockToChange)).Should().Equals(result);
 
-            blockChangeService.FindAllStudentRequests(student1.Id).Result.Count.Should().Be(1);
-            blockChangeService.FindAllStudentRequests(student2.Id).Result.Count.Should().Be(2);
-            blockChangeService.FindAllStudentRequests(student3.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindAllStudentRequests(ttData1.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindAllStudentRequests(ttData2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindAllStudentRequests(ttData3.Id).Result.Count.Should().Be(2);
 
-            blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(0);
-            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
-            blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindWaitingStudentRequests(ttData1.Id).Result.Count.Should().Be(0);
+            blockChangeService.FindWaitingStudentRequests(ttData2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindWaitingStudentRequests(ttData3.Id).Result.Count.Should().Be(1);
 
-            BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, student1.Id);
+            BlockChangeRequest blockToChange6 = CreateBlockChangeRequest(block3, block2, ttData1.Id);
             (await blockChangeService.AddAndFindMatch(blockToChange6)).Should().Be((null, null));
-            blockChangeService.FindWaitingStudentRequests(student1.Id).Result.Count.Should().Be(1);
-            blockChangeService.FindWaitingStudentRequests(student2.Id).Result.Count.Should().Be(2);
-            blockChangeService.FindWaitingStudentRequests(student3.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindWaitingStudentRequests(ttData1.Id).Result.Count.Should().Be(1);
+            blockChangeService.FindWaitingStudentRequests(ttData2.Id).Result.Count.Should().Be(2);
+            blockChangeService.FindWaitingStudentRequests(ttData3.Id).Result.Count.Should().Be(1);
         }
 
 

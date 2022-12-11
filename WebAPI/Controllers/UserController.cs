@@ -230,7 +230,7 @@ namespace WebAPI.Controllers
                                           "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
-                _userService.TryAddStudent(user);
+                _userService.TryAddUser(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email))
                 {
                     FirstTimePN = ldapInformations.PersonalNumber
@@ -239,7 +239,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                _userService.TryAddStudent(user);
+                _userService.TryAddUser(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
                 return Ok(auth);
             }      
@@ -285,7 +285,7 @@ namespace WebAPI.Controllers
                 }
 
                 if (user.Email != "tester@testovaci.com")
-                    _userService.TryAddStudent(user);
+                    _userService.TryAddUser(user);
                 token = await _userService.Authenticate(body.Email, body.Password);
                 AuthenticatedUserModel authUser = new AuthenticatedUserModel(user, token);
                 return Ok(authUser);

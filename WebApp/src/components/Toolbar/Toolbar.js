@@ -60,7 +60,7 @@ class AppToolbar extends PureComponent {
     }
     axios({
       method: 'post',
-      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      url: '/api/timetable/setUserTimetableFromPersonalNumber',
       data: body
     })
     .then(() => {

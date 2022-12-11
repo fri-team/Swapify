@@ -180,17 +180,17 @@ namespace BackendTest
 
         private async Task<TimetableData> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid))
         {            
-            var studentCollection = database.GetCollection<TimetableData>(nameof(TimetableData));
+            var ttDataCollection = database.GetCollection<TimetableData>(nameof(TimetableData));
 
-            TimetableData student = new TimetableData
+            TimetableData ttData = new TimetableData
             {
                 Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
                 Timetable = null,
                 PersonalNumber = null
             };
 
-            await studentCollection.InsertOneAsync(student);
-            return student;
+            await ttDataCollection.InsertOneAsync(ttData);
+            return ttData;
         }                
     }
 }

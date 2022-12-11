@@ -155,7 +155,7 @@ namespace FRITeam.Swapify.Backend
             return addResult.Succeeded;
         }
 
-        public async void TryAddStudent(User user)
+        public async void TryAddUser(User user)
         {
             if (user.TimetableData == null)
             {
