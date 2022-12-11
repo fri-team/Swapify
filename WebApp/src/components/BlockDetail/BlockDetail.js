@@ -21,7 +21,8 @@ class BlockDetail extends PureComponent {
 
   state = {
     dialogOpen: false,
-    course: { ...this.props.course }
+    course: { ...this.props.course },
+    timetableType: {...this.props.timetableType}
   };
 
   textTrans = (text) => {
@@ -69,7 +70,7 @@ class BlockDetail extends PureComponent {
         day: this.props.course.day,
         courseCode: this.props.course.courseCode,
         startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
-        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 + 
+        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 +
                   parseInt(this.props.course.endBlock - this.props.course.startBlock),
         courseName: this.props.course.courseName,
         courseShortcut: this.props.course.courseShortcut,
@@ -162,7 +163,8 @@ class BlockDetail extends PureComponent {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course, user } = this.props;
+    const { top, left, course, user, timetableType } = this.props;
+    console.log(timetableType);
     const email = this.convertNameToEmail(course.teacher);
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(
@@ -177,7 +179,7 @@ class BlockDetail extends PureComponent {
             {(
               <span>
                 {this.showEditButton(color)}
-                {course.type !== 'lecture' && (this.showExchangeButton(color))}
+                {course.type !== 'lecture' && timetableType !== 'TeacherTimetable' &&(this.showExchangeButton(color))}
                 {this.showAddButton(color)}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>

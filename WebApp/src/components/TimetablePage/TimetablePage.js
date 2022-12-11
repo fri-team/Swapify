@@ -48,14 +48,13 @@ class TimetablePage extends PureComponent {
       subject: "",
       darkMode: true,
       updateBlockedHoursVisibility: false,
-      timetableType: 3 // 3 = unknown
+      timetableType: "Unknown" // 3 = unknown
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
     this.getBlockedHoursVisibility();
     this.getTimetableType();
-
   }
 
   handleChange(e) {
@@ -318,7 +317,10 @@ class TimetablePage extends PureComponent {
             </FormControl>
           </DialogContent>
         </Dialog>
-        <BlockDetailContainer user={this.state.user} />
+        <BlockDetailContainer
+          timetableType={this.state.timetableType}
+          user={this.state.user}
+        />
       </div>
     );
   }
