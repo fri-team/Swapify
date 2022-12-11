@@ -37,6 +37,7 @@ export function loadMyTimetable(user, history) {
       if (user.firstTimePN != null) {
         user.personalNumber = user.firstTimePN;
       }
+      }
     }
     axios({
       method: 'get',
@@ -204,9 +205,11 @@ export function exchangeConfirm(blockTo) {
       data: body
     })
       .then((response) => {
+      .then((response) => {
         var exchangeMade = response.data;
         if (exchangeMade === "") {
           window.alert("Žiadosť o výmenu bola evidovaná.");
+          window.location.reload(false);
         } else {
           window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
