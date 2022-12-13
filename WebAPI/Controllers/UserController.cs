@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Novell.Directory.Ldap;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Novell.Directory.Ldap;
 using WebAPI.Extensions;
 using WebAPI.Models.UserModels;
 
@@ -186,39 +186,48 @@ namespace WebAPI.Controllers
         {
             if (await _emailService.GetCaptchaNotPassed(body.Captcha))
             {
-                return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
+                return ErrorResponse($"Určite nie ste robot? Overenie Re-Captcha zlyhalo, skúste sa prihlásiť znova.");
             }
 
             if (body.Email.Contains('@'))
             {
-                return ErrorResponse($"Meno nie je správne, použite študentské meno, nie email.");
+                return ErrorResponse($"Ops! Omylom ste zadali e-mail namiesto študentského mena. Prosím o opätovné prihlásanie. " +
+                                     $"Ak sa chcete prihlásiť e-mailom, prejdite do sekcie na to určenej.");
             }
             _logger.LogInformation($"Request init from ldap.");
             UserInformations ldapInformations = null;
             try
             {
                 ldapInformations = _userService.GetUserFromLDAP(body.Email, body.Password, _logger);
-            } catch (LdapException e)
+            }
+            catch (LdapException e)
             {
                 _logger.LogError($"Exception while logging into ldap: {e}");
                 return ErrorResponse(e.ResultCode == 49 ? $"Meno alebo heslo nie je správne, skúste znova prosím." : $"Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím."); //49 = InvalidCredentials
-            }                    
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception while logging into ldap: {e}");
+                return ErrorResponse("Prepáčte, niečo na serveri nie je v poriadku, skúste neskôr prosím.");
+            }
+
             _logger.LogInformation($"Response received from ldap.");
             body.Password = _userService.GetDefaultLdapPassword();
 
             if (ldapInformations == null)
             {
                 _logger.LogInformation($"Invalid ldap login attemp. User {body.Email} doesn't exist.");
-                return ErrorResponse($"Meno alebo heslo nie je správne, skúste znova prosím.");
+                return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
             }
             ldapInformations.Email = ldapInformations.Email.ToLower();
-            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);            
+            User user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
             if (user == null)
             {
                 if (!_userService.AddLdapUser(ldapInformations).Result)
                 {
                     _logger.LogInformation($"Invalid ldap login attemp. User with email {body.Email} already exists.");
-                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný.");
+                    return ErrorResponse($"Váš študentský email s koncovkou " + ldapInformations.Email.Split('@')[1] + " je už zaregistrovaný. " +
+                                          "Skúste znova alebo nás kontaktuje na e-mailovej adrese b8e19a21.uniza.sk@emea.teams.ms");
                 }
                 user = await _userService.GetUserByEmailAsync(ldapInformations.Email);
                 _userService.TryAddStudent(user);
@@ -233,7 +242,7 @@ namespace WebAPI.Controllers
                 _userService.TryAddStudent(user);
                 AuthenticatedUserModel auth = new AuthenticatedUserModel(user, _userService.GenerateJwtToken(ldapInformations.Email));
                 return Ok(auth);
-            }
+            }      
         }
 
         [AllowAnonymous]
@@ -241,26 +250,27 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel body)
         {
             try
-            {                
+            {
                 if (await _emailService.GetCaptchaNotPassed(body.Captcha))
                 {
-                    return ErrorResponse($"Prvok Re-Captcha je zlý skúste znova.");
+                    return ErrorResponse($"Určite nie ste robot? Overenie Re-Captcha zlyhalo, skúste sa prihlásiť znova.");
                 }
                 if (!body.Email.Contains('@'))
                 {
-                    return ErrorResponse($"Zlý email.");
-                }                
+                    return ErrorResponse($"E-mail zadaní v zlom tvare. Prosím overte, že ste zadali e-mail.");
+                }
                 body.Email = body.Email.ToLower();
                 User user = await _userService.GetUserByEmailAsync(body.Email);
                 if (user == null)
                 {
                     _logger.LogInformation($"Invalid login attemp. User {body.Email} doesn't exist.");
-                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
+                    return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
                 }
                 if (user.IsLdapUser)
                 {
                     _logger.LogInformation($"User {body.Email} is ldap user no classic.");
-                    return ErrorResponse($"Musite sa prihlásiť cez Ldap prihlásenie, pretože email je študentský.");
+                    return ErrorResponse($"Zadali ste študentský e-mail. Prosím o opätovné zadanie prihlasovacích údajov. " +
+                                         $"Ak sa chcete prihlásiť pomocou študentského účtu, prejdite do sekcie na to určenej.");
                 }
                 if (!user.EmailConfirmed)
                 {
@@ -271,7 +281,7 @@ namespace WebAPI.Controllers
                 if (token == null)
                 {
                     _logger.LogWarning($"Invalid login attemp. User {body.Email} entered wrong password.");
-                    return ErrorResponse($"E-mailová adresa a heslo nie sú správne.");
+                    return ErrorResponse($"Zadané údaje nie su správne. Prosím overte že ste zadali správne prihlasovacie údaje.");
                 }
 
                 if (user.Email != "tester@testovaci.com")
