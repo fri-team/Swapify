@@ -37,7 +37,6 @@ export function loadMyTimetable(user, history) {
       if (user.firstTimePN != null) {
         user.personalNumber = user.firstTimePN;
       }
-      }
     }
     axios({
       method: 'get',
@@ -204,7 +203,6 @@ export function exchangeConfirm(blockTo) {
       url: `/api/exchange/exchangeConfirm`,
       data: body
     })
-      .then((response) => {
       .then((response) => {
         var exchangeMade = response.data;
         if (exchangeMade === "") {
