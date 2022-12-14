@@ -25,6 +25,7 @@ class BlockDetail extends PureComponent {
     timetableType: {...this.props.timetableType}
   };
 
+
   textTrans = (text) => {
     let a = textTransform(text, 'title');
     return a;
@@ -164,7 +165,6 @@ class BlockDetail extends PureComponent {
       return null;
     }
     const { top, left, course, user, timetableType } = this.props;
-    console.log(timetableType);
     const email = this.convertNameToEmail(course.teacher);
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(

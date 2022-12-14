@@ -13,7 +13,11 @@ import TimetableContainer from "../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDetailContainer";
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
-import { messageChanged, sendFeedback, setBlockedHours } from "../../actions/toolbarActions";
+import {
+  messageChanged,
+  sendFeedback,
+  setBlockedHours,
+} from "../../actions/toolbarActions";
 import axios from "axios";
 import * as actions from "../../actions/timetableActions";
 
@@ -48,13 +52,14 @@ class TimetablePage extends PureComponent {
       subject: "",
       darkMode: true,
       updateBlockedHoursVisibility: false,
-      timetableType: "Unknown" // 3 = unknown
+      timetableType: null, // 3 = unknown
     };
+    this.getTimetableType();
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
     this.getBlockedHoursVisibility();
-    this.getTimetableType();
+
   }
 
   handleChange(e) {
@@ -117,14 +122,14 @@ class TimetablePage extends PureComponent {
   getBlockedHoursVisibility() {
     const body = {
       email: this.state.user.email,
-      blockedHours: false
+      blockedHours: false,
     };
 
     axios({
       method: "post",
       url: "/api/user/getBlockedHoursVisibility",
-      data: body
-    }).then(response => {
+      data: body,
+    }).then((response) => {
       this.props.setBlockedHours(response.data);
     });
   }
@@ -132,31 +137,29 @@ class TimetablePage extends PureComponent {
   changeBlockedHourVisibility() {
     const body = {
       email: this.state.user.email,
-      blockedHours: !this.props.showBlockedHours
+      blockedHours: !this.props.showBlockedHours,
     };
     axios({
       method: "post",
       url: "/api/user/setBlockedHoursVisibility",
-      data: body
-    }).then(response => {
+      data: body,
+    }).then((response) => {
       this.props.setBlockedHours(response.data);
     });
   }
 
-  getTimetableType() {
+  async getTimetableType() {
     const body = {
-      email: this.state.user.email
+      email: this.state.user.email,
     };
 
-    axios({
+    const { data } = await axios({
       method: "post",
       url: "/api/timetable/getTimetableType",
-      data: body
-    }).then(response => {
-      this.setState({ timetableType: response.data });
+      data: body,
     });
+    this.setState({ timetableType: data });
   }
-
 
   render() {
     return (
@@ -164,9 +167,7 @@ class TimetablePage extends PureComponent {
         <Toolbar
           timetableType={this.state.timetableType}
           darkMode={this.state.darkMode}
-          changeDarkMode={() =>
-            this.swapDarkMode()
-          }
+          changeDarkMode={() => this.swapDarkMode()}
           updateBlockedHoursVisibility={() =>
             this.changeBlockedHourVisibility()
           }
@@ -182,9 +183,9 @@ class TimetablePage extends PureComponent {
               .then((res) => {
                 var uri = "data:text/calendar;charset=utf8," + res;
 
-              var downloadLink = document.createElement("a");
-              downloadLink.href = uri;
-              downloadLink.download = "timetable.ics";
+                var downloadLink = document.createElement("a");
+                downloadLink.href = uri;
+                downloadLink.download = "timetable.ics";
 
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
@@ -317,10 +318,11 @@ class TimetablePage extends PureComponent {
             </FormControl>
           </DialogContent>
         </Dialog>
-        <BlockDetailContainer
+        {this.state.timetableType && <BlockDetailContainer
           timetableType={this.state.timetableType}
           user={this.state.user}
-        />
+        /> }
+
       </div>
     );
   }
@@ -329,9 +331,11 @@ class TimetablePage extends PureComponent {
 const mapStateToProps = (state) => ({
   user: state.user,
   message: state.message,
-  showBlockedHours: state.toolbar.showBlockedHours
+  showBlockedHours: state.toolbar.showBlockedHours,
 });
 
-export default connect(mapStateToProps, { messageChanged, sendFeedback, setBlockedHours })(
-  TimetablePage
-);
+export default connect(mapStateToProps, {
+  messageChanged,
+  sendFeedback,
+  setBlockedHours,
+})(TimetablePage);

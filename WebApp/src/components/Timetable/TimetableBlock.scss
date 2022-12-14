@@ -2,6 +2,8 @@ $border-radius: .25em;
 $size: 1em;
 
 .block {
+  visibility: hidden;
+  opacity: 1;
   position: relative;
   padding: $size;
   border-radius: $border-radius;
@@ -49,7 +51,8 @@ $size: 1em;
 }
 
 .block.show{
-  opacity:1;
+  opacity: 1;
+  visibility: visible;
 }
 
 .opacity {
