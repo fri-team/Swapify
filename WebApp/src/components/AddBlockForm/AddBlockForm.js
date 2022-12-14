@@ -379,7 +379,7 @@ class AddBlockForm extends Component {
                       inputProps: {
                         min: 1,
                         max:
-                          20 - parseInt(this.state.startBlock.substring(0, 2)),
+                          20 - this.state.startBlock.substring(0, 2),
                       },
                     }}
                     name="length"

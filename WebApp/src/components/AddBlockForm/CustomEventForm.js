@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { padStart } from "lodash";
+import { padStart , replace} from "lodash";
 import { TextField, Button } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { SliderPicker } from "react-color";
@@ -18,18 +18,14 @@ const CustomEventForm = ({ course, user }) => {
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
 
-    //endBlock: "",
-    courseName:
-      "Management of computer systems projects, Universidad Politécnica de Valencia, ESP",
     eventPlace: "",
     type: "Event",
-
-    courseId: "string",
-    courseCode: "5899",
     courseShortcut: "",
-
+    courseId: "string",
+    courseCode: Math.random()*1000,
     length: null,
     BlockColor: "#3F51B5",
+    teacher: "Marek Tavač",
   });
   useEffect(() => {
     if (customEvent.courseName !== "" && customEvent.length != null) {
@@ -43,6 +39,7 @@ const CustomEventForm = ({ course, user }) => {
     setCustomEvent((customEvent) => ({
       ...customEvent,
       [e.target.name]: e.target.value,
+
     }));
   };
 
@@ -61,6 +58,8 @@ const CustomEventForm = ({ course, user }) => {
       createBlock({
         timetableBlock: {
           ...customEvent,
+          start: parseInt(replace(customEvent.startBlock, /[^0-9]/, "")) / 100,
+          startBlock: parseInt(customEvent.startBlock.split(":")[0]),
           endBlock: parseInt(
             padStart(
               `${
@@ -71,8 +70,10 @@ const CustomEventForm = ({ course, user }) => {
               "0"
             )
           ),
-          //preparsovat endblock na int
+          length: parseInt(customEvent.endBlock)-parseInt(customEvent.startBlock),
+          courseShortcut : customEvent.courseName,
         },
+
         user: user,
       })
     );
@@ -84,6 +85,7 @@ const CustomEventForm = ({ course, user }) => {
         placeholder="Zadajte názov udalosti *"
         name="courseName"
         value={customEvent.courseName}
+
         onChange={handleChange}
         margin="normal"
         fullWidth
@@ -175,6 +177,9 @@ const CustomEventForm = ({ course, user }) => {
       )}
     </React.Fragment>
   );
+
 };
+
 console.log(CustomEventForm);
 export default CustomEventForm;
+

@@ -197,10 +197,6 @@ namespace WebAPI.Controllers
             return Ok(newEventBlockModel.TimetableEvent);
         }
 
-
-
-
-
         [HttpDelete("removeBlock/{userEmail}/{blockId}")]
         public async Task<IActionResult> RemoveBlock(string userEmail, string blockId)
         {

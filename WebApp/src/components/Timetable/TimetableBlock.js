@@ -1,30 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import toMaterialStyle from 'material-color-hash';
-import Lecture from '../svg/Lecture';
-import Laboratory from '../svg/Laboratory';
-import './TimetableBlock.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import toMaterialStyle from "material-color-hash";
+import Lecture from "../svg/Lecture";
+import Laboratory from "../svg/Laboratory";
+import "./TimetableBlock.scss";
 
 const TimetableBlock = (props) => {
   function setBlockColor(shade) {
     return {
       backgroundColor: shade,
-      color: 'rgba(0, 0, 0, 0.87)',
+      color: "rgba(0, 0, 0, 0.87)",
     };
   }
 
-  const { backgroundColor, color } = props.blockColor == null ? toMaterialStyle(props.courseCode, props.blockColor) : setBlockColor(props.blockColor);
+  const { backgroundColor, color } =
+    props.blockColor == null
+      ? toMaterialStyle(props.courseCode, props.blockColor)
+      : setBlockColor(props.blockColor);
   const myStyle = {
     ...props.style,
     backgroundColor,
     color,
-    zIndex: '2',
+    zIndex: "2",
   };
-  const icon = props.type === 'lecture' ? <Lecture fill={myStyle.color} /> : <Laboratory fill={myStyle.color} />;
+
+  const icon =
+    props.type === "lecture" ? (
+      <Lecture fill={myStyle.color} />
+    ) : (
+      <Laboratory fill={myStyle.color} />
+    );
   return (
     <div
-      className={classNames('block', props.cssClasses)}
+      className={classNames("block", props.cssClasses)}
       style={myStyle}
       onClick={(event) => {
         props.onClick(event, props);
@@ -32,11 +41,14 @@ const TimetableBlock = (props) => {
     >
       <div>
         <div className="name">{props.courseShortcut}</div>
-        {icon}
+
+        {props.type !== "event" && icon}
       </div>
       <div className="room">{props.room}</div>
-      <div className="teacher">{props.teacher}</div>
-      {!props.isGrey && props.isMine  && <div className="opacity" />}
+      <div className="teacher">
+        {props.type == "event" ? "" : props.teacher}
+      </div>
+      {!props.isGrey && props.isMine && <div className="opacity" />}
     </div>
   );
 };
@@ -44,7 +56,8 @@ const TimetableBlock = (props) => {
 TimetableBlock.propTypes = {
   courseCode: PropTypes.string.isRequired,
   room: PropTypes.string.isRequired,
-  teacher: PropTypes.string.isRequired,
+  //ucitel nemusi byt v evente
+  //teacher: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   isMine: PropTypes.bool,
   isGrey: PropTypes.bool,
