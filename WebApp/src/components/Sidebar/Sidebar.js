@@ -36,12 +36,12 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
       </Tabs>
     </AppBar>
     <div className="drawerWrapper" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
-    {value === 0 &&                
+    {value === 0 &&
         <List>
           <Tooltip title="Pridať predmet" placement="top" style={{ color: darkMode ? "white" : "black" }}>
             <IconButton onClick={addClickHandle}><AddIcon/></IconButton>
           </Tooltip>
-          {courses.map(({ courseId, courseName, checked }) => (
+          {courses.map(({courseId, courseName, checked }) =>  (
             <ListItem button key={courseId}>
               <FormControlLabel
                 control={
@@ -57,11 +57,11 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
             </ListItem>
 
           ))}
-          {sideBarFormOpen && 
+          {sideBarFormOpen &&
             <SideBarForm
-              onClose={onCloseForm}           
+              onClose={onCloseForm}
             />
-          }        
+          }
         </List>
       }
       {value === 1 &&
@@ -90,7 +90,7 @@ const createExchangeRequestListItem = (exchangeRequest, courses) => {
   }
   return (
     <Card>
-      <CardHeader        
+      <CardHeader
         title={course.courseName}
         subheader={dayHourToString(exchangeRequest.blockFrom.day, exchangeRequest.blockFrom.startHour)
           + " -> " + dayHourToString(exchangeRequest.blockTo.day, exchangeRequest.blockTo.startHour)}

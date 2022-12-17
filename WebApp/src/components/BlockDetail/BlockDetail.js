@@ -193,7 +193,7 @@ class BlockDetail extends PureComponent {
     }
     const { top, left, course, user } = this.props;
     const email = this.convertNameToEmail(course.teacher);
-    const UsersName = this.user;
+    //const UsersName = this.user;
     const place = course.room;
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } =
