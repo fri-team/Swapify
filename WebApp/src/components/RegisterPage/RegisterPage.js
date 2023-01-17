@@ -320,7 +320,7 @@ class RegisterPage extends Component {
             </div>
 
             <div className="FormField">
-              <button className="FormField__Button">Registrovať sa</button>
+              <button className="FormField__Button">Registrovať</button>
             </div>
 
             <div

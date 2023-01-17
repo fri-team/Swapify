@@ -179,9 +179,11 @@ class LoginPage extends PureComponent {
     return (
       <div className="FormCenter">
         <div className="FormField">
-          <div className="LoginPage_maintext">Prihlásenie (LDAP)</div>
-          <div className="LoginPage_secondarytext">
-            Vitajte späť. Zadajte svoje údaje.
+          <div>
+            <div className="LoginPage_maintext">Prihlásenie (FRI-LDAP)</div>
+            <div className="LoginPage_secondarytext">
+              Vitajte späť. Zadajte svoje údaje.
+            </div>
           </div>
         </div>
         <this.WrongCredentialsMessage
@@ -232,6 +234,7 @@ class LoginPage extends PureComponent {
             {!this.state.resetingPassword && (
               <div className="FormField">
                 <TextField
+                  variant="outlined"
                   label="Heslo"
                   type="password"
                   required
@@ -240,9 +243,18 @@ class LoginPage extends PureComponent {
                   error={this.state.wrongCredentials}
                   value={this.state.password}
                   onChange={this.handleChange}
+                  InputProps={{ disableUnderline: true }}
                 />
               </div>
             )}
+
+            <div className="Forgot_password">
+              <a onClick={this.changeFormToResetPassword} className="">
+                {!this.state.resetingPassword
+                  ? "Zabudli ste svoje heslo?"
+                  : "Späť na login"}
+              </a>
+            </div>
 
             <div className="FormField captchaClass">
               <ReCAPTCHA
@@ -252,37 +264,26 @@ class LoginPage extends PureComponent {
               />
             </div>
 
-            {!this.state.resetingPassword && (
-              <div>
-                <a
-                  onClick={this.changeFormToLDAPLogin}
-                  className="FormField__Link"
-                >
-                  {!this.state.loginWithLDAP
-                    ? "Prihlásiť sa cez FRI login"
-                    : "Prihlásiť sa cez e-mail"}
-                </a>
-              </div>
-            )}
-
-            <div>
-              <a
-                onClick={this.changeFormToResetPassword}
-                className="FormField__Link"
-              >
-                {!this.state.resetingPassword
-                  ? "Zabudol som heslo"
-                  : "Späť na login"}
-              </a>
-            </div>
-
             <div className="FormField">
-              <button className="FormField__Button">
+              <button className="FormField__Button login_button">
                 {!this.state.resetingPassword
                   ? "Prihlásiť sa"
                   : "Resetovať heslo"}
               </button>
             </div>
+
+            {!this.state.resetingPassword && (
+              <div>
+                <a
+                  onClick={this.changeFormToLDAPLogin}
+                  className="FormField__Button login_button_email"
+                >
+                  {!this.state.loginWithLDAP
+                    ? "Použiť login cez FRI LDAP"
+                    : "Použiť login cez emailovú adresu"}
+                </a>
+              </div>
+            )}
           </form>
         ) : (
           <p>{this.state.sendConfirmEmailAgainResult}</p>

@@ -21,8 +21,11 @@
   flex-direction: column;
   width: 40%;
   background-color: white;
-  padding: 25px 40px;
+  padding: 0px 40px;
   overflow: auto;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-right: 5%;
 }
 
 .AboutUsContainer {
@@ -58,8 +61,7 @@
   display: flex;
   flex: 0;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-bottom: 10%;
+  justify-content: center;
 }
 
 .PageSwitcher__Item {
@@ -77,13 +79,6 @@
 .PageSwitcher__Item--Active {
   background-color: white;
   color: #28515b;
-}
-
-.FormCenter {
-  margin-bottom: 100px;
-  flex-direction: column;
-  flex: 1;
-  justify-self: flex-start;
 }
 
 .FormTitle {
@@ -111,17 +106,20 @@
 }
 
 .FormField {
+  display: flex;
   align-items: center;
-  margin-bottom: 40px;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .FormField__Label {
   display: block;
   margin: 0.9em;
-  text-transform: uppercase;
   font-size: 0.9em;
   color: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 10px;
+  width: 100%;
 }
 
 .FormField__LabelLogin {
@@ -229,6 +227,42 @@
   margin: 0px 10%;
   font-size: 20px;
 }
+
+.login_button {
+  border: 3px solid #3a3a3a;
+  background-color: #3a3a3a;
+  padding: -3px;
+  border-radius: 8px;
+  width: 100%;
+  margin-bottom: -10px;
+}
+
+.login_button:hover {
+  background-color: #2f2d2d;
+}
+
+.login_button_email {
+  border: 3px solid #3a3a3a;
+  border-radius: 8px;
+  width: 100%;
+  background-color: white;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+
+.homePage_link {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  flex-direction: row;
+  font-size: small;
+}
+
+.bold {
+  font-weight: bold;
+}
 @media only screen and (max-width: 1300px) {
   .AboutUsContainer h1 {
     text-align: center;
@@ -287,6 +321,7 @@
   .App__Form {
     width: 100%;
     display: block;
+    margin: 68px;
   }
 
   .AboutUsContainer h1 {

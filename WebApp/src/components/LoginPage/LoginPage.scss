@@ -27,3 +27,14 @@
 .LoginPage_secondarytext {
   color: black;
 }
+
+.Forgot_password {
+  display: flex;
+  justify-content: flex-end;
+  color: #b6b6b6;
+  font-size: 1vw;
+  margin-bottom: 10px;
+}
+.Forgot_password:hover {
+  cursor: pointer;
+}

@@ -15,6 +15,16 @@ import GlLogo from "../../images/GlobalLogic-logo-black.png";
 import UnizaLogo from "../../images/Uniza-logo-black.png";
 
 class HomePage extends Component {
+  state = {
+    isLoginPage: true,
+  };
+
+  changeState = () => {
+    this.setState({
+      isLoginPage: !this.state.isLoginPage,
+    });
+  };
+
   render() {
     const settings = {
       dots: true,
@@ -56,7 +66,7 @@ class HomePage extends Component {
                   </div>
                 </Box>
                 <Box>
-                  <Typography>Treti text</Typography>
+                  <Typography styles={{ color: "red" }}>Treti text</Typography>
                 </Box>
               </Slider>
             </div>
@@ -74,22 +84,32 @@ class HomePage extends Component {
             <Route exact path="/" component={LoginPage}></Route>
             <Route path="/register" component={RegisterPage}></Route>
             <Route path="/aboutus" component={AboutUsPage}></Route>
+            {/* activeClassName="PageSwitcher__Item--Active" 
+              className="PageSwitcher__Item"
+            v oboch navlinkoch*/}
             <div className="PageSwitcher">
-              <NavLink
-                exact
-                to="/"
-                activeClassName="PageSwitcher__Item--Active"
-                className="PageSwitcher__Item"
-              >
-                Prihlásenie
-              </NavLink>
-              <NavLink
-                to="/register"
-                activeClassName="PageSwitcher__Item--Active"
-                className="PageSwitcher__Item"
-              >
-                Registrácia
-              </NavLink>
+              {!this.state.isLoginPage && (
+                <NavLink
+                  exact
+                  to="/"
+                  onClick={this.changeState}
+                  className="homePage_link"
+                >
+                  <div>Už máte účet?</div>
+                  <div className="bold">&nbsp; Prihláste sa</div>
+                </NavLink>
+              )}
+
+              {this.state.isLoginPage && (
+                <NavLink
+                  to="/register"
+                  onClick={this.changeState}
+                  className="homePage_link"
+                >
+                  <div>Nemáš účet? &nbsp;</div>
+                  <div className="bold"> Zaregistruj sa</div>
+                </NavLink>
+              )}
             </div>
           </div>
         </div>
