@@ -194,69 +194,81 @@ class RegisterPage extends Component {
 
         <div className="FormCenter">
           <form onSubmit={this.handleSubmit} className="FormFields">
-            <div className="FormFiel">Aho</div>
-            {/* <div className="FormField"> */}
-            <TextField
-              label="Meno"
-              type="text"
-              required
-              name="name"
-              className="FormField__Label"
-              error={!!validation.name.message}
-              helperText={validation.name.message}
-              value={this.state.name}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            {/* </div> */}
-
-            {/* <div className="FormField"> */}
-            <TextField
-              label="Priezvisko"
-              type="text"
-              required
-              name="surname"
-              className="FormField__Label"
-              error={!!validation.surname.message}
-              helperText={validation.surname.message}
-              value={this.state.surname}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            {/* </div> */}
-
-            {/* <div className="FormField"> */}
-            <TextField
-              label="E-Mailová adresa"
-              type="email"
-              required
-              name="email"
-              className="FormField__Label"
-              error={!!validation.email.message}
-              helperText={validation.email.message}
-              value={this.state.email}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            {/* </div> */}
-
-            {/* <div className="FormField"> */}
-            <TextField
-              label="Heslo"
-              type="password"
-              required
-              name="password"
-              className="FormField__Label"
-              error={!!validation.password.message}
-              helperText={validation.password.message}
-              value={this.state.password}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            {/* </div> */}
+            <div className="FormField">
+              <div>
+                <div className="LoginPage_maintext">Vytvorenie účtu</div>
+                <div className="LoginPage_secondarytext">
+                  Vyplňte údaje svojho budúceho účtu.
+                </div>
+              </div>
+            </div>
+            <div className="FormField">
+              <TextField
+                variant="outlined"
+                label="Meno"
+                type="text"
+                required
+                name="name"
+                className="FormField__Label"
+                error={!!validation.name.message}
+                helperText={validation.name.message}
+                value={this.state.name}
+                onChange={this.handleChange}
+                fullWidth
+              />
+            </div>
 
             <div className="FormField">
               <TextField
+                variant="outlined"
+                label="Priezvisko"
+                type="text"
+                required
+                name="surname"
+                className="FormField__Label"
+                error={!!validation.surname.message}
+                helperText={validation.surname.message}
+                value={this.state.surname}
+                onChange={this.handleChange}
+                fullWidth
+              />
+            </div>
+
+            <div className="FormField">
+              <TextField
+                variant="outlined"
+                label="E-Mailová adresa"
+                type="email"
+                required
+                name="email"
+                className="FormField__Label"
+                error={!!validation.email.message}
+                helperText={validation.email.message}
+                value={this.state.email}
+                onChange={this.handleChange}
+                fullWidth
+              />
+            </div>
+
+            <div className="FormField">
+              <TextField
+                variant="outlined"
+                label="Heslo"
+                type="password"
+                required
+                name="password"
+                className="FormField__Label"
+                error={!!validation.password.message}
+                helperText={validation.password.message}
+                value={this.state.password}
+                onChange={this.handleChange}
+                fullWidth
+              />
+            </div>
+
+            <div className="FormField">
+              <TextField
+                variant="outlined"
                 label="Potvrdenie hesla"
                 type="password"
                 required
@@ -270,7 +282,7 @@ class RegisterPage extends Component {
               />
             </div>
 
-            <div className="FormField">
+            {/* <div className="FormField">
               <input
                 className="FormField__Checkbox"
                 type="checkbox"
@@ -295,7 +307,7 @@ class RegisterPage extends Component {
                 </a>
                 {"."}
               </label>
-            </div>
+            </div> */}
 
             <div className="FormField captchaClass">
               <ReCAPTCHA
@@ -303,24 +315,13 @@ class RegisterPage extends Component {
                 onChange={this.onChangeCaptcha}
                 hl="sk"
               />
-              <p id="catpchaText">
-                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
-                <a href="https://policies.google.com/privacy">
-                  {" "}
-                  Zásadou ochrany osobných údajov
-                </a>{" "}
-                a
-                <a href="https://policies.google.com/terms">
-                  {" "}
-                  Podmienkami služieb
-                </a>{" "}
-                ,ktoré sú uplatnené.
-              </p>
               <label id="captchaLabel">Prosím vyplňte že nie ste robot !</label>
             </div>
 
             <div className="FormField">
-              <button className="FormField__Button">Registrovať</button>
+              <button className="FormField__Button login_button">
+                Registrovať
+              </button>
             </div>
 
             <div
