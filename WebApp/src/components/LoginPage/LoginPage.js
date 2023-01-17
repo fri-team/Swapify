@@ -75,6 +75,11 @@ class LoginPage extends PureComponent {
     });
   };
 
+  backToLogin = () => {
+    this.setState({ loginWithLDAP: true });
+    this.setState({ resetingPassword: false });
+  };
+
   WrongCredentialsMessage(props) {
     const wrongCredentials = props.wrongCredentials;
     const error = props.errors.error;
@@ -178,14 +183,39 @@ class LoginPage extends PureComponent {
     const messageStyle = !this.state.success ? { display: "none" } : {};
     return (
       <div className="FormCenter">
-        <div className="FormField">
-          <div>
-            <div className="LoginPage_maintext">Prihlásenie (FRI-LDAP)</div>
-            <div className="LoginPage_secondarytext">
-              Vitajte späť. Zadajte svoje údaje.
+        {this.state.loginWithLDAP && (
+          <div className="FormField">
+            <div>
+              <div className="LoginPage_maintext">Prihlásenie (FRI-LDAP)</div>
+              <div className="LoginPage_secondarytext">
+                Vitajte späť. Zadajte svoje údaje.
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {this.state.resetingPassword && (
+          <div className="FormField">
+            <div>
+              <div className="LoginPage_maintext">Zabudli ste heslo?</div>
+              <div className="LoginPage_secondarytext">
+                Zadajte emailovú adresu účtu.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!this.state.resetingPassword && !this.state.loginWithLDAP && (
+          <div className="FormField">
+            <div>
+              <div className="LoginPage_maintext">Prihlásenie (e-mail)</div>
+              <div className="LoginPage_secondarytext">
+                Vitajte späť. Zadajte svoje údaje.
+              </div>
+            </div>
+          </div>
+        )}
+
         <this.WrongCredentialsMessage
           wrongCredentials={this.state.wrongCredentials}
           errors={this.state.serverErrors}
@@ -249,20 +279,26 @@ class LoginPage extends PureComponent {
             )}
 
             <div className="Forgot_password">
-              <a onClick={this.changeFormToResetPassword} className="">
-                {!this.state.resetingPassword
-                  ? "Zabudli ste svoje heslo?"
-                  : "Späť na login"}
-              </a>
+              {!this.state.resetingPassword && (
+                <a onClick={this.changeFormToResetPassword} className="">
+                  Zabudli ste svoje heslo?
+                </a>
+              )}
+
+              {this.state.resetingPassword && (
+                <a onClick={this.backToLogin}>Späť na login</a>
+              )}
             </div>
 
-            <div className="FormField captchaClass">
-              <ReCAPTCHA
-                sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
-                onChange={this.onChangeCaptcha}
-                hl="sk"
-              />
-            </div>
+            {!this.state.resetingPassword && (
+              <div className="FormField captchaClass">
+                <ReCAPTCHA
+                  sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
+                  onChange={this.onChangeCaptcha}
+                  hl="sk"
+                />
+              </div>
+            )}
 
             <div className="FormField">
               <button className="FormField__Button login_button">
