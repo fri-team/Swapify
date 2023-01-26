@@ -147,6 +147,10 @@ class LoginPage extends PureComponent {
         captcha: this.state.captchaValue,
       };
 
+      console.log("email");
+      console.log(this.state);
+      console.log(body);
+
       this.loginUser(body, dispatch, "login");
     } else if (this.state.resetingPassword) {
       const body = {
@@ -175,6 +179,9 @@ class LoginPage extends PureComponent {
         captcha: this.state.captchaValue,
       };
 
+      console.log("LDAP");
+      console.log(this.state);
+      console.log(body);
       this.loginUser(body, dispatch, "loginLdap");
     }
   }
@@ -273,7 +280,6 @@ class LoginPage extends PureComponent {
                   error={this.state.wrongCredentials}
                   value={this.state.password}
                   onChange={this.handleChange}
-                  InputProps={{ disableUnderline: true }}
                 />
               </div>
             )}
@@ -293,6 +299,7 @@ class LoginPage extends PureComponent {
             {!this.state.resetingPassword && (
               <div className="FormField captchaClass">
                 <ReCAPTCHA
+                  id="captchaLabel"
                   sitekey="6LeJhgIaAAAAAAyNiupTgRYPQGEOCQc7WvvzR8ue"
                   onChange={this.onChangeCaptcha}
                   hl="sk"
