@@ -22,7 +22,8 @@ class BlockDetail extends PureComponent {
   state = {
     dialogOpen: false,
     course: { ...this.props.course },
-    timetableType: {...this.props.timetableType}
+    timetableType: {...this.props.timetableType},
+    blockType: {...this.props.blockType}
   };
 
 
@@ -166,6 +167,10 @@ class BlockDetail extends PureComponent {
     }
     const { top, left, course, user, timetableType } = this.props;
     const email = this.convertNameToEmail(course.teacher);
+    var teacherName = course.teacher;
+    if (!teacherName){
+      teacherName = this.props.user.name + " " + this.props.user.surname;
+    }
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(
       course.courseCode || '', course.blockColor
@@ -178,7 +183,7 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {(
               <span>
-                {this.showEditButton(color)}
+                {course.type !== 'blocked' &&(this.showEditButton(color))}
                 {course.type !== 'lecture' && timetableType !== 'TeacherTimetable' &&(this.showExchangeButton(color))}
                 {this.showAddButton(color)}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
@@ -219,7 +224,7 @@ class BlockDetail extends PureComponent {
           <div className="line">
             <Person className="icon" />
             <div className="text">
-              <div className="medium">{course.teacher}</div>
+              <div className="medium">{teacherName}</div>
               <div className="small">{email}</div>
             </div>
           </div>

@@ -75,7 +75,7 @@ const Sidebar = ({
     >
       {value === 0 && (
         <List>
-          <Tooltip
+          {timetableType != "TeacherTimetable" && <Tooltip
             title="Pridať predmet"
             placement="top"
             style={{ color: darkMode ? "white" : "black" }}
@@ -83,7 +83,7 @@ const Sidebar = ({
             <IconButton onClick={addClickHandle}>
               <AddIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
           {courses.map(
             ({ courseId, courseName, blockType, checked }) =>
               blockType != "blocked" && (

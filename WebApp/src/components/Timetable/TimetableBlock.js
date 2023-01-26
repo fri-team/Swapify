@@ -23,7 +23,15 @@ const TimetableBlock = (props) => {
     color,
     zIndex: '2',
   };
-  const icon = props.type === 'lecture' ? <Lecture fill={myStyle.color} /> : <Laboratory fill={myStyle.color} />;
+  var icon = null;
+  console.log(props.type);
+  if (props.type === 'lecture') {
+    icon = <Lecture fill={myStyle.color} />;
+  }
+  else if(props.type === 'laboratory' || props.type === 'excercise')
+  {
+    icon = <Laboratory fill={myStyle.color} />;
+  }
   return (
     <div
       className={`block ${props.type != 'blocked' ? "show" : showBlockedHours ? "show" : ""} ${props.cssClasses}`}
