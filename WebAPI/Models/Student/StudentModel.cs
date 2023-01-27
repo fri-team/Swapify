@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI.Models.UserModels
 {
-    public class StudentModel
+    public class UserModel
     {
-        [Required(ErrorMessage = "Osobné číslo študenta je povinné.")]
+        [Required(ErrorMessage = "Osobné číslo používateľa je povinné.")]
         public string PersonalNumber { get; set; }
 
         [Required(ErrorMessage = "Email je povinný.")]

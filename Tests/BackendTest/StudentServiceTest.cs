@@ -42,23 +42,23 @@ namespace BackendTest
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            Student student = new()
+            TimetableData ttData = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
             };
 
             var newBlock = new Block();
-            var countShouldBe = student.Timetable.AllBlocks.Count;
-            student.Timetable.AddNewBlock(newBlock);
+            var countShouldBe = ttData.Timetable.AllBlocks.Count;
+            ttData.Timetable.AddNewBlock(newBlock);
 
-            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
+            ttData.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
 
             var newBlockSt = new Block();
-            countShouldBe = student.Timetable.AllBlocks.Count;
-            student.Timetable.AddNewBlock(newBlockSt);
+            countShouldBe = ttData.Timetable.AllBlocks.Count;
+            ttData.Timetable.AddNewBlock(newBlockSt);
 
-            student.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
+            ttData.Timetable.AllBlocks.Count().Should().Be(countShouldBe + 1);
         }
 
         [Fact]
@@ -68,10 +68,10 @@ namespace BackendTest
             var schoolScheduleProxy = new SchoolScheduleProxy(options);
             var schoolCourseProxy = new SchoolCourseProxy(options);
             CourseService serviceCourse = new(_loggerMockCourse.Object, _database, schoolScheduleProxy, schoolCourseProxy);            
-            StudentService stSer = new(_database);
+            TimetableDataService stSer = new(_database);
 
             var timetable = await schoolScheduleProxy.GetByPersonalNumber("559841");
-            Student st = new()
+            TimetableData ttData = new()
             {
                 PersonalNumber = "559841",
                 Timetable = await ConverterApiToDomain.ConvertTimetableForPersonalNumberAsync(timetable, serviceCourse)
@@ -86,46 +86,46 @@ namespace BackendTest
                 Day = Day.Thursday
             };
 
-            st.Timetable.AddNewBlock(bl);
+            ttData.Timetable.AddNewBlock(bl);
 
-            await stSer.AddAsync(st);
+            await stSer.AddAsync(ttData);
 
-            st = await stSer.FindByIdAsync(st.Id);
-            st.Id.Should().NotBeEmpty();
-            st.PersonalNumber.Should().Be("559841");
-            st.Timetable.AllBlocks.Last().Day.Should().Be(Day.Thursday);
-            st.Timetable.AllBlocks.Last().Duration.Should().Be(2);
-            st.Timetable.AllBlocks.Last().StartHour.Should().Be(16);
-            st.Timetable.AllBlocks.Last().BlockType.Should().Be(BlockType.Lecture);
+            ttData = await stSer.FindByIdAsync(ttData.Id);
+            ttData.Id.Should().NotBeEmpty();
+            ttData.PersonalNumber.Should().Be("559841");
+            ttData.Timetable.AllBlocks.Last().Day.Should().Be(Day.Thursday);
+            ttData.Timetable.AllBlocks.Last().Duration.Should().Be(2);
+            ttData.Timetable.AllBlocks.Last().StartHour.Should().Be(16);
+            ttData.Timetable.AllBlocks.Last().BlockType.Should().Be(BlockType.Lecture);
         }
 
         [Fact]
         public async Task UpdateStudentTest()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stSer = new(database);
-            Student st = new();
+            TimetableDataService timetableDataService = new(database);
+            TimetableData ttData = new();
 
             Block bl1 = new() { Room = "room1" };
             Block bl2 = new() { Room = "room2" };
             Block bl3 = new() { Room = "room3" };
 
-            st.Timetable = new Timetable(Semester.GetSemester());
-            st.Timetable.AddNewBlock(bl1);
-            st.Timetable.AddNewBlock(bl2);
-            await stSer.AddAsync(st);
-            st.Timetable.AllBlocks.Count().Should().Be(2);
+            ttData.Timetable = new Timetable(Semester.GetSemester());
+            ttData.Timetable.AddNewBlock(bl1);
+            ttData.Timetable.AddNewBlock(bl2);
+            await timetableDataService.AddAsync(ttData);
+            ttData.Timetable.AllBlocks.Count().Should().Be(2);
 
-            st = await stSer.FindByIdAsync(st.Id);
-            st.Timetable.RemoveBlock(bl1.BlockId).Should().Be(true);
-            st.Timetable.AllBlocks.Count().Should().Be(1);
-            st.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
-            st.Timetable.AddNewBlock(bl3);
+            ttData = await timetableDataService.FindByIdAsync(ttData.Id);
+            ttData.Timetable.RemoveBlock(bl1.BlockId).Should().Be(true);
+            ttData.Timetable.AllBlocks.Count().Should().Be(1);
+            ttData.Timetable.AllBlocks.FirstOrDefault().Room.Should().Be("room2");
+            ttData.Timetable.AddNewBlock(bl3);
 
-            await stSer.UpdateStudentAsync(st);
-            st.Timetable.AllBlocks.Count().Should().Be(2);
-            st.Timetable.AllBlocks.Any(x => x.Room == "room3").Should().Be(true);
-            st.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
+            await timetableDataService.UpdateTimetableDataAsync(ttData);
+            ttData.Timetable.AllBlocks.Count().Should().Be(2);
+            ttData.Timetable.AllBlocks.Any(x => x.Room == "room3").Should().Be(true);
+            ttData.Timetable.AllBlocks.Any(x => x.Room == "room2").Should().Be(true);
         }
 
         private IOptions<ProxySettings> GetProxyOptions()

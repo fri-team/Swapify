@@ -21,8 +21,11 @@ class BlockDetail extends PureComponent {
 
   state = {
     dialogOpen: false,
-    course: { ...this.props.course }
+    course: { ...this.props.course },
+    timetableType: {...this.props.timetableType},
+    blockType: {...this.props.blockType}
   };
+
 
   textTrans = (text) => {
     let a = textTransform(text, 'title');
@@ -69,7 +72,7 @@ class BlockDetail extends PureComponent {
         day: this.props.course.day,
         courseCode: this.props.course.courseCode,
         startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
-        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 + 
+        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 +
                   parseInt(this.props.course.endBlock - this.props.course.startBlock),
         courseName: this.props.course.courseName,
         courseShortcut: this.props.course.courseShortcut,
@@ -162,8 +165,12 @@ class BlockDetail extends PureComponent {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course, user } = this.props;
+    const { top, left, course, user, timetableType } = this.props;
     const email = this.convertNameToEmail(course.teacher);
+    var teacherName = course.teacher;
+    if (!teacherName){
+      teacherName = this.props.user.name + " " + this.props.user.surname;
+    }
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(
       course.courseCode || '', course.blockColor
@@ -176,8 +183,8 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {(
               <span>
-                {this.showEditButton(color)}
-                {course.type !== 'lecture' && (this.showExchangeButton(color))}
+                {course.type !== 'blocked' &&(this.showEditButton(color))}
+                {course.type !== 'lecture' && timetableType !== 'TeacherTimetable' &&(this.showExchangeButton(color))}
                 {this.showAddButton(color)}
                 <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
                   <IconButton onClick={this.handleClickDelete}>
@@ -217,7 +224,7 @@ class BlockDetail extends PureComponent {
           <div className="line">
             <Person className="icon" />
             <div className="text">
-              <div className="medium">{course.teacher}</div>
+              <div className="medium">{teacherName}</div>
               <div className="small">{email}</div>
             </div>
           </div>

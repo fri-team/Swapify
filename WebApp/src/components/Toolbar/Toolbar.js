@@ -48,18 +48,19 @@ class AppToolbar extends PureComponent {
 
   changePersonalNumber = () => this.props.history.push(PERSONALNUMBER);
 
-  ressetTimetableStudent = (user) =>{
-    this.reloadTimetable(user);
-  }
+  // ressetTimetableStudent = (user) =>{
+  //   this.reloadTimetable(user);
+  // }
 
   reloadTimetable = (user) =>{
+    console.log("Personal number sending: ", user.personalNumber);
     const body = {
       personalNumber: user.personalNumber,
       email: user.email
     }
     axios({
       method: 'post',
-      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      url: '/api/timetable/setUserTimetableFromPersonalNumber',
       data: body
     })
     .then(() => {
@@ -78,8 +79,9 @@ class AppToolbar extends PureComponent {
       return false;
     }
   }
-  
+
   render() {
+
     let buttonExchangeMode;
     if (this.props.timetable.isExchangeMode) {
       buttonExchangeMode = (
@@ -114,7 +116,7 @@ class AppToolbar extends PureComponent {
         </Button>
       );
     }
-    const { user, toggleSidebar, exportCalendar, toggleHelpModalWindow, toggleMailUsModalWindow, changeDarkMode } = this.props;
+    const { user, toggleSidebar, exportCalendar, toggleHelpModalWindow, toggleMailUsModalWindow, changeDarkMode, timetableType, updateBlockedHoursVisibility } = this.props;
     const url = this.checkUrl();
     return (
       <ToolbarWrapper>
@@ -129,9 +131,9 @@ class AppToolbar extends PureComponent {
               <MenuIcon />
             </IconButton>
             )}
-           
+
             <IconTray>
-            
+
             <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
               <PullRight />
               {buttonExchangeMode}
@@ -143,7 +145,7 @@ class AppToolbar extends PureComponent {
               />
               {this.state.showMenu && (
                 <Menu
-                  darkMode={this.props.darkMode} 
+                  darkMode={this.props.darkMode}
                   renderRef={this.anchor}
                   username={`${user.name} ${user.surname}`}
                   email={user.email}
@@ -152,6 +154,8 @@ class AppToolbar extends PureComponent {
                   onClose={() => this.setState({ showMenu: false })}
                   changeDarkMode={changeDarkMode}
                   ressetTimetable={() => this.reloadTimetable(user)}
+                  timetableType={timetableType}
+                  updateBlockedHoursVisibility={updateBlockedHoursVisibility}
                 />
               )}
             </IconTray>
@@ -177,7 +181,7 @@ class AppToolbar extends PureComponent {
                 <HelpIcon />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Napíšte nám" placement="top" TransitionComponent={Zoom}>
               <IconButton
                 color="inherit"
@@ -187,7 +191,7 @@ class AppToolbar extends PureComponent {
                 <MailIcon />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Notifikácie" placement="top" TransitionComponent={Zoom}>
               <IconButton
                 color="inherit"

@@ -22,17 +22,17 @@ namespace WebAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
-        private readonly IStudentService _studentService;
+        private readonly ITimetableDataService _timetableDataService;
         private readonly Uri _baseUrl;
 
         public ExchangeController(ILogger<UserController> logger, IBlockChangesService blockChangeService, IEmailService emailService,
-            IUserService userService, IStudentService studentService, IOptions<EnvironmentSettings> environmentSettings) : base()
+            IUserService userService, ITimetableDataService timetableDataService, IOptions<EnvironmentSettings> environmentSettings) : base()
         {
             _logger = logger;
             _blockChangesService = blockChangeService;
             _emailService = emailService;
             _userService = userService;
-            _studentService = studentService;
+            _timetableDataService = timetableDataService;
             _baseUrl = new Uri(environmentSettings.Value.BaseUrl);
         }
 
@@ -52,11 +52,11 @@ namespace WebAPI.Controllers
                 var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
                 if (res != (null, null))
                 {
-                    var student1 = await _studentService.FindByIdAsync(res.Item1.StudentId);
-                    student1.Timetable.RemoveBlock(res.Item1.BlockFrom.BlockId);
-                    student1.Timetable.AddNewBlock(res.Item1.BlockTo.Clone());
-                    await _studentService.UpdateStudentAsync(student1);
-                    var user1 = await _userService.GetUserByIdAsync(student1.UserId.ToString());
+                    var timetableData1 = await _timetableDataService.FindByIdAsync(res.Item1.StudentId);
+                    timetableData1.Timetable.RemoveBlock(res.Item1.BlockFrom.BlockId);
+                    timetableData1.Timetable.AddNewBlock(res.Item1.BlockTo.Clone());
+                    await _timetableDataService.UpdateTimetableDataAsync(timetableData1);
+                    var user1 = await _userService.GetUserByIdAsync(timetableData1.UserId.ToString());
                     if (user1 == null)
                     {
                         string message = $"Cannot find user with ID {res.Item1.StudentId}.";
@@ -64,11 +64,11 @@ namespace WebAPI.Controllers
                         return NotFound(message);
                     }
 
-                    var student2 = await _studentService.FindByIdAsync(res.Item2.StudentId);
-                    student2.Timetable.RemoveBlock(res.Item2.BlockFrom.BlockId);
-                    student2.Timetable.AddNewBlock(res.Item2.BlockTo.Clone());
-                    await _studentService.UpdateStudentAsync(student2);
-                    var user2 = await _userService.GetUserByIdAsync(student2.UserId.ToString());
+                    var timetableData2 = await _timetableDataService.FindByIdAsync(res.Item2.StudentId);
+                    timetableData2.Timetable.RemoveBlock(res.Item2.BlockFrom.BlockId);
+                    timetableData2.Timetable.AddNewBlock(res.Item2.BlockTo.Clone());
+                    await _timetableDataService.UpdateTimetableDataAsync(timetableData2);
+                    var user2 = await _userService.GetUserByIdAsync(timetableData2.UserId.ToString());
                     if (user2 == null)
                     {
                         string message = $"Cannot find user with ID {res.Item2.StudentId}.";
@@ -76,8 +76,8 @@ namespace WebAPI.Controllers
                         return NotFound(message);
                     }
 
-                    string callbackUrl1 = new Uri(_baseUrl, $@"getStudentTimetable/{user1.Email}").ToString();
-                    string callbackUrl2 = new Uri(_baseUrl, $@"getStudentTimetable/{user2.Email}").ToString();
+                    string callbackUrl1 = new Uri(_baseUrl, $@"getUserTimetable/{user1.Email}").ToString();
+                    string callbackUrl2 = new Uri(_baseUrl, $@"getUserTimetable/{user2.Email}").ToString();
 
                     if (!_emailService.SendConfirmationEmail(user1.Email, callbackUrl1, "ConfirmExchangeEmail"))
                     {
@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
             bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"Student id: {studentId} is not valid GUID.");
+                return ErrorResponse($"StudentTimetable id: {studentId} is not valid GUID.");
             }
 
             var response = await _blockChangesService.FindWaitingStudentRequests(guid);

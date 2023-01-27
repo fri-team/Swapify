@@ -61,6 +61,7 @@ namespace FRITeam.Swapify.Backend.Converter
                 .ThenBy(b => b.BlockNumber)
                 .ToList();
 
+
             IEnumerable<Task<Block>> mergedBlocks = Merge(sortedBlocks,
                 (group, b2) =>
                 {
@@ -127,7 +128,7 @@ namespace FRITeam.Swapify.Backend.Converter
         /// <param name="mergeElementsGroup">Merge group of elements to one element.</param>
         /// <returns></returns>
         public static IEnumerable<TResult> Merge<TElement, TResult>(
-            IEnumerable<TElement> sortedElements,
+            IEnumerable<TElement> sortedElements, 
             Func<List<TElement>, TElement, bool> isInGroup,
             Func<List<TElement>, TResult> mergeElementsGroup)
         {            
@@ -192,6 +193,8 @@ namespace FRITeam.Swapify.Backend.Converter
                     return BlockType.Laboratory;
                 case LessonType.Lecture:
                     return BlockType.Lecture;
+                case LessonType.Blocked:
+                    return BlockType.Blocked;
                 default:
                     throw new KeyNotFoundException("Unknow LessonType");
             }

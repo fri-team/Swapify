@@ -40,7 +40,7 @@ export function loadMyTimetable(user, history) {
     }
     axios({
       method: 'get',
-      url: '/api/student/getStudentTimetable/' + user.email
+      url: '/api/timetabledata/getUserTimetable/' + user.email
     })
       .then(res => {
         dispatch({
@@ -246,7 +246,7 @@ export function removeBlock(body, userEmail) {
     });
     axios({
       method: 'delete',
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`
+      url: `/api/timetabledata/removeBlock/${userEmail}/${body.id}`
     })
     .then(() =>{
       dispatch({
@@ -254,7 +254,7 @@ export function removeBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -281,7 +281,7 @@ export function addBlock(body, userEmail) {
     });
     axios({
       method: 'post',
-      url: `/api/student/addNewBlock`,
+      url: `/api/timetabledata/addNewBlock`,
       data: body
     })
     .then(() =>{
@@ -290,7 +290,7 @@ export function addBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -317,7 +317,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
     });
     axios({
       method: 'post',
-      url: `/api/student/addNewBlock`,
+      url: `/api/timetabledata/addNewBlock`,
       data: body
     })
     .then(() =>{
@@ -326,7 +326,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -338,7 +338,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
 
           axios({
             method: 'get',
-            url: '/api/student/getStudentTimetable/' + userEmail
+            url: '/api/timetabledata/getUserTimetable/' + userEmail
           })
             .then(res => {
               dispatch({
@@ -367,7 +367,7 @@ export function editBlock(body, userEmail) {
     });
     axios({
       method: 'put',
-      url: `/api/student/editBlock`,
+      url: `/api/timetabledata/editBlock`,
       data: body
     })
     .then(() =>{
@@ -376,7 +376,7 @@ export function editBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -402,7 +402,7 @@ export function loadMyTimetableCalendar(user, history) {
   }
   return axios({
     method: 'get',
-    url: '/api/student/getStudentTimetableCalendar/' + user.email
+    url: '/api/timetabledata/getUserTimetableCalendar/' + user.email
   })
     .then(res => {
       return res.data;

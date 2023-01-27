@@ -6,7 +6,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public Student Student { get; set; }
+        public TimetableData TimetableData { get; set; }
         public bool IsLdapUser { get; set; }
         public bool DarkMode { get; set; }
 
@@ -20,7 +20,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities
             Email = UserName = email;
             Name = name;
             Surname = surname;
-            Student = null;
+            TimetableData = null;
             IsLdapUser = false;
             DarkMode = false;
         }
