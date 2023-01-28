@@ -4,7 +4,7 @@ import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
 import "./HomePage.scss";
 import AboutUsPage from "../AboutUsPage/AboutUsPage";
-import { Typography, Box } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 import Slider from "react-slick";
 import homeImage from "../../images/home-background.png";
@@ -66,7 +66,24 @@ class HomePage extends Component {
                   </div>
                 </Box>
                 <Box>
-                  <Typography styles={{ color: "red" }}>Treti text</Typography>
+                  <div
+                    variant="body1"
+                    className="slider_text projectInfoContainer"
+                  >
+                    <div className="m10">
+                      Vedúci projektu: Ing. Marek Tavač, PhD.
+                      <br /> GlobalLogic podpora: Ing. Ondrej Kasaj
+                    </div>
+                    <div className="m10">
+                      Dátum vzniku projektu: XX.XX.XXXX
+                      <br /> Aktuálna verzia projektu: 2.0.0
+                    </div>
+
+                    <p>
+                      V prípade otázok alebo pripomienok nás môžete kontaktovať:
+                      .......@fri.uniza.sk
+                    </p>
+                  </div>
                 </Box>
               </Slider>
             </div>

@@ -228,6 +228,15 @@
   font-size: 20px;
 }
 
+.projectInfoContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.m10 {
+  margin-bottom: 10%;
+}
 .login_button {
   border: 3px solid #3a3a3a;
   background-color: #3a3a3a;
