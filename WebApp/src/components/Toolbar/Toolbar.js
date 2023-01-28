@@ -53,7 +53,6 @@ class AppToolbar extends PureComponent {
   // }
 
   reloadTimetable = (user) =>{
-    console.log("Personal number sending: ", user.personalNumber);
     const body = {
       personalNumber: user.personalNumber,
       email: user.email

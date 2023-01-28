@@ -24,7 +24,6 @@ const TimetableBlock = (props) => {
     zIndex: '2',
   };
   var icon = null;
-  console.log(props.type);
   if (props.type === 'lecture') {
     icon = <Lecture fill={myStyle.color} />;
   }
