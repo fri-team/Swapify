@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FRITeam.Swapify.APIWrapper.Objects;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 
 namespace FRITeam.Swapify.APIWrapper
 {
@@ -8,8 +9,8 @@ namespace FRITeam.Swapify.APIWrapper
         /// <summary>
         /// Return schedule for whole week by student number
         /// </summary>
-        /// <param name="personalNumber">student number</param>
-        Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber);
+        /// <param name="personalNumber">user number</param>
+        Task<ScheduleTimetableResult> GetByPersonalNumber(string personalNumber, TimetableType userType = TimetableType.StudentTimetable);
 
         /// <summary>
         /// Return schedule for whole week by teacher unique number

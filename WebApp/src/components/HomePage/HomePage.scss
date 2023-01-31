@@ -1,16 +1,18 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap");
 
 .App {
   height: 100vh;
   display: flex;
   color: white;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .App__Aside {
-  width: 60%;
-  background-color: white;
+  width: 50%;
+  background-color: #5ebed7;
   overflow: auto;
+  margin: 5%;
+  border-radius: 5%;
 }
 
 .App__Form {
@@ -18,9 +20,12 @@
   flex: 1;
   flex-direction: column;
   width: 40%;
-  background-color: #5EBED7;
-  padding: 25px 40px;
+  background-color: white;
+  padding: 0px 40px;
   overflow: auto;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-right: 5%;
 }
 
 .AboutUsContainer {
@@ -31,12 +36,12 @@
   text-align: justify;
 }
 
-.AboutUsContainer h1{
+.AboutUsContainer h1 {
   font-weight: 300;
   text-transform: uppercase;
 }
 
-.AboutUsContainer p{
+.AboutUsContainer p {
   line-height: 1.4;
   margin-top: 2em;
 }
@@ -47,7 +52,7 @@
   margin: 3em;
 }
 
-.AboutUsLogos img{
+.AboutUsLogos img {
   width: auto;
   height: 115px;
 }
@@ -56,8 +61,7 @@
   display: flex;
   flex: 0;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-bottom: 10%;
+  justify-content: center;
 }
 
 .PageSwitcher__Item {
@@ -65,7 +69,7 @@
   color: white;
   padding: 10px 25px;
   cursor: pointer;
-  font-size: .9em;
+  font-size: 0.9em;
   border: none;
   outline: none;
   display: inline-block;
@@ -75,13 +79,6 @@
 .PageSwitcher__Item--Active {
   background-color: white;
   color: #28515b;
-}
-
-.FormCenter {
-  margin-bottom: 100px;
-  flex-direction: column;
-  flex: 1;
-  justify-self: flex-start;
 }
 
 .FormTitle {
@@ -109,26 +106,32 @@
 }
 
 .FormField {
-  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .FormField__Label {
   display: block;
-  margin: .9em;
-  text-transform: uppercase;
-  font-size: .9em;
+  margin: 0.9em;
+  font-size: 0.9em;
   color: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 10px;
+  width: 100%;
 }
 
 .FormField__LabelLogin {
   display: block;
-  margin: .9em;
-  font-size: .9em;
+  margin: 0.9em;
+  font-size: 0.9em;
   color: white;
+  width: 80%;
 }
 
 .FormField__Input {
-  width: 85%;
+  width: 80%;
   background-color: transparent;
   border: none;
   color: white;
@@ -150,7 +153,7 @@
   border: none;
   outline: none;
   padding: 10px 50px;
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: 500;
   float: right;
   cursor: pointer;
@@ -194,18 +197,85 @@
   align-self: flex-end;
 }
 
+.App__Aside__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
 .logo {
-  background: url('../../images/logo.png') center no-repeat;
+  background: url("../../images/logowhite.png") center no-repeat;
   background-size: 30%;
   height: 30%;
 }
 
-
 .home-image {
-  background: url('../../images/home-background.png') center no-repeat;
-  background-size: 70%;
-  height: 70%;
+  background: url("../../images/home-background.png") center no-repeat;
+  background-size: 60%;
+  height: 60%;
   width: auto;
+}
+
+.slider {
+  height: 50%;
+}
+
+.slider_image {
+  margin: auto;
+}
+.slider_text {
+  margin: 0px 10%;
+  font-size: 20px;
+}
+
+.projectInfoContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.m10 {
+  margin-bottom: 10%;
+}
+.login_button {
+  border: 3px solid #3a3a3a;
+  background-color: #3a3a3a;
+  padding: -3px;
+  border-radius: 8px;
+  width: 100%;
+  margin-bottom: -10px;
+}
+
+.login_button:hover {
+  background-color: #2f2d2d;
+}
+
+.login_button_email {
+  border: 3px solid #3a3a3a;
+  border-radius: 8px;
+  width: 100%;
+  background-color: white;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+.login_button_email:hover {
+  background-color: #2f2d2d;
+  color: white;
+  font-weight: 500;
+}
+
+.homePage_link {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  flex-direction: row;
+  font-size: small;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 1300px) {
@@ -220,7 +290,7 @@
     margin: 0;
   }
 
-  .AboutUsLogos img{
+  .AboutUsLogos img {
     width: 100%;
     height: auto;
   }
@@ -266,6 +336,7 @@
   .App__Form {
     width: 100%;
     display: block;
+    margin: 68px;
   }
 
   .AboutUsContainer h1 {
@@ -279,7 +350,7 @@
     margin: 0;
   }
 
-  .AboutUsLogos img{
+  .AboutUsLogos img {
     width: 100%;
     height: auto;
   }

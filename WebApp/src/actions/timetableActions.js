@@ -39,8 +39,8 @@ export function loadMyTimetable(user, history) {
       }
     }
     axios({
-      method: "get",
-      url: "/api/student/getStudentTimetable/" + user.email,
+      method: 'get',
+      url: '/api/timetabledata/getUserTimetable/' + user.email
     })
       .then((res) => {
         dispatch({
@@ -165,9 +165,9 @@ export function chooseExchangeFromBlock(course) {
   return {
     type: CHOOSE_EXCHANGE_FROM_BLOCK,
     payload: {
-      course,
-    },
-  };
+      course
+    }
+  }
 }
 
 export function exchangeConfirm(blockTo) {
@@ -199,8 +199,8 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher,
       },
-      StudentId: user.studentId,
-    };
+      StudentId: user.studentId
+    }
 
     axios({
       method: "post",
@@ -232,12 +232,12 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
+          console.log('Error', error.message);
           //This error shows undefined history after creating request
         }
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
-          type: CANCEL_EXCHANGE_MODE,
+          type: CANCEL_EXCHANGE_MODE
         });
       });
   };
@@ -249,17 +249,18 @@ export function removeBlock(body, userEmail) {
       type: REMOVE_BLOCK,
     });
     axios({
-      method: "delete",
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`,
+      method: 'delete',
+      url: `/api/timetabledata/removeBlock/${userEmail}/${body.id}`
     })
-      .then(() => {
-        dispatch({
-          type: REMOVE_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: REMOVE_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
@@ -283,18 +284,19 @@ export function addBlock(body, userEmail) {
       type: ADD_BLOCK,
     });
     axios({
-      method: "post",
-      url: `/api/student/addNewBlock`,
-      data: body,
+      method: 'post',
+      url: `/api/timetabledata/addNewBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: ADD_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
@@ -319,18 +321,19 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
       type: ADD_BLOCK,
     });
     axios({
-      method: "post",
-      url: `/api/student/addNewBlock`,
-      data: body,
+      method: 'post',
+      url: `/api/timetabledata/addNewBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: ADD_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: HIDE_COURSE_TIMETABLE,
             payload: {
@@ -339,25 +342,26 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
           });
 
           axios({
-            method: "get",
-            url: "/api/student/getStudentTimetable/" + userEmail,
-          }).then((res) => {
-            dispatch({
-              type: LOAD_MY_TIMETABLE_DONE,
-              payload: {
-                timetable: res.data.blocks,
-              },
-            });
-          });
-        });
-      })
-      .catch(() => {
-        console.log("Method:addBlockAndHideOthersWithSameCourseId");
-        window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
-        dispatch({
-          type: ADD_BLOCK_FAIL,
-        });
+            method: 'get',
+            url: '/api/timetabledata/getUserTimetable/' + userEmail
+          })
+            .then(res => {
+              dispatch({
+                type: LOAD_MY_TIMETABLE_DONE,
+                payload: {
+                  timetable: res.data.blocks
+                }
+              });
+            })
+
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
       });
+    });
   };
 }
 
@@ -367,18 +371,19 @@ export function editBlock(body, userEmail) {
       type: EDIT_BLOCK,
     });
     axios({
-      method: "put",
-      url: `/api/student/editBlock`,
-      data: body,
+      method: 'put',
+      url: `/api/timetabledata/editBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: EDIT_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: EDIT_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
@@ -401,8 +406,8 @@ export function loadMyTimetableCalendar(user, history) {
     history.push(PERSONALNUMBER);
   }
   return axios({
-    method: "get",
-    url: "/api/student/getStudentTimetableCalendar/" + user.email,
+    method: 'get',
+    url: '/api/timetabledata/getUserTimetableCalendar/' + user.email
   })
     .then((res) => {
       return res.data;

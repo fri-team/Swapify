@@ -12,7 +12,7 @@ namespace WebAPI.Models.UserModels
         public string Surname { get; set; }
         public string Token { get; set; }
         public DateTime ValidTo { get; set; }
-        public string StudentId { get; set; }
+        public string TimetableId { get; set; }
         public string PersonalNumber { get; set; }
         public string FirstTimePN { get; set; }
 
@@ -24,8 +24,8 @@ namespace WebAPI.Models.UserModels
                 Email = user.Email;
                 Name = user.Name;
                 Surname = user.Surname;
-                StudentId = user.Student?.Id.ToString();
-                PersonalNumber = user.Student?.PersonalNumber;
+                TimetableId = user.TimetableData?.Id.ToString();
+                PersonalNumber = user.TimetableData?.PersonalNumber;
             }
             FirstTimePN = "";
             Token = token.RawData;

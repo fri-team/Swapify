@@ -23,7 +23,10 @@ class BlockDetail extends PureComponent {
   state = {
     dialogOpen: false,
     course: { ...this.props.course },
+    timetableType: {...this.props.timetableType},
+    blockType: {...this.props.blockType}
   };
+
 
   textTrans = (text) => {
     let a = textTransform(text, "title");
@@ -191,10 +194,14 @@ class BlockDetail extends PureComponent {
     if (!this.props.isVisible) {
       return null;
     }
-    const { top, left, course, user } = this.props;
+    const { top, left, course, user, timetableType } = this.props;
     const email = this.convertNameToEmail(course.teacher);
+    var teacherName = course.teacher;
+    if (!teacherName){
+      teacherName = this.props.user.name + " " + this.props.user.surname;
+    }
     //const UsersName = this.user;
-    const place = course.room;
+    // const place = course.room;
     const room = course.room !== "" ? ", " + course.room : "";
     const { backgroundColor, color } =
       course.blockColor == null
@@ -214,10 +221,9 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {
               <span>
-                {this.showEditButton(color)}
-                {course.type !== "lecture" &&
-                  course.type !== "event" &&
-                  this.showExchangeButton(color)}
+                {course.type !== 'blocked' && (this.showEditButton(color))}
+                {course.type !== 'event' && (this.showEditButton(color))}
+                {course.type !== 'lecture' && timetableType !== 'TeacherTimetable' &&(this.showExchangeButton(color))}
                 {this.showAddButton(color)}
                 <Tooltip
                   title="Vymazať blok"
@@ -269,6 +275,8 @@ class BlockDetail extends PureComponent {
               <div className="small">
                 {course.type == "event" ? " " : email}
               </div>
+              //<div className="medium">{teacherName}</div>
+              //<div className="small">{email}</div>
             </div>
           </div>
         </div>

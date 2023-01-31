@@ -135,7 +135,7 @@ namespace IntegrationTest.ExchangeControllerTest
             string json = await response.Content.ReadAsStringAsync();
             var userModel = JsonConvert.DeserializeObject<AuthenticatedUserModel>(json);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userModel.Token);
-            return userModel.StudentId;
+            return userModel.TimetableId;
         }
 
         private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
