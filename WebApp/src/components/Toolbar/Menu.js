@@ -79,28 +79,34 @@ export default class Menu extends PureComponent {
   };
 
   handleClickOutside = () => {
-    if (document.getElementsByClassName('modal-window').length === 0) {
+    if (document.getElementsByClassName("modal-window").length === 0) {
       this.props.onClose();
     }
   };
 
   render() {
-    const { username, email, onLogout, selectPersonalNumber, changeDarkMode } = this.props;
+    const { username, email, onLogout, selectPersonalNumber, changeDarkMode } =
+      this.props;
     const { x, y } = this.state;
     const width = 400;
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>
           <Shaddow>
-            <Content width={width} style={{ backgroundColor: this.props.darkMode ? "#303030" : "white", color: this.props.darkMode ? "white" : "black" }}>
+            <Content
+              width={width}
+              style={{
+                backgroundColor: this.props.darkMode ? "#303030" : "white",
+                color: this.props.darkMode ? "white" : "black",
+              }}
+            >
               <PadBox>
                 <FlexBox>
                   <UserAvatar size={70} username={username} />
                   <div>
                     <div className="username">{username}</div>
                     <div className="email">{email}</div>
-                      <DeleteAccountModal 
-                      email={email} onLogout={onLogout}/> 
+                    <DeleteAccountModal email={email} onLogout={onLogout} />
                   </div>
                 </FlexBox>
               </PadBox>

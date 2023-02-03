@@ -51,8 +51,6 @@ const CustomEventForm = ({ course, user }) => {
   };
 
   const onSubmitHandler = async () => {
-    console.log(customEvent);
-    console.log(user);
     dispatch(
       createBlock({
         timetableBlock: {
@@ -176,7 +174,6 @@ const CustomEventForm = ({ course, user }) => {
       )}
     </React.Fragment>
   );
-
 };
 
 console.log(CustomEventForm);
