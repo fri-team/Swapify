@@ -216,7 +216,7 @@ class BlockDetail extends PureComponent {
           <div className="buttons">
             {
               <span>
-                {this.showEditButton(color)}
+                {course.type !== "event" && this.showEditButton(color)}
                 {course.type !== "lecture" &&
                   course.type !== "event" &&
                   this.showExchangeButton(color)}

@@ -27,44 +27,73 @@ const StyledTab= withStyles({
   }
 })(Tab);
 
-const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, exchangeRequests, addClickHandle, sideBarFormOpen, onCloseForm, darkMode}) => (
+const Sidebar = ({
+  open,
+  onClose,
+  courses,
+  onCourseToggle,
+  handleChange,
+  value,
+  exchangeRequests,
+  addClickHandle,
+  sideBarFormOpen,
+  onCloseForm,
+  darkMode,
+}) => (
   <Drawer open={open} onClose={onClose}>
-    <AppBar position="static" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
+    <AppBar
+      position="static"
+      style={{
+        backgroundColor: darkMode === true ? "#303030" : "white",
+        color: darkMode ? "white" : "black",
+      }}
+    >
       <Tabs value={value} onChange={handleChange}>
         <StyledTab label="Predmety" />
         <StyledTab label="Výmeny" />
       </Tabs>
     </AppBar>
-    <div className="drawerWrapper" style={{ backgroundColor: darkMode === true ? "#303030" : "white", color: darkMode ? "white" : "black" }}>
-    {value === 0 &&
+    <div
+      className="drawerWrapper"
+      style={{
+        backgroundColor: darkMode === true ? "#303030" : "white",
+        color: darkMode ? "white" : "black",
+      }}
+    >
+      {value === 0 && (
         <List>
-          <Tooltip title="Pridať predmet" placement="top" style={{ color: darkMode ? "white" : "black" }}>
-            <IconButton onClick={addClickHandle}><AddIcon/></IconButton>
+          <Tooltip
+            title="Pridať predmet"
+            placement="top"
+            style={{ color: darkMode ? "white" : "black" }}
+          >
+            <IconButton onClick={addClickHandle}>
+              <AddIcon />
+            </IconButton>
           </Tooltip>
-          {courses.map(({courseId, courseName, checked }) =>  (
-            <ListItem button key={courseId}>
-              <FormControlLabel
-                control={
-                  <Tooltip title="Zobraziť rozvrh predmetu" placement="top">
-                    <Switch
-                      checked={checked}
-                      onChange={(_, checked) => onCourseToggle(courseId, courseName, checked)}
-                    />
-                  </Tooltip>
-                }
-                label={courseName}
-              />
-            </ListItem>
-
-          ))}
-          {sideBarFormOpen &&
-            <SideBarForm
-              onClose={onCloseForm}
-            />
-          }
+          {courses.map(
+            ({ courseId, courseName, checked }) => ( // blocktype Event!! tiez
+                <ListItem button key={courseId}>
+                  <FormControlLabel
+                    control={
+                      <Tooltip title="Zobraziť rozvrh predmetu" placement="top">
+                        <Switch
+                          checked={checked}
+                          onChange={(_, checked) =>
+                            onCourseToggle(courseId, courseName, checked)
+                          }
+                        />
+                      </Tooltip>
+                    }
+                    label={courseName}
+                  />
+                </ListItem>
+              )
+          )}
+          {sideBarFormOpen && <SideBarForm onClose={onCloseForm} />}
         </List>
-      }
-      {value === 1 &&
+      )}
+      {value === 1 && (
         <Grid
           container
           direction="column"
@@ -73,7 +102,7 @@ const Sidebar = ({ open, onClose, courses, onCourseToggle, handleChange, value, 
         >
           {createExchangeRequestsList(exchangeRequests, courses)}
         </Grid>
-      }
+      )}
     </div>
   </Drawer>
 );
