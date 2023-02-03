@@ -17,6 +17,7 @@ import AddBlockForm from "../AddBlockForm/AddBlockForm";
 import Location from "../svg/Location";
 import Person from "../svg/Person";
 import "./BlockDetail.scss";
+//import { Tab } from "@material-ui/core";
 //import { userInfo } from "os";
 
 class BlockDetail extends PureComponent {
@@ -103,7 +104,8 @@ class BlockDetail extends PureComponent {
   };
 
   onClickEditBlock = () => {
-    this.setState({ dialogOpen: true });
+    //ak je to typ bloku event musi sa dialogOpen : true ale s tabValue = 1
+    this.setState({ dialogOpen: true  });
   };
 
   onCloseEditBlock = () => {

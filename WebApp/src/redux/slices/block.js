@@ -58,6 +58,7 @@ export function createBlock(newBlock) {
       const response = await axios.post("/api/student/addNewBlock", newBlock);
       console.log(response);
       dispatch(slice.actions.createBlockSuccess(response.data));
+      window.location.reload(false);
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

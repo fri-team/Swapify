@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { padStart , replace} from "lodash";
+import { padStart, replace } from "lodash";
 import { TextField, Button } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { SliderPicker } from "react-color";
@@ -22,7 +22,7 @@ const CustomEventForm = ({ course, user }) => {
     type: "Event",
     courseShortcut: "",
     courseId: "string",
-    courseCode: Math.random()*1000,
+    courseCode: Math.random() * 1000,
     length: null,
     BlockColor: "#3F51B5",
     teacher: "Marek Tavač",
@@ -39,7 +39,6 @@ const CustomEventForm = ({ course, user }) => {
     setCustomEvent((customEvent) => ({
       ...customEvent,
       [e.target.name]: e.target.value,
-
     }));
   };
 
@@ -70,8 +69,9 @@ const CustomEventForm = ({ course, user }) => {
               "0"
             )
           ),
-          length: parseInt(customEvent.endBlock)-parseInt(customEvent.startBlock),
-          courseShortcut : customEvent.courseName,
+          length:
+            parseInt(customEvent.endBlock) - parseInt(customEvent.startBlock),
+          courseShortcut: customEvent.courseName,
         },
 
         user: user,
@@ -85,7 +85,6 @@ const CustomEventForm = ({ course, user }) => {
         placeholder="Zadajte názov udalosti *"
         name="courseName"
         value={customEvent.courseName}
-
         onChange={handleChange}
         margin="normal"
         fullWidth
@@ -182,4 +181,3 @@ const CustomEventForm = ({ course, user }) => {
 
 console.log(CustomEventForm);
 export default CustomEventForm;
-
