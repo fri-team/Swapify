@@ -14,13 +14,12 @@ const CustomEventForm = ({ course, user }) => {
 
   const [isDisabled, setIsDisabled] = useState(true);
   const [customEvent, setCustomEvent] = useState({
-    id: "string",
+    id: "11111",
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
-    eventPlace: " ",
-    eventName: " ",
-    type: "Event",
-    courseShortcut: " ",
+    eventPlace: "",
+    TimetableBlockType: "Event",
+    courseShortcut: "",
     courseId: "string",
     courseCode: Math.random() * 1000,
     length: null,
