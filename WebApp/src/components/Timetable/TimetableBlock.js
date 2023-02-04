@@ -1,12 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
+import toMaterialStyle from 'material-color-hash';
+import Lecture from '../svg/Lecture';
+import Laboratory from '../svg/Laboratory';
+import './TimetableBlock.scss';
 import classNames from "classnames";
-import toMaterialStyle from "material-color-hash";
-import Lecture from "../svg/Lecture";
-import Laboratory from "../svg/Laboratory";
-import "./TimetableBlock.scss";
+import { useSelector } from 'react-redux';
 
 const TimetableBlock = (props) => {
+  const showBlockedHours = useSelector(state => state.toolbar.showBlockedHours);
+
   function setBlockColor(shade) {
     return {
       backgroundColor: shade,
@@ -22,18 +25,19 @@ const TimetableBlock = (props) => {
     ...props.style,
     backgroundColor,
     color,
-    zIndex: "2",
+    zIndex: '2',
   };
-
-  const icon =
-    props.type === "lecture" ? (
-      <Lecture fill={myStyle.color} />
-    ) : (
-      <Laboratory fill={myStyle.color} />
-    );
+  var icon = null;
+  if (props.type === 'lecture') {
+    icon = <Lecture fill={myStyle.color} />;
+  }
+  else if(props.type === 'laboratory' || props.type === 'excercise')
+  {
+    icon = <Laboratory fill={myStyle.color} />;
+  }
   return (
     <div
-      className={classNames("block", props.cssClasses)}
+      className={`block ${props.type != 'blocked' ? "show" : showBlockedHours ? "show" : ""} ${props.cssClasses}`}
       style={myStyle}
       onClick={(event) => {
         props.onClick(event, props);

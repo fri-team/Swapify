@@ -13,9 +13,13 @@ import TimetableContainer from "../../containers/TimetableContainer/TimetableCon
 import BlockDetailContainer from "../../containers/BlockDetailContainer/BlockDetailContainer";
 import SidebarContainer from "../Sidebar/SidebarContainer";
 import { Button } from "@material-ui/core";
-import { messageChanged, sendFeedback } from "../../actions/toolbarActions";
+import {
+  messageChanged,
+  sendFeedback,
+  setBlockedHours,
+} from "../../actions/toolbarActions";
 import axios from "axios";
-import * as actions from '../../actions/timetableActions';
+import * as actions from "../../actions/timetableActions";
 
 import GifAddCourse from "../../images/swapify-addCourse.gif";
 import GifShowCourseTimetable from "../../images/swapify-showCourseTimetable.gif";
@@ -46,11 +50,16 @@ class TimetablePage extends PureComponent {
       user: props.user,
       message: "",
       subject: "",
-      darkMode: true
+      darkMode: true,
+      updateBlockedHoursVisibility: false,
+      timetableType: null, // 3 = unknown
     };
+    this.getTimetableType();
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDarkMode();
+    this.getBlockedHoursVisibility();
+
   }
 
   handleChange(e) {
@@ -76,21 +85,20 @@ class TimetablePage extends PureComponent {
     this.setState({
       mailUsModalWindowOpen: false,
       message: "",
-      subject: ""
+      subject: "",
     });
   }
 
   getDarkMode() {
     const body = {
       email: this.state.user.email,
-      darkMode: "true"
+      darkMode: "true",
     };
-
     axios({
       method: "post",
       url: "/api/user/getDarkMode",
-      data: body
-    }).then(response => {
+      data: body,
+    }).then((response) => {
       this.setState({ darkMode: response.data });
     });
   }
@@ -101,33 +109,78 @@ class TimetablePage extends PureComponent {
 
     const body = {
       email: this.state.user.email,
-      darkMode: dark
+      darkMode: dark,
     };
 
     axios({
       method: "post",
       url: "/api/user/setDarkMode",
-      data: body
+      data: body,
     }).then();
+  }
+
+  getBlockedHoursVisibility() {
+    const body = {
+      email: this.state.user.email,
+      blockedHours: false,
+    };
+
+    axios({
+      method: "post",
+      url: "/api/user/getBlockedHoursVisibility",
+      data: body,
+    }).then((response) => {
+      this.props.setBlockedHours(response.data);
+    });
+  }
+
+  changeBlockedHourVisibility() {
+    const body = {
+      email: this.state.user.email,
+      blockedHours: !this.props.showBlockedHours,
+    };
+    axios({
+      method: "post",
+      url: "/api/user/setBlockedHoursVisibility",
+      data: body,
+    }).then((response) => {
+      this.props.setBlockedHours(response.data);
+    });
+  }
+
+  async getTimetableType() {
+    const body = {
+      email: this.state.user.email,
+    };
+
+    const { data } = await axios({
+      method: "post",
+      url: "/api/timetable/getTimetableType",
+      data: body,
+    });
+    this.setState({ timetableType: data });
   }
 
   render() {
     return (
       <div className="app-container">
         <Toolbar
-          darkMode = { this.state.darkMode }
-          changeDarkMode={() =>
-            this.swapDarkMode()
+          timetableType={this.state.timetableType}
+          darkMode={this.state.darkMode}
+          changeDarkMode={() => this.swapDarkMode()}
+          updateBlockedHoursVisibility={() =>
+            this.changeBlockedHourVisibility()
           }
           toggleSidebar={() =>
             this.setState((prevState) => ({
               sidebarOpen: !prevState.sidebarOpen,
             }))
           }
-          exportCalendar={() => 
-            {
-              // not exactly sure how to work with these actions so I imported it like this
-              actions.loadMyTimetableCalendar(this.props.user, this.props.history).then(res => {
+          exportCalendar={() => {
+            // not exactly sure how to work with these actions so I imported it like this
+            actions
+              .loadMyTimetableCalendar(this.props.user, this.props.history)
+              .then((res) => {
                 var uri = "data:text/calendar;charset=utf8," + res;
 
                 var downloadLink = document.createElement("a");
@@ -137,9 +190,8 @@ class TimetablePage extends PureComponent {
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
-              })
-            }
-          }
+              });
+          }}
           toggleHelpModalWindow={() =>
             this.setState((prevState) => ({
               helpModalWindowOpen: !prevState.helpModalWindowOpen,
@@ -152,12 +204,13 @@ class TimetablePage extends PureComponent {
           }
         />
         <SidebarContainer
-          darkMode = { this.state.darkMode }
+          timetableType={this.state.timetableType}
+          darkMode={this.state.darkMode}
           open={this.state.sidebarOpen}
           onClose={() => this.setState({ sidebarOpen: false })}
         />
         <TimetableContainer
-          darkMode = { this.state.darkMode }
+          darkMode={this.state.darkMode}
           history={this.props.history}
         />
 
@@ -171,10 +224,14 @@ class TimetablePage extends PureComponent {
           <Slide
             media={<img src={GifAddCourse} alt="pridanie bloku" />}
             title="Pridaj si blok predmetu"
-            subtitle='Klikni na miesto v rozvrhu, kde má začínať blok. Napíš jeho názov, meno profesora, miestnosť. 
+            subtitle='Klikni na miesto v rozvrhu, kde má začínať blok. Napíš jeho názov, meno profesora, miestnosť.
             Zvoľ či sa jedná o prednášku, cvičenie alebo laboratórium, poprípade zmeň jeho dĺžku a klikni na "ULOŽIŤ".'
-            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : red[400] }}
-            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : red[600] }}
+            mediaBackgroundStyle={{
+              backgroundColor: this.state.darkMode ? blueGrey[400] : red[400],
+            }}
+            style={{
+              backgroundColor: this.state.darkMode ? blueGrey[600] : red[600],
+            }}
           />
           <Slide
             media={
@@ -184,21 +241,29 @@ class TimetablePage extends PureComponent {
               />
             }
             title="Zobraz si rozvrh predmetu"
-            subtitle="Pozri sa ako vyzerá rozvrh predmetu v porovnaní s Tvojím vlastným. V bočnom menu si zvoľ predmety, 
+            subtitle="Pozri sa ako vyzerá rozvrh predmetu v porovnaní s Tvojím vlastným. V bočnom menu si zvoľ predmety,
             ktorých rozvrhy chceš vidieť v tom svojom."
-            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : green[400] }}
-            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : green[600] }}
+            mediaBackgroundStyle={{
+              backgroundColor: this.state.darkMode ? blueGrey[400] : green[400],
+            }}
+            style={{
+              backgroundColor: this.state.darkMode ? blueGrey[600] : green[600],
+            }}
           />
           <Slide
             media={
               <img src={GifAskForExchange} alt="poziadanie o vymenu cvicenia" />
             }
             title="Požiadaj o výmenu cvičenia"
-            subtitle='Vyber si cvičenie, ktoré si chceš vymeniť, klikni naň a zvoľ "Požiadať o výmenu". Následne si vyber 
-            zo zobrazených cvičení to, ktoré ti najviac vyhovuje. Potom už len čakaj kým, si niekto bude chcieť vymeniť 
+            subtitle='Vyber si cvičenie, ktoré si chceš vymeniť, klikni naň a zvoľ "Požiadať o výmenu". Následne si vyber
+            zo zobrazených cvičení to, ktoré ti najviac vyhovuje. Potom už len čakaj kým, si niekto bude chcieť vymeniť
             dané cvičenie tiež.'
-            mediaBackgroundStyle={{ backgroundColor: this.state.darkMode ? blueGrey[400] : blue[400] }}
-            style={{ backgroundColor: this.state.darkMode ? blueGrey[600] : blue[600] }}
+            mediaBackgroundStyle={{
+              backgroundColor: this.state.darkMode ? blueGrey[400] : blue[400],
+            }}
+            style={{
+              backgroundColor: this.state.darkMode ? blueGrey[600] : blue[600],
+            }}
           />
         </StyledCarousel>
 
@@ -212,10 +277,20 @@ class TimetablePage extends PureComponent {
           }
           aria-labelledby="max-width-dialog-title"
         >
-          <DialogTitle id="max-width-dialog-title"
-          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>Napíšte nám</DialogTitle>
-          <DialogContent className="dialogMailUsContent" 
-          style={{ backgroundColor: this.state.darkMode ? "#808080" : "white"}}>
+          <DialogTitle
+            id="max-width-dialog-title"
+            style={{
+              backgroundColor: this.state.darkMode ? "#DEDEDE" : "white",
+            }}
+          >
+            Napíšte nám
+          </DialogTitle>
+          <DialogContent
+            className="dialogMailUsContent"
+            style={{
+              backgroundColor: this.state.darkMode ? "#DEDEDE" : "white",
+            }}
+          >
             <FormControl fullWidth>
               <TextField
                 id="outlined-basic"
@@ -243,7 +318,11 @@ class TimetablePage extends PureComponent {
             </FormControl>
           </DialogContent>
         </Dialog>
-        <BlockDetailContainer user={this.state.user} />
+        {this.state.timetableType && <BlockDetailContainer
+          timetableType={this.state.timetableType}
+          user={this.state.user}
+        /> }
+
       </div>
     );
   }
@@ -252,8 +331,11 @@ class TimetablePage extends PureComponent {
 const mapStateToProps = (state) => ({
   user: state.user,
   message: state.message,
+  showBlockedHours: state.toolbar.showBlockedHours,
 });
 
-export default connect(mapStateToProps, { messageChanged, sendFeedback })(
-  TimetablePage
-);
+export default connect(mapStateToProps, {
+  messageChanged,
+  sendFeedback,
+  setBlockedHours,
+})(TimetablePage);

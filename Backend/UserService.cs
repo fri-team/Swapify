@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FRITeam.Swapify.Backend.Interfaces;
 using FRITeam.Swapify.SwapifyBase.Entities;
+using FRITeam.Swapify.SwapifyBase.Entities.Enums;
 using FRITeam.Swapify.SwapifyBase.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -19,10 +20,10 @@ namespace FRITeam.Swapify.Backend
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly LdapSettings _ldapSettings;
-        private readonly IStudentService _studentService;
+        private readonly ITimetableDataService _studentService;
 
         public UserService(IOptions<EnvironmentSettings> environmentSettings, UserManager<User> userManager,
-            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, IStudentService studentService)
+            SignInManager<User> signInManager, IOptions<LdapSettings> ldapSettings, ITimetableDataService studentService)
         {
             _environmentSettings = environmentSettings.Value;
             _userManager = userManager;
@@ -154,15 +155,15 @@ namespace FRITeam.Swapify.Backend
             return addResult.Succeeded;
         }
 
-        public async void TryAddStudent(User user)
+        public async void TryAddUser(User user)
         {
-            if (user.Student == null)
+            if (user.TimetableData == null)
             {
-                user.Student = new Student
+                user.TimetableData = new TimetableData
                 {
                     UserId = user.Id
                 };
-                await _studentService.AddAsync(user.Student);
+                await _studentService.AddAsync(user.TimetableData);
                 await UpdateUserAsync(user);
             }
         }

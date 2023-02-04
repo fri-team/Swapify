@@ -39,8 +39,8 @@ export function loadMyTimetable(user, history) {
       }
     }
     axios({
-      method: "get",
-      url: "/api/student/getStudentTimetable/" + user.email,
+      method: 'get',
+      url: '/api/timetabledata/getUserTimetable/' + user.email
     })
       .then((res) => {
         dispatch({
@@ -143,7 +143,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
 export function showCourseTimetable(courseId, courseName) {
   const action = {
     type: SHOW_COURSE_TIMETABLE,
-    payload: { courseId },
+    payload: { courseId }
   };
   return dowloadCourseTimetableIfNeeded(courseId, courseName, action);
 }
@@ -151,13 +151,13 @@ export function showCourseTimetable(courseId, courseName) {
 export function hideCourseTimetable(courseId = null) {
   return {
     type: HIDE_COURSE_TIMETABLE,
-    payload: { courseId },
+    payload: { courseId }
   };
 }
 
-export function cancelExchangeMode() {
+export function cancelExchangeMode(){
   return {
-    type: CANCEL_EXCHANGE_MODE,
+    type: CANCEL_EXCHANGE_MODE
   };
 }
 
@@ -165,15 +165,15 @@ export function chooseExchangeFromBlock(course) {
   return {
     type: CHOOSE_EXCHANGE_FROM_BLOCK,
     payload: {
-      course,
-    },
-  };
+      course
+    }
+  }
 }
 
 export function exchangeConfirm(blockTo) {
   var action = {
     type: CONFIRM_EXCHANGE_REQUEST,
-    payload: { blockTo },
+    payload: { blockTo }
   };
 
   return (dispatch, getState) => {
@@ -197,10 +197,10 @@ export function exchangeConfirm(blockTo) {
         startHour: blockNumberToHour(blockTo.startBlock),
         duration: blockTo.endBlock - blockTo.startBlock,
         room: blockTo.room,
-        teacher: blockTo.teacher,
+        teacher: blockTo.teacher
       },
-      StudentId: user.studentId,
-    };
+      StudentId: user.studentId
+    }
 
     axios({
       method: "post",
@@ -232,12 +232,12 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
+          console.log('Error', error.message);
           //This error shows undefined history after creating request
         }
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
-          type: CANCEL_EXCHANGE_MODE,
+          type: CANCEL_EXCHANGE_MODE
         });
       });
   };
@@ -249,17 +249,18 @@ export function removeBlock(body, userEmail) {
       type: REMOVE_BLOCK,
     });
     axios({
-      method: "delete",
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`,
+      method: 'delete',
+      url: `/api/timetabledata/removeBlock/${userEmail}/${body.id}`
     })
-      .then(() => {
-        dispatch({
-          type: REMOVE_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: REMOVE_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
@@ -283,116 +284,119 @@ export function addBlock(body, userEmail) {
       type: ADD_BLOCK,
     });
     axios({
-      method: "post",
-      url: `/api/student/addNewBlock`,
-      data: body,
+      method: 'post',
+      url: `/api/timetabledata/addNewBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: ADD_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
-              timetable: res.data.blocks,
-            },
+              timetable: res.data.blocks
+            }
           });
-        });
-      })
-      .catch(() => {
-        console.log("Method addBlock");
-        window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
-        dispatch({
-          type: ADD_BLOCK_FAIL,
-        });
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
       });
+    });
   };
 }
 
 export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
-      type: ADD_BLOCK,
+      type: ADD_BLOCK
     });
     axios({
-      method: "post",
-      url: `/api/student/addNewBlock`,
-      data: body,
+      method: 'post',
+      url: `/api/timetabledata/addNewBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: ADD_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: ADD_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: HIDE_COURSE_TIMETABLE,
             payload: {
-              timetable: res.data.blocks,
-            },
+              timetable: res.data.blocks
+            }
           });
 
           axios({
-            method: "get",
-            url: "/api/student/getStudentTimetable/" + userEmail,
-          }).then((res) => {
-            dispatch({
-              type: LOAD_MY_TIMETABLE_DONE,
-              payload: {
-                timetable: res.data.blocks,
-              },
-            });
-          });
-        });
-      })
-      .catch(() => {
-        console.log("Method:addBlockAndHideOthersWithSameCourseId");
-        window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
-        dispatch({
-          type: ADD_BLOCK_FAIL,
-        });
+            method: 'get',
+            url: '/api/timetabledata/getUserTimetable/' + userEmail
+          })
+            .then(res => {
+              dispatch({
+                type: LOAD_MY_TIMETABLE_DONE,
+                payload: {
+                  timetable: res.data.blocks
+                }
+              });
+            })
+
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: ADD_BLOCK_FAIL
       });
+    });
   };
 }
 
 export function editBlock(body, userEmail) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
-      type: EDIT_BLOCK,
+      type: EDIT_BLOCK
     });
     axios({
-      method: "put",
-      url: `/api/student/editBlock`,
-      data: body,
+      method: 'put',
+      url: `/api/timetabledata/editBlock`,
+      data: body
     })
-      .then(() => {
-        dispatch({
-          type: EDIT_BLOCK_DONE,
-        });
-        axios({
-          method: "get",
-          url: "/api/student/getStudentTimetable/" + userEmail,
-        }).then((res) => {
+    .then(() =>{
+      dispatch({
+        type: EDIT_BLOCK_DONE
+      });
+      axios({
+        method: 'get',
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
+      })
+        .then(res => {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
-              timetable: res.data.blocks,
-            },
+              timetable: res.data.blocks
+            }
           });
-        });
-      })
-      .catch(() => {
-        window.alert("Nepodarilo sa pridat blok, skúste to neskôr prosím.");
-        dispatch({
-          type: EDIT_BLOCK_FAIL,
-        });
+        })
+    })
+    .catch(() => {
+      window.alert('Nepodarilo sa pridat blok, skúste to neskôr prosím.');
+      dispatch({
+        type: EDIT_BLOCK_FAIL
       });
+    });
   };
 }
 
@@ -401,10 +405,10 @@ export function loadMyTimetableCalendar(user, history) {
     history.push(PERSONALNUMBER);
   }
   return axios({
-    method: "get",
-    url: "/api/student/getStudentTimetableCalendar/" + user.email,
+    method: 'get',
+    url: '/api/timetabledata/getUserTimetableCalendar/' + user.email
   })
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
     .catch(() => {

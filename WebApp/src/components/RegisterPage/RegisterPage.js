@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import classNames from 'classnames';
-import FormValidator from '../FormValidator/FormValidator';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-import { HOME } from '../../util/routes';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import _ from "lodash";
+import classNames from "classnames";
+import FormValidator from "../FormValidator/FormValidator";
+import axios from "axios";
+import PropTypes from "prop-types";
+import TextField from "@material-ui/core/TextField";
+import { HOME } from "../../util/routes";
 import ReCAPTCHA from "react-google-recaptcha";
 //import Modal from '../Modal/Modal';
 //import Backdrop from '../Backdrop/Backdrop';
@@ -15,74 +15,74 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 const validator = new FormValidator([
   {
-    field: 'email',
-    method: 'isEmpty',
+    field: "email",
+    method: "isEmpty",
     validWhen: false,
-    message: 'Zadajte email'
+    message: "Zadajte email",
   },
   {
-    field: 'email',
-    method: 'isEmail',
+    field: "email",
+    method: "isEmail",
     validWhen: true,
-    message: 'Emailová adresa nie je platná.'
+    message: "Emailová adresa nie je platná.",
   },
   {
-    field: 'name',
-    method: 'isEmpty',
+    field: "name",
+    method: "isEmpty",
     validWhen: false,
-    message: 'Zadajte meno'
+    message: "Zadajte meno",
   },
   {
-    field: 'surname',
-    method: 'isEmpty',
+    field: "surname",
+    method: "isEmpty",
     validWhen: false,
-    message: 'Zadajte priezvisko'
+    message: "Zadajte priezvisko",
   },
   {
-    field: 'password',
-    method: 'isEmpty',
+    field: "password",
+    method: "isEmpty",
     validWhen: false,
-    message: 'Zadajte heslo'
+    message: "Zadajte heslo",
   },
   {
-    field: 'password',
+    field: "password",
     method: (_, state) => state.password.length > 7,
     validWhen: true,
-    message: 'Heslo musí obsahovať aspoň 8 znakov.'
+    message: "Heslo musí obsahovať aspoň 8 znakov.",
   },
   {
-    field: 'password',
-    method: 'matches',
+    field: "password",
+    method: "matches",
     args: [/\d/],
     validWhen: true,
-    message: 'Heslo musí obsahovať aspoň jednu číslicu.'
+    message: "Heslo musí obsahovať aspoň jednu číslicu.",
   },
   {
-    field: 'password',
-    method: 'matches',
+    field: "password",
+    method: "matches",
     args: [/.*[A-Z]/],
     validWhen: true,
-    message: 'Heslo musí obsahovať aspoň jedno veľké písmeno.'
+    message: "Heslo musí obsahovať aspoň jedno veľké písmeno.",
   },
   {
-    field: 'password',
-    method: 'matches',
+    field: "password",
+    method: "matches",
     args: [/.*[a-z]/],
     validWhen: true,
-    message: 'Heslo musí obsahovať aspoň jedno malé písmeno.'
+    message: "Heslo musí obsahovať aspoň jedno malé písmeno.",
   },
   {
-    field: 'passwordAgain',
-    method: 'isEmpty',
+    field: "passwordAgain",
+    method: "isEmpty",
     validWhen: false,
-    message: 'Zadajte heslo znova'
+    message: "Zadajte heslo znova",
   },
   {
-    field: 'passwordAgain',
+    field: "passwordAgain",
     method: (confirmation, state) => state.password === confirmation,
     validWhen: true,
-    message: 'Heslá sa nezhodujú'
-  }
+    message: "Heslá sa nezhodujú",
+  },
 ]);
 
 class RegisterPage extends Component {
@@ -90,17 +90,17 @@ class RegisterPage extends Component {
     super();
 
     this.state = {
-      name: '',
-      surname: '',
-      email: '',
-      password: '',
-      passwordAgain: '',
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      passwordAgain: "",
       validation: validator.valid(),
       submitted: false,
       serverErrors: [],
       hasAgreed: false,
-      privacyPolicyOpened : false,
-      captchaValue : null
+      privacyPolicyOpened: false,
+      captchaValue: null,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -110,27 +110,27 @@ class RegisterPage extends Component {
 
   onChangeCaptcha(value) {
     if (value) {
-      document.getElementById('captchaLabel').style.display = 'none';
+      document.getElementById("captchaLabel").style.display = "none";
       this.setState({
-        captchaValue : value
+        captchaValue: value,
       });
     }
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     //event.preventDefault();
     this.setState({ [event.target.name]: event.target.value });
   };
 
   handlePrivacyPolicyOpened = () => {
-    this.setState({privacyPolicyOpened: true});
+    this.setState({ privacyPolicyOpened: true });
   };
 
   handleModalCancel = () => {
-    this.setState({privacyPolicyOpened: false});
+    this.setState({ privacyPolicyOpened: false });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
 
     const bodyValidation = {
@@ -138,7 +138,7 @@ class RegisterPage extends Component {
       surname: this.state.surname,
       email: this.state.email,
       password: this.state.password,
-      passwordAgain: this.state.passwordAgain
+      passwordAgain: this.state.passwordAgain,
     };
 
     const validation = validator.validate(bodyValidation);
@@ -146,10 +146,10 @@ class RegisterPage extends Component {
     this.setState({ validation, submitted: true });
 
     if (this.state.captchaValue == null) {
-      document.getElementById('captchaLabel').style.display = 'block';
+      document.getElementById("captchaLabel").style.display = "block";
       return;
     } else {
-      document.getElementById('captchaLabel').style.display = 'none';
+      document.getElementById("captchaLabel").style.display = "none";
     }
 
     const body = {
@@ -158,19 +158,19 @@ class RegisterPage extends Component {
       email: this.state.email,
       password: this.state.password,
       passwordAgain: this.state.passwordAgain,
-      captcha: this.state.captchaValue
+      captcha: this.state.captchaValue,
     };
 
     if (validation.isValid) {
       axios({
-        method: 'post',
-        url: '/api/user/register',
-        data: body
+        method: "post",
+        url: "/api/user/register",
+        data: body,
       })
         .then(() => {
           this.props.history.push(HOME);
         })
-        .catch(error => {
+        .catch((error) => {
           var serverErrors = _.flatten(_.values(error.response.data.errors));
           this.setState({ serverErrors });
         });
@@ -184,17 +184,27 @@ class RegisterPage extends Component {
       : this.state.validation;
 
     const serverErrors = this.state.serverErrors;
-    const serverErrorsList = serverErrors.map(e => <li key={e}>{e}</li>);
+    const serverErrorsList = serverErrors.map((e) => <li key={e}>{e}</li>);
     return (
       <React.Fragment>
         {/* {this.state.privacyPolicyOpened && <Backdrop></Backdrop>}
         {this.state.privacyPolicyOpened && <Modal title="Privacy policies" onCancel={this.handleModalCancel}>
           <p>Pomáhať a chrániť!</p>
         </Modal>} */}
+
         <div className="FormCenter">
           <form onSubmit={this.handleSubmit} className="FormFields">
             <div className="FormField">
+              <div>
+                <div className="LoginPage_maintext">Vytvorenie účtu</div>
+                <div className="LoginPage_secondarytext">
+                  Vyplňte údaje svojho budúceho účtu.
+                </div>
+              </div>
+            </div>
+            <div className="FormField">
               <TextField
+                variant="outlined"
                 label="Meno"
                 type="text"
                 required
@@ -210,6 +220,7 @@ class RegisterPage extends Component {
 
             <div className="FormField">
               <TextField
+                variant="outlined"
                 label="Priezvisko"
                 type="text"
                 required
@@ -225,6 +236,7 @@ class RegisterPage extends Component {
 
             <div className="FormField">
               <TextField
+                variant="outlined"
                 label="E-Mailová adresa"
                 type="email"
                 required
@@ -240,6 +252,7 @@ class RegisterPage extends Component {
 
             <div className="FormField">
               <TextField
+                variant="outlined"
                 label="Heslo"
                 type="password"
                 required
@@ -255,6 +268,7 @@ class RegisterPage extends Component {
 
             <div className="FormField">
               <TextField
+                variant="outlined"
                 label="Potvrdenie hesla"
                 type="password"
                 required
@@ -268,23 +282,32 @@ class RegisterPage extends Component {
               />
             </div>
 
-            <div className="FormField">
-              
-            <input
-                  className="FormField__Checkbox"
-                  type="checkbox" name="hasAgreed"
-                  value={this.state.hasAgreed}
-                  onChange={this.handleChange}
-                  required
-                />
+            {/* <div className="FormField">
+              <input
+                className="FormField__Checkbox"
+                type="checkbox"
+                name="hasAgreed"
+                value={this.state.hasAgreed}
+                onChange={this.handleChange}
+                required
+              />
               <label
                 className="FormField__CheckboxLabel"
                 //onClick={this.handlePrivacyPolicyOpened}
               >
-                {'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so '}
-                <a href="/privacypolicy" target="_blank" rel="noopener noreferrer" >Zmluvnými podmienkami a Zásadami ochrany osobných údajov</a>{'.'}
+                {
+                  'Kliknutím na "Registrovať sa" potvrdzuješ, že si si prečítal(a) a súhlasíš so '
+                }
+                <a
+                  href="/privacypolicy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Zmluvnými podmienkami a Zásadami ochrany osobných údajov
+                </a>
+                {"."}
               </label>
-            </div>
+            </div> */}
 
             <div className="FormField captchaClass">
               <ReCAPTCHA
@@ -292,24 +315,19 @@ class RegisterPage extends Component {
                 onChange={this.onChangeCaptcha}
                 hl="sk"
               />
-              <p id="catpchaText">
-                Táto stránka je chránená pomocou služby ReCAPTCHA a Google
-                <a href="https://policies.google.com/privacy"> Zásadou ochrany osobných údajov</a> a
-                <a href="https://policies.google.com/terms"> Podmienkami služieb</a> ,ktoré sú uplatnené.
-              </p>
-              <label id='captchaLabel'>Prosím vyplňte že nie ste robot !</label>
+              <label id="captchaLabel">Prosím vyplňte že nie ste robot !</label>
             </div>
-            
+
             <div className="FormField">
-              <button className="FormField__Button">
-                Registrovať sa
+              <button className="FormField__Button login_button">
+                Registrovať
               </button>
             </div>
 
             <div
               className={classNames({
-                'server-error':
-                  this.state.submitted && this.state.serverErrors.length > 0
+                "server-error":
+                  this.state.submitted && this.state.serverErrors.length > 0,
               })}
             >
               <ul>{serverErrorsList}</ul>
@@ -318,11 +336,13 @@ class RegisterPage extends Component {
             {this.state.submitted === true ? (
               <div style={messageStyle}>
                 <p>
-                  Na zadanú emailovú adresu bol zaslaný email pre potvrdenie registrácie.
+                  Na zadanú emailovú adresu bol zaslaný email pre potvrdenie
+                  registrácie.
                 </p>
               </div>
-            ) : (<div></div>)}
-
+            ) : (
+              <div></div>
+            )}
           </form>
         </div>
       </React.Fragment>
@@ -332,8 +352,8 @@ class RegisterPage extends Component {
 
 RegisterPage.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func
-  }).isRequired
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 export default connect()(RegisterPage);

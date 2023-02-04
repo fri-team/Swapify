@@ -85,10 +85,9 @@ export default class Menu extends PureComponent {
   };
 
   render() {
-    const { username, email, onLogout, selectPersonalNumber, changeDarkMode } =
-      this.props;
+    const { username, email, onLogout, selectPersonalNumber, changeDarkMode, ressetTimetable, timetableType, updateBlockedHoursVisibility} = this.props;
     const { x, y } = this.state;
-    const width = 400;
+    const width = timetableType == 'TeacherTimetable' ? 700:600;
     return (
       <ClickAwayListener onClickAway={this.handleClickOutside}>
         <MenuWrapper x={x - width} y={y + 8}>
@@ -106,13 +105,15 @@ export default class Menu extends PureComponent {
                   <div>
                     <div className="username">{username}</div>
                     <div className="email">{email}</div>
-                    <DeleteAccountModal email={email} onLogout={onLogout} />
+                      <DeleteAccountModal
+                      email={email} onLogout={onLogout}/>
                   </div>
                 </FlexBox>
               </PadBox>
               <PadBox>
                 <FlexBox>
                   <PullRight />
+
                   <MenuButton
                     color="primary"
                     variant="contained"
@@ -120,12 +121,18 @@ export default class Menu extends PureComponent {
                   >
                     Zmeniť číslo
                   </MenuButton>
+                  <MenuButton variant="contained" onClick={ressetTimetable}>
+                    Reset rozvrhu
+                  </MenuButton>
                   <MenuButton variant="contained" onClick={changeDarkMode}>
                     Dark mode
                   </MenuButton>
                   <MenuButton variant="contained" onClick={onLogout}>
                     Odhlásiť
                   </MenuButton>
+                  {timetableType == 'TeacherTimetable' && <MenuButton variant="contained" onClick={updateBlockedHoursVisibility}>
+                    Blokované
+                  </MenuButton>}
                 </FlexBox>
               </PadBox>
             </Content>

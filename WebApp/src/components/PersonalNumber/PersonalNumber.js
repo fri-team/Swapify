@@ -13,7 +13,7 @@ import { ClipLoader } from "react-spinners";
 class PersonalNumber extends React.Component {
   state = {
     loading: false,
-    personalNumber: (this.props.user.firstTimePN.length == 6 ? this.props.user.firstTimePN : ''),
+    personalNumber: (this.props.user.firstTimePN.length == 6 || this.props.user.firstTimePN.length == 5 ? this.props.user.firstTimePN : ''),
     user: this.props.user,
     existing: false,
     firstTimePN: this.props.user.firstTimePN,
@@ -34,7 +34,7 @@ class PersonalNumber extends React.Component {
     }
     axios({
       method: 'post',
-      url: '/api/timetable/setStudentTimetableFromPersonalNumber',
+      url: '/api/timetable/setUserTimetableFromPersonalNumber',
       data: body
     })
     .then(() => {
@@ -53,7 +53,7 @@ class PersonalNumber extends React.Component {
   }
 
   canBeSubmitted = () => {
-    return this.state.personalNumber.length === 6;
+    return this.state.personalNumber.length === 6 || this.state.personalNumber.length === 5;
   }
 
   render() {
@@ -66,7 +66,7 @@ class PersonalNumber extends React.Component {
                     fullWidth
                 >
                     <TextField
-                      error={(this.state.personalNumber.length !== 6 && this.state.personalNumber !== "") || this.state.existing}
+                      error={(this.state.personalNumber.length !== 6 && this.state.personalNumber.length !== 5 && this.state.personalNumber !== "") || this.state.existing}
                       id="personalNumber"
                       value={this.state.personalNumber}
                       onChange={this.handleSubmit}
@@ -77,21 +77,21 @@ class PersonalNumber extends React.Component {
                       multiline
                       autoFocus
                       onKeyDown={this.onKeyDown}
-                      helperText={this.state.personalNumber.length !== 6 && this.state.personalNumber !== "" ? 'Zlý formát osobného čísla' : this.state.existing ? 'Neexistujúce osobné číslo' : ''}
+                      helperText={this.state.personalNumber.length !== 6 && this.state.personalNumber.length !== 5 && this.state.personalNumber !== "" ? 'Zlý formát osobného čísla' : this.state.existing ? 'Neexistujúce osobné číslo' : ''}
                     />
                 </FormControl>
-                
-                {!this.state.loading && 
-                  <Button 
+
+                {!this.state.loading &&
+                  <Button
                       onClick={this.Submit}
                       disabled={!this.canBeSubmitted()}
-                      color="primary" 
+                      color="primary"
                       variant="contained"
                   >
-                    Uložiť 
+                    Uložiť
                   </Button>
                 }
-                {this.state.loading && 
+                {this.state.loading &&
                     <ClipLoader
                       size={35}
                       color={"#2196f3"}

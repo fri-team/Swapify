@@ -67,8 +67,8 @@ export default function timetableReducer(state = initState, { type, payload }) {
         ...state,
         isLoadingMyTimetable: false,
         myTimetable: payload.timetable,
-        myCourseNames: _.sortBy(_.uniqBy(_.map(payload.timetable, function(item) {
-          return {courseId: item.courseId,courseName: item.courseName};
+        myCourseNames: _.sortBy(_.uniqBy(_.map(payload.timetable, function (item) {
+          return { courseId: item.courseId, courseName: item.courseName, courseType : item.type};
         }), 'courseId'), 'courseName'),
         displayedTimetable: mergeTimetables(
           payload.timetable,
@@ -116,18 +116,18 @@ export default function timetableReducer(state = initState, { type, payload }) {
         )
       };
     case SHOW_EXCHANGE_MODE_TIMETABLE:
-    return {
-      ...state,
-      displayedCourses: _.concat(state.displayedCourses, payload.courseId),
-      displayedTimetable: mergeTimerablesShow(
-        state.myTimetable,
-        _.pick(
-          state.courseTimetables,
-          _.concat(state.displayedCourses, payload.courseId)
-        ),
-        state.displayedCourses.length + 1
-      )
-    };
+      return {
+        ...state,
+        displayedCourses: _.concat(state.displayedCourses, payload.courseId),
+        displayedTimetable: mergeTimerablesShow(
+          state.myTimetable,
+          _.pick(
+            state.courseTimetables,
+            _.concat(state.displayedCourses, payload.courseId)
+          ),
+          state.displayedCourses.length + 1
+        )
+      };
     case CANCEL_EXCHANGE_MODE:
       return {
         ...state,
@@ -154,8 +154,7 @@ export default function timetableReducer(state = initState, { type, payload }) {
 
       var displayedCourses;
       // if course id set to null hide all courses
-      if (payload.courseId == null)
-      {
+      if (payload.courseId == null) {
         displayedCourses = [];
       } else {
         displayedCourses = _.without(state.displayedCourses, payload.courseId);
@@ -177,95 +176,95 @@ export default function timetableReducer(state = initState, { type, payload }) {
         )
       };
     case REMOVE_BLOCK:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isBlockRemoved: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isBlockRemoved: false
+      };
     case REMOVE_BLOCK_DONE:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isBlockRemoved: true
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isBlockRemoved: true
+      };
     case REMOVE_BLOCK_FAIL:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isBlockRemoved: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isBlockRemoved: false
+      };
     case EDIT_BLOCK:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isEdited: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isEdited: false
+      };
     case EDIT_BLOCK_DONE:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isEdited: true
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isEdited: true
+      };
     case EDIT_BLOCK_FAIL:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isEdited: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isEdited: false
+      };
     case ADD_BLOCK:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isAdded: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isAdded: false
+      };
     case ADD_BLOCK_DONE:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isAdded: true
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isAdded: true
+      };
     case ADD_BLOCK_FAIL:
-    return {
-      ...state,
-      displayedTimetable: mergeTimetables(
-        state.myTimetable,
-        _.pick(state.courseTimetables, state.displayedCourses),
-        0
-      ),
-      isAdded: false
-    };
+      return {
+        ...state,
+        displayedTimetable: mergeTimetables(
+          state.myTimetable,
+          _.pick(state.courseTimetables, state.displayedCourses),
+          0
+        ),
+        isAdded: false
+      };
     case CHOOSE_EXCHANGE_FROM_BLOCK:
       return {
         ...state,

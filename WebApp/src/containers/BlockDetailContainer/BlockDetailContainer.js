@@ -9,17 +9,19 @@ import * as timetableActions from "../../actions/timetableActions";
 class BlockDetailContainer extends Component {
   state = {
     user: this.props.user,
+    timetableType: this.props.timetableType
   };
 
   onOutsideClick = () => {
     this.props.actions.hideDetail();
-  };
+  }
 
-  exchangeRequest = (course) => {
+  exchangeRequest = (course) =>
+  {
     this.props.timetableActions.showExchangeModeTimetable(course);
     this.props.timetableActions.chooseExchangeFromBlock(course);
     this.props.actions.hideDetail();
-  };
+  }
 
   onClickDelete = (block) => {
     this.props.timetableActions.removeBlock(block, this.state.user.email);
@@ -52,6 +54,7 @@ class BlockDetailContainer extends Component {
         onClickDelete={this.onClickDelete}
         onClickEdit={this.onClickEdit}
         onClickAdd={this.onClickAdd}
+        timetableType={this.state.timetableType}
       />
     );
   }
