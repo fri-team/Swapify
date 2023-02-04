@@ -157,7 +157,7 @@ class AppToolbar extends PureComponent {
                   selectPersonalNumber={this.changePersonalNumber}
                   onLogout={this.handleLogout}
                   //onClose={() => this.setState({ showMenu: false })}
-                  //onClick={() => this.setState({ showMenu: !this.state.showMenu })}
+                  onClick={() => this.setState({ showMenu: !this.state.showMenu })}
                   changeDarkMode={changeDarkMode}
                   ressetTimetable={() => this.reloadTimetable(user)}
                   timetableType={timetableType}

@@ -1,67 +1,62 @@
-import React, { PureComponent } from 'react';
-import { textTransform } from 'text-transform';
-import PropTypes from 'prop-types';
-import onClickOutside from 'react-onclickoutside';
-import _, { padStart, parseInt, replace } from 'lodash';
-import toMaterialStyle from 'material-color-hash';
-import Tooltip from '@material-ui/core/Tooltip';
-import Zoom from '@material-ui/core/Zoom';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import ClearIcon from '@material-ui/icons/Clear';
-import AddIcon from '@material-ui/icons/Add';
-import SwapIcon from '@material-ui/icons/SwapHorizSharp';
-import AddBlockForm from '../AddBlockForm/AddBlockForm'
-import Location from '../svg/Location';
-import Person from '../svg/Person';
-import './BlockDetail.scss';
+import React, { PureComponent } from "react";
+import { textTransform } from "text-transform";
+import PropTypes from "prop-types";
+import onClickOutside from "react-onclickoutside";
+import _, { padStart, parseInt, replace } from "lodash";
+import toMaterialStyle from "material-color-hash";
+import Tooltip from "@material-ui/core/Tooltip";
+import Zoom from "@material-ui/core/Zoom";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import ClearIcon from "@material-ui/icons/Clear";
+import AddIcon from "@material-ui/icons/Add";
+import SwapIcon from "@material-ui/icons/SwapHorizSharp";
+import AddBlockForm from "../AddBlockForm/AddBlockForm";
+import Location from "../svg/Location";
+import Person from "../svg/Person";
+import "./BlockDetail.scss";
 
 class BlockDetail extends PureComponent {
   state = {
     dialogOpen: false,
     course: { ...this.props.course },
-    timetableType: {...this.props.timetableType},
-    blockType: {...this.props.blockType}
+    timetableType: { ...this.props.timetableType },
+    blockType: { ...this.props.blockType },
   };
 
-
   textTrans = (text) => {
-    let a = textTransform(text, 'title');
+    let a = textTransform(text, "title");
     return a;
-  }
+  };
 
   calculateBottomPosition = (pTop) => {
-    if (pTop > window.innerHeight * 0.7)
-      return `2px`
-    else
-      return `auto`;
-  }
+    if (pTop > window.innerHeight * 0.7) return `2px`;
+    else return `auto`;
+  };
 
   calculateTopPosition = (pTop) => {
-    if (pTop > window.innerHeight * 0.7)
-      return `auto`
-    else
-      return `${pTop}px`;
-  }
+    if (pTop > window.innerHeight * 0.7) return `auto`;
+    else return `${pTop}px`;
+  };
 
   handleClickOutside = () => {
     if (!this.state.dialogOpen) {
       this.props.onOutsideClick();
     }
-  }
+  };
 
   handleClickExchange = () => this.props.onExchangeRequest(this.props.course);
 
   handleClickDelete = () => {
     this.props.onClickDelete(this.props.course);
-    this.setState({ dialogOpen: false })
-  }
+    this.setState({ dialogOpen: false });
+  };
 
   handleClickEdit = () => {
     this.props.onClickEdit();
-    this.setState({ dialogOpen: false })
-  }
+    this.setState({ dialogOpen: false });
+  };
 
   handleClickAdd = () => {
     const body = {
@@ -70,62 +65,95 @@ class BlockDetail extends PureComponent {
         id: this.props.course.id,
         day: this.props.course.day,
         courseCode: this.props.course.courseCode,
-        startBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100,
-        endBlock: parseInt(replace(padStart(`${this.props.course.startBlock+6 || '07'}:00`, 5, '0'), /[^0-9]/, '')) / 100 +
-                  parseInt(this.props.course.endBlock - this.props.course.startBlock),
+        startBlock:
+          parseInt(
+            replace(
+              padStart(
+                `${this.props.course.startBlock + 6 || "07"}:00`,
+                5,
+                "0"
+              ),
+              /[^0-9]/,
+              ""
+            )
+          ) / 100,
+        endBlock:
+          parseInt(
+            replace(
+              padStart(
+                `${this.props.course.startBlock + 6 || "07"}:00`,
+                5,
+                "0"
+              ),
+              /[^0-9]/,
+              ""
+            )
+          ) /
+            100 +
+          parseInt(this.props.course.endBlock - this.props.course.startBlock),
         courseName: this.props.course.courseName,
         courseShortcut: this.props.course.courseShortcut,
         room: this.props.course.room,
         teacher: this.props.course.teacher,
-        type: this.props.course.type
-      }
-    }
+        type: this.props.course.type,
+      },
+    };
 
     this.props.onClickAdd(body);
-  }
+  };
 
   onClickEditBlock = () => {
     //ak je to typ bloku event musi sa dialogOpen : true ale s tabValue = 1
-    this.setState({ dialogOpen: true  });
+    this.setState({ dialogOpen: true });
   };
 
   onCloseEditBlock = () => {
-    this.setState({ dialogOpen: false })
-  }
+    this.setState({ dialogOpen: false });
+  };
 
   showEditButton = (color) => {
     if (this.props.course.isMine) {
       return (
-        <Tooltip title="Upraviť blok" placement="top" TransitionComponent={Zoom}>
+        <Tooltip
+          title="Upraviť blok"
+          placement="top"
+          TransitionComponent={Zoom}
+        >
           <IconButton onClick={this.onClickEditBlock}>
             <EditIcon nativecolor={color} />
           </IconButton>
-        </Tooltip>)
+        </Tooltip>
+      );
     }
-  }
+  };
 
   showExchangeButton = (color) => {
     if (this.props.course.isMine) {
       return (
-        <Tooltip title="Požiadať o výmenu" placement="top" TransitionComponent={Zoom}>
+        <Tooltip
+          title="Požiadať o výmenu"
+          placement="top"
+          TransitionComponent={Zoom}
+        >
           <IconButton onClick={this.handleClickExchange}>
             <SwapIcon nativecolor={color} />
           </IconButton>
-        </Tooltip>)
+        </Tooltip>
+      );
     }
-  }
+  };
 
   showAddButton = (color) => {
-    if(!this.props.course.isMine) {
+    if (!this.props.course.isMine) {
       return (
         <Tooltip title="Pridať blok" placement="top" TransitionComponent={Zoom}>
           <IconButton onClick={this.handleClickAdd}>
             <AddIcon nativecolor={color} />
           </IconButton>
         </Tooltip>
-      )
+      );
     }
-  }
+  };
 
   convertNameToEmail(teacherName) {
     let result = "";
@@ -134,20 +162,19 @@ class BlockDetail extends PureComponent {
     for (let i = 0; i < teacherName.length; i++) {
       result += teacherName[i];
       charsBeforeDot++;
-      if (teacherName[i] === ('.')) {
+      if (teacherName[i] === ".") {
         result = result.substring(0, result.length - charsBeforeDot);
-
       }
-      if (teacherName[i] === (' ')) {
+      if (teacherName[i] === " ") {
         charsBeforeDot = 0;
       }
     }
 
     result = result.trim();
     if (result !== "") {
-      result = _.replace(_.lowerCase(_.deburr(result)), ' ', '.') + '@fri.uniza.sk';
-    }
-    else {
+      result =
+        _.replace(_.lowerCase(_.deburr(result)), " ", ".") + "@fri.uniza.sk";
+    } else {
       result = null;
     }
 
@@ -157,7 +184,7 @@ class BlockDetail extends PureComponent {
   setBlockColor(shade) {
     return {
       backgroundColor: shade,
-      color: 'rgba(0, 0, 0, 0.87)',
+      color: "rgba(0, 0, 0, 0.87)",
     };
   }
 
@@ -168,39 +195,54 @@ class BlockDetail extends PureComponent {
     const { top, left, course, user, timetableType } = this.props;
     const email = this.convertNameToEmail(course.teacher);
     var teacherName = course.teacher;
-    if (!teacherName){
+    if (!teacherName) {
       teacherName = this.props.user.name + " " + this.props.user.surname;
     }
     //const UsersName = this.user;
     const place = course.room;
     const room = course.room !== "" ? ", " + course.room : "";
-    const { backgroundColor, color } = course.blockColor == null ? toMaterialStyle(
-      course.courseCode || '', course.blockColor
-    ) : this.setBlockColor(course.blockColor);
-    const style = { top: `${this.calculateTopPosition(top)}`, left: `${left}px`, bottom: `${this.calculateBottomPosition(top)}`, position: `absolute`, width: `20%` };
+    const { backgroundColor, color } =
+      course.blockColor == null
+        ? toMaterialStyle(course.courseCode || "", course.blockColor)
+        : this.setBlockColor(course.blockColor);
+    const style = {
+      top: `${this.calculateTopPosition(top)}`,
+      left: `${left}px`,
+      bottom: `${this.calculateBottomPosition(top)}`,
+      position: `absolute`,
+      width: `20%`,
+    };
     const dialogOpen = this.state.dialogOpen;
     return (
       <div className="block-detail" style={style}>
         <div className="header" style={{ backgroundColor }}>
           <div className="buttons">
-            {(
+            {
               <span>
-                {course.type !== 'blocked' && (this.showEditButton(color))}
-                {course.type !== "event" && this.showEditButton(color)}
-                {course.type !== 'lecture' && course.type !== "event" && timetableType !== 'TeacherTimetable' &&(this.showExchangeButton(color))}
+                {course.type !== "blocked" &&
+                  course.type !== "event" &&
+                  this.showEditButton(color)}
+                {course.type !== "lecture" &&
+                  course.type !== "event" &&
+                  timetableType !== "TeacherTimetable" &&
+                  this.showExchangeButton(color)}
                 {this.showAddButton(color)}
-                <Tooltip title="Vymazať blok" placement="top" TransitionComponent={Zoom} >
+                <Tooltip
+                  title="Vymazať blok"
+                  placement="top"
+                  TransitionComponent={Zoom}
+                >
                   <IconButton onClick={this.handleClickDelete}>
                     <DeleteIcon nativecolor={color} />
                   </IconButton>
                 </Tooltip>
               </span>
-            )}
+            }
             <IconButton onClick={this.handleClickOutside}>
               <ClearIcon nativecolor={color} />
             </IconButton>
           </div>
-          <div className="name" style={{ color }} >
+          <div className="name" style={{ color }}>
             {this.textTrans(course.courseName)}
           </div>
         </div>
@@ -260,7 +302,7 @@ BlockDetail.propTypes = {
   left: PropTypes.number.isRequired,
   course: PropTypes.shape({}).isRequired,
   onOutsideClick: PropTypes.func.isRequired,
-  onExchangeRequest: PropTypes.func.isRequired
+  onExchangeRequest: PropTypes.func.isRequired,
 };
 
 export default onClickOutside(BlockDetail);

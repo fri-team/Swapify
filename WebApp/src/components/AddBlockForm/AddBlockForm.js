@@ -230,11 +230,11 @@ class AddBlockForm extends Component {
   };
 
   canSubmit = () => {
-    const { courseName, startBlock, length, type, eventName, eventPlace } =
+    const { courseName, startBlock, length, type, eventName, eventPlace} =
       this.state;
     return (
       length &&
-      ((courseName && startBlock && type) || (eventName && eventPlace))
+      ((courseName && startBlock && type) || (eventName && eventPlace ))
     );
   };
 
@@ -378,8 +378,7 @@ class AddBlockForm extends Component {
                     InputProps={{
                       inputProps: {
                         min: 1,
-                        max:
-                          20 - this.state.startBlock.substring(0, 2),
+                        max: 20 - this.state.startBlock.substring(0, 2),
                       },
                     }}
                     name="length"

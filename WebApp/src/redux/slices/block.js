@@ -15,7 +15,7 @@ const initialState = {
   startBlock: null,
   endBlock: null,
   blockColor: "",
-  type: 4,
+  type: 5,
 };
 
 const slice = createSlice({

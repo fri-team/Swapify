@@ -4,7 +4,7 @@ import toMaterialStyle from 'material-color-hash';
 import Lecture from '../svg/Lecture';
 import Laboratory from '../svg/Laboratory';
 import './TimetableBlock.scss';
-import classNames from "classnames";
+//import classNames from "classnames";
 import { useSelector } from 'react-redux';
 
 const TimetableBlock = (props) => {
