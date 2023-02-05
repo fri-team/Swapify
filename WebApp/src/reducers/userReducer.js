@@ -18,11 +18,11 @@ export const getUserData = payload => {
     surname: payload.surname,
     isAuthenticated: true,
     token: payload.token,
-    studentId: payload.studentId,
+    userId: payload.userId,
     personalNumber: payload.personalNumber,
     firstTimePN: payload.firstTimePN,
     darkMode: payload.darkMode,
-    validTo
+    validTo,
   };
 };
 

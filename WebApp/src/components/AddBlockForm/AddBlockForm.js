@@ -78,7 +78,7 @@ class AddBlockForm extends Component {
     const fetch = throttle(500, (courseName) => {
       axios
         .get(
-          `/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.studentId}`
+          `/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.userId}`
         )
         .then(({ data }) => {
           this.setState({
@@ -230,11 +230,11 @@ class AddBlockForm extends Component {
   };
 
   canSubmit = () => {
-    const { courseName, startBlock, length, type, eventName, eventPlace} =
+    const { courseName, startBlock, length, type, eventName, eventPlace } =
       this.state;
     return (
       length &&
-      ((courseName && startBlock && type) || (eventName && eventPlace ))
+      ((courseName && startBlock && type) || (eventName && eventPlace))
     );
   };
 

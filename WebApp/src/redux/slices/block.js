@@ -55,7 +55,10 @@ export function createBlock(newBlock) {
     dispatch(slice.actions.startLoading());
     try {
       console.log("Vytvoreny blok, ktory sa posiela:", newBlock);
-      const response = await axios.post("/api/student/addNewBlock", newBlock);
+      const response = await axios.post(
+        "/api/timetabledata/addNewBlock",
+        newBlock
+      );
       console.log(response);
       dispatch(slice.actions.createBlockSuccess(response.data));
       window.location.reload(false);

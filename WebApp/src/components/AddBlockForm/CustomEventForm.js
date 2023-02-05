@@ -14,11 +14,11 @@ const CustomEventForm = ({ course, user }) => {
 
   const [isDisabled, setIsDisabled] = useState(true);
   const [customEvent, setCustomEvent] = useState({
-    id: "11111",
+    id: null,
     day: course.day,
     startBlock: padStart(`${course.startBlock + 6 || "07"}:00`, 5, "0"),
     eventPlace: "",
-    TimetableBlockType: "Event",
+    type: "Event",
     courseShortcut: "",
     courseId: "string",
     courseCode: Math.random() * 1000,
@@ -66,8 +66,8 @@ const CustomEventForm = ({ course, user }) => {
               "0"
             )
           ),
-          length: parseInt(customEvent.length),
-          //length: parseInt(customEvent.endBlock) - parseInt(customEvent.startBlock),
+          //length: parseInt(customEvent.length),
+          length: (parseInt(customEvent.endBlock) - parseInt(customEvent.startBlock)),
           courseShortcut: customEvent.courseName,
         },
 

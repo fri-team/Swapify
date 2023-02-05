@@ -110,7 +110,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: "get",
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`,
+        url: `/api/timetable/getCourseTimetable/${id}/${user.userId}`,
       })
         .then((res) => {
           dispatch({
@@ -199,7 +199,7 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher
       },
-      StudentId: user.studentId
+      UserId: user.userId
     }
 
     axios({

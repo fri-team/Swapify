@@ -37,10 +37,40 @@ class SideBarForm extends Component {
 
     fetchCourses = () => {
         const fetch = throttle(500, courseName => {
-          axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.studentId}`).then(({ data }) => {
-            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.yearOfStudy + ".r," + this.cutStudyType(x.studyType)})) });
-            this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.id + "," + x.yearOfStudy + "," + this.cutStudyType(x.studyType)})) });
-          });
+          axios
+            .get(
+              `/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.userId}`
+            )
+            .then(({ data }) => {
+              this.setState({
+                suggestions: map(data, (x) => ({
+                  ...x,
+                  label:
+                    x.courseName +
+                    " (" +
+                    x.courseCode +
+                    ") " +
+                    x.yearOfStudy +
+                    ".r," +
+                    this.cutStudyType(x.studyType),
+                })),
+              });
+              this.setState({
+                courseInfo: map(data, (x) => ({
+                  ...x,
+                  label:
+                    x.courseName +
+                    " (" +
+                    x.courseCode +
+                    ") " +
+                    x.id +
+                    "," +
+                    x.yearOfStudy +
+                    "," +
+                    this.cutStudyType(x.studyType),
+                })),
+              });
+            });
         })
 
         return courseName => {
@@ -54,7 +84,7 @@ class SideBarForm extends Component {
       var array = studyType.split(' ');
       var returnedString = '';
       for (var i = 0; i < 2; i++) {
-        returnedString += array[i].substring(0,3) + '.' 
+        returnedString += array[i].substring(0,3) + '.'
       }
       return returnedString;
     }
@@ -67,9 +97,9 @@ class SideBarForm extends Component {
     submit = () => {
       const { courseId, courseName } = this.state;
       const { onClose } = this.props;
-      
-      this.props.showCourseTimetable(courseId, courseName);  
-      
+
+      this.props.showCourseTimetable(courseId, courseName);
+
       this.setState({loading: false});
       onClose();
     }
@@ -88,8 +118,8 @@ class SideBarForm extends Component {
           && courseName.split(') ')[1].split(',')[0] === year+'.r' && courseName.split(') ')[1].split(',')[1] === type) {
           this.setState({courseId: this.state.courseInfo[i].label.split(') ')[1].split(',')[0]});
         }
-      }     
-    } 
+      }
+    }
 
     render() {
         const { onClose } = this.props
@@ -100,7 +130,7 @@ class SideBarForm extends Component {
               evt.stopPropagation();
               onClose();
             }}>
-              <div className="buttons">   
+              <div className="buttons">
                 <IconButton onClick={onClose}>
                   <ClearIcon nativecolor="black" />
                 </IconButton>
@@ -121,7 +151,7 @@ class SideBarForm extends Component {
                   </FlexBox>
           </DialogContent>
           <DialogActions>
-          {!this.state.loading && 
+          {!this.state.loading &&
             <Button
               disabled={!this.canSubmit()}
               onClick={this.submit}
@@ -131,7 +161,7 @@ class SideBarForm extends Component {
               Vyhľadať
             </Button>
           }
-           {this.state.loading && 
+           {this.state.loading &&
                 <ClipLoader
                   size={35}
                   color={"#2196f3"}
@@ -159,4 +189,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBarForm);
-                 
