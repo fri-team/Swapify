@@ -82,7 +82,7 @@ class HomePage extends Component {
 
                     <p>
                       V prípade otázok alebo pripomienok nás môžete kontaktovať:
-                      .......@fri.uniza.sk
+                      swapify.helpdesk@gmail.com
                     </p>
                   </div>
                 </Box>
