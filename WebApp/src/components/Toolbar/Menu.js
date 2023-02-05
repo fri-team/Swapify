@@ -1,5 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
-import React, { PureComponent } from "react";
+import React, { PureComponent} from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import Button from "@material-ui/core/Button";
@@ -58,7 +58,7 @@ const MenuButton = styled(Button)`
 `;
 
 export default class Menu extends PureComponent {
-  state = { x: 0, y: 0 };
+  state = { x: 0, y: 0 , count:0};
 
   componentDidMount() {
     this.calcPosition();
@@ -79,8 +79,14 @@ export default class Menu extends PureComponent {
   };
 
   handleClickOutside = () => {
-    if (document.getElementsByClassName("modal-window").length === 0) {
+    console.log("Menu");
+    this.setState((prevState) => {
+      return { count: prevState.count + 1 };
+    });
+    if (this.state.count == 2) {
+
       this.props.onClose();
+      console.log("Menu2");
     }
   };
 

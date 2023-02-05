@@ -103,8 +103,7 @@ class BlockDetail extends PureComponent {
   };
 
   onClickEditBlock = () => {
-    //ak je to typ bloku event musi sa dialogOpen : true ale s tabValue = 1
-    this.setState({ dialogOpen: true });
+    this.setState({ dialogOpen : true });
   };
 
   onCloseEditBlock = () => {
@@ -220,7 +219,7 @@ class BlockDetail extends PureComponent {
             {
               <span>
                 {course.type !== "blocked" &&
-                  course.type !== "event" &&
+                  //course.type !== "event" &&
                   this.showEditButton(color)}
                 {course.type !== "lecture" &&
                   course.type !== "event" &&
@@ -280,8 +279,20 @@ class BlockDetail extends PureComponent {
             </div>
           </div>
         </div>
-        {dialogOpen && (
+        {dialogOpen && this.props.course.type !== "event" && (
           <AddBlockForm
+            id={this.props.course.id}
+            user={user}
+            course={course}
+            onSubmitClick={this.handleClickEdit}
+            onCloseEditBlock={this.onCloseEditBlock}
+            onClose={this.handleClickOutside}
+            editing={true}
+          />
+        )}
+        {dialogOpen && this.props.course.type == "event" && (
+          <AddBlockForm
+            tabValue = {"1"}
             id={this.props.course.id}
             user={user}
             course={course}
