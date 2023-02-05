@@ -220,7 +220,7 @@ class BlockDetail extends PureComponent {
             {
               <span>
                 {course.type !== "blocked" &&
-                  //course.type !== "event" &&
+                  course.type !== "event" &&
                   this.showEditButton(color)}
                 {course.type !== "lecture" &&
                   course.type !== "event" &&

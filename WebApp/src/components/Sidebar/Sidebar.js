@@ -29,7 +29,7 @@ const StyledTab = withStyles({
 const StyledSingleTab = withStyles({
   root: {
     width: "100%",
-    minWidth:200
+    minWidth: 200,
   },
 })(Tab);
 
@@ -75,18 +75,21 @@ const Sidebar = ({
     >
       {value === 0 && (
         <List>
-          {timetableType != "TeacherTimetable" && <Tooltip
-            title="Pridať predmet"
-            placement="top"
-            style={{ color: darkMode ? "white" : "black" }}
-          >
-            <IconButton onClick={addClickHandle}>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>}
+          {timetableType != "TeacherTimetable" && (
+            <Tooltip
+              title="Pridať predmet"
+              placement="top"
+              style={{ color: darkMode ? "white" : "black" }}
+            >
+              <IconButton onClick={addClickHandle}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          )}
           {courses.map(
             ({ courseId, courseName, blockType, checked }) =>
-              blockType != "blocked" && (
+              blockType != "blocked" &&
+              blockType != "event" && (
                 <ListItem button key={courseId}>
                   <FormControlLabel
                     control={
