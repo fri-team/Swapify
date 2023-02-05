@@ -279,20 +279,8 @@ class BlockDetail extends PureComponent {
             </div>
           </div>
         </div>
-        {dialogOpen && this.props.course.type !== "event" && (
+        {dialogOpen &&  (
           <AddBlockForm
-            id={this.props.course.id}
-            user={user}
-            course={course}
-            onSubmitClick={this.handleClickEdit}
-            onCloseEditBlock={this.onCloseEditBlock}
-            onClose={this.handleClickOutside}
-            editing={true}
-          />
-        )}
-        {dialogOpen && this.props.course.type == "event" && (
-          <AddBlockForm
-            tabValue = {"1"}
             id={this.props.course.id}
             user={user}
             course={course}

@@ -63,9 +63,10 @@ class AddBlockForm extends Component {
         : this.setBlockColor(this.props.course.blockColor).backgroundColor,
     yearOfStudy: "",
     studyType: "",
-    tabValue: 0,
-    eventName: "",
-    eventPlace: "",
+    tabValue: this.props.course.type == "event" ? 1 : 0,
+    //tabValue: 0,
+    eventName: this.props.course.courseName,
+    eventPlace: this.props.course.room,
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
