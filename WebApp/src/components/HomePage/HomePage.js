@@ -8,10 +8,11 @@ import { Box } from "@material-ui/core";
 
 import Slider from "react-slick";
 import homeImage from "../../images/home-background.png";
+import vymena from "../../images/Vymena.svg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import GlLogo from "../../images/GlobalLogic-logo-black.png";
+import GlLogo from "../../images/GlobalLogic-logo-white.png";
 import UnizaLogo from "../../images/Uniza-logo-black.png";
 
 class HomePage extends Component {
@@ -75,14 +76,24 @@ class HomePage extends Component {
                       <br /> GlobalLogic podpora: Ing. Ondrej Kasaj
                     </div>
                     <div className="m10">
-                      Dátum vzniku projektu: XX.XX.XXXX
+                      Rok vzniku projektu: 2018
                       <br /> Aktuálna verzia projektu: 2.0.0
                     </div>
 
                     <p>
                       V prípade otázok alebo pripomienok nás môžete kontaktovať:
-                      .......@fri.uniza.sk
+                      swapify.helpdesk@gmail.com
                     </p>
+                  </div>
+                </Box>
+                <Box>
+                  <div>
+                    <img
+                      className="slider_image"
+                      src={vymena}
+                      height="30%"
+                      width="60%"
+                    ></img>
                   </div>
                 </Box>
               </Slider>
