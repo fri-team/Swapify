@@ -103,11 +103,10 @@ export function loadCourseTimetable(courseId, courseName) {
 function dowloadCourseTimetableIfNeeded(id, name, action) {
   return (dispatch, getState) => {
     const { timetable, user } = getState();
-    console.log(user)
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
+        url: `/api/timetable/getCourseTimetable/${id}/${user.timetableId}`
       })
         .then(res => {
           dispatch({
@@ -196,7 +195,7 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher
       },
-      StudentId: user.studentId
+      TimetableId: user.timetableId
     }
 
     axios({

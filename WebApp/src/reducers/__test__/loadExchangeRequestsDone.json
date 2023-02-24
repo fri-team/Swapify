@@ -4,10 +4,10 @@
         "payload": {
             "exchangeRequests": [
                 {
-                    "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
+                    "timetableId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
                 },
                 {
-                    "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
+                    "timetableId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
                 }
             ]
         }
@@ -16,10 +16,10 @@
     "stateAfter": {
         "exchangeRequests": [
             {
-                "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
+                "timetableId": "4358687c-7301-4f88-bfad-0e42cefbdb7d"
             },
             {
-                "studentId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
+                "timetableId": "4358687c-7301-4f88-bfad-0e42cefbdb7e"
             }
         ]
     }
