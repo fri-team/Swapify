@@ -103,6 +103,7 @@ export function loadCourseTimetable(courseId, courseName) {
 function dowloadCourseTimetableIfNeeded(id, name, action) {
   return (dispatch, getState) => {
     const { timetable, user } = getState();
+    console.log(user)
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
