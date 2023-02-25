@@ -10,7 +10,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities.Notifications
         public static SuccessfulExchangeNotification Create(BlockChangeRequest requestOfUserToNotify,
             BlockChangeRequest requestOfOtherUser)
         {
-            return new SuccessfulExchangeNotification(requestOfUserToNotify.StudentId, requestOfUserToNotify.Id);
+            return new SuccessfulExchangeNotification(requestOfUserToNotify.TimetableId, requestOfUserToNotify.Id);
         }
 
         public SuccessfulExchangeNotification()

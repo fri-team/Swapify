@@ -37,40 +37,10 @@ class SideBarForm extends Component {
 
     fetchCourses = () => {
         const fetch = throttle(500, courseName => {
-          axios
-            .get(
-              `/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.userId}`
-            )
-            .then(({ data }) => {
-              this.setState({
-                suggestions: map(data, (x) => ({
-                  ...x,
-                  label:
-                    x.courseName +
-                    " (" +
-                    x.courseCode +
-                    ") " +
-                    x.yearOfStudy +
-                    ".r," +
-                    this.cutStudyType(x.studyType),
-                })),
-              });
-              this.setState({
-                courseInfo: map(data, (x) => ({
-                  ...x,
-                  label:
-                    x.courseName +
-                    " (" +
-                    x.courseCode +
-                    ") " +
-                    x.id +
-                    "," +
-                    x.yearOfStudy +
-                    "," +
-                    this.cutStudyType(x.studyType),
-                })),
-              });
-            });
+          axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.props.user.timetableId}`).then(({ data }) => {
+            this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.yearOfStudy + ".r," + this.cutStudyType(x.studyType)})) });
+            this.setState({ courseInfo: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') ' + x.id + "," + x.yearOfStudy + "," + this.cutStudyType(x.studyType)})) });
+          });
         })
 
         return courseName => {

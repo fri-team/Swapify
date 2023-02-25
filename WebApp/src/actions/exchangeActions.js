@@ -11,8 +11,8 @@ export function loadExchangeRequests() {
         dispatch({
             type: LOAD_EXCHANGE_REQUESTS
         });
-        let userId = getState().user.userId;
-        api.exchangeRequests.getAllWaiting(userId)
+        let timetableId = getState().user.timetableId;
+        api.exchangeRequests.getAllWaiting(timetableId)
             .then(response => {
                 dispatch(loadExchangeRequestsDone(response.data))
             })

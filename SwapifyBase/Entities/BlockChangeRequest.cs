@@ -10,7 +10,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities
         /// <summary>
         /// Student who wants to change block
         /// </summary>
-        public Guid StudentId { get; set; }
+        public Guid TimetableId { get; set; }
         public Block BlockFrom { get; set; }
         public Block BlockTo { get; set; }
         public ExchangeStatus Status { get; set; }

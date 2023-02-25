@@ -47,31 +47,31 @@ namespace WebAPI.Controllers
                 blockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
                 blockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
                 blockChangeRequest.DateOfCreation = DateTime.Now;
-                blockChangeRequest.StudentId = Guid.Parse(request.StudentId);
+                blockChangeRequest.TimetableId = Guid.Parse(request.timetableId);
 
                 var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
                 if (res != (null, null))
                 {
-                    var timetableData1 = await _timetableDataService.FindByIdAsync(res.Item1.StudentId);
+                    var timetableData1 = await _timetableDataService.FindByIdAsync(res.Item1.TimetableId);
                     timetableData1.Timetable.RemoveBlock(res.Item1.BlockFrom.BlockId);
                     timetableData1.Timetable.AddNewBlock(res.Item1.BlockTo.Clone());
                     await _timetableDataService.UpdateTimetableDataAsync(timetableData1);
                     var user1 = await _userService.GetUserByIdAsync(timetableData1.UserId.ToString());
                     if (user1 == null)
                     {
-                        string message = $"Cannot find user with ID {res.Item1.StudentId}.";
+                        string message = $"Cannot find user with ID {res.Item1.TimetableId}.";
                         _logger.LogError(message);
                         return NotFound(message);
                     }
 
-                    var timetableData2 = await _timetableDataService.FindByIdAsync(res.Item2.StudentId);
+                    var timetableData2 = await _timetableDataService.FindByIdAsync(res.Item2.TimetableId);
                     timetableData2.Timetable.RemoveBlock(res.Item2.BlockFrom.BlockId);
                     timetableData2.Timetable.AddNewBlock(res.Item2.BlockTo.Clone());
                     await _timetableDataService.UpdateTimetableDataAsync(timetableData2);
                     var user2 = await _userService.GetUserByIdAsync(timetableData2.UserId.ToString());
                     if (user2 == null)
                     {
-                        string message = $"Cannot find user with ID {res.Item2.StudentId}.";
+                        string message = $"Cannot find user with ID {res.Item2.TimetableId}.";
                         _logger.LogError(message);
                         return NotFound(message);
                     }
@@ -104,12 +104,12 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("userWaitingExchanges")]
-        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
+        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string timetableId)
         {
-            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
+            bool isValidGUID = Guid.TryParse(timetableId, out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"StudentTimetable id: {studentId} is not valid GUID.");
+                return ErrorResponse($"StudentTimetable id: {timetableId} is not valid GUID.");
             }
 
             var response = await _blockChangesService.FindWaitingStudentRequests(guid);
@@ -124,7 +124,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(response);
             }
-            return ErrorResponse($"Cannot cancel request from student {request.StudentId} because it was changed");
+            return ErrorResponse($"Cannot cancel request from student {request.TimetableId} because it was changed");
         }
     }
 }

@@ -18,7 +18,7 @@ export const getUserData = payload => {
     surname: payload.surname,
     isAuthenticated: true,
     token: payload.token,
-    userId: payload.userId,
+    timetableId: payload.timetableId,
     personalNumber: payload.personalNumber,
     firstTimePN: payload.firstTimePN,
     darkMode: payload.darkMode,
