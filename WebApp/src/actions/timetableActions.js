@@ -106,7 +106,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
+        url: `/api/timetable/getCourseTimetable/${id}/${user.timetableId}`
       })
         .then(res => {
           dispatch({
@@ -195,13 +195,14 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher
       },
-      StudentId: user.studentId
+      TimetableId: user.timetableId
     }
 
     axios({
-      method: 'post',
+      method: "post",
       url: `/api/exchange/exchangeConfirm`,
-      data: body
+      data: body,
+
     })
       .then((response) => {
         var exchangeMade = response.data;
@@ -212,7 +213,8 @@ export function exchangeConfirm(blockTo) {
           window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
         }
-        dispatch(hideCourseTimetable(bl.id));
+        dispatch(cancelExchangeMode());
+        dispatch(hideCourseTimetable());
         dispatch(action);
         dispatch(loadExchangeRequests());
       })
@@ -221,6 +223,8 @@ export function exchangeConfirm(blockTo) {
           window.alert("Pri vytváraní žiadosti nastala chyba.");
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
+          console.log(body);
+          console.log(blockTo);
         } else if (error.request) {
           window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
           // The request was made but no response was received
@@ -228,12 +232,12 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          console.log("Error", error.message);
           //This error shows undefined history after creating request
         }
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
-          type: CANCEL_EXCHANGE_MODE
+          type: CANCEL_EXCHANGE_MODE,
         });
       });
   };
