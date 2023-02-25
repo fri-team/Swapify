@@ -79,7 +79,7 @@ namespace IntegrationTest.ExchangeControllerTest
 
             // Act
             //User ID is get after succesfull start but in this case we using non existing user id (Guid)
-            ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
+            ExchangeControllerTestsData.ExchangeModel11.timetableId = ExchangeControllerTestsData.TimetableGuid.ToString();
             var jsonModel = JsonConvert.SerializeObject(ExchangeControllerTestsData.ExchangeModel11);
             StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
             HttpResponseMessage response1 = await client1.PostAsync(ExchangeUri, content);
@@ -138,9 +138,9 @@ namespace IntegrationTest.ExchangeControllerTest
             return userModel.TimetableId;
         }
 
-        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
+        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string timetableId)
         {
-            exchangeModel.StudentId = studentId;
+            exchangeModel.timetableId = timetableId;
             exchangeModel.BlockFrom.BlockId = exchangeModel.BlockTo.CourseId;
             exchangeModel.BlockTo.BlockId = exchangeModel.BlockFrom.CourseId;
 

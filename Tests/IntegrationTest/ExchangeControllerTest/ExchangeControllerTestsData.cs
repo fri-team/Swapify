@@ -7,7 +7,7 @@ namespace IntegrationTest.ExchangeControllerTest
 {
     public static class ExchangeControllerTestsData
     {
-        public static readonly Guid StduentGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
+        public static readonly Guid TimetableGuid = Guid.Parse("72338e48-9829-47b5-a666-766bbbecd799");
         public static readonly Guid CourseGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
         public static readonly Guid Course2Guid = Guid.Parse("3F2504E0-4F89-11D3-9A0C-0305E82C3301");
 
