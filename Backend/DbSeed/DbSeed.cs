@@ -166,7 +166,7 @@ namespace FRITeam.Swapify.Backend.DbSeed
             {
                 blockExchangeCollection.InsertOne(new BlockChangeRequest
                 {
-                    StudentId = oleg.TimetableData.Id,
+                    TimetableId = oleg.TimetableData.Id,
                     Status = ExchangeStatus.WaitingForExchange,
                     DateOfCreation = DateTime.Now,
                     BlockFrom = new Block

@@ -10,17 +10,19 @@ export function loadExchangeRequests() {
     return (dispatch, getState) => {
         dispatch({
             type: LOAD_EXCHANGE_REQUESTS
-        });        
-        let studentId = getState().user.studentId;
-        api.exchangeRequests.getAllWaiting(studentId)
-            .then(response => {
-                dispatch(loadExchangeRequestsDone(response.data))
-            })
-            .catch(() => { 
-                dispatch({
-                    type: LOAD_EXCHANGE_REQUESTS_FAIL
-                })
-            })
+        });
+        let timetableId = getState().user.timetableId;
+        console.log(timetableId);
+        api.exchangeRequests
+          .getAllWaiting(timetableId)
+          .then((response) => {
+            dispatch(loadExchangeRequestsDone(response.data));
+          })
+          .catch(() => {
+            dispatch({
+              type: LOAD_EXCHANGE_REQUESTS_FAIL,
+            });
+          });
     }
 }
 

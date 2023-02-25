@@ -79,15 +79,15 @@ namespace IntegrationTest.ExchangeControllerTest
 
             // Act
             //User ID is get after succesfull start but in this case we using non existing user id (Guid)
-            ExchangeControllerTestsData.ExchangeModel11.StudentId = ExchangeControllerTestsData.StduentGuid.ToString();
+            ExchangeControllerTestsData.ExchangeModel11.timetableId= ExchangeControllerTestsData.StduentGuid.ToString();
             var jsonModel = JsonConvert.SerializeObject(ExchangeControllerTestsData.ExchangeModel11);
             StringContent content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
             HttpResponseMessage response1 = await client1.PostAsync(ExchangeUri, content);
 
             //Non existing user with login
             HttpClient client2 = TestFixture.CreateClient();
-            var studentId = await AuthenticateClient(client2, ExchangeControllerTestsData.Login4);
-            var response2 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client2, studentId);
+            var timetableId = await AuthenticateClient(client2, ExchangeControllerTestsData.Login4);
+            var response2 = await SendExchangeRequest(ExchangeControllerTestsData.ExchangeModel12, client2, timetableId);
 
             // Assert
             Assert.True(response1.IsSuccessStatusCode == false);
@@ -138,9 +138,9 @@ namespace IntegrationTest.ExchangeControllerTest
             return userModel.TimetableId;
         }
 
-        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string studentId)
+        private async Task<HttpResponseMessage> SendExchangeRequest(ExchangeRequestModel exchangeModel, HttpClient client, string timetableId)
         {
-            exchangeModel.StudentId = studentId;
+            exchangeModel.timetableId = timetableId;
             exchangeModel.BlockFrom.BlockId = exchangeModel.BlockTo.CourseId;
             exchangeModel.BlockTo.BlockId = exchangeModel.BlockFrom.CourseId;
 
@@ -153,9 +153,9 @@ namespace IntegrationTest.ExchangeControllerTest
             return response;
         }
 
-        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string studentId)
+        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string timetableId)
         { 
-            var jsonModel = JsonConvert.SerializeObject(studentId);
+            var jsonModel = JsonConvert.SerializeObject(timetableId);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(WaitingExchangesUri, content);

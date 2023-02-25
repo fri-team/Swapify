@@ -48,23 +48,39 @@ class AddBlockForm extends Component {
     user: this.props.user,
     editing: this.props.editing,
     loading: false,
-    blockColor: this.props.course.blockColor == null ? 
+    blockColor: this.props.course.blockColor == null ?
       toMaterialStyle(this.props.course.courseCode, this.props.course.blockColor).backgroundColor : this.setBlockColor(this.props.course.blockColor).backgroundColor,
     yearOfStudy: '',
     studyType: '',
   };
 
   handleCloseClick = () => this.props.onCloseEditBlock();
-  
+
   handleSubmitClick = () => this.props.onSubmitClick();
 
   handleClickOutside = () =>  this.props.onCloseEditBlock();
 
   fetchCourses = () => {
     const fetch = throttle(500, courseName => {
-      axios.get(`/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.studentId}`).then(({ data }) => {
-        this.setState({ suggestions: map(data, x => ({ ...x, label: x.courseName + ' ('+ x.courseCode +') '+ x.yearOfStudy + ".r," + this.cutStudyType(x.studyType)})) });
-      });
+      axios
+        .get(
+          `/api/timetable/course/getCoursesAutoComplete/${courseName}/${this.state.user.timetableId}`
+        )
+        .then(({ data }) => {
+          this.setState({
+            suggestions: map(data, (x) => ({
+              ...x,
+              label:
+                x.courseName +
+                " (" +
+                x.courseCode +
+                ") " +
+                x.yearOfStudy +
+                ".r," +
+                this.cutStudyType(x.studyType),
+            })),
+          });
+        });
     })
 
     return courseName => {
@@ -78,7 +94,7 @@ class AddBlockForm extends Component {
     var array = studyType.split(' ');
     var returnedString = '';
     for (var i = 0; i < 2; i++) {
-      returnedString += array[i].substring(0,3) + '.' 
+      returnedString += array[i].substring(0,3) + '.'
     }
     return returnedString;
   }
@@ -95,8 +111,8 @@ class AddBlockForm extends Component {
           this.state.suggestions[i].yearOfStudy + '.r' == courseName.split(') ')[1].split(',')[0] && this.cutStudyType(this.state.suggestions[i].studyType) == courseName.split(') ')[1].split(',')[1]) {
         j = i;
       }
-    } 
-    
+    }
+
     axios.get(`/api/timetable/getCourseBlock/${this.state.suggestions[j].id}/${startBlock}/${this.state.day}`).then(({ data }) => {
       this.setState({ teacher: data.teacher });
       this.setState({ room: data.room });
@@ -107,7 +123,7 @@ class AddBlockForm extends Component {
         alert('Upozornenie: zadaný predmet sa v tomto čase nevyučuje');
       }
     });
-    
+
   }
 
   handleChange = evt => {
@@ -239,7 +255,7 @@ class AddBlockForm extends Component {
           onClose();
         }}>
             <div className="buttons">
-        
+
         <IconButton onClick={this.handleCloseClick}>
           <ClearIcon nativecolor="black" />
         </IconButton>
@@ -310,7 +326,7 @@ class AddBlockForm extends Component {
                 margin="normal"
                 fullWidth
                 required
-              />         
+              />
               <RadioGroup
                 name="type"
                 value={type}
@@ -339,7 +355,7 @@ class AddBlockForm extends Component {
             </FlexBox>
           </DialogContent>
           <DialogActions>
-          {!this.state.loading && 
+          {!this.state.loading &&
             <Button
               disabled={!this.canSubmit()}
               onClick={this.submit}
@@ -349,7 +365,7 @@ class AddBlockForm extends Component {
               Uložiť
             </Button>
           }
-           {this.state.loading && 
+           {this.state.loading &&
                 <ClipLoader
                   size={35}
                   color={"#2196f3"}

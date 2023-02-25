@@ -131,13 +131,13 @@ namespace BackendTest
             };
         }
 
-        private BlockChangeRequest CreateBlockChangeRequest(Block blockFrom, Block blockTo, Guid studentId)
+        private BlockChangeRequest CreateBlockChangeRequest(Block blockFrom, Block blockTo, Guid timetableId)
         {
             BlockChangeRequest blockToChange = new BlockChangeRequest();
             blockToChange.DateOfCreation = DateTime.Now;
             blockToChange.BlockFrom = blockFrom.Clone();
             blockToChange.BlockTo = blockTo.Clone();
-            blockToChange.StudentId = studentId;
+            blockToChange.TimetableId = timetableId;
             return blockToChange;
         }
 

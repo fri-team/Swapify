@@ -105,25 +105,26 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     const { timetable, user } = getState();
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
-        method: 'get',
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
+        method: "get",
+        url: `/api/timetable/getCourseTimetable/${id}/${user.timetableId}`,
+
       })
-        .then(res => {
+        .then((res) => {
           dispatch({
             type: LOAD_COURSE_TIMETABLE_DONE,
             payload: {
               course: {
                 courseId: id,
                 courseName: name,
-                timetable: res.data.blocks
-              }
-            }
+                timetable: res.data.blocks,
+              },
+            },
           });
           dispatch(action);
         })
         .catch(() => {
           dispatch({
-            type: LOAD_COURSE_TIMETABLE_FAIL
+            type: LOAD_COURSE_TIMETABLE_FAIL,
           });
           // fallback, TODO: modify logic to return data from API
           loadCourseTimetableAsync(dispatch, id, name).then(() => {
@@ -195,7 +196,7 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher
       },
-      StudentId: user.studentId
+      TimetableId: user.timetableId
     }
 
     axios({
