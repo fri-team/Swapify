@@ -25,9 +25,9 @@ namespace FRITeam.Swapify.Backend
                 Builders<Notification>.Update.Set(notification => notification.Read, read));
         }
 
-        public async Task<IEnumerable<Notification>> GetStudentNotifications(Guid studentId)
+        public async Task<IEnumerable<Notification>> GetStudentNotifications(Guid timetableId)
         {
-            return await NotificationCollection.Find(notification => notification.RecipientId == studentId).ToListAsync();
+            return await NotificationCollection.Find(notification => notification.RecipientId == timetableId).ToListAsync();
         }
 
         public async Task AddNotification(Notification notification)

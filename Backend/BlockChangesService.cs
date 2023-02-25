@@ -29,16 +29,16 @@ namespace FRITeam.Swapify.Backend
             return await MakeExchangeAndDeleteRequests(changeRequest);
         }
 
-        public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid studentId)
+        public async Task<List<BlockChangeRequest>> FindWaitingStudentRequests(Guid timetableId)
         {
             return await _blockChangesCollection.Find(
-                x => x.TimetableId == studentId &&
+                x => x.TimetableId == timetableId &&
                      x.Status == ExchangeStatus.WaitingForExchange).ToListAsync();
         }
 
-        public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid studentId)
+        public Task<List<BlockChangeRequest>> FindAllStudentRequests(Guid timetableId)
         {
-            return _blockChangesCollection.Find(x => x.TimetableId == studentId).ToListAsync();
+            return _blockChangesCollection.Find(x => x.TimetableId == timetableId).ToListAsync();
         }
 
         public async Task<bool> CancelExchangeRequest(BlockChangeRequest request)

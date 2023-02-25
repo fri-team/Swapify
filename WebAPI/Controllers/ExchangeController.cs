@@ -104,12 +104,12 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("userWaitingExchanges")]
-        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string studentId)
+        public async Task<IActionResult> GetUserWaitingExchanges([FromBody] string timetableId)
         {
-            bool isValidGUID = Guid.TryParse(studentId, out Guid guid);
+            bool isValidGUID = Guid.TryParse(timetableId, out Guid guid);
             if (!isValidGUID)
             {
-                return ErrorResponse($"StudentTimetable id: {studentId} is not valid GUID.");
+                return ErrorResponse($"StudentTimetable id: {timetableId} is not valid GUID.");
             }
 
             var response = await _blockChangesService.FindWaitingStudentRequests(guid);

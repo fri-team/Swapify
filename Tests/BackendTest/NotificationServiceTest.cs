@@ -178,13 +178,13 @@ namespace BackendTest
             }
         }
 
-        private async Task<TimetableData> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid))
+        private async Task<TimetableData> CreateStudentAsync(IMongoDatabase database, Guid timetableId = default(Guid))
         {            
             var ttDataCollection = database.GetCollection<TimetableData>(nameof(TimetableData));
 
             TimetableData ttData = new TimetableData
             {
-                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Id = (timetableId == default(Guid) ? Guid.NewGuid() : timetableId),
                 Timetable = null,
                 PersonalNumber = null
             };
