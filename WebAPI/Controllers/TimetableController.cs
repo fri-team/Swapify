@@ -126,16 +126,16 @@ namespace WebAPI.Controllers
             return Ok(timetableData.Timetable);
         }
 
-        [HttpGet("course/getCoursesAutoComplete/{courseName}/{studentId}")]
-        public async Task<IActionResult> GetCoursesAutoComplete(string courseName, string studentId)
+        [HttpGet("course/getCoursesAutoComplete/{courseName}/{timetableId}")]
+        public async Task<IActionResult> GetCoursesAutoComplete(string courseName, string timetableId)
         {
-            Guid.TryParse(studentId, out Guid studentGuid);
+            Guid.TryParse(timetableId, out Guid studentGuid);
             var _student = await _timetableDataService.FindByIdAsync(studentGuid);
             return Ok(_courseService.FindByStartName(courseName, _student != null ? _student.PersonalNumber : "5"));
         }
 
-        [HttpGet("getCourseTimetable/{courseId}/{studentId}")]
-        public async Task<IActionResult> GetCourseTimetable(string courseId, string studentId)
+        [HttpGet("getCourseTimetable/{courseId}/{timetableId}")]
+        public async Task<IActionResult> GetCourseTimetable(string courseId, string timetableId)
         {
             bool isValidCourseGUID = Guid.TryParse(courseId, out Guid courseGuid);
             if (!isValidCourseGUID)
@@ -143,7 +143,7 @@ namespace WebAPI.Controllers
                 return ErrorResponse($"Course id: {courseId} is not valid GUID.");
             }
 
-            bool isValidStudentGUID = Guid.TryParse(studentId, out Guid studentGuid);
+            bool isValidStudentGUID = Guid.TryParse(timetableId, out Guid studentGuid);
             var _timetableData = await _timetableDataService.FindByIdAsync(studentGuid);
 
             if (!isValidStudentGUID)
@@ -152,7 +152,7 @@ namespace WebAPI.Controllers
             }
             if (_timetableData == null)
             {
-                return ErrorResponse($"StudentTimetable with id: {studentId} does not exist.");
+                return ErrorResponse($"StudentTimetable with id: {timetableId} does not exist.");
             }
             var _course = await _courseService.FindCourseTimetableFromProxy(courseGuid);
             if (_course == null)

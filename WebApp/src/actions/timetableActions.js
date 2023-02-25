@@ -213,7 +213,8 @@ export function exchangeConfirm(blockTo) {
           window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
         }
-        dispatch(hideCourseTimetable(bl.id));
+        dispatch(cancelExchangeMode());
+        dispatch(hideCourseTimetable());
         dispatch(action);
         dispatch(loadExchangeRequests());
       })

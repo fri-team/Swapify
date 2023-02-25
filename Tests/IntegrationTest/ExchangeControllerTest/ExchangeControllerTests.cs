@@ -21,7 +21,7 @@ namespace IntegrationTest.ExchangeControllerTest
     {
         private readonly Uri LoginUri;
         private readonly Uri ExchangeUri;
-        private readonly Uri WaitingExchangesUri;        
+        private readonly Uri WaitingExchangesUri;
 
         public static TestFixture TestFixture { get; set; }
 
@@ -65,7 +65,7 @@ namespace IntegrationTest.ExchangeControllerTest
             // Host doesn't make exchanges (count increases by every test run)
 
             // Consider comparing state before the Act and after ?
-            Assert.True(waitingExchanges1.Count >= 1); 
+            Assert.True(waitingExchanges1.Count >= 1);
             Assert.True(waitingExchanges2.Count >= 1);
             Assert.True(waitingExchanges1.Count > waitingExchanges1Before.Count);
             Assert.True(waitingExchanges2.Count > waitingExchanges2Before.Count);
@@ -153,9 +153,9 @@ namespace IntegrationTest.ExchangeControllerTest
             return response;
         }
 
-        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string studentId)
-        { 
-            var jsonModel = JsonConvert.SerializeObject(studentId);
+        private async Task<List<BlockChangeRequest>> GetUserWaitingExchanges(HttpClient client, string timetableId)
+        {
+            var jsonModel = JsonConvert.SerializeObject(timetableId);
             var content = new StringContent(jsonModel, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(WaitingExchangesUri, content);

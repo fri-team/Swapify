@@ -147,10 +147,6 @@ class LoginPage extends PureComponent {
         captcha: this.state.captchaValue,
       };
 
-      console.log("email");
-      console.log(this.state);
-      console.log(body);
-
       this.loginUser(body, dispatch, "login");
     } else if (this.state.resetingPassword) {
       const body = {
@@ -179,9 +175,6 @@ class LoginPage extends PureComponent {
         captcha: this.state.captchaValue,
       };
 
-      console.log("LDAP");
-      console.log(this.state);
-      console.log(body);
       this.loginUser(body, dispatch, "loginLdap");
     }
   }
