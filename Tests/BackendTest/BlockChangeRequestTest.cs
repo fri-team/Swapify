@@ -137,7 +137,7 @@ namespace BackendTest
             blockToChange.DateOfCreation = DateTime.Now;
             blockToChange.BlockFrom = blockFrom.Clone();
             blockToChange.BlockTo = blockTo.Clone();
-            blockToChange.StudentId = studentId;
+            blockToChange.TimetableId = studentId;
             return blockToChange;
         }
 
