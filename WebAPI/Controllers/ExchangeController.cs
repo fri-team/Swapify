@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
                 blockChangeRequest.BlockTo = BlockForExchangeModel.ConvertToBlock(request.BlockTo);
                 blockChangeRequest.Status = ExchangeStatus.WaitingForExchange;
                 blockChangeRequest.DateOfCreation = DateTime.Now;
-                blockChangeRequest.StudentId = Guid.Parse(request.StudentId);
+                blockChangeRequest.StudentId = Guid.Parse(request.timetableId);
 
                 var res = await _blockChangesService.AddAndFindMatch(blockChangeRequest);
                 if (res != (null, null))
