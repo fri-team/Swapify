@@ -1,28 +1,28 @@
-import React, { PureComponent } from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import HelpIcon from '@material-ui/icons/Help';
-import UserAvatar from './UserAvatar';
-import Menu from './Menu';
-import { PullRight } from './shared';
-import { Button } from '@material-ui/core';
-import { bindActionCreators } from 'redux';
-import * as userActions from '../../actions/userActions';
-import * as timetableActions from '../../actions/timetableActions';
-import { withRouter } from 'react-router-dom';
-import { PERSONALNUMBER, TIMETABLE } from '../../util/routes';
-import NotificationPanel from '../Notifications/NotificationPanel';
-import Tooltip from '@material-ui/core/Tooltip';
-import Zoom from '@material-ui/core/Zoom';
-import './Toolbar.scss';
-import MailIcon from '@material-ui/icons/Mail';
-import logo from '../../images/logowhite.png';
-import CalendarIcon from '@material-ui/icons/CalendarToday'
-import axios from 'axios';
+import React, { PureComponent } from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import HelpIcon from "@material-ui/icons/Help";
+import UserAvatar from "./UserAvatar";
+import Menu from "./Menu";
+import { PullRight } from "./shared";
+import { Button } from "@material-ui/core";
+import { bindActionCreators } from "redux";
+import * as userActions from "../../actions/userActions";
+import * as timetableActions from "../../actions/timetableActions";
+import { withRouter } from "react-router-dom";
+import { PERSONALNUMBER, TIMETABLE } from "../../util/routes";
+import NotificationPanel from "../Notifications/NotificationPanel";
+import Tooltip from "@material-ui/core/Tooltip";
+import Zoom from "@material-ui/core/Zoom";
+import "./Toolbar.scss";
+import MailIcon from "@material-ui/icons/Mail";
+import logo from "../../images/logowhite.png";
+import CalendarIcon from "@material-ui/icons/CalendarToday";
+import axios from "axios";
 
 const ToolbarWrapper = styled.div`
   width: 100%;
@@ -35,13 +35,13 @@ const IconTray = styled.div`
 `;
 
 class AppToolbar extends PureComponent {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       axiosActivate: false,
       showMenu: false,
-      hangeGroup: false
-    }
+      hangeGroup: false,
+    };
   }
 
   handleLogout = () => this.props.userActions.logout();
@@ -52,21 +52,20 @@ class AppToolbar extends PureComponent {
   //   this.reloadTimetable(user);
   // }
 
-  reloadTimetable = (user) =>{
+  reloadTimetable = (user) => {
     const body = {
       personalNumber: user.personalNumber,
-      email: user.email
-    }
+      email: user.email,
+    };
     axios({
-      method: 'post',
-      url: '/api/timetable/setUserTimetableFromPersonalNumber',
-      data: body
-    })
-    .then(() => {
+      method: "post",
+      url: "/api/timetable/setUserTimetableFromPersonalNumber",
+      data: body,
+    }).then(() => {
       this.props.history.push(TIMETABLE);
       window.location.reload(false);
-    })
-  }
+    });
+  };
 
   handleMenu = () => {
     console.log("Menu", this.state.showMenu);
@@ -84,10 +83,9 @@ class AppToolbar extends PureComponent {
     } else {
       return false;
     }
-  }
+  };
 
   render() {
-
     let buttonExchangeMode;
     if (this.props.timetable.isExchangeMode) {
       buttonExchangeMode = (
@@ -99,6 +97,7 @@ class AppToolbar extends PureComponent {
           onClick={() => {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
+            window.location.reload(false);
           }}
         >
           Späť na rozvrh
@@ -119,13 +118,23 @@ class AppToolbar extends PureComponent {
           className="backToTimetable"
           onClick={() => {
             this.props.timetableActions.hideCourseTimetable();
+            window.location.reload(false);
           }}
         >
           Späť na rozvrh
         </Button>
       );
     }
-    const { user, toggleSidebar, exportCalendar, toggleHelpModalWindow, toggleMailUsModalWindow, changeDarkMode, timetableType, updateBlockedHoursVisibility } = this.props;
+    const {
+      user,
+      toggleSidebar,
+      exportCalendar,
+      toggleHelpModalWindow,
+      toggleMailUsModalWindow,
+      changeDarkMode,
+      timetableType,
+      updateBlockedHoursVisibility,
+    } = this.props;
     const url = this.checkUrl();
     return (
       <ToolbarWrapper>
@@ -143,10 +152,14 @@ class AppToolbar extends PureComponent {
                 <MenuIcon />
               </IconButton>
             )}
-
             <IconTray>
-
-            <img src={logo} alt="logo" height="30px" className="logowhite" onClick={this.timetable}/>
+              <img
+                src={logo}
+                alt="logo"
+                height="30px"
+                className="logowhite"
+                onClick={this.timetable}
+              />
               <PullRight />
               {buttonExchangeMode}
               {buttonAddMode}
@@ -207,8 +220,11 @@ class AppToolbar extends PureComponent {
                 <HelpIcon />
               </IconButton>
             </Tooltip>
-
-            <Tooltip title="Napíšte nám" placement="top" TransitionComponent={Zoom}>
+            <Tooltip
+              title="Napíšte nám"
+              placement="top"
+              TransitionComponent={Zoom}
+            >
               <IconButton
                 color="inherit"
                 aria-label="MailUs"
@@ -217,13 +233,13 @@ class AppToolbar extends PureComponent {
                 <MailIcon />
               </IconButton>
             </Tooltip>
-
-            <Tooltip title="Notifikácie" placement="top" TransitionComponent={Zoom}>
-              <IconButton
-                color="inherit"
-                aria-label="Notifications"
-              >
-                <NotificationPanel darkMode={this.props.darkMode}/>
+            <Tooltip
+              title="Notifikácie"
+              placement="top"
+              TransitionComponent={Zoom}
+            >
+              <IconButton color="inherit" aria-label="Notifications">
+                <NotificationPanel darkMode={this.props.darkMode} />
               </IconButton>
             </Tooltip>
           </Toolbar>
