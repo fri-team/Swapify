@@ -79,14 +79,12 @@ export default class Menu extends PureComponent {
   };
 
   handleClickOutside = () => {
-    console.log("Menu");
     this.setState((prevState) => {
       return { count: prevState.count + 1 };
     });
     if (this.state.count == 2) {
 
       this.props.onClose();
-      console.log("Menu2");
     }
   };
 

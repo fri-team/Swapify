@@ -68,7 +68,6 @@ class AppToolbar extends PureComponent {
   };
 
   handleMenu = () => {
-    console.log("Menu", this.state.showMenu);
     this.setState((prevState) => ({
       showMenu: !prevState.showMenu,
     }));

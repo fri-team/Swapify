@@ -253,7 +253,6 @@ class AddBlockForm extends Component {
         endBlock: start + parseInt(length),
       },
     };
-    console.log(body.timetableBlock);
     this.handleSubmitClick();
 
     if (this.state.editing) {

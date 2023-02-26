@@ -54,7 +54,6 @@ export function createBlock(newBlock) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      console.log("Vytvoreny blok, ktory sa posiela:", newBlock);
       const response = await axios.post(
         "/api/timetabledata/addNewBlock",
         newBlock

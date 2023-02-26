@@ -175,5 +175,4 @@ const CustomEventForm = ({ course, user }) => {
   );
 };
 
-console.log(CustomEventForm);
 export default CustomEventForm;

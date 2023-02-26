@@ -227,8 +227,6 @@ export function exchangeConfirm(blockTo) {
           window.alert("Pri vytváraní žiadosti nastala chyba.");
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          console.log(body);
-          console.log(blockTo);
         } else if (error.request) {
           window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
           // The request was made but no response was received
