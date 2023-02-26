@@ -92,6 +92,7 @@ class AppToolbar extends PureComponent {
           onClick={() => {
             this.props.timetableActions.cancelExchangeMode();
             this.props.timetableActions.hideCourseTimetable();
+            window.location.reload(false);
           }}
         >
           Späť na rozvrh
@@ -109,6 +110,7 @@ class AppToolbar extends PureComponent {
           className="backToTimetable"
           onClick={() => {
             this.props.timetableActions.hideCourseTimetable();
+            window.location.reload(false);
           }}
         >
           Späť na rozvrh
