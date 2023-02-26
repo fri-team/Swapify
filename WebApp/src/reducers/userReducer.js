@@ -22,7 +22,7 @@ export const getUserData = payload => {
     personalNumber: payload.personalNumber,
     firstTimePN: payload.firstTimePN,
     darkMode: payload.darkMode,
-    validTo
+    validTo,
   };
 };
 

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import _ from 'lodash';
+import axios from "axios";
+import _ from "lodash";
 import {
   LOAD_MY_TIMETABLE,
   LOAD_MY_TIMETABLE_DONE,
@@ -20,17 +20,17 @@ import {
   ADD_BLOCK,
   ADD_BLOCK_DONE,
   ADD_BLOCK_FAIL,
-  CHOOSE_EXCHANGE_FROM_BLOCK
-} from '../constants/actionTypes';
-import data from './timetableData.json';
-import { loadExchangeRequests } from './exchangeActions';
-import { blockNumberToHour } from '../util/convertFunctions';
-import { PERSONALNUMBER } from '../util/routes';
+  CHOOSE_EXCHANGE_FROM_BLOCK,
+} from "../constants/actionTypes";
+import data from "./timetableData.json";
+import { loadExchangeRequests } from "./exchangeActions";
+import { blockNumberToHour } from "../util/convertFunctions";
+import { PERSONALNUMBER } from "../util/routes";
 
 export function loadMyTimetable(user, history) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
-      type: LOAD_MY_TIMETABLE
+      type: LOAD_MY_TIMETABLE,
     });
     if (user.personalNumber == null) {
       history.push(PERSONALNUMBER);
@@ -42,23 +42,23 @@ export function loadMyTimetable(user, history) {
       method: 'get',
       url: '/api/timetabledata/getUserTimetable/' + user.email
     })
-      .then(res => {
+      .then((res) => {
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
           payload: {
-            timetable: res.data.blocks
-          }
+            timetable: res.data.blocks,
+          },
         });
       })
       .catch(() => {
         dispatch({
-          type: LOAD_MY_TIMETABLE_FAIL
+          type: LOAD_MY_TIMETABLE_FAIL,
         });
         dispatch({
           type: LOAD_MY_TIMETABLE_DONE,
           payload: {
-            timetable: data.timetable
-          }
+            timetable: data.timetable,
+          },
         });
       });
   };
@@ -68,13 +68,17 @@ export function showExchangeModeTimetable(course) {
   var courseId = course.courseId;
   const action = {
     type: SHOW_COURSE_TIMETABLE,
-    payload: { courseId }
+    payload: { courseId },
   };
-  return dowloadCourseTimetableIfNeeded(course.courseId, course.courseName, action);
+  return dowloadCourseTimetableIfNeeded(
+    course.courseId,
+    course.courseName,
+    action
+  );
 }
 
 function loadCourseTimetableAsync(dispatch, id, name) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       dispatch({
         type: LOAD_COURSE_TIMETABLE_DONE,
@@ -82,9 +86,9 @@ function loadCourseTimetableAsync(dispatch, id, name) {
           course: {
             courseId: id,
             courseName: name,
-            timetable: data.courses[id]
-          }
-        }
+            timetable: data.courses[id],
+          },
+        },
       });
       resolve();
     }, 100);
@@ -92,9 +96,9 @@ function loadCourseTimetableAsync(dispatch, id, name) {
 }
 
 export function loadCourseTimetable(courseId, courseName) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
-      type: LOAD_COURSE_TIMETABLE
+      type: LOAD_COURSE_TIMETABLE,
     });
     loadCourseTimetableAsync(dispatch, courseId, courseName);
   };
@@ -108,22 +112,22 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
         method: 'get',
         url: `/api/timetable/getCourseTimetable/${id}/${user.timetableId}`
       })
-        .then(res => {
+        .then((res) => {
           dispatch({
             type: LOAD_COURSE_TIMETABLE_DONE,
             payload: {
               course: {
                 courseId: id,
                 courseName: name,
-                timetable: res.data.blocks
-              }
-            }
+                timetable: res.data.blocks,
+              },
+            },
           });
           dispatch(action);
         })
         .catch(() => {
           dispatch({
-            type: LOAD_COURSE_TIMETABLE_FAIL
+            type: LOAD_COURSE_TIMETABLE_FAIL,
           });
           // fallback, TODO: modify logic to return data from API
           loadCourseTimetableAsync(dispatch, id, name).then(() => {
@@ -183,7 +187,7 @@ export function exchangeConfirm(blockTo) {
         startHour: blockNumberToHour(bl.startBlock),
         duration: bl.endBlock - bl.startBlock,
         room: bl.room,
-        teacher: bl.teacher
+        teacher: bl.teacher,
       },
 
       BlockTo: {
@@ -223,8 +227,6 @@ export function exchangeConfirm(blockTo) {
           window.alert("Pri vytváraní žiadosti nastala chyba.");
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          console.log(body);
-          console.log(blockTo);
         } else if (error.request) {
           window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
           // The request was made but no response was received
@@ -244,9 +246,9 @@ export function exchangeConfirm(blockTo) {
 }
 
 export function removeBlock(body, userEmail) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
-      type: REMOVE_BLOCK
+      type: REMOVE_BLOCK,
     });
     axios({
       method: 'delete',
@@ -264,24 +266,24 @@ export function removeBlock(body, userEmail) {
           dispatch({
             type: LOAD_MY_TIMETABLE_DONE,
             payload: {
-              timetable: res.data.blocks
-            }
+              timetable: res.data.blocks,
+            },
           });
-        })
-    })
-    .catch(() => {
-      window.alert('Nepodarilo sa vymazať blok, skúste to neskôr prosím.');
-      dispatch({
-        type: REMOVE_BLOCK_FAIL
+        });
+      })
+      .catch(() => {
+        window.alert("Nepodarilo sa vymazať blok, skúste to neskôr prosím.");
+        dispatch({
+          type: REMOVE_BLOCK_FAIL,
+        });
       });
-    });
   };
 }
 
 export function addBlock(body, userEmail) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
-      type: ADD_BLOCK
+      type: ADD_BLOCK,
     });
     axios({
       method: 'post',

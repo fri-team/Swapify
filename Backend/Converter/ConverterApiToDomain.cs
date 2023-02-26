@@ -195,6 +195,8 @@ namespace FRITeam.Swapify.Backend.Converter
                     return BlockType.Lecture;
                 case LessonType.Blocked:
                     return BlockType.Blocked;
+                case LessonType.Event:
+                    return BlockType.Event;
                 default:
                     throw new KeyNotFoundException("Unknow LessonType");
             }

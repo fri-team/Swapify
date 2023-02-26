@@ -5,6 +5,7 @@ namespace FRITeam.Swapify.SwapifyBase.Entities.Enums
         Lecture = 1,
         Laboratory = 2,
         Excercise = 3,
-        Blocked = 4
+        Blocked = 4,
+        Event = 5
     }
 }

@@ -26,8 +26,8 @@ Scenario('[ADD01] Add new block.', async (I) => {
     I.fillField('length', '2');
     I.click({ react: 'FormControlLabel', props: { value: 'excercise' }});
     I.click('Uložiť');
-    I.seeElement({ 
-        react: 'TimetableBlock', props: { 
+    I.seeElement({
+        react: 'TimetableBlock', props: {
             courseName : 'informatika 1',
             courseShortcut: '5BI137',
             day: 1,
@@ -58,8 +58,8 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
     I.click({ react: 'FormControlLabel', props: { value: 'lecture' }});
     I.click('Uložiť');
     I.wait(1);
-    I.seeElement({ 
-        react: 'TimetableBlock', props: { 
+    I.seeElement({
+        react: 'TimetableBlock', props: {
             courseName : 'algebra',
             courseShortcut: '5BF101',
             day: 3,
@@ -68,7 +68,7 @@ Scenario('[ADD02] Add new block with edited attributes.', async (I) => {
             type: 'lecture'
         }
     });
-    
+
     I.deleteBlock(3, 1);
 });
 
@@ -110,7 +110,7 @@ Scenario('[ADD05] Check, if founded subjects is sorted by faculty of student', a
         I.assertOk(first, 'Ok');
     else
         I.assertFail(second, 'Fail');
-    
+
 });
 
 //Test requires actual schedule of subject
@@ -138,33 +138,33 @@ Scenario('[ADD07] Add subject for summer semester from sidebar', async (I) => {
 
     I.click("Vyhľadať");
 
-    I.seeElement({ 
-        react: 'TimetableBlock', props: { 
+    I.seeElement({
+        react: 'TimetableBlock', props: {
             courseName : 'metaheuristiky',
         }
     });
 
-    I.click({ 
-        react: 'TimetableBlock', props: { 
+    I.click({
+        react: 'TimetableBlock', props: {
             courseName : 'metaheuristiky',
         }
     });
-    
-    I.click({ 
-        react: 'TimetableBlock', props: { 
+
+    I.click({
+        react: 'TimetableBlock', props: {
             courseName : 'metaheuristiky',
         }
     });
 
     I.click({ react: 'button' , props: { title : 'Pridať blok'}});
 
-    I.seeElement({ 
-        react: 'TimetableBlock', props: { 
+    I.seeElement({
+        react: 'TimetableBlock', props: {
             courseName : 'metaheuristiky',
         }
     });
 
     I.click(locate('.MuiIconButton-label'));
-    
+
     I.seeElement(locate('label').withText('metaheuristiky'));
 });

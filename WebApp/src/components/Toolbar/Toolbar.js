@@ -67,6 +67,13 @@ class AppToolbar extends PureComponent {
     });
   };
 
+  handleMenu = () => {
+    this.setState((prevState) => ({
+      showMenu: !prevState.showMenu,
+    }));
+
+  }
+
   timetable = () => this.props.history.push(TIMETABLE);
 
   checkUrl = () => {
@@ -99,7 +106,7 @@ class AppToolbar extends PureComponent {
 
     let buttonAddMode;
     if (
-      this.props.timetable.isAddBlockMode &&
+      this.props.timetable.displayedCourses.length > 0 &&
       !this.props.timetable.isExchangeMode
     ) {
       buttonAddMode = (
@@ -158,7 +165,8 @@ class AppToolbar extends PureComponent {
               <UserAvatar
                 ref={(ref) => (this.anchor = ref)}
                 username={user.name}
-                onClick={() => this.setState({ showMenu: true })}
+                onClick={() => this.setState({ showMenu: true})}
+                //onClick = {this.handleMenu}
               />
               {this.state.showMenu && (
                 <Menu
@@ -168,7 +176,9 @@ class AppToolbar extends PureComponent {
                   email={user.email}
                   selectPersonalNumber={this.changePersonalNumber}
                   onLogout={this.handleLogout}
+                  //onClick = {this.handleMenu}
                   onClose={() => this.setState({ showMenu: false })}
+                  //onClick={() => this.setState({ showMenu: !this.state.showMenu })}
                   changeDarkMode={changeDarkMode}
                   ressetTimetable={() => this.reloadTimetable(user)}
                   timetableType={timetableType}
