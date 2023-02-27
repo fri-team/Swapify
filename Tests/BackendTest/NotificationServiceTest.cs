@@ -15,20 +15,20 @@ namespace BackendTest
 {
     [Collection("Database collection")]
     public class NotificationServiceTest
-    {        
+    {
         private IMongoClient _mongoClient;
         private const string TestingDatabaseName = "TestingDatabaseName";
 
         private IList<Notification> _notifications;
         private static readonly Guid NotificationId = Guid.Parse("2548a9d8-c5dc-4598-9240-c41f2a677c75");
         private static readonly Guid TestStudentGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
-        private static readonly Guid TestUserGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");        
+        private static readonly Guid TestUserGuid = Guid.Parse("180ce481-85a3-4246-93b5-ba0a0229c59f");
 
         public NotificationServiceTest(Mongo2GoFixture mongo2GoFixture)
         {
             _mongoClient = mongo2GoFixture.MongoClient;
             InitTestStudentNotifications();
-        }        
+        }
 
         [Fact]
         public async Task GetStudentNotifications()
@@ -55,7 +55,7 @@ namespace BackendTest
 
             // modify collection to expected state
             _notifications.First(notification => notification.Id == NotificationId).Read = true; ;
-                        
+
             notifications.Should().BeEquivalentTo(_notifications);
 
             await _mongoClient.DropDatabaseAsync(TestingDatabaseName);
@@ -66,16 +66,16 @@ namespace BackendTest
         {
             IMongoDatabase database = await InitializeDatabaseWithNotifications(_mongoClient, TestingDatabaseName);
             var notificationService = new NotificationService(database);
-            
+
             var newNotification = new SimpleMessageNotification()
             {
                 Id = Guid.NewGuid(),
                 RecipientId = TestStudentGuid,
                 Type = NotificationType.SimpleMessageNotification,
-                Message = "nova notifikacia",                
+                Message = "nova notifikacia",
                 Read = true
             };
-            
+
             await notificationService.AddNotification(newNotification);
 
             var notifications = (await notificationService.GetStudentNotifications(TestStudentGuid)).ToList();
@@ -87,15 +87,15 @@ namespace BackendTest
         }
 
         private async Task<IMongoDatabase> InitializeDatabaseWithNotifications(IMongoClient mongoClient, string testingDatabaseName)
-        {            
-            IMongoDatabase testingDatabase = _mongoClient.GetDatabase(testingDatabaseName);            
+        {
+            IMongoDatabase testingDatabase = _mongoClient.GetDatabase(testingDatabaseName);
             await CreateTestingNotificationsAsync(testingDatabase);
 
             return testingDatabase;
         }
 
         private async Task<IMongoDatabase> InitializeDatabaseWithNotificationsUserStudent(IMongoClient mongoClient, string testingDatabaseName)
-        {            
+        {
             IMongoDatabase testingDatabase = _mongoClient.GetDatabase(testingDatabaseName);
 
             await CreateTestingUserAsync(testingDatabase);
@@ -113,7 +113,7 @@ namespace BackendTest
                     Id = NotificationId,
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 1",                    
+                    Message = "notifikacia 1",
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -121,7 +121,7 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 2",                    
+                    Message = "notifikacia 2",
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -129,7 +129,7 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 3",                    
+                    Message = "notifikacia 3",
                     Read = false
                 },
                 new SimpleMessageNotification()
@@ -137,11 +137,11 @@ namespace BackendTest
                     Id = Guid.NewGuid(),
                     RecipientId = TestStudentGuid,
                     Type = NotificationType.SimpleMessageNotification,
-                    Message = "notifikacia 4",                    
+                    Message = "notifikacia 4",
                     Read = true
                 }
             };
-        }        
+        }
 
         private async Task CreateTestingNotificationsAsync(IMongoDatabase database)
         {
@@ -168,7 +168,7 @@ namespace BackendTest
                     NormalizedUserName = email.ToUpper(),
                     EmailConfirmed = true,
                     SecurityStamp = TestUserGuid.ToString("D"),
-                    Student = await CreateStudentAsync(database, TestStudentGuid)
+                    TimetableData = await CreateStudentAsync(database, TestStudentGuid)
                 };
 
                 var password = new PasswordHasher<User>();
@@ -178,19 +178,19 @@ namespace BackendTest
             }
         }
 
-        private async Task<Student> CreateStudentAsync(IMongoDatabase database, Guid studentId = default(Guid))
-        {            
-            var studentCollection = database.GetCollection<Student>(nameof(Student));
+        private async Task<TimetableData> CreateStudentAsync(IMongoDatabase database, Guid timetableId = default(Guid))
+        {
+            var ttDataCollection = database.GetCollection<TimetableData>(nameof(TimetableData));
 
-            Student student = new Student
+            TimetableData ttData = new TimetableData
             {
-                Id = (studentId == default(Guid) ? Guid.NewGuid() : studentId),
+                Id = (timetableId == default(Guid) ? Guid.NewGuid() : timetableId),
                 Timetable = null,
                 PersonalNumber = null
             };
 
-            await studentCollection.InsertOneAsync(student);
-            return student;
-        }                
+            await ttDataCollection.InsertOneAsync(ttData);
+            return ttData;
+        }
     }
 }

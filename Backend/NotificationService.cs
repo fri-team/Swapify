@@ -8,15 +8,15 @@ using MongoDB.Driver;
 namespace FRITeam.Swapify.Backend
 {
     public class NotificationService: INotificationService
-    {        
+    {
         private readonly IMongoDatabase _database;
 
         private IMongoCollection<Notification> NotificationCollection  => _database.GetCollection<Notification>(nameof(Notification));
 
         public NotificationService(IMongoDatabase database)
         {
-            _database = database;            
-        }        
+            _database = database;
+        }
 
         public async Task UpdateNotificationReadState(Guid notificationId, bool read)
         {
@@ -25,13 +25,13 @@ namespace FRITeam.Swapify.Backend
                 Builders<Notification>.Update.Set(notification => notification.Read, read));
         }
 
-        public async Task<IEnumerable<Notification>> GetStudentNotifications(Guid studentId)
+        public async Task<IEnumerable<Notification>> GetStudentNotifications(Guid timetableId)
         {
-            return await NotificationCollection.Find(notification => notification.RecipientId == studentId).ToListAsync();
+            return await NotificationCollection.Find(notification => notification.RecipientId == timetableId).ToListAsync();
         }
 
         public async Task AddNotification(Notification notification)
-        {            
+        {
             await NotificationCollection.InsertOneAsync(notification);
         }
     }

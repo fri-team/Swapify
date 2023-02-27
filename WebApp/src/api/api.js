@@ -4,11 +4,11 @@ const API = "/api/";
 const EXCHANGES = "exchange/";
 const USER_WAITING_EXCHANGES = "userWaitingExchanges/";
 
-export default {    
+export default {
     exchangeRequests: {
-        getAllWaiting: (studentId) => axios.post(
+        getAllWaiting: (timetableId) => axios.post(
             API + EXCHANGES + USER_WAITING_EXCHANGES,
-            `"${studentId}"`,
+            `"${timetableId}"`,
             {
                 headers: {
                     'Content-Type': 'application/json'
@@ -17,13 +17,13 @@ export default {
         )
     },
     notifications: {
-        getMine:  (email) => 
+        getMine:  (email) =>
             axios.get('api/notification/' + email, {
                 contentType: 'application/json',
-                responseType: 'json'                
+                responseType: 'json'
             }),
         setRead: (notificationId, read) =>
             axios.put(`api/notification/${notificationId}/${read}`)
-        
+
     }
 }

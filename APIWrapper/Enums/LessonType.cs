@@ -8,7 +8,7 @@ namespace FRITeam.Swapify.APIWrapper.Enums
     public enum LessonType
     {
         [EnumMember(Value = "")]     
-        None = 0,
+        Blocked = 0,
         [EnumMember(Value = "L")]
         Laboratory = 1,
         [EnumMember(Value = "C")]

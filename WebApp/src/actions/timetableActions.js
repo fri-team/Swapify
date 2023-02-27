@@ -40,7 +40,7 @@ export function loadMyTimetable(user, history) {
     }
     axios({
       method: 'get',
-      url: '/api/student/getStudentTimetable/' + user.email
+      url: '/api/timetabledata/getUserTimetable/' + user.email
     })
       .then(res => {
         dispatch({
@@ -106,7 +106,7 @@ function dowloadCourseTimetableIfNeeded(id, name, action) {
     if (!_.has(timetable.courseTimetables, id)) {
       axios({
         method: 'get',
-        url: `/api/timetable/getCourseTimetable/${id}/${user.studentId}`
+        url: `/api/timetable/getCourseTimetable/${id}/${user.timetableId}`
       })
         .then(res => {
           dispatch({
@@ -195,13 +195,14 @@ export function exchangeConfirm(blockTo) {
         room: blockTo.room,
         teacher: blockTo.teacher
       },
-      StudentId: user.studentId
+      TimetableId: user.timetableId
     }
 
     axios({
-      method: 'post',
+      method: "post",
       url: `/api/exchange/exchangeConfirm`,
-      data: body
+      data: body,
+
     })
       .then((response) => {
         var exchangeMade = response.data;
@@ -212,7 +213,8 @@ export function exchangeConfirm(blockTo) {
           window.alert("Výmena bola vykonaná.");
           dispatch(loadMyTimetable(user.email));
         }
-        dispatch(hideCourseTimetable(bl.id));
+        dispatch(cancelExchangeMode());
+        dispatch(hideCourseTimetable());
         dispatch(action);
         dispatch(loadExchangeRequests());
       })
@@ -221,6 +223,8 @@ export function exchangeConfirm(blockTo) {
           window.alert("Pri vytváraní žiadosti nastala chyba.");
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
+          console.log(body);
+          console.log(blockTo);
         } else if (error.request) {
           window.alert("Nepodarilo sa nadviazať spojenie so serverom.");
           // The request was made but no response was received
@@ -228,12 +232,12 @@ export function exchangeConfirm(blockTo) {
           // http.ClientRequest in node.js
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          console.log("Error", error.message);
           //This error shows undefined history after creating request
         }
         dispatch(hideCourseTimetable(bl.id));
         dispatch({
-          type: CANCEL_EXCHANGE_MODE
+          type: CANCEL_EXCHANGE_MODE,
         });
       });
   };
@@ -246,7 +250,7 @@ export function removeBlock(body, userEmail) {
     });
     axios({
       method: 'delete',
-      url: `/api/student/removeBlock/${userEmail}/${body.id}`
+      url: `/api/timetabledata/removeBlock/${userEmail}/${body.id}`
     })
     .then(() =>{
       dispatch({
@@ -254,7 +258,7 @@ export function removeBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -281,7 +285,7 @@ export function addBlock(body, userEmail) {
     });
     axios({
       method: 'post',
-      url: `/api/student/addNewBlock`,
+      url: `/api/timetabledata/addNewBlock`,
       data: body
     })
     .then(() =>{
@@ -290,7 +294,7 @@ export function addBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -317,7 +321,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
     });
     axios({
       method: 'post',
-      url: `/api/student/addNewBlock`,
+      url: `/api/timetabledata/addNewBlock`,
       data: body
     })
     .then(() =>{
@@ -326,7 +330,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -338,7 +342,7 @@ export function addBlockAndHideOthersWithSameCourseId(body, userEmail) {
 
           axios({
             method: 'get',
-            url: '/api/student/getStudentTimetable/' + userEmail
+            url: '/api/timetabledata/getUserTimetable/' + userEmail
           })
             .then(res => {
               dispatch({
@@ -367,7 +371,7 @@ export function editBlock(body, userEmail) {
     });
     axios({
       method: 'put',
-      url: `/api/student/editBlock`,
+      url: `/api/timetabledata/editBlock`,
       data: body
     })
     .then(() =>{
@@ -376,7 +380,7 @@ export function editBlock(body, userEmail) {
       });
       axios({
         method: 'get',
-        url: '/api/student/getStudentTimetable/' + userEmail
+        url: '/api/timetabledata/getUserTimetable/' + userEmail
       })
         .then(res => {
           dispatch({
@@ -402,7 +406,7 @@ export function loadMyTimetableCalendar(user, history) {
   }
   return axios({
     method: 'get',
-    url: '/api/student/getStudentTimetableCalendar/' + user.email
+    url: '/api/timetabledata/getUserTimetableCalendar/' + user.email
   })
     .then(res => {
       return res.data;

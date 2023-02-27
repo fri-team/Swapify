@@ -25,44 +25,44 @@ namespace BackendTest
         public async Task EditBlockStudentTimetablePassed()
         {
             IMongoDatabase database = _mongoFixture.MongoClient.GetDatabase("StudentsDB");
-            StudentService stserv = new StudentService(database);
-            Student student = new Student();
-            student.Timetable = FakeTimetable.GetFakeTimetable();
-            await stserv.AddAsync(student);
+            TimetableDataService timetableDataService = new TimetableDataService(database);
+            TimetableData ttData = new TimetableData();
+            ttData.Timetable = FakeTimetable.GetFakeTimetable();
+            await timetableDataService.AddAsync(ttData);
 
-            var loadedStudent = await stserv.FindByIdAsync(student.Id);
+            var loadedTtData = await timetableDataService.FindByIdAsync(ttData.Id);
             Block blckToAdd = new Block { BlockId = Guid.NewGuid(), BlockType = BlockType.Lecture, Day = Day.Friday, StartHour = 9 };
 
-            loadedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(0);
+            loadedTtData.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(0);
             //add new block
-            loadedStudent.Timetable.AddNewBlock(blckToAdd);
+            loadedTtData.Timetable.AddNewBlock(blckToAdd);
             //save new block
-            await stserv.UpdateStudentAsync(loadedStudent);
+            await timetableDataService.UpdateTimetableDataAsync(loadedTtData);
             //load from db
-            Student updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            TimetableData updatedTtData = await timetableDataService.FindByIdAsync(loadedTtData.Id);
             //test
-            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
-            updatedStudent.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
+            updatedTtData.Timetable.AllBlocks.Count(x => x.Equals(blckToAdd)).Should().Be(1);
+            updatedTtData.Timetable.ContainsBlock(blckToAdd).Should().Be(true);
 
             Block updtBlock = new Block { BlockId = blckToAdd.BlockId, BlockType = BlockType.Excercise, Day = Day.Friday, StartHour = 9 };
             // update blckToAdd to updtBlock
-            updatedStudent.Timetable.UpdateBlock(updtBlock);
+            updatedTtData.Timetable.UpdateBlock(updtBlock);
             //save updated block
-            await stserv.UpdateStudentAsync(updatedStudent);
+            await timetableDataService.UpdateTimetableDataAsync(updatedTtData);
             //load from db
-            updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            updatedTtData = await timetableDataService.FindByIdAsync(loadedTtData.Id);
             //test
-            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(1);
+            updatedTtData.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(1);
 
             //delete added block
-            updatedStudent.Timetable.RemoveBlock(updtBlock.BlockId);
+            updatedTtData.Timetable.RemoveBlock(updtBlock.BlockId);
             //save deleted
-            await stserv.UpdateStudentAsync(updatedStudent);
+            await timetableDataService.UpdateTimetableDataAsync(updatedTtData);
             //load from db
-            updatedStudent = await stserv.FindByIdAsync(loadedStudent.Id);
+            updatedTtData = await timetableDataService.FindByIdAsync(loadedTtData.Id);
             //test
-            updatedStudent.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(0);
-            updatedStudent.Timetable.ContainsBlock(updtBlock).Should().Be(false);
+            updatedTtData.Timetable.AllBlocks.Count(x => x.Equals(updtBlock)).Should().Be(0);
+            updatedTtData.Timetable.ContainsBlock(updtBlock).Should().Be(false);
         }
     }
 

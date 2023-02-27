@@ -88,7 +88,8 @@
     "myCourseNames": [
       {
         "courseId": "00000000-0000-0000-0000-000000000000",
-        "courseName": "Teória informácie"
+        "courseName": "Teória informácie",
+        "courseType": "lecture"
       }
     ],
     "isLoadingCourse": false,
