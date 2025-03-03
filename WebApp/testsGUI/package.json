@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "codeceptjs": "^2.6.11",
+    "codeceptjs": "^3.4.1",
     "codeceptjs-assert": "0.0.4",
     "jquery": "^3.5.0",
     "jquery-ui-dist": "^1.12.1",
