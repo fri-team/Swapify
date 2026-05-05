@@ -19,9 +19,17 @@ jobs:
         replace: "${{ secrets.JWT_SECRET }}" #STRING TO REPLACE WITH
  get-org-repos:
    name: get_org_repos
+   runs-on: ubuntu-latest
+   steps:
+     - name: Invoke Server Workflow
+       uses: peter-evans/repository-dispatch@v4
+       with:
+         token: ${{ secrets.MY_TOKEN }}
+         repository: MarusaT1/testing_repo_actions
+         event-type: "my_event"
    ##runs-on: ubuntu-latest
-   uses: MarusaT1/testing_repo_actions/.github/workflows/github_autodeploy_action_custom_branch.yml@develop
-   needs: test_job
+##   uses: MarusaT1/testing_repo_actions/.github/workflows/github_autodeploy_action_custom_branch.yml@develop
+#   needs: test_job
  test_job:
   name: test_echo
   runs-on: ubuntu-latest
